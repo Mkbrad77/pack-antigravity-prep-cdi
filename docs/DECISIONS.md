@@ -216,3 +216,25 @@
 - **Date :** 6 novembre 2026
 - **Décision prise :** Héberger l'application sur Cloudflare (Worker + Durable Object SQLite + R2 + Access), sans frais récurrents, en conservant le mode local à l'identique.
 - **Justification :** Accès au planning et aux podcasts en 4G/5G, PC éteint. Le Durable Object expose un SQLite synchrone, ce qui permet de réutiliser `src/server/db.ts` sans réécriture (contrairement à D1, asynchrone). Voir `docs/DEPLOIEMENT_CLOUD.md`.
+
+## 20. Décision D-20 : Refonte UX/UI (thème sombre premium, navigation à 5 entrées)
+
+- **Date :** 6 novembre 2026
+- **Décision prise :** Refonte complète de l'interface, PC et mobile, validée par Auren après l'audit UX/UI de la Mission 2 :
+  1. Navigation par intention à 5 entrées : Aujourd'hui, Planning, Cours, Pratique, Podcasts. Barre en bas sur téléphone, rail latéral sur tablette et PC. Compétences, Journal des séances, Révision espacée et Réglages sont rangés dans le menu profil (en haut à droite).
+  2. Thème sombre par défaut, thème clair en option (menu profil ou Réglages), mémorisé sur l'appareil. Toutes les couleurs passent par les variables de `src/index.css` ; aucun composant ne code une couleur en dur.
+  3. Emoji retirés des boutons, onglets et badges (remplacés par des icônes `lucide-react`) ; ils restent dans les textes de cours.
+  4. Divulgation progressive : semaine en cours seule ouverte dans le Planning, filtres secondaires, guides de tâche, bonus et historique repliés ; écran Aujourd'hui centré sur « À faire maintenant ».
+  5. Accessibilité : libellés sur toutes les cases à cocher et listes, cibles tactiles d'au moins 24 px (44 px sur écran tactile), police minimale de 12 px, contrastes de 4,5:1 vérifiés dans les deux thèmes.
+  6. Correction des repères de semaines dans l'interface : dbt en S4 à S9 (examen en S9), DEA-C01 en S10 à S19 (examen en S19), au lieu de S10 et S20 ; le scénario « fatigue en semaine d'examen dbt » cible désormais la S9.
+- **Justification :** l'audit montrait 14 écrans sur 27 plus larges qu'un téléphone, un Planning de 38 écrans de haut, 952 cases sans libellé et 326 textes au contraste insuffisant. Après refonte : 0 débordement sur 21 écrans en 390, 820 et 1440 px, 0 violation axe-core (WCAG 2.2 AA) dans les deux thèmes, 0 erreur JavaScript.
+- **Ce qui n'a pas changé :** aucun contenu pédagogique (leçons, questions, catalogues, chapitres, fiches, exercices), aucune règle métier, aucune donnée utilisateur. Seuls les libellés d'interface (accents, renvois « Où aller » vers les nouveaux écrans) ont été réécrits.
+
+## 21. Décision D-21 : Programme d'écoute des podcasts au quotidien
+
+- **Date :** 6 novembre 2026
+- **Décision prise :** objectif fixé par Auren à 3 écoutes par épisode. L'application lit le programme déjà présent dans `data/podcasts_catalog.json` (champ `schedule_days`) via `src/domain/podcastSchedule.ts` et l'affiche à deux endroits :
+  1. Écran Aujourd'hui, carte « À écouter aujourd'hui » : écoutes du jour avec leur numéro (1re, 2e, 3e), bouton « Tout écouter » qui enchaîne les épisodes du jour, écoutes à rattraper et rappels à placer dans la semaine. Une écoute est comptée automatiquement quand l'épisode est écouté jusqu'au bout, ou à la main avec le cercle à droite.
+  2. Guide des tâches podcast (« Comment faire ») : calendrier du lundi au dimanche, compteur des écoutes de la semaine et de l'objectif de 3 écoutes, rappels prévus plus tard, message quand la semaine est complète.
+- **Règles de lecture :** une écoute n°N est faite dès que le compteur de l'épisode atteint N. Une « veille d'examen » sans jour est placée le jeudi (examens le vendredi). Un rappel sans jour est à placer librement dans la semaine indiquée. Une écoute prévue au-delà de la 3e est affichée comme rappel bonus.
+- **Ce qui n'a pas changé :** le catalogue et les textes des tâches (les livrables hebdomadaires restent ceux du planning ; la 3e écoute de certains épisodes est prévue par le catalogue dans une semaine ultérieure).

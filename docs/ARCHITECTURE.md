@@ -286,3 +286,10 @@ pack-antigravity-prep-cdi/
 ## Mode Cloud (Cloudflare, novembre 2026)
 
 Le même code métier tourne aussi en ligne pour l'usage mobile : Worker Cloudflare `prep-cdi` (interface + API), base SQLite hébergée dans un Durable Object (mêmes migrations), podcasts dans le bucket R2 privé `prep-cdi-audios`, accès protégé par Cloudflare Access. Détails, procédure et invariants : `docs/DEPLOIEMENT_CLOUD.md` et section 5 de `AGENTS.md`.
+
+## Interface (refonte de novembre 2026, décision D-20)
+
+- **Coque** : `src/App.tsx` gère 9 destinations (`src/ui/navigation.ts`). Les 5 principales sont dans la barre du bas (téléphone, moins de 768 px) ou le rail latéral (tablette et PC) ; les 4 secondaires dans le menu profil. Les cibles de tâches (`TaskNavigationTarget`, format historique) sont traduites par `resolveTarget()`.
+- **Écrans** : `DashboardView` (Aujourd'hui), `PlanningView`, `CoursHubView` (qui regroupe `CertificationsView` pour CLF-C02, dbt et DEA-C01, et `CoursesView` en mode `snowflake` ou `udemy`), `InterviewsHubView` (Pratique), `CoursesView` en mode `podcasts`.
+- **Composants partagés** : `TaskCard` (carte de tâche commune à Aujourd'hui et au Planning), `DocBrowser` (liste plus lecture, repliable sur téléphone), `MarkdownViewer` (rendu Markdown commun : listes, tableaux défilants, encadrés, code), `PodcastPlayerBar` (mini-lecteur persistant et lecteur plein écran).
+- **Thème** : `src/ui/theme.ts` et le script en tête de `index.html` (appliqué avant le premier rendu). Les variables des deux thèmes sont dans `src/index.css` ; ajouter une couleur, c'est ajouter une variable dans les deux blocs `[data-theme]`.

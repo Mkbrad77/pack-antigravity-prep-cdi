@@ -39,7 +39,7 @@ test.describe('Parcours utilisateur complet Phase 2 (E2E Navigateur + SQLite)', 
     await expect(page.getByTestId('dashboard-task-W01-I1')).toHaveCount(0);
 
     // 4. Saisir un score d'examen blanc (CLF-C02 : 85 %) et verifier que l'indicateur passe a PRET
-    await page.getByTestId('nav-tab-certifications').click();
+    await page.getByTestId('nav-tab-cours').click();
     await expect(page.getByTestId('certifications-view')).toBeVisible();
     await expect(page.getByTestId('no-mock-exams-msg')).toBeVisible();
 
@@ -53,20 +53,24 @@ test.describe('Parcours utilisateur complet Phase 2 (E2E Navigateur + SQLite)', 
     await expect(page.getByTestId('readiness-badge-CLF-C02')).toContainText('PRÊT POUR L\'EXAMEN');
 
     // 5. Tester la recherche de sujets dans l'onglet Cours & Sujets et la validation par plage
-    await page.getByTestId('nav-tab-courses').click();
+    await page.getByTestId('nav-tab-cours').click();
+    await page.getByTestId('cours-section-UDEMY').click();
+    await page.getByText('Carte des sujets').click();
     await expect(page.getByTestId('courses-view')).toBeVisible();
     await page.getByTestId('topic-search-input').fill('Kinesis');
     await expect(page.getByTestId('topic-row-kinesis')).toBeVisible();
 
     // 6. Tester la creation d'une carte SM-2 avec etiquette de provenance obligatoire
-    await page.getByTestId('nav-tab-srs').click();
+    await page.getByTestId('profile-menu-btn').click();
+    await page.getByTestId('nav-tab-revision').click();
     await page.getByTestId('flashcard-front-input').fill('Quel est le rôle d\'AWS Glue Data Catalog ?');
     await page.getByTestId('flashcard-back-input').fill('Catalogue de métadonnées centralisé compatible Hive Metastore.');
     await page.getByTestId('btn-create-flashcard').click();
     await expect(page.getByTestId('spaced-repetition-view')).toContainText('Quel est le rôle d\'AWS Glue Data Catalog ?');
 
     // 7. Aller dans Reglages & Sauvegarde : Exporter la sauvegarde JSON datee
-    await page.getByTestId('nav-tab-settings').click();
+    await page.getByTestId('profile-menu-btn').click();
+    await page.getByTestId('nav-tab-reglages').click();
     await expect(page.getByTestId('settings-view')).toBeVisible();
     await page.getByTestId('btn-export-backup').click();
     await expect(page.getByTestId('backup-success-msg')).toContainText(
@@ -83,27 +87,28 @@ test.describe('Parcours utilisateur complet Phase 2 (E2E Navigateur + SQLite)', 
     await page.getByTestId('btn-confirm-reset').click();
     await expect(page.getByTestId('backup-success-msg')).toContainText('Toutes les données utilisateur ont été supprimées');
 
-    await page.getByTestId('nav-tab-certifications').click();
+    await page.getByTestId('nav-tab-cours').click();
     await expect(page.getByTestId('no-mock-exams-msg')).toBeVisible();
 
-    await page.getByTestId('nav-tab-dashboard').click();
+    await page.getByTestId('nav-tab-today').click();
     await expect(page.getByTestId('complete-task-W01-C3')).toBeVisible();
     await expect(page.getByTestId('dashboard-task-W01-I1')).toBeVisible();
     const resetClfPctText = await page.getByTestId('cert-progress-pct-CLF-C02').textContent();
     expect(parseFloat(resetClfPctText || '0')).toBe(0);
 
     // 9. Restaurer la sauvegarde JSON et verifier que tout est revenu intact
-    await page.getByTestId('nav-tab-settings').click();
+    await page.getByTestId('profile-menu-btn').click();
+    await page.getByTestId('nav-tab-reglages').click();
     await page.getByTestId('backup-json-textarea').fill(exportedJson);
     await page.getByTestId('btn-restore-from-textarea').click();
     await expect(page.getByTestId('backup-success-msg')).toContainText('Sauvegarde restaurée avec succès');
 
     // Verification finale sur le tableau de bord et les certifications
-    await page.getByTestId('nav-tab-dashboard').click();
+    await page.getByTestId('nav-tab-today').click();
     await expect(page.getByTestId('reopen-task-W01-C3')).toBeVisible();
     await expect(page.getByTestId('dashboard-task-W01-I1')).toHaveCount(0);
 
-    await page.getByTestId('nav-tab-certifications').click();
+    await page.getByTestId('nav-tab-cours').click();
     await expect(page.getByTestId('mock-exams-table')).toContainText('85 %');
     await expect(page.getByTestId('readiness-badge-CLF-C02')).toContainText('PRÊT POUR L\'EXAMEN');
 

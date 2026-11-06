@@ -11,7 +11,7 @@ test.describe('Captures d ecran interactions detaillees', () => {
     await page.waitForTimeout(1000);
 
     // 1. SQL: Ouvrir modal schema, executer requete, afficher solution
-    await page.getByTestId('nav-tab-interviews').click();
+    await page.getByTestId('nav-tab-pratique').click();
     await page.getByTestId('interview-subtab-sql').click();
     await page.waitForTimeout(500);
 

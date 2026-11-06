@@ -92,7 +92,7 @@ export const SessionsView: React.FC<SessionsViewProps> = ({
       <div className="grid-2" style={{ gap: '1rem', marginBottom: '1rem' }}>
         {/* Chronometre simple */}
         <div className="card">
-          <h3 style={{ marginTop: 0 }}>Chronomètre de séance d'étude</h3>
+          <h2 style={{ marginTop: 0, fontSize: "1.05rem" }}>Chronomètre de séance d'étude</h2>
           <div
             className="mono"
             data-testid="timer-display"
@@ -152,7 +152,7 @@ export const SessionsView: React.FC<SessionsViewProps> = ({
 
         {/* Saisie manuelle rapide */}
         <div className="card">
-          <h3 style={{ marginTop: 0 }}>Saisie manuelle rapide d'une séance</h3>
+          <h2 style={{ marginTop: 0, fontSize: "1.05rem" }}>Saisie manuelle rapide d'une séance</h2>
           <form onSubmit={handleManualSubmit} data-testid="manual-session-form">
             <div className="grid-2" style={{ gap: '0.6rem', marginBottom: '0.6rem' }}>
               <label>
@@ -254,9 +254,9 @@ export const SessionsView: React.FC<SessionsViewProps> = ({
       {/* Comparaison temps estime vs temps reel + Historique */}
       <div className="card">
         <div className="row-between" style={{ flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.75rem' }}>
-          <h3 style={{ margin: 0 }}>
+          <h2 style={{ margin: 0, fontSize: "1.05rem" }}>
             Historique des séances d'étude ({state.studySessions.length})
-          </h3>
+          </h2>
           <div className="mono" style={{ fontSize: '0.88rem' }}>
             Total réel enregistré : <strong>{totalRealMin} min</strong> ({(totalRealMin / 60).toFixed(1)} h)
             | Certifications : <strong>{certRealMin} min</strong> | Entretiens :{' '}

@@ -1,3 +1,4 @@
+import { BarChart3 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { fetchCompetenciesStatus } from '../apiClient';
 import { CompetencyStatus } from '../domain/types';
@@ -15,29 +16,29 @@ const ALL_COMPETENCIES: CompetencyDef[] = [
   {
     id: 'sql_analytics',
     domain: 'DE',
-    name: 'SQL Analytique & Fonctions de fenetrage',
-    description: 'Maitrise des ROW_NUMBER, RANK, LAG/LEAD, agregation glissante et anti-joins.',
+    name: 'SQL analytique et fonctions de fenêtrage',
+    description: 'Maîtrise de ROW_NUMBER, RANK, LAG/LEAD, agrégation glissante et anti-joins.',
     recommendedCategory: 'sql',
   },
   {
     id: 'sql_modeling',
     domain: 'DE',
-    name: 'Modelisation dimensionnelle & Kimball',
-    description: 'Tables de faits, dimensions a variation lente (SCD Type 1/2), schemas en etoile.',
+    name: 'Modélisation dimensionnelle et Kimball',
+    description: 'Tables de faits, dimensions à variation lente (SCD Type 1/2), schémas en étoile.',
     recommendedCategory: 'sql',
   },
   {
     id: 'python_pandas_polars',
     domain: 'DE',
-    name: 'Manipulation de donnees Python (Pandas & Polars)',
-    description: 'Transformations vectorisees, groupby, gestion des types et de la memoire.',
+    name: 'Manipulation de données Python (Pandas & Polars)',
+    description: 'Transformations vectorisées, groupby, gestion des types et de la mémoire.',
     recommendedCategory: 'python_pandas_polars',
   },
   {
     id: 'python_distributed',
     domain: 'DE',
-    name: 'Calcul distribue & Spark',
-    description: 'Partitionnement, avoidance des shuffles, optimisation des joins broadcastees.',
+    name: 'Calcul distribué et Spark',
+    description: 'Partitionnement, avoidance des shuffles, optimisation des joins broadcastés.',
     recommendedCategory: 'python_distributed',
   },
   {
@@ -50,29 +51,29 @@ const ALL_COMPETENCIES: CompetencyDef[] = [
   {
     id: 'de_dbt',
     domain: 'DE',
-    name: 'Transformations dbt & Tests de donnees',
-    description: 'Modeles ref(), sources, tests generiques, tests singuliers et snapshots.',
+    name: 'Transformations dbt & Tests de données',
+    description: 'Modèles ref(), sources, tests génériques, tests singuliers et snapshots.',
     recommendedCategory: 'cours_de',
   },
   {
     id: 'de_streaming',
     domain: 'DE',
     name: 'Ingestion en continu & Streaming (Kafka, Kinesis)',
-    description: 'Semantiques de livraison (at-least-once, exactly-once), fenetrage temporel.',
+    description: 'Sémantiques de livraison (at-least-once, exactly-once), fenêtrage temporel.',
     recommendedCategory: 'cours_de',
   },
   {
     id: 'de_data_quality',
     domain: 'DE',
     name: 'Data Quality & Circuit Breakers',
-    description: 'Detection d anomalies en amont, circuit breakers, fraicheur des donnees.',
+    description: 'Détection d\'anomalies en amont, circuit breakers, fraîcheur des données.',
     recommendedCategory: 'cours_de',
   },
   {
     id: 'de_cloud_aws',
     domain: 'DE',
     name: 'Services Cloud AWS Data (S3, Glue, Athena, Redshift)',
-    description: 'Architecture serveur, IAM, KMS, optimisation des requetes Athena/Redshift.',
+    description: 'Architecture serveur, IAM, KMS, optimisation des requêtes Athena/Redshift.',
     recommendedCategory: 'cours_de',
   },
 
@@ -81,49 +82,49 @@ const ALL_COMPETENCIES: CompetencyDef[] = [
     id: 'aie_rag',
     domain: 'AIE',
     name: 'Architecture RAG & Vector Search',
-    description: 'Chunking adapte, recherche hybride (BM25 + Dense), reranking et recuperation.',
+    description: 'Chunking adapté, recherche hybride (BM25 + Dense), reranking et récupération.',
     recommendedCategory: 'python_rag_embeddings',
   },
   {
     id: 'aie_embeddings',
     domain: 'AIE',
-    name: 'Modeles d Embeddings & Similarite semantique',
-    description: 'Cosine similarity, dimensionnalite, index HNSW et compromis precision/latence.',
+    name: 'Modèles d\'embeddings et similarité sémantique',
+    description: 'Cosine similarity, dimensionnalité, index HNSW et compromis précision/latence.',
     recommendedCategory: 'python_rag_embeddings',
   },
   {
     id: 'aie_finetuning',
     domain: 'AIE',
-    name: 'Fine-tuning & Adaptation de modeles (LoRA, QLoRA)',
+    name: 'Fine-tuning & Adaptation de modèles (LoRA, QLoRA)',
     description: 'PEFT, adaptation par bas rang, quantification 4-bit, instruction tuning.',
     recommendedCategory: 'cours_aie',
   },
   {
     id: 'aie_serving',
     domain: 'AIE',
-    name: 'Servabilite & Inference LLM (vLLM, PagedAttention)',
+    name: 'Servabilité et inférence LLM (vLLM, PagedAttention)',
     description: 'KV Cache, continuous batching, quantisation FP8/AWQ, latence TTFT vs TPS.',
     recommendedCategory: 'cours_aie',
   },
   {
     id: 'aie_evaluation',
     domain: 'AIE',
-    name: 'Evaluation des LLM (RAGAS, Hallucinations)',
-    description: 'Fidelite, pertinence de la reponse, metriques semantiques sans verite terrain.',
+    name: 'Évaluation des LLM (RAGAS, hallucinations)',
+    description: 'Fidélité, pertinence de la réponse, métriques sémantiques sans vérité terrain.',
     recommendedCategory: 'cours_aie',
   },
   {
     id: 'aie_guardrails',
     domain: 'AIE',
-    name: 'Securite des LLM & Guardrails',
-    description: 'Protection contre l injection de prompt, filtrage PII et controle des sorties.',
+    name: 'Sécurité des LLM et guardrails',
+    description: 'Protection contre l\'injection de prompt, filtrage PII et contrôle des sorties.',
     recommendedCategory: 'cours_aie',
   },
   {
     id: 'aie_agents',
     domain: 'AIE',
     name: 'Agents autonomes & Function Calling (ReAct)',
-    description: 'Boucle raisonnement-action, appel d outils JSON et gestion d etat.',
+    description: 'Boucle raisonnement-action, appel d\'outils JSON et gestion d\'état.',
     recommendedCategory: 'cours_aie',
   },
 
@@ -131,8 +132,8 @@ const ALL_COMPETENCIES: CompetencyDef[] = [
   {
     id: 'python_algo_data',
     domain: 'COMMON',
-    name: 'Algorithmique & Structures de donnees Python',
-    description: 'Complexite O(N), hash maps, tas (heap), deux pointeurs, parcours de graphes.',
+    name: 'Algorithmique & Structures de données Python',
+    description: 'Complexité O(N), hash maps, tas (heap), deux pointeurs, parcours de graphes.',
     recommendedCategory: 'python_algo_data',
   },
   {
@@ -146,14 +147,14 @@ const ALL_COMPETENCIES: CompetencyDef[] = [
     id: 'software_engineering',
     domain: 'COMMON',
     name: 'Pratiques Software Engineering (Tests, CI/CD, Git)',
-    description: 'Tests unitaires, fixtures, typage strict, Clean Architecture et observabilite.',
+    description: 'Tests unitaires, fixtures, typage strict, Clean Architecture et observabilité.',
     recommendedCategory: 'cours_software',
   },
   {
     id: 'system_design_architecture',
     domain: 'COMMON',
-    name: 'System Design & Conception d Architecture Data/AI',
-    description: 'Dimensionnement, arbitrages batch vs streaming, haute disponibilite, SLA, couts et gouvernance.',
+    name: 'System Design et conception d\'architecture Data/AI',
+    description: 'Dimensionnement, arbitrages batch vs streaming, haute disponibilité, SLA, coûts et gouvernance.',
     recommendedCategory: 'simulateur',
   },
 ];
@@ -169,7 +170,7 @@ export const CompetencyMatrixView: React.FC = () => {
         setCompetenciesStatus(status);
       })
       .catch((err) => {
-        console.error('Erreur chargement competences :', err);
+        console.error('Erreur chargement compétences :', err);
       })
       .finally(() => {
         setLoading(false);
@@ -193,7 +194,7 @@ export const CompetencyMatrixView: React.FC = () => {
   if (loading) {
     return (
       <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
-        <p className="muted">Chargement de la matrice de competences...</p>
+        <p className="muted">Chargement de la matrice de compétences…</p>
       </div>
     );
   }
@@ -205,11 +206,11 @@ export const CompetencyMatrixView: React.FC = () => {
         <div className="row-between" style={{ flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <h2 style={{ margin: 0, fontSize: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span>📊</span>
-              <span>Matrice de Validation des Competences Cles</span>
+              <BarChart3 size={20} aria-hidden />
+              <span>Matrice de validation des compétences clés</span>
             </h2>
             <div className="muted" style={{ fontSize: '0.85rem', marginTop: '0.2rem' }}>
-              Suivi objectif de maitrise des 20 competences requises pour decrocher un CDI Data Engineer ou AI Engineer.
+              Suivi objectif de maîtrise des 20 compétences requises pour décrocher un CDI Data Engineer ou AI Engineer.
             </div>
           </div>
 
@@ -225,10 +226,10 @@ export const CompetencyMatrixView: React.FC = () => {
 
       {/* Regle absolue de validation */}
       <div className="callout callout-info" style={{ fontSize: '0.82rem', lineHeight: 1.55 }}>
-        <strong>Regle de validation des competences :</strong> Une competence est officiellement marquee comme{' '}
-        <span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>Validee</span> uniquement si tu totalises{' '}
-        <strong>au moins 3 reussites</strong> reparties sur <strong>au moins 2 sessions distinctes d entrainement</strong>.
-        Cette exigence garantit un reel ancrage memoriel dans le temps, sans bachotage ephereme.
+        <strong>Règle de validation :</strong> une compétence est marquée comme{' '}
+        <span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>Validée</span> uniquement si tu totalises{' '}
+        <strong>au moins 3 réussites</strong> réparties sur <strong>au moins 2 sessions d'entraînement distinctes</strong>.
+        Cette exigence garantit un vrai ancrage dans le temps, sans bachotage éphémère.
       </div>
 
       {/* Barre d onglets de filtrage */}
@@ -268,7 +269,7 @@ export const CompetencyMatrixView: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.8rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--accent-green)', display: 'inline-block' }}></span>
-              <span className="muted">Validees : <strong style={{ color: 'var(--text-primary)' }}>{masteredCount}</strong></span>
+              <span className="muted">Validées : <strong style={{ color: 'var(--text-primary)' }}>{masteredCount}</strong></span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--accent-amber)', display: 'inline-block' }}></span>
@@ -294,11 +295,11 @@ export const CompetencyMatrixView: React.FC = () => {
           let cardBorder = '1px solid var(--border-color)';
           let cardBg = 'var(--bg-card)';
           if (isMastered) {
-            cardBorder = '1px solid rgba(34, 197, 94, 0.4)';
-            cardBg = 'rgba(34, 197, 94, 0.06)';
+            cardBorder = '1px solid var(--success-border)';
+            cardBg = 'var(--success-bg)';
           } else if (attempts > 0) {
-            cardBorder = '1px solid rgba(245, 158, 11, 0.4)';
-            cardBg = 'rgba(245, 158, 11, 0.05)';
+            cardBorder = '1px solid var(--warning-border)';
+            cardBg = 'var(--warning-bg)';
           }
 
           return (
@@ -320,7 +321,7 @@ export const CompetencyMatrixView: React.FC = () => {
                   <span
                     className="badge badge-neutral"
                     style={{
-                      fontSize: '0.7rem',
+                      fontSize: '0.75rem',
                       fontWeight: 700,
                       color: comp.domain === 'DE' ? 'var(--accent-blue)' : comp.domain === 'AIE' ? 'var(--accent-indigo)' : 'var(--text-muted)',
                     }}
@@ -329,15 +330,15 @@ export const CompetencyMatrixView: React.FC = () => {
                   </span>
 
                   {isMastered ? (
-                    <span className="badge badge-success" style={{ fontSize: '0.72rem' }}>
-                      ✓ Validee
+                    <span className="badge badge-success" style={{ fontSize: '0.75rem' }}>
+                      Validée
                     </span>
                   ) : attempts > 0 ? (
-                    <span className="badge badge-warning" style={{ fontSize: '0.72rem' }}>
+                    <span className="badge badge-warning" style={{ fontSize: '0.75rem' }}>
                       En cours ({successes}/3)
                     </span>
                   ) : (
-                    <span className="badge badge-neutral" style={{ fontSize: '0.72rem' }}>
+                    <span className="badge badge-neutral" style={{ fontSize: '0.75rem' }}>
                       A demarrer
                     </span>
                   )}
@@ -348,9 +349,9 @@ export const CompetencyMatrixView: React.FC = () => {
               </div>
 
               {/* Jauge d ancrage memoriel */}
-              <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.78rem' }}>
+              <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.75rem' }}>
                 <div className="row-between" style={{ fontSize: '0.75rem' }}>
-                  <span className="muted">Critere : 3 reussites sur 2 sessions</span>
+                  <span className="muted">Critère : 3 réussites sur 2 sessions</span>
                   <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
                     {successes}/3 reussites | {sessions}/2 sessions
                   </span>
@@ -377,7 +378,7 @@ export const CompetencyMatrixView: React.FC = () => {
                 </div>
 
                 {status?.lastRecordedAt && (
-                  <div className="muted" style={{ fontSize: '0.72rem' }}>
+                  <div className="muted" style={{ fontSize: '0.75rem' }}>
                     Derniere pratique : {new Date(status.lastRecordedAt).toLocaleDateString()}
                   </div>
                 )}

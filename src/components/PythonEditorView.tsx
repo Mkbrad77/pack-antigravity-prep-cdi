@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { CheckCircle2, ChevronDown, Eye, Lightbulb, Pause, Play, RotateCcw, Search, Timer, XCircle } from 'lucide-react';
+import { MOBILE_QUERY, useMediaQuery } from '../ui/useMediaQuery';
 import {
   executePythonSandbox,
   fetchPythonExercises,
@@ -66,7 +68,12 @@ export const PythonEditorView: React.FC<PythonEditorViewProps> = ({
   // Chronometre d'entretien
   const [seconds, setSeconds] = useState<number>(0);
   const [timerRunning, setTimerRunning] = useState<boolean>(false);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [notice, setNotice] = useState<string>('');
+  const isMobile = useMediaQuery(MOBILE_QUERY);
+  const [filtersOpenAtStart] = useState<boolean>(() => !window.matchMedia(MOBILE_QUERY).matches);
+  const [listOpen, setListOpen] = useState<boolean>(false);
+  const editorRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     fetchPythonExercises()
@@ -117,7 +124,8 @@ export const PythonEditorView: React.FC<PythonEditorViewProps> = ({
 
   const selectExercise = (ex: PythonExercise) => {
     setCurrentExercise(ex);
-    setUserCode(ex.starterCode || '# Ecris ton code Python ici\n');
+    setUserCode(ex.starterCode || '# Écris ton code Python ici\n');
+    setNotice('');
     setSandboxResult(null);
     setAttemptCount(0);
     setSolutionRevealed(false);
@@ -150,7 +158,7 @@ export const PythonEditorView: React.FC<PythonEditorViewProps> = ({
           competency_id: `python_${currentExercise.category}`,
           session_id: `session_${new Date().toISOString().slice(0, 10)}`,
           success: true,
-          notes: `Exercice reussi : ${currentExercise.title}`,
+          notes: `Exercice réussi : ${currentExercise.title}`,
         });
       }
     } catch (err) {
@@ -182,7 +190,7 @@ export const PythonEditorView: React.FC<PythonEditorViewProps> = ({
         setSolutionRevealed(true);
       }
     } catch (err) {
-      alert('Erreur lors du deblocage de la solution : ' + (err instanceof Error ? err.message : String(err)));
+      setNotice('Erreur lors du déblocage de la solution : ' + (err instanceof Error ? err.message : String(err)));
     } finally {
       setRevealing(false);
     }
@@ -214,11 +222,11 @@ export const PythonEditorView: React.FC<PythonEditorViewProps> = ({
   const getDifficultyBadge = (diff: string) => {
     switch (diff) {
       case 'debutant':
-        return <span className="badge badge-success">Debutant</span>;
+        return <span className="badge badge-success">Débutant</span>;
       case 'intermediaire':
-        return <span className="badge badge-warning">Intermediaire</span>;
+        return <span className="badge badge-warning">Intermédiaire</span>;
       case 'avance':
-        return <span className="badge badge-danger">Avance</span>;
+        return <span className="badge badge-danger">Avancé</span>;
       default:
         return <span className="badge badge-neutral">{diff}</span>;
     }
@@ -226,42 +234,80 @@ export const PythonEditorView: React.FC<PythonEditorViewProps> = ({
 
   if (loading) {
     return (
-      <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
-        <p className="muted">Chargement des exercices Python...</p>
+      <div className="card" role="status">
+        <p className="muted" style={{ margin: 0 }}>Chargement des exercices Python…</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="callout callout-warning">
-        <h3 style={{ margin: '0 0 0.5rem 0' }}>Erreur</h3>
-        <p style={{ margin: 0 }}>{error}</p>
+      <div className="callout callout-warning" role="alert">
+        <strong>Erreur</strong>
+        <p style={{ margin: '0.25rem 0 0' }}>{error}</p>
       </div>
     );
   }
 
+  const allPassed = Boolean(
+    sandboxResult && sandboxResult.success && sandboxResult.passedAssertions && sandboxResult.passedAssertions === sandboxResult.totalAssertions
+  );
+
+  const exerciseList = (
+    <div className="stack-sm">
+      <div className="row-between small">
+        <strong>Exercices ({filteredExercises.length})</strong>
+        <span className="badge badge-success mono">
+          {Object.keys(passedMap).length}/{exercises.length} résolus
+        </span>
+      </div>
+      <div className="item-list-container" role="list" aria-label="Exercices Python">
+        {filteredExercises.length === 0 && <div className="empty-state small">Aucun exercice trouvé.</div>}
+        {filteredExercises.map((ex) => {
+          const isSelected = currentExercise?.id === ex.id;
+          const isPassed = passedMap[ex.id];
+          return (
+            <div role="listitem" key={ex.id}>
+              <button
+                type="button"
+                onClick={() => {
+                  selectExercise(ex);
+                  if (isMobile) {
+                    setListOpen(false);
+                    window.setTimeout(() => editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+                  }
+                }}
+                className={`item-card ${isSelected ? 'selected' : ''}`}
+                aria-current={isSelected ? 'true' : undefined}
+              >
+                <span className="row-between small" style={{ width: '100%' }}>
+                  <span className="mono muted">{ex.id}</span>
+                  {getDifficultyBadge(ex.difficulty)}
+                </span>
+                <span style={{ fontWeight: isSelected ? 650 : 500, display: 'flex', gap: '0.35rem', alignItems: 'flex-start' }}>
+                  {isPassed && <CheckCircle2 size={16} aria-label="Réussi" style={{ color: 'var(--accent-green)', flex: '0 0 auto', marginTop: '2px' }} />}
+                  {ex.title}
+                </span>
+                <span className="muted small">{PYTHON_CATEGORY_LABELS[ex.category] || ex.category}</span>
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      {/* Bandeau de séance ciblée si ouvert depuis une tâche du planning */}
+    <div className="stack">
       {sessionFilterIds && sessionFilterIds.length > 0 && (
-        <div
-          className="card"
-          style={{
-            padding: '0.85rem 1.15rem',
-            borderLeft: '4px solid var(--accent-blue)',
-            backgroundColor: 'rgba(59, 130, 246, 0.08)',
-          }}
-        >
-          <div className="row-between" style={{ flexWrap: 'wrap', gap: '0.75rem' }}>
-            <div>
-              <div style={{ fontWeight: 700, color: 'var(--accent-blue)', fontSize: '0.95rem' }}>
-                🎯 Séance ciblée : {activeTaskLabel || 'Exercices de ta tâche hebdomadaire'}
+        <div className="callout callout-info">
+          <div className="row-between" style={{ alignItems: 'flex-start' }}>
+            <div style={{ minWidth: 0 }}>
+              <strong>Séance ciblée : {activeTaskLabel || 'exercices de ta tâche hebdomadaire'}</strong>
+              <div className="small" style={{ marginTop: '0.2rem' }}>
+                Seuls les {sessionFilterIds.length} exercices de cette séance sont affichés. Résous-les dans l'ordre :
               </div>
-              <div style={{ fontSize: '0.83rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
-                Seuls les <strong>{sessionFilterIds.length} exercices au programme de cette séance</strong> sont affichés ci-dessous. Clique sur chacun pour les résoudre dans l'ordre :
-              </div>
-              <div style={{ display: 'flex', gap: '0.45rem', flexWrap: 'wrap', marginTop: '0.45rem' }}>
+              <div className="cluster" style={{ marginTop: '0.5rem' }}>
                 {sessionFilterIds.map((exId, idx) => {
                   const exObj = exercises.find((e) => e.id === exId);
                   const isCurrent = currentExercise?.id === exId;
@@ -272,314 +318,180 @@ export const PythonEditorView: React.FC<PythonEditorViewProps> = ({
                       type="button"
                       onClick={() => exObj && selectExercise(exObj)}
                       className={`btn btn-sm ${isCurrent ? 'btn-primary' : 'btn-secondary'}`}
-                      style={{ fontSize: '0.78rem' }}
                     >
-                      {isDone ? '✓ ' : `${idx + 1}. `}
-                      <span className="mono">{exId}</span> : {exObj ? exObj.title : exId}
+                      {isDone ? <CheckCircle2 size={16} aria-label="Réussi" /> : <span className="mono">{idx + 1}.</span>}
+                      <span className="mono">{exId}</span>
                     </button>
                   );
                 })}
               </div>
             </div>
-            <button
-              type="button"
-              className="btn btn-secondary btn-sm"
-              onClick={() => setSessionFilterIds(null)}
-            >
-              Afficher les {exercises.length} exercices du catalogue
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => setSessionFilterIds(null)}>
+              Voir les {exercises.length} exercices
             </button>
           </div>
         </div>
       )}
 
-      {/* En-tete avec statistiques rapides */}
-      <div className="card" style={{ padding: '1rem 1.25rem' }}>
-        <div className="row-between" style={{ flexWrap: 'wrap', gap: '1rem' }}>
-          <div>
-            <h2 style={{ margin: 0, fontSize: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span>🐍</span>
-              <span>Editeur Python en Situation d Entretien</span>
-            </h2>
-            <div className="muted" style={{ fontSize: '0.85rem', marginTop: '0.2rem' }}>
-              70 exercices rigoureux en sandbox reelle avec validation par tests unitaires automatises.
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <div className="badge badge-neutral" style={{ fontSize: '0.85rem', padding: '0.35rem 0.65rem' }}>
-              <span className="muted" style={{ marginRight: '0.4rem' }}>Progression :</span>
-              <strong style={{ color: 'var(--accent-blue)' }}>
-                {Object.keys(passedMap).length} / {exercises.length} resolus
-              </strong>
-            </div>
-
-            {/* Chronometre */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <div className="badge badge-neutral mono" style={{ fontSize: '0.88rem', padding: '0.35rem 0.65rem' }}>
-                Chrono : {formatTimer(seconds)}
-              </div>
-              <button
-                type="button"
-                className={`btn btn-sm ${timerRunning ? 'btn-warning' : 'btn-secondary'}`}
-                onClick={() => setTimerRunning(!timerRunning)}
-              >
-                {timerRunning ? 'Pause' : 'Demarrer'}
-              </button>
-              <button
-                type="button"
-                className="btn btn-sm btn-secondary"
-                onClick={() => {
-                  setTimerRunning(false);
-                  setSeconds(0);
-                }}
-              >
-                Reset
-              </button>
-            </div>
-          </div>
+      <div className="row-between" style={{ alignItems: 'flex-end' }}>
+        <div style={{ minWidth: 0 }}>
+          <h2 style={{ margin: 0, fontSize: '1.2rem' }}>Atelier Python</h2>
+          <div className="muted small">70 exercices d'entretien, validés par des tests unitaires automatiques.</div>
+        </div>
+        <div className="cluster" role="group" aria-label="Chronomètre d'entretien">
+          <span className="badge badge-neutral mono" style={{ fontSize: '0.88rem', padding: '0.3rem 0.65rem' }}>
+            <Timer size={14} aria-hidden /> {formatTimer(seconds)}
+          </span>
+          <button type="button" className={`btn btn-sm ${timerRunning ? 'btn-warning' : 'btn-secondary'}`} onClick={() => setTimerRunning(!timerRunning)}>
+            {timerRunning ? <Pause size={16} aria-hidden /> : <Play size={16} aria-hidden />}
+            {timerRunning ? 'Pause' : 'Démarrer'}
+          </button>
+          <button
+            type="button"
+            className="btn btn-sm btn-ghost"
+            aria-label="Réinitialiser le chronomètre"
+            onClick={() => {
+              setTimerRunning(false);
+              setSeconds(0);
+            }}
+          >
+            <RotateCcw size={16} aria-hidden />
+          </button>
         </div>
       </div>
 
-      {/* Disposition principale : 2 colonnes */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(320px, 1fr) minmax(420px, 1.45fr)',
-          gap: '1rem',
-          alignItems: 'start',
-        }}
-      >
-        {/* Colonne de gauche : Catalogue & Enonce */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {/* Filtres & Recherche */}
-          <div className="card" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <input
-              type="text"
-              placeholder="Rechercher par ID (ex: py-001), titre, tag..."
-              value={searchTerm}
+      <details className="disclosure" open={filtersOpenAtStart}>
+        <summary>
+          <Search size={18} aria-hidden />
+          Filtrer les exercices
+          {(searchTerm || selectedCategory !== 'all' || selectedDifficulty !== 'all') && <span className="badge badge-info">actifs</span>}
+          <ChevronDown size={18} className="chevron" aria-hidden />
+        </summary>
+        <div className="disclosure-body">
+        <div className="cluster" style={{ gap: '0.75rem', alignItems: 'flex-end' }}>
+          <label className="field" style={{ flex: '1 1 200px', minWidth: 0 }}>
+            Rechercher
+            <span style={{ position: 'relative', display: 'block' }}>
+              <Search size={16} aria-hidden style={{ position: 'absolute', left: '0.7rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+              <input
+                type="search"
+                placeholder="py-001, titre, tag…"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSessionFilterIds(null);
+                  setSearchTerm(e.target.value);
+                }}
+                className="input"
+                style={{ paddingLeft: '2.1rem' }}
+              />
+            </span>
+          </label>
+          <label className="field" style={{ flex: '1 1 200px', minWidth: 0 }}>
+            Catégorie
+            <select
+              value={selectedCategory}
               onChange={(e) => {
                 setSessionFilterIds(null);
-                setSearchTerm(e.target.value);
+                setSelectedCategory(e.target.value);
               }}
-              className="input"
-              style={{
-                width: '100%',
-                padding: '0.5rem 0.75rem',
-                backgroundColor: 'var(--bg-secondary)',
-                border: '1px solid var(--border-color)',
-                borderRadius: 'var(--radius-sm)',
-                color: 'var(--text-primary)',
-              }}
-            />
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-              <div>
-                <label className="muted" style={{ display: 'block', fontSize: '0.75rem', marginBottom: '0.25rem' }}>
-                  Categorie :
-                </label>
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => {
+              className="select"
+            >
+              <option value="all">Toutes ({exercises.length})</option>
+              {Object.entries(PYTHON_CATEGORY_LABELS).map(([k, label]) => (
+                <option key={k} value={k}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="field" style={{ minWidth: 0 }}>
+            <span id="py-difficulty-label">Difficulté</span>
+            <div className="segmented" role="group" aria-labelledby="py-difficulty-label">
+              {([
+                ['all', 'Toutes'],
+                ['debutant', 'Débutant'],
+                ['intermediaire', 'Intermédiaire'],
+                ['avance', 'Avancé'],
+              ] as Array<[string, string]>).map(([id, label]) => (
+                <button
+                  key={id}
+                  type="button"
+                  className="segment"
+                  aria-pressed={selectedDifficulty === id}
+                  onClick={() => {
                     setSessionFilterIds(null);
-                    setSelectedCategory(e.target.value);
-                  }}
-                  className="select"
-                  style={{
-                    width: '100%',
-                    padding: '0.4rem 0.5rem',
-                    backgroundColor: 'var(--bg-secondary)',
-                    border: '1px solid var(--border-color)',
-                    borderRadius: 'var(--radius-sm)',
-                    color: 'var(--text-primary)',
-                    fontSize: '0.8rem',
+                    setSelectedDifficulty(id);
                   }}
                 >
-                  <option value="all">Toutes categories ({exercises.length})</option>
-                  {Object.entries(PYTHON_CATEGORY_LABELS).map(([k, label]) => (
-                    <option key={k} value={k}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="muted" style={{ display: 'block', fontSize: '0.75rem', marginBottom: '0.25rem' }}>
-                  Difficulte :
-                </label>
-                <select
-                  value={selectedDifficulty}
-                  onChange={(e) => {
-                    setSessionFilterIds(null);
-                    setSelectedDifficulty(e.target.value);
-                  }}
-                  className="select"
-                  style={{
-                    width: '100%',
-                    padding: '0.4rem 0.5rem',
-                    backgroundColor: 'var(--bg-secondary)',
-                    border: '1px solid var(--border-color)',
-                    borderRadius: 'var(--radius-sm)',
-                    color: 'var(--text-primary)',
-                    fontSize: '0.8rem',
-                  }}
-                >
-                  <option value="all">Toutes difficultes</option>
-                  <option value="debutant">Debutant</option>
-                  <option value="intermediaire">Intermediaire</option>
-                  <option value="avance">Avance</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Liste scrollable des exercices */}
-            <div className="item-list-container" style={{ maxHeight: '250px', overflowY: 'auto' }}>
-              {filteredExercises.length === 0 ? (
-                <div style={{ padding: '1rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.82rem' }}>
-                  Aucun exercice trouve
-                </div>
-              ) : (
-                filteredExercises.map((ex) => {
-                  const isSelected = currentExercise?.id === ex.id;
-                  const isPassed = passedMap[ex.id];
-                  return (
-                    <div
-                      key={ex.id}
-                      onClick={() => selectExercise(ex)}
-                      className={`item-card ${isSelected ? 'selected' : ''}`}
-                      style={{ cursor: 'pointer', padding: '0.6rem 0.8rem' }}
-                    >
-                      <div className="row-between" style={{ alignItems: 'flex-start', gap: '0.5rem' }}>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div
-                            style={{
-                              fontWeight: isSelected ? 600 : 500,
-                              color: isSelected ? 'var(--accent-blue)' : 'var(--text-primary)',
-                              fontSize: '0.85rem',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '0.35rem',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              whiteSpace: 'nowrap',
-                            }}
-                          >
-                            {isPassed && <span style={{ color: 'var(--accent-green)' }}>✓</span>}
-                            <span className="mono badge badge-neutral" style={{ fontSize: '0.7rem' }}>
-                              {ex.id}
-                            </span>
-                            <span>{ex.title}</span>
-                          </div>
-                          <div className="muted" style={{ fontSize: '0.72rem', marginTop: '0.2rem' }}>
-                            {PYTHON_CATEGORY_LABELS[ex.category] || ex.category}
-                          </div>
-                        </div>
-                        <div>{getDifficultyBadge(ex.difficulty)}</div>
-                      </div>
-                    </div>
-                  );
-                })
-              )}
+                  {label}
+                </button>
+              ))}
             </div>
           </div>
+        </div>
+        </div>
+      </details>
 
-          {/* Fiche d'enonce detaille */}
+      <div className="interview-grid">
+        {isMobile ? (
+          <details className="disclosure" open={listOpen} onToggle={(e) => setListOpen((e.currentTarget as HTMLDetailsElement).open)}>
+            <summary>
+              <span style={{ minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+                <span className="eyebrow">Exercice</span>
+                <span style={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {currentExercise ? `${currentExercise.id} : ${currentExercise.title}` : 'Choisir'}
+                </span>
+              </span>
+              <span className="badge badge-neutral">{filteredExercises.length}</span>
+              <ChevronDown size={18} className="chevron" aria-hidden />
+            </summary>
+            <div className="disclosure-body">{exerciseList}</div>
+          </details>
+        ) : (
+          <div className="card" style={{ position: 'sticky', top: 'calc(var(--topbar-height) + 1rem)' }}>{exerciseList}</div>
+        )}
+
+        <div ref={editorRef} className="stack" style={{ minWidth: 0, scrollMarginTop: '72px' }}>
           {currentExercise && (
-            <div className="card" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-start',
-                  gap: '0.75rem',
-                  borderBottom: '1px solid var(--border-color)',
-                  paddingBottom: '0.75rem',
-                }}
-              >
-                <div>
-                  <div
-                    style={{
-                      fontSize: '0.75rem',
-                      fontWeight: 600,
-                      color: 'var(--accent-blue)',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.05em',
-                    }}
-                  >
-                    {PYTHON_CATEGORY_LABELS[currentExercise.category] || currentExercise.category}
-                  </div>
-                  <h3 style={{ margin: '0.35rem 0 0 0', fontSize: '1.05rem', color: 'var(--text-primary)' }}>
+            <section className="card" aria-labelledby="py-ex-title">
+              <div className="row-between" style={{ alignItems: 'flex-start' }}>
+                <div style={{ minWidth: 0 }}>
+                  <div className="eyebrow">{PYTHON_CATEGORY_LABELS[currentExercise.category] || currentExercise.category}</div>
+                  <h3 id="py-ex-title" style={{ margin: '0.35rem 0 0', fontSize: '1.12rem' }}>
+                    <span className="mono muted" style={{ fontWeight: 500, marginRight: '0.4rem' }}>{currentExercise.id}</span>
                     {currentExercise.title}
                   </h3>
                 </div>
                 {getDifficultyBadge(currentExercise.difficulty)}
               </div>
-
-              <div>
-                <div
-                  className="muted"
-                  style={{
-                    fontSize: '0.75rem',
-                    fontWeight: 600,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    marginBottom: '0.4rem',
-                  }}
-                >
-                  Enonce du probleme
-                </div>
-                <div
-                  style={{
-                    fontSize: '0.88rem',
-                    color: 'var(--text-secondary)',
-                    lineHeight: 1.6,
-                    whiteSpace: 'pre-line',
-                  }}
-                >
-                  {currentExercise.description}
-                </div>
-              </div>
-
+              <p className="text-secondary" style={{ margin: '0.75rem 0 0', lineHeight: 1.6, whiteSpace: 'pre-line' }}>
+                {currentExercise.description}
+              </p>
               {currentExercise.tags && currentExercise.tags.length > 0 && (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '0.4rem',
-                    paddingTop: '0.6rem',
-                    borderTop: '1px solid var(--border-color)',
-                  }}
-                >
+                <div className="cluster" style={{ gap: '0.3rem', marginTop: '0.6rem' }}>
                   {currentExercise.tags.map((t) => (
-                    <span key={t} className="badge badge-neutral mono" style={{ fontSize: '0.72rem' }}>
+                    <span key={t} className="tag-badge">
                       #{t}
                     </span>
                   ))}
                 </div>
               )}
-
-              {/* Indices depliables */}
               {currentExercise.hints && currentExercise.hints.length > 0 && (
-                <div style={{ paddingTop: '0.6rem', borderTop: '1px solid var(--border-color)' }}>
+                <div style={{ marginTop: '0.85rem', paddingTop: '0.75rem', borderTop: '1px solid var(--border-color)' }}>
                   <div className="row-between" style={{ marginBottom: '0.5rem' }}>
-                    <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--accent-amber)' }}>
-                      💡 Indices d entretien ({revealedHints}/{currentExercise.hints.length})
+                    <span className="small" style={{ fontWeight: 650, display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                      <Lightbulb size={16} aria-hidden /> Indices d'entretien ({revealedHints}/{currentExercise.hints.length})
                     </span>
                     {revealedHints < currentExercise.hints.length && (
-                      <button
-                        type="button"
-                        onClick={() => setRevealedHints((h) => h + 1)}
-                        className="btn btn-sm btn-secondary"
-                        style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem' }}
-                      >
-                        Reveler un indice
+                      <button type="button" onClick={() => setRevealedHints((h) => h + 1)} className="btn btn-sm btn-secondary">
+                        Révéler un indice
                       </button>
                     )}
                   </div>
                   {revealedHints > 0 && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                    <div className="stack-sm">
                       {currentExercise.hints.slice(0, revealedHints).map((hint, idx) => (
-                        <div key={idx} className="callout callout-warning" style={{ fontSize: '0.82rem', padding: '0.6rem 0.8rem' }}>
+                        <div key={idx} className="callout callout-warning small">
                           <strong>Indice {idx + 1} :</strong> {hint}
                         </div>
                       ))}
@@ -587,32 +499,14 @@ export const PythonEditorView: React.FC<PythonEditorViewProps> = ({
                   )}
                 </div>
               )}
-            </div>
+            </section>
           )}
-        </div>
 
-        {/* Colonne de droite : Editeur de code, execution et debriefing */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-            {/* Barre d'outils de l'editeur */}
-            <div
-              style={{
-                backgroundColor: 'var(--bg-secondary)',
-                borderBottom: '1px solid var(--border-color)',
-                padding: '0.5rem 0.85rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                fontSize: '0.8rem',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <span className="mono" style={{ color: 'var(--accent-green)', fontWeight: 600 }}>
-                  solution.py
-                </span>
-                <span className="muted">|</span>
-                <span className="muted">Python 3 (Sandbox sous-processus 4s)</span>
-              </div>
+          <section className="card" style={{ padding: 0, overflow: 'hidden' }} aria-label="Éditeur Python">
+            <div className="row-between" style={{ backgroundColor: 'var(--bg-inset)', borderBottom: '1px solid var(--border-color)', padding: '0.5rem 0.85rem' }}>
+              <label htmlFor="py-editor" className="mono small" style={{ fontWeight: 650 }}>
+                solution.py <span className="muted" style={{ fontWeight: 400 }}>Python 3</span>
+              </label>
               <button
                 type="button"
                 onClick={() => {
@@ -621,189 +515,104 @@ export const PythonEditorView: React.FC<PythonEditorViewProps> = ({
                     setSandboxResult(null);
                   }
                 }}
-                className="btn btn-sm btn-secondary"
-                style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem' }}
+                className="btn btn-sm btn-ghost"
               >
-                Reinitialiser
+                <RotateCcw size={16} aria-hidden />
+                Code de départ
               </button>
             </div>
-
-            {/* Zone de code */}
             <textarea
+              id="py-editor"
               value={userCode}
               onChange={(e) => setUserCode(e.target.value)}
-              rows={16}
+              rows={isMobile ? 12 : 16}
               spellCheck={false}
+              autoCapitalize="off"
+              autoCorrect="off"
               className="code-editor-area"
-              style={{ border: 'none', borderRadius: 0, margin: 0, width: '100%', minHeight: '320px' }}
-              placeholder="# Saisis ta solution Python ici..."
+              style={{ border: 'none', borderRadius: 0, margin: 0, minHeight: isMobile ? '240px' : '320px', display: 'block' }}
+              placeholder="# Saisis ta solution Python ici"
             />
-
-            {/* Actions sous l'editeur */}
-            <div
-              style={{
-                padding: '0.75rem 1rem',
-                backgroundColor: 'var(--bg-secondary)',
-                borderTop: '1px solid var(--border-color)',
-                display: 'flex',
-                flexWrap: 'wrap',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '0.75rem',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
-                <button
-                  type="button"
-                  onClick={handleRunCode}
-                  disabled={running}
-                  className="btn btn-primary"
-                  style={{ fontSize: '0.85rem' }}
-                >
-                  {running ? 'Execution en cours...' : '▶ Executer les tests unitaires'}
+            <div className="row-between" style={{ padding: '0.75rem 1rem', backgroundColor: 'var(--bg-inset)', borderTop: '1px solid var(--border-color)' }}>
+              <div className="cluster">
+                <button type="button" onClick={handleRunCode} disabled={running} className="btn btn-primary">
+                  <Play size={16} aria-hidden />
+                  {running ? 'Exécution…' : 'Lancer les tests'}
                 </button>
-
                 {attemptCount > 0 && !solutionRevealed && (
-                  <button
-                    type="button"
-                    onClick={handleRevealSolution}
-                    disabled={revealing}
-                    className="btn btn-secondary"
-                    style={{ fontSize: '0.85rem', borderColor: 'var(--accent-amber)', color: 'var(--accent-amber)' }}
-                  >
-                    {revealing ? 'Chargement...' : '💡 Devoiler la solution optimale'}
+                  <button type="button" onClick={handleRevealSolution} disabled={revealing} className="btn btn-warning btn-sm">
+                    <Eye size={16} aria-hidden />
+                    {revealing ? 'Chargement…' : 'Voir la solution optimale'}
                   </button>
                 )}
               </div>
-
-              <div className="muted" style={{ fontSize: '0.8rem' }}>
-                Tentative(s) soumise(s) : <strong style={{ color: 'var(--text-primary)' }}>{attemptCount}</strong>
-              </div>
+              <span className="muted small">
+                Tentatives : <strong className="mono" style={{ color: 'var(--text-primary)' }}>{attemptCount}</strong>
+              </span>
             </div>
-          </div>
+          </section>
 
-          {/* Resultats d'execution & Tests unitaires */}
+          {notice && (
+            <div className="alert alert-warning small" role="status">
+              {notice}
+            </div>
+          )}
+
           {sandboxResult && (
-            <div className="card" style={{ padding: '1rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <div
-                className="row-between"
-                style={{
-                  borderBottom: '1px solid var(--border-color)',
-                  paddingBottom: '0.6rem',
-                  alignItems: 'center',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                  <span style={{ fontWeight: 600, fontSize: '0.88rem' }}>Resultat des tests :</span>
-                  {sandboxResult.success &&
-                  sandboxResult.passedAssertions &&
-                  sandboxResult.passedAssertions === sandboxResult.totalAssertions ? (
-                    <span className="badge badge-success" style={{ fontWeight: 600 }}>
-                      ✓ TOUS LES TESTS SONT VALIDES ({sandboxResult.passedAssertions}/{sandboxResult.totalAssertions})
-                    </span>
-                  ) : (
-                    <span className="badge badge-danger" style={{ fontWeight: 600 }}>
-                      ✗ ECHEC DES TESTS ({sandboxResult.passedAssertions || 0}/{sandboxResult.totalAssertions || 0})
-                    </span>
-                  )}
-                </div>
-                <div className="muted mono" style={{ fontSize: '0.78rem' }}>
-                  {sandboxResult.executionTimeMs} ms
-                </div>
+            <section className="card stack-sm" aria-label="Résultat des tests">
+              <div className="row-between">
+                <span className={`badge ${allPassed ? 'badge-success' : 'badge-danger'}`} style={{ fontSize: '0.85rem', padding: '0.3rem 0.7rem' }} role="status">
+                  {allPassed ? <CheckCircle2 size={16} aria-hidden /> : <XCircle size={16} aria-hidden />}
+                  {allPassed
+                    ? `Tous les tests passent (${sandboxResult.passedAssertions}/${sandboxResult.totalAssertions})`
+                    : `Tests en échec (${sandboxResult.passedAssertions || 0}/${sandboxResult.totalAssertions || 0})`}
+                </span>
+                <span className="muted mono small">{sandboxResult.executionTimeMs} ms</span>
               </div>
-
               {sandboxResult.error && (
-                <div className="callout callout-warning mono" style={{ fontSize: '0.82rem', whiteSpace: 'pre-wrap' }}>
+                <div className="callout callout-warning mono small" style={{ whiteSpace: 'pre-wrap' }}>
                   {sandboxResult.error}
                 </div>
               )}
-
               {sandboxResult.stderr && (
                 <div>
-                  <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--accent-red)', marginBottom: '0.3rem' }}>
-                    Sortie d erreur (stderr) :
+                  <div className="small" style={{ fontWeight: 650, color: 'var(--danger-fg)', marginBottom: '0.3rem' }}>
+                    Sortie d'erreur (stderr)
                   </div>
-                  <pre
-                    className="code-terminal-box"
-                    style={{
-                      borderColor: 'rgba(239, 68, 68, 0.4)',
-                      color: '#fca5a5',
-                      whiteSpace: 'pre-wrap',
-                      margin: 0,
-                    }}
-                  >
+                  <pre className="code-terminal-box" style={{ whiteSpace: 'pre-wrap', margin: 0, borderColor: 'var(--danger-border)' }} tabIndex={0}>
                     {sandboxResult.stderr}
                   </pre>
                 </div>
               )}
-
               {sandboxResult.stdout && (
                 <div>
-                  <div className="muted" style={{ fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem' }}>
-                    Sortie standard (stdout) :
+                  <div className="muted small" style={{ fontWeight: 650, marginBottom: '0.3rem' }}>
+                    Sortie standard (stdout)
                   </div>
-                  <pre className="code-terminal-box" style={{ whiteSpace: 'pre-wrap', margin: 0 }}>
+                  <pre className="code-terminal-box" style={{ whiteSpace: 'pre-wrap', margin: 0 }} tabIndex={0}>
                     {sandboxResult.stdout}
                   </pre>
                 </div>
               )}
-            </div>
+            </section>
           )}
 
-          {/* Solution et explications pedagogiques */}
           {solutionRevealed && revealedSolution && (
-            <div className="callout callout-success" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <div className="row-between" style={{ alignItems: 'center' }}>
-                <strong style={{ color: 'var(--accent-green)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <span>💡</span> Solution optimale recommandee en entretien
-                </strong>
-                <span className="badge badge-success" style={{ fontSize: '0.75rem' }}>Debloquee</span>
+            <section className="card stack-sm" aria-labelledby="py-solution-title" style={{ borderColor: 'var(--success-border)' }}>
+              <div className="row-between">
+                <h3 id="py-solution-title" style={{ margin: 0, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <Lightbulb size={18} aria-hidden /> Solution recommandée en entretien
+                </h3>
+                <span className="badge badge-success">Débloquée</span>
               </div>
-
-              <div>
-                <div
-                  className="muted"
-                  style={{
-                    fontSize: '0.75rem',
-                    fontWeight: 600,
-                    textTransform: 'uppercase',
-                    marginBottom: '0.3rem',
-                  }}
-                >
-                  Code optimal :
-                </div>
-                <pre className="code-terminal-box" style={{ color: '#86efac', whiteSpace: 'pre-wrap', margin: 0 }}>
-                  {revealedSolution.code}
-                </pre>
+              <pre className="code-terminal-box" style={{ whiteSpace: 'pre-wrap', margin: 0 }} tabIndex={0} aria-label="Code de la solution">
+                {revealedSolution.code}
+              </pre>
+              <div className="callout">
+                <strong className="small">Explication et complexité</strong>
+                <p style={{ margin: '0.35rem 0 0', lineHeight: 1.6 }}>{revealedSolution.explanation}</p>
               </div>
-
-              <div>
-                <div
-                  className="muted"
-                  style={{
-                    fontSize: '0.75rem',
-                    fontWeight: 600,
-                    textTransform: 'uppercase',
-                    marginBottom: '0.3rem',
-                  }}
-                >
-                  Explication conceptuelle & Complexite :
-                </div>
-                <div
-                  style={{
-                    fontSize: '0.88rem',
-                    color: 'var(--text-secondary)',
-                    lineHeight: 1.6,
-                    backgroundColor: 'rgba(11, 15, 25, 0.6)',
-                    padding: '0.75rem',
-                    borderRadius: 'var(--radius-sm)',
-                    border: '1px solid var(--border-color)',
-                  }}
-                >
-                  {revealedSolution.explanation}
-                </div>
-              </div>
-            </div>
+            </section>
           )}
         </div>
       </div>

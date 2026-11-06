@@ -38,7 +38,7 @@ Pré-requis : Node.js 22.3 ou plus récent, le projet à jour sur la branche `fe
 
 - **Nouveaux podcasts** : `npm run audios:upload` sur le PC qui a les fichiers. L'appli les affiche automatiquement en moins de 30 secondes, sans redéploiement.
 - **Modification du code** : `npm run cloud:deploy` (tes données en ligne sont conservées).
-- **Hors ligne** : dans Studio Podcasts, bouton « Hors ligne » sur un épisode, ou « Télécharger les épisodes affichés » (filtre par semaine conseillé, environ 6 épisodes). Sans réseau, l'appli affiche les dernières données consultées en lecture seule.
+- **Hors ligne** : dans Podcasts, ouvre le détail d'un épisode puis « Garder hors ligne », ou « Tout garder hors ligne » pour la liste affichée (filtre par semaine conseillé, environ 6 épisodes). Sans réseau, l'appli affiche les dernières données consultées en lecture seule.
 - **Une seule source de vérité** : coche tes tâches sur la version en ligne (même depuis le PC, dans le navigateur). L'appli locale reste un secours ; ses données ne se synchronisent pas toutes seules (passer par Export / Import).
 
 ## Sécurité

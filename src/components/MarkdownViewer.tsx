@@ -2,313 +2,328 @@ import React from 'react';
 
 interface MarkdownViewerProps {
   content: string;
+  /** Décalage des niveaux de titre : 1 signifie que « # » devient un h2 (le h1 est le titre de l'écran). */
+  headingOffset?: number;
 }
 
-export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ content }) => {
-  if (!content) return null;
+type Block =
+  | { kind: 'heading'; level: number; text: string }
+  | { kind: 'paragraph'; lines: string[] }
+  | { kind: 'list'; ordered: boolean; start: number; items: Array<{ text: string; children: string[] }> }
+  | { kind: 'quote'; tone: 'info' | 'tip' | 'warning'; lines: string[] }
+  | { kind: 'code'; lang: string; code: string }
+  | { kind: 'table'; header: string[]; rows: string[][] }
+  | { kind: 'hr' };
 
-  const lines = content.split('\n');
-  const elements: React.ReactNode[] = [];
-  let inCodeBlock = false;
-  let codeBlockContent: string[] = [];
-  let codeBlockLang = '';
-  let inTable = false;
-  let tableRows: string[][] = [];
+const UL_RE = /^(\s*)[-*+]\s+(.*)$/;
+const OL_RE = /^(\s*)(\d+)[.)]\s+(.*)$/;
+const TABLE_SEP_RE = /^\|?(\s*:?-{2,}:?\s*\|)+\s*:?-*:?\s*\|?$/;
 
-  const flushTable = (key: string) => {
-    if (tableRows.length === 0) return;
-    const header = tableRows[0];
-    const body = tableRows.slice(1);
-    elements.push(
-      <div key={key} style={{ overflowX: 'auto', margin: '1rem 0' }}>
-        <table className="table" style={{ width: '100%', fontSize: '0.88rem' }}>
-          <thead>
-            <tr>
-              {header.map((col, idx) => (
-                <th key={idx} style={{ padding: '0.5rem 0.75rem' }}>
-                  {col.trim()}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {body.map((row, rIdx) => (
-              <tr key={rIdx}>
-                {row.map((col, cIdx) => (
-                  <td key={cIdx} style={{ padding: '0.45rem 0.75rem' }}>
-                    {formatInline(col.trim())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-    tableRows = [];
-    inTable = false;
-  };
+function splitRow(line: string): string[] {
+  let t = line.trim();
+  if (t.startsWith('|')) t = t.slice(1);
+  if (t.endsWith('|')) t = t.slice(0, -1);
+  return t.split('|').map((c) => c.trim());
+}
 
-  const flushCodeBlock = (key: string) => {
-    elements.push(
-      <pre
-        key={key}
-        style={{
-          backgroundColor: '#090d16',
-          border: '1px solid var(--border-color)',
-          borderRadius: 'var(--radius-sm)',
-          padding: '0.85rem 1rem',
-          overflowX: 'auto',
-          fontSize: '0.85rem',
-          margin: '0.75rem 0',
-          color: '#e2e8f0',
-          fontFamily: 'Consolas, Monaco, "Courier New", monospace',
-        }}
-      >
-        <code>{codeBlockContent.join('\n')}</code>
-      </pre>
-    );
-    codeBlockContent = [];
-    inCodeBlock = false;
-  };
+function parse(content: string): Block[] {
+  const lines = content.replace(/\r\n?/g, '\n').split('\n');
+  const blocks: Block[] = [];
+  let i = 0;
 
-  for (let i = 0; i < lines.length; i++) {
+  while (i < lines.length) {
     const line = lines[i];
+    const trimmed = line.trim();
 
-    // Code blocks
-    if (line.trim().startsWith('```')) {
-      if (inCodeBlock) {
-        flushCodeBlock(`code-${i}`);
-      } else {
-        if (inTable) flushTable(`table-${i}`);
-        inCodeBlock = true;
-        codeBlockLang = line.trim().replace(/^```/, '');
+    if (!trimmed) {
+      i++;
+      continue;
+    }
+
+    // Bloc de code
+    if (trimmed.startsWith('```')) {
+      const lang = trimmed.slice(3).trim();
+      const code: string[] = [];
+      i++;
+      while (i < lines.length && !lines[i].trim().startsWith('```')) {
+        code.push(lines[i]);
+        i++;
       }
+      i++; // fermeture
+      blocks.push({ kind: 'code', lang, code: code.join('\n') });
       continue;
     }
 
-    if (inCodeBlock) {
-      codeBlockContent.push(line);
+    // Titre
+    const h = trimmed.match(/^(#{1,6})\s+(.*)$/);
+    if (h) {
+      blocks.push({ kind: 'heading', level: h[1].length, text: h[2].replace(/\s+#+\s*$/, '') });
+      i++;
       continue;
     }
 
-    // Tables
-    if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
-      // Ignore separator row like |---|---|
-      if (line.match(/^\|(?:\s*:?-+:?\s*\|)+$/)) {
-        continue;
+    // Séparateur
+    if (/^(-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
+      blocks.push({ kind: 'hr' });
+      i++;
+      continue;
+    }
+
+    // Tableau
+    if (trimmed.startsWith('|') && i + 1 < lines.length && TABLE_SEP_RE.test(lines[i + 1].trim())) {
+      const header = splitRow(trimmed);
+      const rows: string[][] = [];
+      i += 2;
+      while (i < lines.length && lines[i].trim().startsWith('|')) {
+        rows.push(splitRow(lines[i]));
+        i++;
       }
-      inTable = true;
-      const cols = line
-        .slice(1, -1)
-        .split('|')
-        .map((c) => c.trim());
-      tableRows.push(cols);
-      continue;
-    } else if (inTable) {
-      flushTable(`table-${i}`);
-    }
-
-    // Headers
-    if (line.startsWith('# ')) {
-      elements.push(
-        <h1
-          key={`h1-${i}`}
-          style={{
-            fontSize: '1.45rem',
-            margin: '1.25rem 0 0.75rem 0',
-            color: 'var(--text-primary)',
-            borderBottom: '1px solid var(--border-color)',
-            paddingBottom: '0.5rem',
-          }}
-        >
-          {line.replace('# ', '')}
-        </h1>
-      );
+      blocks.push({ kind: 'table', header, rows });
       continue;
     }
-    if (line.startsWith('## ')) {
-      elements.push(
-        <h2
-          key={`h2-${i}`}
-          style={{
-            fontSize: '1.2rem',
-            margin: '1.2rem 0 0.5rem 0',
-            color: 'var(--accent-blue)',
-          }}
-        >
-          {line.replace('## ', '')}
-        </h2>
-      );
-      continue;
-    }
-    if (line.startsWith('### ')) {
-      elements.push(
-        <h3
-          key={`h3-${i}`}
-          style={{
-            fontSize: '1.05rem',
-            margin: '0.9rem 0 0.4rem 0',
-            color: 'var(--text-secondary)',
-          }}
-        >
-          {line.replace('### ', '')}
-        </h3>
-      );
+    if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
+      // Tableau sans ligne de séparation : toutes les lignes en corps
+      const rows: string[][] = [];
+      while (i < lines.length && lines[i].trim().startsWith('|')) {
+        if (!TABLE_SEP_RE.test(lines[i].trim())) rows.push(splitRow(lines[i]));
+        i++;
+      }
+      blocks.push({ kind: 'table', header: rows[0] || [], rows: rows.slice(1) });
       continue;
     }
 
-    // Blockquotes & Alerts
-    if (line.startsWith('> ')) {
-      const q = line.replace('> ', '');
-      const isNote = q.includes('[!NOTE]');
-      const isTip = q.includes('[!TIP]');
-      const isWarn = q.includes('[!WARNING]') || q.includes('[!CAUTION]');
-      elements.push(
-        <div
-          key={`quote-${i}`}
-          style={{
-            borderLeft: `4px solid ${
-              isWarn ? 'var(--accent-red)' : isTip ? 'var(--accent-green)' : 'var(--accent-blue)'
-            }`,
-            backgroundColor: 'rgba(30, 41, 59, 0.4)',
-            padding: '0.5rem 0.85rem',
-            margin: '0.6rem 0',
-            borderRadius: '0 var(--radius-sm) var(--radius-sm) 0',
-            fontSize: '0.88rem',
-          }}
-        >
-          {formatInline(q.replace(/\[!(NOTE|TIP|WARNING|IMPORTANT|CAUTION)\]/, '').trim())}
-        </div>
-      );
+    // Citation et encadrés [!NOTE] / [!TIP] / [!WARNING]
+    if (trimmed.startsWith('>')) {
+      const quoteLines: string[] = [];
+      while (i < lines.length && lines[i].trim().startsWith('>')) {
+        quoteLines.push(lines[i].trim().replace(/^>\s?/, ''));
+        i++;
+      }
+      const joined = quoteLines.join(' ');
+      const tone: 'info' | 'tip' | 'warning' = /\[!(WARNING|CAUTION)\]/.test(joined)
+        ? 'warning'
+        : /\[!TIP\]/.test(joined)
+          ? 'tip'
+          : 'info';
+      const cleaned = quoteLines
+        .map((l) => l.replace(/\[!(NOTE|TIP|WARNING|IMPORTANT|CAUTION)\]/g, '').trim())
+        .filter((l, idx, arr) => l.length > 0 || (idx > 0 && idx < arr.length - 1));
+      blocks.push({ kind: 'quote', tone, lines: cleaned });
       continue;
     }
 
-    // Unordered lists
-    if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
-      const itemText = line.trim().replace(/^[-*]\s+/, '');
-      elements.push(
-        <div
-          key={`ul-${i}`}
-          style={{
-            display: 'flex',
-            gap: '0.5rem',
-            margin: '0.25rem 0 0.25rem 0.75rem',
-            fontSize: '0.9rem',
-          }}
-        >
-          <span style={{ color: 'var(--accent-blue)' }}>•</span>
-          <span>{formatInline(itemText)}</span>
-        </div>
-      );
+    // Listes (un niveau d'imbrication)
+    const ulm = line.match(UL_RE);
+    const olm = line.match(OL_RE);
+    if (ulm || olm) {
+      const ordered = Boolean(olm && !ulm);
+      const baseIndent = (ulm ? ulm[1] : olm![1]).length;
+      const start = olm && !ulm ? Number(olm[2]) : 1;
+      const items: Array<{ text: string; children: string[] }> = [];
+      while (i < lines.length) {
+        const l = lines[i];
+        if (!l.trim()) {
+          // une ligne vide suivie d'un nouvel élément garde la même liste
+          const nxt = lines[i + 1];
+          if (nxt && (UL_RE.test(nxt) || OL_RE.test(nxt))) {
+            i++;
+            continue;
+          }
+          break;
+        }
+        const u = l.match(UL_RE);
+        const o = l.match(OL_RE);
+        const m = u || o;
+        if (m) {
+          const indent = m[1].length;
+          const text = u ? u[2] : o![3];
+          if (indent > baseIndent && items.length > 0) {
+            items[items.length - 1].children.push(text);
+          } else {
+            if ((ordered && !o) || (!ordered && !u)) break;
+            items.push({ text, children: [] });
+          }
+          i++;
+          continue;
+        }
+        // ligne de continuation d'un élément
+        if (/^\s{2,}\S/.test(l) && items.length > 0) {
+          items[items.length - 1].text += ` ${l.trim()}`;
+          i++;
+          continue;
+        }
+        break;
+      }
+      blocks.push({ kind: 'list', ordered, start, items });
       continue;
     }
 
-    // Ordered lists
-    const olMatch = line.trim().match(/^(\d+)\.\s+(.*)$/);
-    if (olMatch) {
-      elements.push(
-        <div
-          key={`ol-${i}`}
-          style={{
-            display: 'flex',
-            gap: '0.5rem',
-            margin: '0.25rem 0 0.25rem 0.75rem',
-            fontSize: '0.9rem',
-          }}
-        >
-          <span className="mono" style={{ color: 'var(--accent-blue)', fontWeight: 600 }}>
-            {olMatch[1]}.
-          </span>
-          <span>{formatInline(olMatch[2])}</span>
-        </div>
-      );
-      continue;
+    // Paragraphe : lignes consécutives
+    const para: string[] = [];
+    while (i < lines.length) {
+      const l = lines[i];
+      const t = l.trim();
+      if (
+        !t ||
+        t.startsWith('```') ||
+        /^#{1,6}\s/.test(t) ||
+        t.startsWith('>') ||
+        t.startsWith('|') ||
+        UL_RE.test(l) ||
+        OL_RE.test(l) ||
+        /^(-{3,}|\*{3,}|_{3,})$/.test(t)
+      ) {
+        break;
+      }
+      para.push(t);
+      i++;
     }
-
-    // Empty lines
-    if (!line.trim()) {
-      continue;
-    }
-
-    // Regular paragraphs
-    elements.push(
-      <p
-        key={`p-${i}`}
-        style={{
-          margin: '0.5rem 0',
-          fontSize: '0.92rem',
-          lineHeight: '1.6',
-          color: 'var(--text-secondary)',
-        }}
-      >
-        {formatInline(line)}
-      </p>
-    );
+    blocks.push({ kind: 'paragraph', lines: para });
   }
 
-  if (inTable) flushTable('table-end');
-  if (inCodeBlock) flushCodeBlock('code-end');
+  return blocks;
+}
 
-  return <div className="markdown-body">{elements}</div>;
-};
+const INLINE_RE = /(\*\*[^*]+\*\*|__[^_]+__|`[^`]+`|\[[^\]]+\]\([^)\s]+\)|\*[^*\s][^*]*\*|_[^_\s][^_]*_)/g;
 
-function formatInline(text: string): React.ReactNode {
-  // Bold, inline code, links
+export function formatInline(text: string, keyPrefix = 'i'): React.ReactNode {
   const parts: React.ReactNode[] = [];
-  const regex = /(\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g;
   let lastIndex = 0;
   let match: RegExpExecArray | null;
+  const re = new RegExp(INLINE_RE.source, 'g');
 
-  while ((match = regex.exec(text)) !== null) {
-    if (match.index > lastIndex) {
-      parts.push(text.substring(lastIndex, match.index));
-    }
+  while ((match = re.exec(text)) !== null) {
+    if (match.index > lastIndex) parts.push(text.substring(lastIndex, match.index));
     const token = match[0];
-    if (token.startsWith('**') && token.endsWith('**')) {
-      parts.push(
-        <strong key={match.index} style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
-          {token.slice(2, -2)}
-        </strong>
-      );
-    } else if (token.startsWith('`') && token.endsWith('`')) {
-      parts.push(
-        <code
-          key={match.index}
-          style={{
-            backgroundColor: '#0f172a',
-            padding: '0.15rem 0.35rem',
-            borderRadius: '4px',
-            fontSize: '0.85em',
-            color: 'var(--accent-blue)',
-            border: '1px solid var(--border-color)',
-          }}
-        >
-          {token.slice(1, -1)}
-        </code>
-      );
-    } else if (token.startsWith('[') && token.includes('](')) {
-      const linkMatch = token.match(/\[([^\]]+)\]\(([^)]+)\)/);
-      if (linkMatch) {
+    const key = `${keyPrefix}-${match.index}`;
+    if ((token.startsWith('**') && token.endsWith('**')) || (token.startsWith('__') && token.endsWith('__'))) {
+      parts.push(<strong key={key}>{formatInline(token.slice(2, -2), key)}</strong>);
+    } else if (token.startsWith('`')) {
+      parts.push(<code key={key}>{token.slice(1, -1)}</code>);
+    } else if (token.startsWith('[')) {
+      const lm = token.match(/\[([^\]]+)\]\(([^)\s]+)\)/);
+      if (lm) {
         parts.push(
-          <a
-            key={match.index}
-            href={linkMatch[2]}
-            target="_blank"
-            rel="noreferrer"
-            style={{ color: 'var(--accent-blue)', textDecoration: 'underline' }}
-          >
-            {linkMatch[1]}
+          <a key={key} href={lm[2]} target="_blank" rel="noopener noreferrer">
+            {lm[1]}
           </a>
         );
       }
+    } else if (token.startsWith('*') || token.startsWith('_')) {
+      // évite de prendre un identifiant snake_case pour de l'italique
+      const prev = text[match.index - 1];
+      if (token.startsWith('_') && prev && /\w/.test(prev)) {
+        parts.push(token);
+      } else {
+        parts.push(<em key={key}>{token.slice(1, -1)}</em>);
+      }
     }
-    lastIndex = regex.lastIndex;
+    lastIndex = re.lastIndex;
   }
-
-  if (lastIndex < text.length) {
-    parts.push(text.substring(lastIndex));
-  }
-
-  return parts.length > 0 ? parts : text;
+  if (lastIndex < text.length) parts.push(text.substring(lastIndex));
+  return parts.length === 1 ? parts[0] : parts;
 }
+
+export const MarkdownViewer: React.FC<MarkdownViewerProps> = ({ content, headingOffset = 1 }) => {
+  if (!content) return null;
+  const blocks = parse(content);
+
+  return (
+    <div className="markdown-view">
+      {blocks.map((b, idx) => {
+        const key = `b-${idx}`;
+        switch (b.kind) {
+          case 'heading': {
+            const level = Math.min(6, b.level + headingOffset);
+            const Tag = `h${level}` as keyof React.JSX.IntrinsicElements;
+            return (
+              <Tag key={key} className={`md-h${Math.min(4, b.level)}`}>
+                {formatInline(b.text, key)}
+              </Tag>
+            );
+          }
+          case 'paragraph':
+            return (
+              <p key={key}>
+                {b.lines.map((l, li) => (
+                  <React.Fragment key={li}>
+                    {li > 0 && <br />}
+                    {formatInline(l, `${key}-${li}`)}
+                  </React.Fragment>
+                ))}
+              </p>
+            );
+          case 'list': {
+            const items = b.items.map((it, ii) => (
+              <li key={ii}>
+                {formatInline(it.text, `${key}-${ii}`)}
+                {it.children.length > 0 && (
+                  <ul>
+                    {it.children.map((c, ci) => (
+                      <li key={ci}>{formatInline(c, `${key}-${ii}-${ci}`)}</li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ));
+            return b.ordered ? (
+              <ol key={key} start={b.start !== 1 ? b.start : undefined}>
+                {items}
+              </ol>
+            ) : (
+              <ul key={key}>{items}</ul>
+            );
+          }
+          case 'quote':
+            return (
+              <blockquote key={key} className={b.tone === 'warning' ? 'md-warning' : b.tone === 'tip' ? 'md-tip' : undefined}>
+                {b.lines.map((l, li) => (
+                  <p key={li}>{formatInline(l, `${key}-${li}`)}</p>
+                ))}
+              </blockquote>
+            );
+          case 'code':
+            return (
+              <div key={key} className="md-code">
+                {b.lang && <div className="md-code-lang">{b.lang}</div>}
+                <pre tabIndex={0} aria-label={b.lang ? `Code ${b.lang}` : 'Bloc de code'}>
+                  <code>{b.code}</code>
+                </pre>
+              </div>
+            );
+          case 'table':
+            return (
+              <div key={key} className="md-table table-scroll" tabIndex={0} role="region" aria-label="Tableau">
+                <table>
+                  {b.header.length > 0 && (
+                    <thead>
+                      <tr>
+                        {b.header.map((c, ci) => (
+                          <th key={ci} scope="col">
+                            {formatInline(c, `${key}-h${ci}`)}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                  )}
+                  <tbody>
+                    {b.rows.map((r, ri) => (
+                      <tr key={ri}>
+                        {r.map((c, ci) => (
+                          <td key={ci}>{formatInline(c, `${key}-${ri}-${ci}`)}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            );
+          case 'hr':
+            return <hr key={key} />;
+          default:
+            return null;
+        }
+      })}
+    </div>
+  );
+};

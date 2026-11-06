@@ -10,12 +10,16 @@ import {
 } from '../apiClient';
 import { CertCode } from '../domain/types';
 import { MarkdownViewer } from './MarkdownViewer';
+import { DocBrowser } from './DocBrowser';
+import { ArrowLeft, ArrowRight, Download, Flag } from 'lucide-react';
 import { getEffectiveTodayIso } from '../domain/dates';
 
 interface CertificationsViewProps {
   state: AppStateResponse;
   onRefreshState: (nextState: AppStateResponse) => void;
   initialCertCode?: CertCode;
+  /** Certification imposée par l'écran Cours : le sélecteur interne est masqué. */
+  lockedCertCode?: CertCode;
   initialSubTab?: SubTab;
   navigationNonce?: number;
 }
@@ -142,11 +146,28 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
   state,
   onRefreshState,
   initialCertCode,
+  lockedCertCode,
   initialSubTab,
   navigationNonce,
 }) => {
   // Navigation globale
-  const [selectedCert, setSelectedCert] = useState<CertCode>(initialCertCode || 'CLF-C02');
+  const [selectedCert, setSelectedCert] = useState<CertCode>(lockedCertCode || initialCertCode || 'CLF-C02');
+  const [toast, setToast] = useState<string>('');
+
+  useEffect(() => {
+    if (lockedCertCode) {
+      setSelectedCert(lockedCertCode);
+      setExamActive(false);
+      setTrainingActive(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lockedCertCode]);
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = window.setTimeout(() => setToast(''), 3500);
+    return () => window.clearTimeout(t);
+  }, [toast]);
   const [activeTab, setActiveTab] = useState<SubTab>(initialSubTab || 'synthese');
 
   useEffect(() => {
@@ -160,6 +181,9 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
 
   // Donnees chargees via API
   const [chaptersList, setChaptersList] = useState<CertChapterSummary[]>([]);
+  // Certification à laquelle appartiennent les listes chargées (évite de demander
+  // le chapitre d'une autre certification pendant un changement d'onglet)
+  const [listsCert, setListsCert] = useState<CertCode | null>(null);
   const [selectedChapterId, setSelectedChapterId] = useState<string>('');
   const [chapterDetail, setChapterDetail] = useState<CertChapterDetail | null>(null);
   const [chapterFilter, setChapterFilter] = useState<string>('');
@@ -216,23 +240,19 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
     let isMounted = true;
     const certParam = selectedCert.toLowerCase();
 
-    apiClient.fetchCertificationChapters(certParam).then((res) => {
-      if (isMounted) {
-        setChaptersList(res);
-        if (res.length > 0) {
-          setSelectedChapterId(res[0].id);
-        }
+    setListsCert(null);
+    setChapterDetail(null);
+    setFicheDetail(null);
+    Promise.all([apiClient.fetchCertificationChapters(certParam), apiClient.fetchCertificationFiches(certParam)]).then(
+      ([chapters, fiches]) => {
+        if (!isMounted) return;
+        setChaptersList(chapters);
+        setSelectedChapterId(chapters.length > 0 ? chapters[0].id : '');
+        setFichesList(fiches);
+        setSelectedFicheId(fiches.length > 0 ? fiches[0].id : '');
+        setListsCert(selectedCert);
       }
-    });
-
-    apiClient.fetchCertificationFiches(certParam).then((res) => {
-      if (isMounted) {
-        setFichesList(res);
-        if (res.length > 0) {
-          setSelectedFicheId(res[0].id);
-        }
-      }
-    });
+    );
 
     setLoadingQuestions(true);
     apiClient.fetchCertificationQuestions(certParam).then((res) => {
@@ -249,7 +269,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
 
   // Chargement du detail du chapitre selectionne
   useEffect(() => {
-    if (!selectedChapterId) return;
+    if (!selectedChapterId || listsCert !== selectedCert) return;
     let isMounted = true;
     apiClient
       .fetchCertificationChapterContent(selectedCert.toLowerCase(), selectedChapterId)
@@ -259,11 +279,11 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [selectedCert, selectedChapterId]);
+  }, [selectedCert, selectedChapterId, listsCert]);
 
   // Chargement du detail de la fiche selectionnee
   useEffect(() => {
-    if (!selectedFicheId) return;
+    if (!selectedFicheId || listsCert !== selectedCert) return;
     let isMounted = true;
     apiClient
       .fetchCertificationFicheContent(selectedCert.toLowerCase(), selectedFicheId)
@@ -273,7 +293,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [selectedCert, selectedFicheId]);
+  }, [selectedCert, selectedFicheId, listsCert]);
 
   // Chronometre Examen Blanc
   useEffect(() => {
@@ -433,7 +453,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
       action_to_review: q.course_recommendation || 'Revoir la fiche de chapitre correspondante',
     });
     onRefreshState(nextState);
-    alert(`Question ajoutée avec succès au Journal des erreurs !`);
+    setToast('Question ajoutée au journal des erreurs.');
   };
 
   // Creer une flashcard en un clic depuis une question
@@ -447,7 +467,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
       source_url: q.source_doc,
     });
     onRefreshState(nextState);
-    alert(`Flashcard SM-2 créée avec succès !`);
+    setToast('Carte de révision créée.');
   };
 
   // Gestion formulaire manuel examen
@@ -497,95 +517,60 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
 
   return (
     <div data-testid="certifications-view">
-      {/* Barre de selection de la certification */}
-      <div
-        className="card"
-        style={{
-          marginBottom: '1rem',
-          padding: '0.75rem 1rem',
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '0.75rem',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>Certification :</span>
-          {(['CLF-C02', 'DEA-C01', 'DBT'] as CertCode[]).map((code) => {
-            const isSelected = selectedCert === code;
-            return (
-              <button
-                key={code}
-                type="button"
-                className={`btn btn-sm ${isSelected ? 'btn-primary' : 'btn-secondary'}`}
-                style={{ fontWeight: isSelected ? 700 : 500 }}
-                onClick={() => {
-                  setSelectedCert(code);
-                  setExamActive(false);
-                  setTrainingActive(false);
-                }}
-              >
-                {code}
-              </button>
-            );
-          })}
+      {toast && (
+        <div className="alert alert-success" role="status" style={{ position: 'sticky', top: 'calc(var(--topbar-height) + 0.5rem)', zIndex: 30, marginBottom: '0.75rem' }}>
+          {toast}
         </div>
-        <div className="muted" style={{ fontSize: '0.85rem' }}>
-          <strong>{currentSpec.name}</strong> ({currentSpec.durationQuestions})
+      )}
+
+      {!lockedCertCode && (
+        <div className="segmented" role="group" aria-label="Certification" style={{ marginBottom: '0.75rem' }}>
+          {(['CLF-C02', 'DBT', 'DEA-C01'] as CertCode[]).map((code) => (
+            <button
+              key={code}
+              type="button"
+              className="segment"
+              aria-pressed={selectedCert === code}
+              onClick={() => {
+                setSelectedCert(code);
+                setExamActive(false);
+                setTrainingActive(false);
+              }}
+            >
+              {code === 'DBT' ? 'dbt' : code}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div className="row-between" style={{ marginBottom: '0.75rem', alignItems: 'flex-end' }}>
+        <div style={{ minWidth: 0 }}>
+          <h2 style={{ margin: 0, fontSize: '1.2rem' }}>{currentSpec.name}</h2>
+          <div className="muted small">{currentSpec.durationQuestions}, seuil {currentSpec.officialPassScore}</div>
         </div>
       </div>
 
-      {/* Barre des 5 sous-onglets */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '0.4rem',
-          borderBottom: '1px solid var(--border-color)',
-          marginBottom: '1rem',
-          paddingBottom: '0.4rem',
-          overflowX: 'auto',
-        }}
-      >
-        <button
-          type="button"
-          className={`btn btn-sm ${activeTab === 'synthese' ? 'btn-primary' : 'btn-secondary'}`}
-          onClick={() => setActiveTab('synthese')}
-        >
-          Vue d'ensemble & Suivi
-        </button>
-        <button
-          type="button"
-          className={`btn btn-sm ${activeTab === 'chapitres' ? 'btn-primary' : 'btn-secondary'}`}
-          onClick={() => setActiveTab('chapitres')}
-        >
-          Fiches de Chapitres ({chaptersList.length})
-        </button>
-        <button
-          type="button"
-          className={`btn btn-sm ${activeTab === 'fiches' ? 'btn-primary' : 'btn-secondary'}`}
-          onClick={() => setActiveTab('fiches')}
-        >
-          Fiches Express Domaines ({fichesList.length})
-        </button>
-        <button
-          type="button"
-          className={`btn btn-sm ${activeTab === 'banque' ? 'btn-primary' : 'btn-secondary'}`}
-          onClick={() => setActiveTab('banque')}
-        >
-          Banque & Entraînement ({questionsBank.length} questions)
-        </button>
-        <button
-          type="button"
-          className={`btn btn-sm ${activeTab === 'examen' ? 'btn-primary' : 'btn-secondary'}`}
-          onClick={() => setActiveTab('examen')}
-          style={{
-            backgroundColor: activeTab === 'examen' ? 'var(--accent-purple)' : undefined,
-            borderColor: activeTab === 'examen' ? 'var(--accent-purple)' : undefined,
-          }}
-        >
-          Simulation Examen Blanc (65 questions)
-        </button>
+      <div className="segmented" role="tablist" aria-label="Sections de la certification" style={{ marginBottom: '1rem' }}>
+        {([
+          ['synthese', 'Suivi', ''],
+          ['chapitres', 'Chapitres', String(chaptersList.length)],
+          ['fiches', 'Fiches express', String(fichesList.length)],
+          ['banque', 'Banque', String(questionsBank.length)],
+          ['examen', 'Examen blanc', '65 q.'],
+        ] as Array<[SubTab, string, string]>).map(([id, label, count]) => (
+          <button
+            key={id}
+            type="button"
+            role="tab"
+            aria-selected={activeTab === id}
+            className="segment"
+            data-testid={`cert-subtab-${id}`}
+            onClick={() => setActiveTab(id)}
+          >
+            {label}
+            {count && <span className="segment-count">{count}</span>}
+          </button>
+        ))}
       </div>
 
       {/* SOUS-ONGLET 1 : SYNTHESE & SUIVI */}
@@ -593,7 +578,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
         <div>
           {/* Les 3 cartes de certification */}
           <div className="grid-3" style={{ gap: '0.85rem', marginBottom: '1rem' }}>
-            {(['CLF-C02', 'DEA-C01', 'DBT'] as CertCode[]).map((code) => {
+            {(lockedCertCode ? [lockedCertCode] : (['CLF-C02', 'DEA-C01', 'DBT'] as CertCode[])).map((code) => {
               const spec = OFFICIAL_CERT_SPECS[code];
               const readiness = state.readiness[code];
               const prog = state.progress.certifications[code];
@@ -665,7 +650,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
               <h3 style={{ marginTop: 0 }}>Saisir un résultat d'examen blanc externe</h3>
               <form onSubmit={handleAddMockExam} data-testid="mock-exam-form">
                 <div className="grid-3" style={{ gap: '0.6rem', marginBottom: '0.6rem' }}>
-                  <label>
+                  {!lockedCertCode && (<label>
                     Certification :
                     <select
                       data-testid="mock-exam-cert-select"
@@ -677,7 +662,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                       <option value="DEA-C01">AWS DEA-C01</option>
                       <option value="DBT">dbt Analytics</option>
                     </select>
-                  </label>
+                  </label>)}
                   <label>
                     Date de passage :
                     <input
@@ -788,7 +773,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                           <td>
                             <div>{m.source}</div>
                             {m.notes && (
-                              <div className="muted" style={{ fontSize: '0.76rem' }}>
+                              <div className="muted" style={{ fontSize: '0.75rem' }}>
                                 {m.notes}
                               </div>
                             )}
@@ -954,143 +939,64 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
 
       {/* SOUS-ONGLET 2 : FICHES DE CHAPITRES */}
       {activeTab === 'chapitres' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: '1rem' }}>
-          {/* Liste des chapitres */}
-          <div className="card" style={{ height: 'fit-content', maxHeight: '80vh', display: 'flex', flexDirection: 'column' }}>
-            <h3 style={{ marginTop: 0, marginBottom: '0.5rem' }}>
-              Chapitres {selectedCert} ({chaptersList.length})
-            </h3>
-            <input
-              type="text"
-              placeholder="Rechercher un chapitre..."
-              value={chapterFilter}
-              onChange={(e) => setChapterFilter(e.target.value)}
-              style={{ width: '100%', marginBottom: '0.75rem' }}
-            />
-            <div style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-              {filteredChapters.map((chap) => {
-                const isSelected = selectedChapterId === chap.id;
-                return (
-                  <button
-                    key={chap.id}
-                    type="button"
-                    onClick={() => setSelectedChapterId(chap.id)}
-                    style={{
-                      textAlign: 'left',
-                      padding: '0.55rem 0.75rem',
-                      borderRadius: 'var(--radius-sm)',
-                      border: `1px solid ${isSelected ? 'var(--accent-blue)' : 'var(--border-color)'}`,
-                      backgroundColor: isSelected ? 'var(--bg-card-hover)' : 'transparent',
-                      color: isSelected ? 'var(--accent-blue)' : 'var(--text-secondary)',
-                      cursor: 'pointer',
-                      fontSize: '0.84rem',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '0.2rem',
-                    }}
-                  >
-                    <div style={{ fontWeight: isSelected ? 600 : 400 }}>{chap.title}</div>
-                    <div className="muted" style={{ fontSize: '0.75rem' }}>
-                      {chap.wordsCount} mots | {chap.filename}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Affichage du contenu du chapitre */}
-          <div className="card" style={{ maxHeight: '80vh', overflowY: 'auto' }}>
-            {chapterDetail ? (
-              <div>
-                <div className="row-between" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
-                  <div>
-                    <span className="badge badge-info">{selectedCert}</span>
-                    <span className="muted" style={{ marginLeft: '0.5rem', fontSize: '0.82rem' }}>
-                      {chapterDetail.wordsCount} mots (dense, synthèse officielle)
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => downloadMarkdownFile(chapterDetail.filename, chapterDetail.content)}
-                  >
-                    Télécharger la fiche (.md)
-                  </button>
-                </div>
-                <MarkdownViewer content={chapterDetail.content} />
+        <DocBrowser
+          listLabel={`Chapitres ${selectedCert === 'DBT' ? 'dbt' : selectedCert}`}
+          items={filteredChapters.map((c) => ({ id: c.id, title: c.title, meta: `${c.wordsCount} mots` }))}
+          selectedId={selectedChapterId}
+          onSelect={setSelectedChapterId}
+          filterValue={chapterFilter}
+          onFilterChange={setChapterFilter}
+          filterPlaceholder="Rechercher un chapitre"
+        >
+          {chapterDetail ? (
+            <div>
+              <div className="row-between" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.6rem', marginBottom: '1rem' }}>
+                <span className="muted small">{chapterDetail.wordsCount} mots, synthèse dense</span>
+                <button
+                  type="button"
+                  className="btn btn-ghost btn-sm"
+                  onClick={() => downloadMarkdownFile(chapterDetail.filename, chapterDetail.content)}
+                >
+                  <Download size={16} aria-hidden />
+                  Télécharger (.md)
+                </button>
               </div>
-            ) : (
-              <p className="muted">Sélectionnez un chapitre dans la liste de gauche pour afficher son contenu.</p>
-            )}
-          </div>
-        </div>
+              <MarkdownViewer content={chapterDetail.content} headingOffset={2} />
+            </div>
+          ) : (
+            <p className="muted">Choisis un chapitre pour l'afficher.</p>
+          )}
+        </DocBrowser>
       )}
 
       {/* SOUS-ONGLET 3 : FICHES EXPRESS PAR DOMAINE */}
       {activeTab === 'fiches' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '1rem' }}>
-          {/* Liste des fiches express */}
-          <div className="card" style={{ height: 'fit-content' }}>
-            <h3 style={{ marginTop: 0, marginBottom: '0.5rem' }}>
-              Fiches Express {selectedCert}
-            </h3>
-            <p className="muted" style={{ fontSize: '0.8rem', marginBottom: '0.75rem' }}>
-              Synthèse ultra-rapide par domaine : 10 à 15 points clés, métriques, limites et règles d'or.
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              {fichesList.map((fiche) => {
-                const isSelected = selectedFicheId === fiche.id;
-                return (
-                  <button
-                    key={fiche.id}
-                    type="button"
-                    onClick={() => setSelectedFicheId(fiche.id)}
-                    style={{
-                      textAlign: 'left',
-                      padding: '0.55rem 0.75rem',
-                      borderRadius: 'var(--radius-sm)',
-                      border: `1px solid ${isSelected ? 'var(--accent-blue)' : 'var(--border-color)'}`,
-                      backgroundColor: isSelected ? 'var(--bg-card-hover)' : 'transparent',
-                      color: isSelected ? 'var(--accent-blue)' : 'var(--text-secondary)',
-                      cursor: 'pointer',
-                      fontSize: '0.84rem',
-                    }}
-                  >
-                    <div style={{ fontWeight: isSelected ? 600 : 400 }}>{fiche.title}</div>
-                    <div className="muted" style={{ fontSize: '0.75rem' }}>{fiche.wordsCount} mots</div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Contenu de la fiche express */}
-          <div className="card" style={{ maxHeight: '80vh', overflowY: 'auto' }}>
-            {ficheDetail ? (
-              <div>
-                <div className="row-between" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
-                  <div>
-                    <span className="badge badge-info">{selectedCert}</span>
-                    <span className="muted" style={{ marginLeft: '0.5rem', fontSize: '0.82rem' }}>
-                      Fiche Express Domaine ({ficheDetail.wordsCount} mots)
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => downloadMarkdownFile(ficheDetail.filename, ficheDetail.content)}
-                  >
-                    Exporter la fiche (.md)
-                  </button>
-                </div>
-                <MarkdownViewer content={ficheDetail.content} />
+        <DocBrowser
+          listLabel={`Fiches express ${selectedCert === 'DBT' ? 'dbt' : selectedCert}`}
+          items={fichesList.map((f) => ({ id: f.id, title: f.title, meta: `${f.wordsCount} mots` }))}
+          selectedId={selectedFicheId}
+          onSelect={setSelectedFicheId}
+          intro={<p className="muted small" style={{ margin: 0 }}>Synthèse rapide par domaine : 10 à 15 points clés, métriques, limites et règles d'or.</p>}
+        >
+          {ficheDetail ? (
+            <div>
+              <div className="row-between" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.6rem', marginBottom: '1rem' }}>
+                <span className="muted small">Fiche express, {ficheDetail.wordsCount} mots</span>
+                <button
+                  type="button"
+                  className="btn btn-ghost btn-sm"
+                  onClick={() => downloadMarkdownFile(ficheDetail.filename, ficheDetail.content)}
+                >
+                  <Download size={16} aria-hidden />
+                  Exporter (.md)
+                </button>
               </div>
-            ) : (
-              <p className="muted">Sélectionnez une fiche express pour afficher les points clés du domaine.</p>
-            )}
-          </div>
-        </div>
+              <MarkdownViewer content={ficheDetail.content} headingOffset={2} />
+            </div>
+          ) : (
+            <p className="muted">Choisis une fiche pour afficher les points clés du domaine.</p>
+          )}
+        </DocBrowser>
       )}
 
       {/* SOUS-ONGLET 4 : BANQUE DE QUESTIONS ET ENTRAINEMENT LIBRE */}
@@ -1124,7 +1030,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                       borderRadius: 'var(--radius-sm)',
                       padding: '1rem',
                       marginBottom: '1rem',
-                      backgroundColor: 'rgba(15, 23, 42, 0.5)',
+                      backgroundColor: 'var(--bg-inset)',
                     }}
                   >
                     <div className="row-between" style={{ marginBottom: '0.5rem' }}>
@@ -1155,17 +1061,19 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                         if (showExplanation) {
                           if (letter === q.correct_answer) {
                             optionStyle.border = '1px solid var(--accent-green)';
-                            optionStyle.backgroundColor = 'rgba(34, 197, 94, 0.15)';
+                            optionStyle.backgroundColor = 'var(--success-bg)';
                           } else if (isChosen && !isCorrect) {
                             optionStyle.border = '1px solid var(--accent-red)';
-                            optionStyle.backgroundColor = 'rgba(239, 68, 68, 0.15)';
+                            optionStyle.backgroundColor = 'var(--danger-bg)';
                           }
                         }
 
                         return (
-                          <div
+                          <button
+                            type="button"
                             key={letter}
-                            style={optionStyle}
+                            aria-pressed={isChosen}
+                            style={{ ...optionStyle, width: '100%', textAlign: 'left', font: 'inherit', color: 'var(--text-primary)', minHeight: '44px' }}
                             onClick={() => {
                               if (!trainingSubmitted) {
                                 setTrainingAnswers({ ...trainingAnswers, [q.id]: letter });
@@ -1176,7 +1084,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                               [{letter}]
                             </span>
                             <span>{text}</span>
-                          </div>
+                          </button>
                         );
                       })}
                     </div>
@@ -1184,7 +1092,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                     {showExplanation && (
                       <div
                         style={{
-                          backgroundColor: '#090d16',
+                          backgroundColor: 'var(--code-bg)',
                           border: `1px solid ${isCorrect ? 'var(--accent-green)' : 'var(--accent-red)'}`,
                           borderRadius: 'var(--radius-sm)',
                           padding: '0.85rem',
@@ -1200,7 +1108,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                             <strong>Recommandation cours :</strong> {q.course_recommendation}
                           </div>
                         )}
-                        <div className="muted" style={{ fontSize: '0.76rem', marginTop: '0.4rem' }}>
+                        <div className="muted" style={{ fontSize: '0.75rem', marginTop: '0.4rem' }}>
                           Source officielle : <a href={q.source_doc} target="_blank" rel="noreferrer" style={{ color: 'var(--accent-blue)' }}>{q.source_doc}</a> ({q.doc_date})
                         </div>
 
@@ -1336,7 +1244,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                   <div key={q.id} className="card" style={{ padding: '0.85rem 1rem' }}>
                     <div className="row-between" style={{ marginBottom: '0.35rem' }}>
                       <span className="mono badge badge-info">{q.id}</span>
-                      <span className="muted" style={{ fontSize: '0.78rem' }}>
+                      <span className="muted" style={{ fontSize: '0.75rem' }}>
                         {q.domain} | Topic : {q.topic_id} | Difficulté : {q.difficulty}
                       </span>
                     </div>
@@ -1352,7 +1260,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                             padding: '0.35rem 0.5rem',
                             border: `1px solid ${k === q.correct_answer ? 'var(--accent-green)' : 'var(--border-color)'}`,
                             borderRadius: 'var(--radius-sm)',
-                            backgroundColor: k === q.correct_answer ? 'rgba(34, 197, 94, 0.1)' : 'transparent',
+                            backgroundColor: k === q.correct_answer ? 'var(--success-bg)' : 'transparent',
                           }}
                         >
                           <strong className="mono">[{k}]</strong> {v}
@@ -1363,7 +1271,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                       <summary style={{ cursor: 'pointer', color: 'var(--accent-blue)', fontWeight: 500 }}>
                         Afficher l'explication complète et les réfutations
                       </summary>
-                      <div style={{ marginTop: '0.5rem', padding: '0.6rem', backgroundColor: '#090d16', borderRadius: 'var(--radius-sm)' }}>
+                      <div style={{ marginTop: '0.5rem', padding: '0.6rem', backgroundColor: 'var(--code-bg)', borderRadius: 'var(--radius-sm)' }}>
                         <div style={{ whiteSpace: 'pre-line' }}>{q.explanation}</div>
                         {q.course_recommendation && (
                           <div style={{ color: 'var(--accent-amber)', marginTop: '0.4rem', fontSize: '0.8rem' }}>
@@ -1409,7 +1317,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
         <div>
           {!examActive ? (
             <div className="card" style={{ maxWidth: '800px', margin: '0 auto' }}>
-              <h2 style={{ marginTop: 0 }}>Simulation d'Examen Blanc Officiel : {currentSpec.name}</h2>
+              <h2 style={{ marginTop: 0 }}>Examen blanc : {currentSpec.name}</h2>
               <div className="alert alert-info" style={{ marginBottom: '1.25rem' }}>
                 <div><strong>Conditions réelles de passage :</strong></div>
                 <div>• Format : 65 questions tirées au sort respectant les quotas officiels de chaque domaine.</div>
@@ -1453,9 +1361,14 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                 style={{
                   marginBottom: '1rem',
                   display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '0.75rem',
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   backgroundColor: 'var(--bg-secondary)',
+                  position: 'sticky',
+                  top: 'calc(var(--topbar-height) + 0.5rem)',
+                  zIndex: 20,
                 }}
               >
                 <div>
@@ -1464,7 +1377,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                     Question {examCurrentIndex + 1} / {examQuestions.length}
                   </span>
                   <span className="muted" style={{ marginLeft: '0.75rem', fontSize: '0.85rem' }}>
-                    ({Object.keys(examAnswers).length} répondue(s) sur {examQuestions.length})
+                    {Object.keys(examAnswers).length} réponse{Object.keys(examAnswers).length > 1 ? 's' : ''}
                   </span>
                 </div>
 
@@ -1477,7 +1390,8 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                       color: examSecondsLeft < 600 ? 'var(--accent-red)' : 'var(--text-primary)',
                     }}
                   >
-                    Temps restant : {Math.floor(examSecondsLeft / 3600).toString().padStart(2, '0')}:
+                    <span className="muted small" style={{ fontFamily: 'var(--font-sans)', fontWeight: 600, marginRight: '0.4rem' }}>Temps restant</span>
+                    {Math.floor(examSecondsLeft / 3600).toString().padStart(2, '0')}:
                     {Math.floor((examSecondsLeft % 3600) / 60).toString().padStart(2, '0')}:
                     {(examSecondsLeft % 60).toString().padStart(2, '0')}
                   </div>
@@ -1507,13 +1421,14 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                     return (
                       <div>
                         <div className="row-between" style={{ marginBottom: '0.75rem' }}>
-                          <span className="badge badge-secondary">{q.domain}</span>
+                          <span className="badge badge-neutral">{q.domain}</span>
                           <button
                             type="button"
                             className={`btn btn-sm ${isFlagged ? 'btn-danger' : 'btn-secondary'}`}
                             onClick={() => setExamFlagged({ ...examFlagged, [q.id]: !isFlagged })}
                           >
-                            {isFlagged ? '🚩 Marqué pour révision' : '🏳️ Marquer pour révision'}
+                            <Flag size={16} aria-hidden />
+                            {isFlagged ? 'Marquée pour révision' : 'Marquer pour révision'}
                           </button>
                         </div>
 
@@ -1525,10 +1440,16 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                           {Object.entries(q.options).map(([letter, text]) => {
                             const isChosen = currentAnswer === letter;
                             return (
-                              <div
+                              <button
+                                type="button"
                                 key={letter}
+                                aria-pressed={isChosen}
                                 onClick={() => setExamAnswers({ ...examAnswers, [q.id]: letter })}
                                 style={{
+                                  width: '100%',
+                                  textAlign: 'left',
+                                  font: 'inherit',
+                                  color: 'var(--text-primary)',
                                   display: 'flex',
                                   alignItems: 'center',
                                   gap: '0.75rem',
@@ -1550,7 +1471,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                                   [{letter}]
                                 </span>
                                 <span style={{ fontSize: '0.94rem' }}>{text}</span>
-                              </div>
+                              </button>
                             );
                           })}
                         </div>
@@ -1563,7 +1484,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                             disabled={examCurrentIndex === 0}
                             onClick={() => setExamCurrentIndex(examCurrentIndex - 1)}
                           >
-                            ← Question précédente
+                            <ArrowLeft size={16} aria-hidden /> Question précédente
                           </button>
 
                           <button
@@ -1572,7 +1493,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                             disabled={examCurrentIndex === examQuestions.length - 1}
                             onClick={() => setExamCurrentIndex(examCurrentIndex + 1)}
                           >
-                            Question suivante →
+                            Question suivante <ArrowRight size={16} aria-hidden />
                           </button>
                         </div>
                       </div>
@@ -1591,16 +1512,16 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                     const isFlagged = Boolean(examFlagged[q.id]);
 
                     let bg = 'var(--bg-input)';
-                    let border = 'var(--border-color)';
+                    let border = '1px solid var(--border-color)';
                     if (isAnswered) {
-                      bg = 'rgba(56, 189, 248, 0.2)';
-                      border = 'var(--accent-blue)';
+                      bg = 'var(--info-bg)';
+                      border = '1px solid var(--accent-indigo)';
                     }
                     if (isFlagged) {
-                      border = 'var(--accent-amber)';
+                      border = '2px solid var(--accent-amber)';
                     }
                     if (isCurrent) {
-                      border = '2px solid #ffffff';
+                      border = '2px solid var(--text-primary)';
                     }
 
                     return (
@@ -1608,9 +1529,11 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                         key={q.id}
                         type="button"
                         onClick={() => setExamCurrentIndex(idx)}
+                        aria-label={`Question ${idx + 1}${isAnswered ? ', répondue' : ''}${isFlagged ? ', marquée' : ''}`}
+                        aria-current={isCurrent ? 'true' : undefined}
                         style={{
-                          width: '38px',
-                          height: '34px',
+                          width: '40px',
+                          height: '40px',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -1690,7 +1613,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                             padding: '0.75rem',
                             borderRadius: 'var(--radius-sm)',
                             border: `1px solid ${isWeak ? 'var(--accent-red)' : 'var(--border-color)'}`,
-                            backgroundColor: isWeak ? 'rgba(239, 68, 68, 0.1)' : 'transparent',
+                            backgroundColor: isWeak ? 'var(--danger-bg)' : 'transparent',
                           }}
                         >
                           <div style={{ fontSize: '0.84rem', fontWeight: 600 }}>{dom}</div>
@@ -1698,7 +1621,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                             {pct} %
                           </div>
                           {isWeak && (
-                            <div style={{ color: 'var(--accent-red)', fontSize: '0.76rem' }}>
+                            <div style={{ color: 'var(--accent-red)', fontSize: '0.75rem' }}>
                               Domaine faible : à retravailler en priorité
                             </div>
                           )}
@@ -1723,11 +1646,11 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                             border: `1px solid ${isCorrect ? 'var(--border-color)' : 'var(--accent-red)'}`,
                             borderRadius: 'var(--radius-sm)',
                             padding: '1rem',
-                            backgroundColor: isCorrect ? 'transparent' : 'rgba(239, 68, 68, 0.05)',
+                            backgroundColor: isCorrect ? 'transparent' : 'var(--danger-bg)',
                           }}
                         >
                           <div className="row-between" style={{ marginBottom: '0.4rem' }}>
-                            <span className="badge badge-secondary">Question {idx + 1}</span>
+                            <span className="badge badge-neutral">Question {idx + 1}</span>
                             <span
                               className={`badge ${isCorrect ? 'badge-success' : 'badge-danger'}`}
                             >
@@ -1758,9 +1681,9 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                                         : 'var(--border-color)'
                                     }`,
                                     backgroundColor: isRightOpt
-                                      ? 'rgba(34, 197, 94, 0.15)'
+                                      ? 'var(--success-bg)'
                                       : isUserOpt
-                                      ? 'rgba(239, 68, 68, 0.15)'
+                                      ? 'var(--danger-bg)'
                                       : 'transparent',
                                   }}
                                 >
@@ -1770,7 +1693,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                             })}
                           </div>
 
-                          <div style={{ backgroundColor: '#090d16', padding: '0.75rem', borderRadius: '4px', fontSize: '0.84rem' }}>
+                          <div style={{ backgroundColor: 'var(--code-bg)', padding: '0.75rem', borderRadius: '4px', fontSize: '0.84rem' }}>
                             <div style={{ fontWeight: 600, marginBottom: '0.25rem', color: 'var(--accent-blue)' }}>
                               Explication complète :
                             </div>
@@ -1782,7 +1705,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
                               </div>
                             )}
 
-                            <div className="muted" style={{ fontSize: '0.74rem', marginTop: '0.4rem' }}>
+                            <div className="muted" style={{ fontSize: '0.75rem', marginTop: '0.4rem' }}>
                               Documentation : <a href={q.source_doc} target="_blank" rel="noreferrer" style={{ color: 'var(--accent-blue)' }}>{q.source_doc}</a> ({q.doc_date})
                             </div>
 

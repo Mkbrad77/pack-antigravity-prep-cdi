@@ -1,3 +1,4 @@
+import { ArrowLeft, ArrowRight, Check, Clock, Target, X } from 'lucide-react';
 import React, { useEffect, useState, useRef } from 'react';
 import {
   fetchInterviewQuestions,
@@ -20,6 +21,7 @@ export const InterviewSimulatorView: React.FC = () => {
   const [allQuestions, setAllQuestions] = useState<InterviewQuestionItem[]>([]);
   const [simHistory, setSimHistory] = useState<InterviewSimulationRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [notice, setNotice] = useState<string>('');
 
   // Configuration
   const [config, setConfig] = useState<SimulatorConfig>({
@@ -34,7 +36,7 @@ export const InterviewSimulatorView: React.FC = () => {
   const [timerActive, setTimerActive] = useState<boolean>(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Etape 2 : Questions Techniques
+  // Étape 2 : Questions Techniques
   const [technicalQuestions, setTechnicalQuestions] = useState<InterviewQuestionItem[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -44,7 +46,7 @@ export const InterviewSimulatorView: React.FC = () => {
   const [caseStudyNotes, setCaseStudyNotes] = useState<string>('');
   const [caseScore, setCaseScore] = useState<number>(4);
 
-  // Etape 4 : Debriefing
+  // Étape 4 : Debriefing
   const [finalScore, setFinalScore] = useState<number>(0);
   const [savingSim, setSavingSim] = useState<boolean>(false);
   const [simSaved, setSimSaved] = useState<boolean>(false);
@@ -118,7 +120,7 @@ export const InterviewSimulatorView: React.FC = () => {
         topic_id: topicId,
         cert_code: 'INTERVIEW',
         front: `Question Entretien (${q.role}) : ${q.question}`,
-        back: `Reponse attendue : ${q.expectedAnswer}\n\nExplication : ${q.explanation}`,
+        back: `Réponse attendue : ${q.expectedAnswer}\n\nExplication : ${q.explanation}`,
         provenance: 'générée par IA et vérifiée dans la documentation (2026-10-31)',
         source_url: q.source || 'Banque Entretiens Pack CDI',
       });
@@ -126,7 +128,7 @@ export const InterviewSimulatorView: React.FC = () => {
 
       setInjectedFlashcardIds((prev) => ({ ...prev, [q.id]: true }));
     } catch (err) {
-      alert('Erreur lors de l ajout au SRS : ' + (err instanceof Error ? err.message : String(err)));
+      setNotice('Erreur lors de l\'ajout à la révision : ' + (err instanceof Error ? err.message : String(err)));
     }
   };
 
@@ -189,7 +191,7 @@ export const InterviewSimulatorView: React.FC = () => {
       setSimHistory(updated);
       setSimSaved(true);
     } catch (err) {
-      alert('Erreur enregistrement simulation : ' + (err instanceof Error ? err.message : String(err)));
+      setNotice('Erreur enregistrement simulation : ' + (err instanceof Error ? err.message : String(err)));
     } finally {
       setSavingSim(false);
     }
@@ -204,20 +206,25 @@ export const InterviewSimulatorView: React.FC = () => {
   if (loading) {
     return (
       <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
-        <p className="muted">Initialisation du simulateur d entretien...</p>
+        <p className="muted">Initialisation du simulateur d'entretien…</p>
       </div>
     );
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      {notice && (
+        <div className="alert alert-warning small" role="alert">
+          {notice}
+        </div>
+      )}
       {/* En-tete */}
       <div className="card" style={{ padding: '1rem 1.25rem' }}>
         <div className="row-between" style={{ flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <h2 style={{ margin: 0, fontSize: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span>🎯</span>
-              <span>Simulateur d'Entretien Technique (309 Questions)</span>
+              <Target size={20} aria-hidden />
+              <span>Simulateur d'entretien technique (309 questions)</span>
             </h2>
             <div className="muted" style={{ fontSize: '0.85rem', marginTop: '0.2rem' }}>
               Évaluation 100 % technique : QCM d'architecture Data/AI, SQL, Python, System Design et débriefing chiffré.
@@ -241,7 +248,7 @@ export const InterviewSimulatorView: React.FC = () => {
                   gap: '0.4rem',
                 }}
               >
-                <span>⏱️</span>
+                <Clock size={16} aria-hidden />
                 <span>{formatTime(elapsedSeconds)}</span>
               </div>
             )}
@@ -270,49 +277,49 @@ export const InterviewSimulatorView: React.FC = () => {
       {step === 'config' && (
         <div className="card" style={{ maxWidth: '800px', margin: '0 auto', width: '100%', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem' }}>
-            <h3 style={{ margin: 0, fontSize: '1.15rem' }}>Configurer la session d entretien</h3>
+            <h3 style={{ margin: 0, fontSize: '1.15rem' }}>Configurer la session d'entretien</h3>
             <div className="muted" style={{ fontSize: '0.82rem', marginTop: '0.25rem' }}>
-              Choisis le role, le niveau et le format de l epreuve pour adapter les questions posees.
+              Choisis le rôle, le niveau et le format de l'épreuve pour adapter les questions posées.
             </div>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div>
-              <label className="muted" style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
-                1. Role vise en entretien :
+              <label className="muted" style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+                1. Rôle visé en entretien
               </label>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '0.75rem' }}>
-                <div
-                  onClick={() => setConfig({ ...config, role: 'DE', roleName: 'Data Engineer (Priorite 1)' })}
+                <button type="button"
+                  onClick={() => setConfig({ ...config, role: 'DE', roleName: 'Data Engineer (Priorité 1)' })}
                   className={`item-card ${config.role === 'DE' ? 'selected' : ''}`}
                   style={{ cursor: 'pointer', padding: '1rem' }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.95rem', color: config.role === 'DE' ? 'var(--accent-blue)' : 'var(--text-primary)' }}>
-                    <span>🏗️</span> Data Engineer
+                    Data Engineer
                   </div>
-                  <div className="muted" style={{ fontSize: '0.78rem', marginTop: '0.35rem', lineHeight: 1.4 }}>
-                    Pipelines ETL/ELT, SQL avance, Spark, Lakehouse, dbt, modelisation Kimball et observabilite.
+                  <div className="muted" style={{ fontSize: '0.75rem', marginTop: '0.35rem', lineHeight: 1.4 }}>
+                    Pipelines ETL/ELT, SQL avancé, Spark, Lakehouse, dbt, modélisation Kimball et observabilité.
                   </div>
-                </div>
+                </button>
 
-                <div
-                  onClick={() => setConfig({ ...config, role: 'AIE', roleName: 'AI Engineer (Priorite 2)' })}
+                <button type="button"
+                  onClick={() => setConfig({ ...config, role: 'AIE', roleName: 'AI Engineer (Priorité 2)' })}
                   className={`item-card ${config.role === 'AIE' ? 'selected' : ''}`}
                   style={{ cursor: 'pointer', padding: '1rem' }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.95rem', color: config.role === 'AIE' ? 'var(--accent-blue)' : 'var(--text-primary)' }}>
-                    <span>🤖</span> AI Engineer & LLM
+                    AI Engineer & LLM
                   </div>
-                  <div className="muted" style={{ fontSize: '0.78rem', marginTop: '0.35rem', lineHeight: 1.4 }}>
-                    RAG, Vector DB, Embeddings, Fine-tuning LoRA, Frameworks d evaluation et deploiement vLLM.
+                  <div className="muted" style={{ fontSize: '0.75rem', marginTop: '0.35rem', lineHeight: 1.4 }}>
+                    RAG, Vector DB, Embeddings, Fine-tuning LoRA, Frameworks d'évaluation et déploiement vLLM.
                   </div>
-                </div>
+                </button>
               </div>
             </div>
 
             <div>
-              <label className="muted" style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
-                2. Niveau d exigence de l evaluateur :
+              <label className="muted" style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+                2. Niveau d'exigence de l'évaluateur
               </label>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
                 {(['Junior', 'Intermédiaire', 'Senior'] as const).map((lvl) => (
@@ -330,35 +337,35 @@ export const InterviewSimulatorView: React.FC = () => {
             </div>
 
             <div>
-              <label className="muted" style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
-                3. Format d entretien :
+              <label className="muted" style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+                3. Format d'entretien
               </label>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.75rem' }}>
-                <div
+                <button type="button"
                   onClick={() => setConfig({ ...config, mode: 'full' })}
                   className={`item-card ${config.mode === 'full' ? 'selected' : ''}`}
                   style={{ cursor: 'pointer', padding: '0.85rem' }}
                 >
                   <div style={{ fontWeight: 600, fontSize: '0.88rem', color: config.mode === 'full' ? 'var(--accent-blue)' : 'var(--text-primary)' }}>
-                    Format Complet (45 min)
+                    Format complet (45 min)
                   </div>
                   <div className="muted" style={{ fontSize: '0.75rem', marginTop: '0.2rem' }}>
-                    10 Questions QCM Techniques + Étude de cas System Design
+                    10 questions QCM techniques et une étude de cas System Design
                   </div>
-                </div>
+                </button>
 
-                <div
+                <button type="button"
                   onClick={() => setConfig({ ...config, mode: 'express' })}
                   className={`item-card ${config.mode === 'express' ? 'selected' : ''}`}
                   style={{ cursor: 'pointer', padding: '0.85rem' }}
                 >
                   <div style={{ fontWeight: 600, fontSize: '0.88rem', color: config.mode === 'express' ? 'var(--accent-blue)' : 'var(--text-primary)' }}>
-                    Format Express (15 min)
+                    Format express (15 min)
                   </div>
                   <div className="muted" style={{ fontSize: '0.75rem', marginTop: '0.2rem' }}>
-                    5 Questions QCM Techniques ciblées
+                    5 questions QCM techniques ciblées
                   </div>
-                </div>
+                </button>
               </div>
             </div>
           </div>
@@ -370,7 +377,7 @@ export const InterviewSimulatorView: React.FC = () => {
               className="btn btn-primary"
               style={{ fontSize: '0.92rem', padding: '0.6rem 1.25rem' }}
             >
-              Lancer l'entretien technique →
+              Lancer l'entretien technique <ArrowRight size={16} aria-hidden />
             </button>
           </div>
         </div>
@@ -432,24 +439,29 @@ export const InterviewSimulatorView: React.FC = () => {
 
                     if (isRevealed) {
                       if (isCorrect) {
-                        bg = 'rgba(34, 197, 94, 0.15)';
+                        bg = 'var(--success-bg)';
                         border = '1px solid var(--accent-green)';
-                        col = '#86efac';
+                        col = 'var(--success-fg)';
                       } else if (isSelected) {
-                        bg = 'rgba(239, 68, 68, 0.15)';
+                        bg = 'var(--danger-bg)';
                         border = '1px solid var(--accent-red)';
-                        col = '#fca5a5';
+                        col = 'var(--danger-fg)';
                       }
                     } else if (isSelected) {
-                      bg = 'rgba(56, 189, 248, 0.12)';
+                      bg = 'var(--info-bg)';
                       border = '1px solid var(--accent-blue)';
                     }
 
                     return (
-                      <div
+                      <button
+                        type="button"
                         key={letter}
-                        onClick={() => handleAnswerSelect(qId, letter)}
+                        aria-pressed={isSelected}
+                        onClick={() => !isRevealed && handleAnswerSelect(qId, letter)}
                         style={{
+                          width: '100%',
+                          textAlign: 'left',
+                          font: 'inherit',
                           backgroundColor: bg,
                           border: border,
                           color: col,
@@ -465,9 +477,9 @@ export const InterviewSimulatorView: React.FC = () => {
                       >
                         <span className="mono" style={{ fontWeight: 700 }}>{letter}.</span>
                         <span style={{ flex: 1 }}>{opt}</span>
-                        {isRevealed && isCorrect && <span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>✓</span>}
-                        {isRevealed && isSelected && !isCorrect && <span style={{ color: 'var(--accent-red)', fontWeight: 700 }}>✗</span>}
-                      </div>
+                        {isRevealed && isCorrect && <Check size={18} aria-label="Bonne réponse" style={{ color: 'var(--accent-green)', flex: '0 0 auto' }} />}
+                        {isRevealed && isSelected && !isCorrect && <X size={18} aria-label="Mauvaise réponse" style={{ color: 'var(--accent-red)', flex: '0 0 auto' }} />}
+                      </button>
                     );
                   })}
                 </div>
@@ -488,8 +500,8 @@ export const InterviewSimulatorView: React.FC = () => {
                       style={{ fontSize: '0.75rem' }}
                     >
                       {injectedFlashcardIds[technicalQuestions[currentQuestionIndex].id]
-                        ? '✓ Ajoutee au SRS'
-                        : '🔄 Ajouter aux Flashcards (SRS)'}
+                        ? 'Ajoutée à la révision'
+                        : 'Ajouter à la révision espacée'}
                     </button>
                   </div>
 
@@ -521,7 +533,7 @@ export const InterviewSimulatorView: React.FC = () => {
               className="btn btn-sm btn-secondary"
               style={{ opacity: currentQuestionIndex === 0 ? 0.4 : 1 }}
             >
-              ← Question precedente
+              <ArrowLeft size={16} aria-hidden /> Question précédente
             </button>
 
             {currentQuestionIndex < technicalQuestions.length - 1 ? (
@@ -530,7 +542,7 @@ export const InterviewSimulatorView: React.FC = () => {
                 onClick={() => setCurrentQuestionIndex((i) => i + 1)}
                 className="btn btn-sm btn-primary"
               >
-                Question suivante →
+                Question suivante <ArrowRight size={16} aria-hidden />
               </button>
             ) : (
               <button
@@ -545,7 +557,7 @@ export const InterviewSimulatorView: React.FC = () => {
                 className="btn btn-sm btn-primary"
                 style={{ backgroundColor: 'var(--accent-green)', borderColor: 'var(--accent-green)' }}
               >
-                {config.mode === 'full' ? 'Passer a l etude de cas →' : 'Terminer et voir le debriefing →'}
+                {config.mode === 'full' ? 'Passer à l\'étude de cas' : 'Terminer et voir le débriefing'}
               </button>
             )}
           </div>
@@ -561,7 +573,7 @@ export const InterviewSimulatorView: React.FC = () => {
                 Épreuve 2 sur 2
               </span>
               <h3 style={{ margin: '0.25rem 0 0 0', fontSize: '1.15rem' }}>
-                Étude de Cas d'Architecture & Conception Système
+                Étude de cas d'architecture et conception système
               </h3>
             </div>
             <span className="badge badge-neutral" style={{ color: 'var(--accent-indigo)' }}>
@@ -575,28 +587,28 @@ export const InterviewSimulatorView: React.FC = () => {
             </div>
             <p style={{ margin: 0 }}>
               {config.role === 'DE'
-                ? "Concevoir un pipeline d ingestion et de transformation de logs IoT (50M evenements/jour) vers Snowflake et un Lakehouse Iceberg. Definir le partitionnement, la strategie anti-doublon et les alertes de fraicheur."
-                : "Concevoir une architecture RAG multi-documents pour 100 000 contrats PDF d entreprise. Definir la strategie de chunking, le modele d embeddings, le reranking et le pipeline d evaluation des hallucinations."}
+                ? "Concevoir un pipeline d'ingestion et de transformation de logs IoT (50M événements/jour) vers Snowflake et un Lakehouse Iceberg. Définir le partitionnement, la stratégie anti-doublon et les alertes de fraîcheur."
+                : "Concevoir une architecture RAG multi-documents pour 100 000 contrats PDF d'entreprise. Définir la stratégie de chunking, le modèle d'embeddings, le reranking et le pipeline d'évaluation des hallucinations."}
             </p>
           </div>
 
           <div>
-            <label className="muted" style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.4rem' }}>
-              Schema de reponse, composants d architecture et decisions prises :
+            <label className="muted" style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, marginBottom: '0.4rem' }}>
+              Schéma de réponse, composants d'architecture et décisions prises :
             </label>
             <textarea
               value={caseStudyNotes}
               onChange={(e) => setCaseStudyNotes(e.target.value)}
               rows={8}
-              placeholder="Structure ta reponse : Ingestion -> Stockage -> Transformation -> Servabilite -> Observabilite..."
+              placeholder="Structure ta réponse : Ingestion -> Stockage -> Transformation -> Servabilité -> Observabilité..."
               className="code-editor-area"
               style={{ fontSize: '0.85rem' }}
             />
           </div>
 
           <div>
-            <label className="muted" style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.4rem' }}>
-              Auto-evaluation sur l etude de cas (sur 5) :
+            <label className="muted" style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, marginBottom: '0.4rem' }}>
+              Auto-évaluation sur l'étude de cas (sur 5) :
             </label>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
               {[1, 2, 3, 4, 5].map((score) => (
@@ -611,10 +623,10 @@ export const InterviewSimulatorView: React.FC = () => {
                 </button>
               ))}
               <span className="muted" style={{ fontSize: '0.8rem', marginLeft: '0.5rem' }}>
-                {caseScore === 5 && 'Excellente maitrise des compromis et du passage a l echelle'}
+                {caseScore === 5 && 'Excellente maîtrise des compromis et du passage à l\'échelle'}
                 {caseScore === 4 && 'Bonne architecture, composants pertinents'}
-                {caseScore === 3 && 'Passable, quelques oublis sur la gouvernance ou le cout'}
-                {caseScore < 3 && 'Insuffisant, revoir les cours d architecture'}
+                {caseScore === 3 && 'Passable, quelques oublis sur la gouvernance ou le coût'}
+                {caseScore < 3 && 'Insuffisant, revoir les cours d\'architecture'}
               </span>
             </div>
           </div>
@@ -625,7 +637,7 @@ export const InterviewSimulatorView: React.FC = () => {
               onClick={() => setStep('technical')}
               className="btn btn-sm btn-secondary"
             >
-              ← Revoir les questions
+              <ArrowLeft size={16} aria-hidden /> Revoir les questions
             </button>
             <button
               type="button"
@@ -633,7 +645,7 @@ export const InterviewSimulatorView: React.FC = () => {
               className="btn btn-primary"
               style={{ backgroundColor: 'var(--accent-green)', borderColor: 'var(--accent-green)' }}
             >
-              Terminer et calculer mon score final →
+              Terminer et calculer mon score final <ArrowRight size={16} aria-hidden />
             </button>
           </div>
         </div>
@@ -650,7 +662,7 @@ export const InterviewSimulatorView: React.FC = () => {
               Score Global : {finalScore} %
             </h3>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', fontSize: '0.82rem' }} className="muted">
-              <span>Duree : <strong style={{ color: 'var(--text-primary)' }}>{formatTime(elapsedSeconds)}</strong></span>
+              <span>Durée : <strong style={{ color: 'var(--text-primary)' }}>{formatTime(elapsedSeconds)}</strong></span>
               <span>Role : <strong style={{ color: 'var(--text-primary)' }}>{config.roleName}</strong></span>
               <span>Niveau : <strong style={{ color: 'var(--text-primary)' }}>{config.seniority}</strong></span>
             </div>
@@ -684,7 +696,7 @@ export const InterviewSimulatorView: React.FC = () => {
               disabled={savingSim || simSaved}
               className="btn btn-primary"
             >
-              {simSaved ? '✓ Resultat sauvegarde dans l historique' : savingSim ? 'Enregistrement...' : 'Enregistrer cette session dans mon historique'}
+              {simSaved ? 'Résultat enregistré dans l\'historique' : savingSim ? 'Enregistrement…' : 'Enregistrer cette session dans mon historique'}
             </button>
 
             <button
@@ -703,9 +715,9 @@ export const InterviewSimulatorView: React.FC = () => {
         <div className="card" style={{ maxWidth: '850px', margin: '0 auto', width: '100%', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div className="row-between" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem', alignItems: 'center' }}>
             <div>
-              <h3 style={{ margin: 0, fontSize: '1.15rem' }}>Historique de mes simulations d entretien</h3>
+              <h3 style={{ margin: 0, fontSize: '1.15rem' }}>Historique de mes simulations d'entretien</h3>
               <div className="muted" style={{ fontSize: '0.82rem', marginTop: '0.2rem' }}>
-                Suivi de ta progression et de tes scores au fil des semaines d entrainement.
+                Suivi de ta progression et de tes scores au fil des semaines d'entraînement.
               </div>
             </div>
             <button
@@ -719,7 +731,7 @@ export const InterviewSimulatorView: React.FC = () => {
 
           {simHistory.length === 0 ? (
             <div className="muted" style={{ padding: '2rem', textAlign: 'center', fontSize: '0.85rem' }}>
-              Aucune simulation effectuee pour le moment. Lance ta premiere simulation pour voir apparaitre ton historique !
+              Aucune simulation pour le moment. Lance ta première simulation pour voir apparaître ton historique.
             </div>
           ) : (
             <div className="item-list-container">
@@ -731,7 +743,7 @@ export const InterviewSimulatorView: React.FC = () => {
                         Entretien {s.role} ({s.seniority})
                       </div>
                       <div className="muted" style={{ fontSize: '0.75rem', marginTop: '0.2rem' }}>
-                        Date : {new Date(s.created_at).toLocaleDateString()} a {new Date(s.created_at).toLocaleTimeString().slice(0, 5)} | Duree : {formatTime(s.duration_seconds)}
+                        Date : {new Date(s.created_at).toLocaleDateString('fr-FR')} à {new Date(s.created_at).toLocaleTimeString('fr-FR').slice(0, 5)}, durée : {formatTime(s.duration_seconds)}
                       </div>
                     </div>
                     <span className={`badge ${s.total_score >= 70 ? 'badge-success' : 'badge-warning'}`} style={{ fontSize: '0.85rem' }}>

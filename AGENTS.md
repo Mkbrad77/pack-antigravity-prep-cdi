@@ -70,3 +70,11 @@ L'application tourne aussi en ligne (Worker Cloudflare `prep-cdi`, voir `docs/DE
 - **Disponibilité des podcasts** : via `ApiRuntime.audioExists()` (disque en local, bucket R2 en ligne). Ajouter un podcast ne demande aucune modification de code : `npm run audios:upload`.
 - **Date du jour** : toujours `getEffectiveTodayIso(settings)` (`src/domain/dates.ts`), jamais une date codée en dur.
 - **Avant de livrer** : `npm test`, `npx tsc --noEmit -p worker/tsconfig.json` et `npx wrangler deploy --dry-run` doivent passer.
+
+## 6. Interface : règles à préserver (refonte D-20)
+
+- Navigation à 5 entrées (Aujourd'hui, Planning, Cours, Pratique, Podcasts) ; tout nouvel écran secondaire va dans le menu profil, pas dans la barre.
+- Aucune couleur en dur dans les composants : utiliser les variables de `src/index.css`, qui existent en thème sombre et en thème clair.
+- Aucun emoji dans les boutons, onglets ou badges : utiliser une icône `lucide-react` accompagnée d'un libellé texte. Les emoji restent autorisés dans les textes de cours.
+- Pas de `<select>` pour moins de 6 options (utiliser `.segmented` ou `.chips`) ; toujours un libellé visible ou `aria-label` sur les champs.
+- Cibles tactiles d'au moins 24 px, police d'au moins 12 px (`0.75rem`), libellés en français avec accents.

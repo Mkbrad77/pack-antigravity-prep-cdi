@@ -4,6 +4,11 @@ Ce guide explique comment démarrer et utiliser chaque jour votre application lo
 
 ---
 
+
+> **Navigation (depuis novembre 2026)** : 5 entrées en bas de l'écran sur téléphone (ou à gauche sur PC) : **Aujourd'hui**, **Planning**, **Cours**, **Pratique**, **Podcasts**. Révision espacée, Journal des séances, Compétences et Réglages sont dans le menu profil, en haut à droite. Le thème clair s'active depuis ce même menu.
+>
+> **Podcasts au quotidien** : la carte « À écouter aujourd'hui » de l'écran Aujourd'hui liste les épisodes du jour (objectif : 3 écoutes par épisode). « Tout écouter » les enchaîne ; chaque écoute terminée est comptée automatiquement. Le détail de la semaine est dans « Comment faire » de la tâche podcast.
+
 ## 1. Démarrage en une commande (100 % hors connexion)
 
 Vous disposez de deux façons équivalentes pour lancer l'application :
@@ -20,7 +25,7 @@ L'application démarre sur `http://127.0.0.1:5173`. Toutes vos données personne
 
 ## 2. Routine quotidienne recommandée (8h à 10h par semaine)
 
-### A. Début de séance : onglet « 1. Tableau de bord »
+### A. Début de séance : écran « Aujourd'hui »
 1. Vérifiez la **Semaine active** (par défaut Semaine 1 du 2 novembre 2026 au démarrage, ou calculée selon la date) ainsi que les **comptes à rebours** jusqu'à vos trois examens :
    - **AWS CLF-C02** : vendredi 20 novembre 2026
    - **AWS DEA-C01 (Priorité N°1)** : jeudi 4 février 2027
@@ -30,7 +35,7 @@ L'application démarre sur `http://127.0.0.1:5173`. Toutes vos données personne
    - **BONUS (sacrifiable)** : à faire uniquement si le bloc `core` est terminé et que la jauge hebdomadaire reste sous le plafond de 10h (600 min, ou 360 min en semaine de fêtes).
 3. Chaque tâche indique le **nom exact du cours** et les **numéros de leçons** à suivre sur Udemy ou AWS Skill Builder (exemple : `Maarek & Kane (leçons 167 à 183)`).
 
-### B. Pendant l'étude : onglets « 3. Cours Udemy & Sujets » et « 5. Journal des séances »
+### B. Pendant l'étude : « Cours > Udemy » et « Journal des séances » (menu profil)
 1. Dans **5. Journal des séances**, lancez le **Chronomètre** en début de travail (ou saisissez manuellement votre durée en fin de séance, par exemple `45 min`).
 2. Dans **3. Cours Udemy & Sujets** :
    - Cochez vos leçons au fil de l'eau, ou utilisez la **validation par plage de leçons** (« Cocher les leçons 128 à 176 d'un coup ») pour mettre à jour instantanément votre progression pondérée par les minutes.
@@ -38,7 +43,7 @@ L'application démarre sur `http://127.0.0.1:5173`. Toutes vos données personne
 3. Si vous retenez un concept clé ou un piège technique pendant un cours, ouvrez **6. Répétition espacée (SM-2)** et créez une carte mémoire en sélectionnant son étiquette de provenance obligatoire.
 
 ### C. Fin de séance : validation ou replanification
-1. Retournez sur **1. Tableau de bord** et cliquez sur **Terminer** en face de la tâche achevée.
+1. Retournez sur **Aujourd'hui** et cliquez sur **Terminer** en face de la tâche achevée.
 2. Si vous manquez de temps pour finir une tâche cette semaine, cliquez sur **Reporter** : le **moteur de replanification dynamique** déplace la tâche sans décaler vos 22 semaines, sacrifie d'abord les tâches `bonus` si le plafond de 600 min est atteint, ou comprime proportionnellement à 50 % un chapitre d'entretien en protégeant l'examen le plus proche.
 3. Si vous avez eu un imprévu majeur (semaine entière manquée, report d'examen CLF-C02, ou re-tentative DEA-C01 à J+14) ou au contraire de l'avance, ouvrez **2. Planning & Replanification** et cliquez sur le bouton du scénario correspondant : un encadré vous explique en détail chaque décision prise par l'algorithme.
 
@@ -46,7 +51,7 @@ L'application démarre sur `http://127.0.0.1:5173`. Toutes vos données personne
 
 ## 3. Examens blancs et indicateur « Prêt pour l'examen »
 
-Dans l'onglet **4. Certifications & Blancs** :
+Dans **Cours**, choisissez la certification (CLF-C02, dbt ou DEA-C01) :
 1. Après chaque examen blanc (AWS Skill Builder, Nikolai Schuler, 6 Practice Exams Udemy, etc.), saisissez la date, la source, le score global en `%` et, si disponible, vos scores par domaine (`D1` à `D4`).
 2. L'application met à jour automatiquement l'indicateur **« Prêt pour l'examen »** :
    - **CLF-C02** : prêt dès `>= 80 %` au dernier examen blanc (seuil officiel AWS : `700/1000`).
@@ -56,7 +61,7 @@ Dans l'onglet **4. Certifications & Blancs** :
 
 ---
 
-## 4. Sauvegarde hebdomadaire et restauration (onglet « 7. Réglages & Sauvegarde »)
+## 4. Sauvegarde hebdomadaire et restauration (menu profil > Réglages)
 
 Une fois par semaine (par exemple le dimanche soir) :
 1. Ouvrez **7. Réglages & Sauvegarde** et cliquez sur **Exporter mes données (JSON daté)**.
@@ -73,13 +78,13 @@ Une fois par semaine (par exemple le dimanche soir) :
    - Toutes les premières leçons sont planifiées : leçons 1 à 120 de Merico en Semaine 1, leçons 121 à 199 en Semaine 2, et leçons 1 à 49 de Toth en Semaine 15.
    - Aucune leçon n'est considérée comme pré-acquise ou pré-cochée.
 2. **Synchronisation automatique** :
-   - Lorsque vous validez une tâche hebdomadaire de cours Udemy sur le Tableau de bord ou dans le Planning (par exemple `W01-C3` couvrant les leçons 1 à 60 de Merico), l'application coche automatiquement toutes les leçons correspondantes dans le catalogue (`lesson_progress`) et actualise immédiatement votre taux d'avancement pondéré.
+   - Lorsque vous validez une tâche hebdomadaire de cours Udemy sur l'écran Aujourd'hui ou dans le Planning (par exemple `W01-C3` couvrant les leçons 1 à 60 de Merico), l'application coche automatiquement toutes les leçons correspondantes dans le catalogue (`lesson_progress`) et actualise immédiatement votre taux d'avancement pondéré.
 
 ---
 
-## 6. Préparation aux Entretiens Techniques (onglet « 8. Entretiens techniques »)
+## 6. Préparation aux Entretiens Techniques (écran « Pratique »)
 
-L'onglet **8. Entretiens techniques** regroupe vos outils d'entraînement intensif pour réussir les entretiens techniques en Data Engineering et AI Engineering :
+L'écran **Pratique** regroupe vos outils d'entraînement intensif pour réussir les entretiens techniques en Data Engineering et AI Engineering :
 
 ### A. Simulateur d'Entretien Complet
 1. Configurez votre simulation : rôle visé (Data Engineer ou AI Engineer), niveau d'exigence (Junior, Intermédiaire, Senior) et durée (Express 15 min ou Complet 45 min).

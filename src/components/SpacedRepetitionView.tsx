@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { apiClient, AppStateResponse } from '../apiClient';
 import { ALLOWED_PROVENANCE_TAGS, CertCode, ProvenanceTag } from '../domain/types';
 import { getCardMasteryStatus, ReviewGrade } from '../domain/spacedRepetition';
-import { getEffectiveTodayIso } from '../domain/dates';
 
 interface SpacedRepetitionViewProps {
   state: AppStateResponse;
@@ -48,130 +47,97 @@ export const SpacedRepetitionView: React.FC<SpacedRepetitionViewProps> = ({
 
   const masteredCount = state.flashcards.filter((c) => getCardMasteryStatus(c).isMastered).length;
 
+  const dueCards = state.dueFlashcards;
+  const currentCard = dueCards[0];
+  const isRevealed = currentCard ? Boolean(revealedIds[currentCard.id]) : false;
+  const GRADES: Array<{ grade: ReviewGrade; label: string; cls: string }> = [
+    { grade: 0, label: 'À revoir', cls: 'btn-danger' },
+    { grade: 3, label: 'Difficile', cls: 'btn-warning' },
+    { grade: 4, label: 'Correct', cls: 'btn-success' },
+    { grade: 5, label: 'Facile', cls: 'btn-success' },
+  ];
+
   return (
-    <div data-testid="spaced-repetition-view">
-      {/* File de revision du jour */}
-      <div className="card" style={{ marginBottom: '1rem', borderColor: 'var(--accent)' }}>
-        <div className="row-between" style={{ flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.75rem' }}>
+    <div data-testid="spaced-repetition-view" className="stack">
+      {/* Révision du jour : une carte à la fois */}
+      <section className="card" aria-labelledby="srs-today" style={{ maxWidth: '760px', width: '100%' }}>
+        <div className="row-between" style={{ marginBottom: '0.85rem' }}>
           <div>
-            <h2 style={{ margin: 0, fontSize: '1.15rem' }}>
-              File de révision espacée SM-2 du jour ({state.dueFlashcards.length} carte(s) à
-              réviser)
+            <h2 id="srs-today" style={{ margin: 0, fontSize: '1.15rem' }}>
+              Révision du jour
             </h2>
-            <p className="muted" style={{ margin: '0.2rem 0 0 0', fontSize: '0.84rem' }}>
-              Critère de maîtrise stricte : au moins 3 répétitions réussies consécutives et un
-              intervalle supérieur ou égal à 14 jours ({masteredCount}/{state.flashcards.length}{' '}
-              maîtrisées).
+            <p className="muted small" style={{ margin: '0.2rem 0 0' }}>
+              {masteredCount}/{state.flashcards.length} cartes maîtrisées (3 réussites d'affilée et un intervalle de 14 jours ou plus).
             </p>
           </div>
-          <span className="mono badge badge-info">
-            Date de référence : {getEffectiveTodayIso(state.settings)}
+          <span className="badge badge-info mono">
+            {dueCards.length} à revoir
           </span>
         </div>
 
-        {state.dueFlashcards.length === 0 ? (
-          <p className="muted" data-testid="no-due-cards-msg">
-            Aucune carte échue à réviser aujourd'hui. Créez une nouvelle carte ci-dessous ou
-            avancez la date de simulation pour tester les échéances SM-2.
-          </p>
+        {!currentCard ? (
+          <div className="empty-state" data-testid="no-due-cards-msg">
+            Aucune carte à revoir aujourd'hui. Crée une carte ci-dessous ou ajoute des questions depuis la banque et le simulateur.
+          </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {state.dueFlashcards.map((card) => {
-              const isRevealed = Boolean(revealedIds[card.id]);
-              return (
-                <div
-                  key={card.id}
-                  data-testid={`due-card-${card.id}`}
-                  className="card card-sm"
-                >
-                  <div className="row-between" style={{ marginBottom: '0.4rem', flexWrap: 'wrap' }}>
-                    <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                      <span className="badge badge-info">{card.cert_code}</span>
-                      <span className="mono badge badge-neutral">{card.topic_id}</span>
-                      <span className="badge badge-neutral">
-                        Provenance : {card.provenance}
-                      </span>
-                      {card.is_demo === 1 && (
-                        <span className="badge badge-warning">DÉMO</span>
-                      )}
-                    </div>
-                    <span className="mono muted" style={{ fontSize: '0.78rem' }}>
-                      Répétitions : {card.repetitions} | Intervalle : {card.interval_days} j | EF :{' '}
-                      {card.ease_factor}
-                    </span>
-                  </div>
+          <div key={currentCard.id} data-testid={`due-card-${currentCard.id}`} className="stack-sm">
+            <div className="cluster" style={{ gap: '0.35rem' }}>
+              <span className="badge badge-info">{currentCard.cert_code === 'DBT' ? 'dbt' : currentCard.cert_code}</span>
+              <span className="mono badge badge-neutral">{currentCard.topic_id}</span>
+              {currentCard.is_demo === 1 && <span className="badge badge-warning">Démo</span>}
+              <span className="muted small mono" style={{ marginLeft: 'auto' }}>
+                Carte 1 sur {dueCards.length}
+              </span>
+            </div>
+            <div className="card card-sm" style={{ padding: '1.25rem', fontSize: '1.05rem', fontWeight: 600, lineHeight: 1.5 }}>
+              {currentCard.front}
+            </div>
 
-                  <div style={{ fontWeight: 600, fontSize: '0.96rem', marginBottom: '0.5rem' }}>
-                    Question : {card.front}
-                  </div>
-
-                  {!isRevealed ? (
-                    <button
-                      type="button"
-                      data-testid={`reveal-card-${card.id}`}
-                      className="btn btn-secondary btn-sm"
-                      onClick={() =>
-                        setRevealedIds((prev) => ({ ...prev, [card.id]: true }))
-                      }
-                    >
-                      Afficher la réponse
-                    </button>
-                  ) : (
-                    <div>
-                      <div
-                        style={{
-                          padding: '0.6rem',
-                          background: 'var(--bg-elevated)',
-                          borderRadius: '6px',
-                          marginBottom: '0.5rem',
-                        }}
-                      >
-                        <strong>Réponse :</strong> {card.back}
-                        {card.source_url && (
-                          <div className="muted" style={{ fontSize: '0.76rem', marginTop: '0.25rem' }}>
-                            Source : {card.source_url}
-                          </div>
-                        )}
-                      </div>
-
-                      <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', alignItems: 'center' }}>
-                        <span className="muted" style={{ fontSize: '0.82rem' }}>
-                          Auto-évaluation SM-2 :
-                        </span>
-                        {([0, 3, 4, 5] as ReviewGrade[]).map((grade) => (
-                          <button
-                            key={grade}
-                            type="button"
-                            data-testid={`grade-card-${card.id}-${grade}`}
-                            className={`btn btn-sm ${
-                              grade < 3
-                                ? 'btn-danger'
-                                : grade === 3
-                                ? 'btn-warning'
-                                : 'btn-success'
-                            }`}
-                            onClick={() => handleGradeCard(card.id, grade)}
-                          >
-                            {grade} (
-                            {grade === 0
-                              ? 'À revoir (0)'
-                              : grade === 3
-                              ? 'Difficile (3)'
-                              : grade === 4
-                              ? 'Correct (4)'
-                              : 'Parfait (5)'}
-                            )
-                          </button>
-                        ))}
-                      </div>
+            {!isRevealed ? (
+              <button
+                type="button"
+                data-testid={`reveal-card-${currentCard.id}`}
+                className="btn btn-primary btn-lg btn-block"
+                onClick={() => setRevealedIds((prev) => ({ ...prev, [currentCard.id]: true }))}
+              >
+                Afficher la réponse
+              </button>
+            ) : (
+              <>
+                <div className="callout" style={{ whiteSpace: 'pre-line', fontSize: '0.95rem' }}>
+                  {currentCard.back}
+                  {currentCard.source_url && (
+                    <div className="muted small" style={{ marginTop: '0.4rem', overflowWrap: 'anywhere' }}>
+                      Source : {currentCard.source_url}
                     </div>
                   )}
                 </div>
-              );
-            })}
+                <div>
+                  <div className="eyebrow" style={{ marginBottom: '0.4rem' }}>
+                    Comment ça s'est passé ?
+                  </div>
+                  <div className="grid-4" style={{ gap: '0.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 130px), 1fr))' }}>
+                    {GRADES.map(({ grade, label, cls }) => (
+                      <button
+                        key={grade}
+                        type="button"
+                        data-testid={`grade-card-${currentCard.id}-${grade}`}
+                        className={`btn ${cls}`}
+                        onClick={() => handleGradeCard(currentCard.id, grade)}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="muted small mono">
+                  Répétitions {currentCard.repetitions}, intervalle {currentCard.interval_days} j, facilité {currentCard.ease_factor}. Provenance : {currentCard.provenance}
+                </div>
+              </>
+            )}
           </div>
         )}
-      </div>
+      </section>
 
       {/* Creation manuelle d'une carte et banque de cartes */}
       <div className="grid-2" style={{ gap: '1rem' }}>
@@ -311,8 +277,8 @@ export const SpacedRepetitionView: React.FC<SpacedRepetitionViewProps> = ({
                           )}
                         </td>
                         <td>{c.front}</td>
-                        <td style={{ fontSize: '0.76rem' }}>{c.provenance}</td>
-                        <td className="mono" style={{ fontSize: '0.78rem' }}>
+                        <td style={{ fontSize: '0.75rem' }}>{c.provenance}</td>
+                        <td className="mono" style={{ fontSize: '0.75rem' }}>
                           <div>Échéance : {c.due_date}</div>
                           <div>
                             {mastered ? (

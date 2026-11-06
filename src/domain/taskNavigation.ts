@@ -721,20 +721,20 @@ export function getTaskActionGuide(task: UnifiedTask): TaskActionGuide {
         interviewSubTab: 'courses',
         interviewCategory: exactPlan.courseCategory,
         interviewCourseId: exactPlan.courseId,
-        label: `📚 Étape 1 : Lire le Cours (${exactPlan.courseChapterLabel})`,
+        label: `Étape 1 : lire le cours (${exactPlan.courseChapterLabel})`,
       };
 
       if (exactPlan.practiceType === 'python' && exactPlan.exercises) {
         const exIds = exactPlan.exercises.map((e) => e.id);
         const exSummary = exactPlan.exercises.map((e) => `${e.id} (${e.title})`).join(' + ');
         return {
-          whereLabel: `Onglet 8. Entretiens techniques > 1. Cours (${exactPlan.courseChapterLabel}) puis 3. Atelier Python`,
+          whereLabel: `Pratique > Cours d'entretien (${exactPlan.courseChapterLabel}), puis Pratique > Python`,
           recommendedDay: exactPlan.recommendedDay,
           exercisesBadgeList: exactPlan.exercises.map((e) => ({ ...e, type: 'python' })),
           steps: [
-            `Étape 1 (Cours, ~10 min) : Clique sur "Étape 1 : Lire le Cours" ci-dessous pour ouvrir directement le chapitre "${exactPlan.courseChapterLabel}".`,
-            `Étape 2 (Pratique, ~${Math.max(10, task.effective_est_min - 10)} min) : Clique sur "Étape 2 : Pratiquer les ${exIds.length} exercices Python" pour ouvrir l'Atelier pré-filtré sur : ${exSummary}.`,
-            `Étape 3 (Validation) : Une fois les ${exIds.length} exercices validés par les tests unitaires, clique sur "Terminer" sur cette carte.`,
+            `Étape 1 (cours, environ 10 min) : ouvre directement le chapitre "${exactPlan.courseChapterLabel}" avec le bouton "Étape 1".`,
+            `Étape 2 (pratique, environ ${Math.max(10, task.effective_est_min - 10)} min) : le bouton "Étape 2" ouvre l'atelier Python déjà filtré sur ${exSummary}.`,
+            `Étape 3 (validation) : quand les ${exIds.length} exercices passent les tests, marque la tâche comme terminée.`,
           ],
           primaryButton: courseBtn,
           secondaryButton: {
@@ -742,7 +742,7 @@ export function getTaskActionGuide(task: UnifiedTask): TaskActionGuide {
             interviewSubTab: 'python',
             interviewExerciseIds: exIds,
             interviewTaskLabel: `${task.id} : ${task.title}`,
-            label: `🐍 Étape 2 : Pratiquer les ${exIds.length} ex. (${exIds.join(', ')})`,
+            label: `Étape 2 : pratiquer ${exIds.length} exercices Python`,
           },
         };
       }
@@ -751,13 +751,13 @@ export function getTaskActionGuide(task: UnifiedTask): TaskActionGuide {
         const exIds = exactPlan.exercises.map((e) => e.id);
         const exSummary = exactPlan.exercises.map((e) => `${e.id} (${e.title})`).join(' + ');
         return {
-          whereLabel: `Onglet 8. Entretiens techniques > 1. Cours (${exactPlan.courseChapterLabel}) puis 2. Atelier SQL`,
+          whereLabel: `Pratique > Cours d'entretien (${exactPlan.courseChapterLabel}), puis Pratique > SQL`,
           recommendedDay: exactPlan.recommendedDay,
           exercisesBadgeList: exactPlan.exercises.map((e) => ({ ...e, type: 'sql' })),
           steps: [
-            `Étape 1 (Cours, ~10 min) : Clique sur "Étape 1 : Lire le Cours" ci-dessous pour ouvrir directement le chapitre "${exactPlan.courseChapterLabel}".`,
-            `Étape 2 (Pratique, ~${Math.max(15, task.effective_est_min - 10)} min) : Clique sur "Étape 2 : Pratiquer les ${exIds.length} exercices SQL" pour ouvrir l'Atelier SQL pré-filtré sur : ${exSummary}.`,
-            `Étape 3 (Validation) : Compare tes requêtes avec le corrigé optimal, puis clique sur "Terminer" sur cette carte.`,
+            `Étape 1 (cours, environ 10 min) : ouvre directement le chapitre "${exactPlan.courseChapterLabel}" avec le bouton "Étape 1".`,
+            `Étape 2 (pratique, environ ${Math.max(15, task.effective_est_min - 10)} min) : le bouton "Étape 2" ouvre l'atelier SQL déjà filtré sur ${exSummary}.`,
+            `Étape 3 (validation) : compare tes requêtes avec le corrigé, puis marque la tâche comme terminée.`,
           ],
           primaryButton: courseBtn,
           secondaryButton: {
@@ -765,48 +765,48 @@ export function getTaskActionGuide(task: UnifiedTask): TaskActionGuide {
             interviewSubTab: 'sql',
             interviewExerciseIds: exIds,
             interviewTaskLabel: `${task.id} : ${task.title}`,
-            label: `🗄️ Étape 2 : Pratiquer les ${exIds.length} ex. (${exIds.join(', ')})`,
+            label: `Étape 2 : pratiquer ${exIds.length} exercices SQL`,
           },
         };
       }
 
       // Cas System Design / AI / Fiches + Simulateur
       return {
-        whereLabel: `Onglet 8. Entretiens techniques > 1. Cours (${exactPlan.courseChapterLabel}) puis 4. Simulateur d'Entretien`,
+        whereLabel: `Pratique > Cours d'entretien (${exactPlan.courseChapterLabel}), puis Pratique > Simulateur`,
         recommendedDay: exactPlan.recommendedDay,
         steps: [
-          `Étape 1 (Cours, ~20 min) : Clique sur "Étape 1 : Lire le Cours" pour étudier le chapitre exact "${exactPlan.courseChapterLabel}".`,
-          `Étape 2 (Entraînement oral/écrit, ~${Math.max(15, task.effective_est_min - 20)} min) : ${exactPlan.simulatorFocus || 'Réponds à 3-5 questions d\'entretien sur ce thème dans le Simulateur.'}`,
-          `Étape 3 (Validation) : Auto-évalue ta réponse face au corrigé détaillé et clique sur "Terminer".`,
+          `Étape 1 (cours, environ 20 min) : étudie le chapitre "${exactPlan.courseChapterLabel}" avec le bouton "Étape 1".`,
+          `Étape 2 (entraînement, environ ${Math.max(15, task.effective_est_min - 20)} min) : ${exactPlan.simulatorFocus || 'réponds à 3 à 5 questions d\'entretien sur ce thème dans le simulateur.'}`,
+          `Étape 3 (validation) : compare ta réponse au corrigé détaillé, puis marque la tâche comme terminée.`,
         ],
         primaryButton: courseBtn,
         secondaryButton: {
           tab: 'interviews',
           interviewSubTab: 'simulator',
-          label: '🎯 Étape 2 : S\'entraîner sur le Simulateur',
+          label: 'Étape 2 : s\'entraîner sur le simulateur',
         },
       };
     }
 
     // Fallback générique si une tâche interview personnalisée est créée
     return {
-      whereLabel: 'Onglet 8. Entretiens techniques > 1. Cours & Fiches mémo + Ateliers pratiques',
+      whereLabel: 'Pratique > Cours d\'entretien, puis SQL, Python ou Simulateur',
       recommendedDay,
       steps: [
-        'Étape 1 : Consulte le cours correspondant dans "1. Cours & Fiches mémo".',
-        'Étape 2 : Pratique sur l\'Atelier SQL, l\'Atelier Python ou le Simulateur d\'Entretien.',
-        'Étape 3 : Clique sur "Terminer" une fois la séance accomplie.',
+        'Étape 1 : consulte le cours correspondant dans Pratique > Cours d\'entretien.',
+        'Étape 2 : entraîne-toi dans Pratique > SQL, Python ou Simulateur.',
+        'Étape 3 : marque la tâche comme terminée une fois la séance accomplie.',
       ],
       primaryButton: {
         tab: 'interviews',
         interviewSubTab: 'courses',
         interviewCategory: 'python',
-        label: '📚 Ouvrir les Cours Entretiens (Modules 1 à 6)',
+        label: 'Ouvrir les cours d\'entretien',
       },
       secondaryButton: {
         tab: 'interviews',
         interviewSubTab: 'simulator',
-        label: '🎯 Ouvrir le Simulateur',
+        label: 'Ouvrir le simulateur',
       },
     };
   }
@@ -819,24 +819,24 @@ export function getTaskActionGuide(task: UnifiedTask): TaskActionGuide {
   // Cas 2.0 : Écoute de Podcasts NotebookLM (Écoute récursive sur mobile / transports)
   if (task.type === 'podcast' || titleLower.includes('podcast')) {
     return {
-      whereLabel: `Onglet 3. Cours Udemy, Podcasts & Snowflake > 🎧 Studio Podcasts NotebookLM (${certCode})`,
-      recommendedDay: 'Quotidien (Matin / Soir dans les transports ou marche, écoute récursive 1.25x)',
+      whereLabel: `Podcasts (${certCode})`,
+      recommendedDay: 'Quotidien (matin ou soir, dans les transports ou en marchant, à 1,25x)',
       steps: [
-        `Étape 1 (Ouverture Mobile / PC) : Clique sur "🎧 Ouvrir le Studio Podcasts (${certCode})" ci-dessous pour lancer le lecteur audio intégré avec contrôle écran verrouillé.`,
-        `Étape 2 (Écoute Récursive Active) : Écoute les épisodes au programme (${task.lectures || task.title}) une 1re fois le jour des leçons, puis réécoute-les à 1.25x ou 1.5x pour ancrer chaque piège d'examen.`,
-        `Étape 3 (Validation) : Une fois les épisodes écoutés et marqués dans le Studio Audio, clique sur "Terminer".`,
+        `Étape 1 : ouvre les podcasts ${certCode} avec le bouton ci-dessous. Le lecteur reste accessible en bas de l'écran, même écran verrouillé.`,
+        `Étape 2 (écoute active) : écoute les épisodes au programme (${task.lectures || task.title}) une première fois le jour des leçons, puis réécoute-les à 1,25x ou 1,5x pour ancrer chaque piège d'examen.`,
+        `Étape 3 (validation) : une fois les épisodes écoutés, marque la tâche comme terminée.`,
       ],
       primaryButton: {
         tab: 'courses',
         coursesSubTab: 'podcasts',
         podcastCertFilter: certCode,
-        label: `🎧 Ouvrir le Studio Podcasts (${certCode})`,
+        label: `Ouvrir les podcasts ${certCode}`,
       },
       secondaryButton: {
         tab: 'certifications',
         certCode,
         certSubTab: 'fiches',
-        label: `📑 Voir les Fiches Mémo ${certCode}`,
+        label: `Voir les fiches express ${certCode}`,
       },
     };
   }
@@ -844,26 +844,28 @@ export function getTaskActionGuide(task: UnifiedTask): TaskActionGuide {
   // Cas 2A : Quickstart Snowflake ML ou Quickstart dbt + Snowflake
   if (task.type === 'quickstart' || titleLower.includes('quickstart')) {
     return {
-      whereLabel: `1) Guide Officiel Quickstart (${task.resource}) | 2) Onglet 3. Cours Udemy, Snowflake & Devoteam`,
+      whereLabel: `Guide officiel du Quickstart (${task.resource}), puis Cours > Snowflake`,
       recommendedDay,
       steps: [
-        `Étape 1 (Ouverture du Lab) : Clique sur "❄️ Ouvrir le Quickstart Officiel" ci-dessous pour lancer le guide pas-à-pas dans un nouvel onglet (${task.url || task.resource}).`,
-        `Étape 2 (Exécution Hands-On, ~${task.effective_est_min} min) : Exécute le Notebook / SQL dans ton compte Snowflake Free Trial (120j / 400$ AWS us-west-2 ou Cortex 30j) ou dbt Cloud.`,
-        `Étape 3 (Livrable & Validation) : Vérifie le livrable attendu ("${task.deliverable}") puis clique sur "Terminer".`,
+        `Étape 1 (ouverture du lab) : ouvre le Quickstart officiel avec le bouton ci-dessous (${task.url || task.resource}).`,
+        `Étape 2 (pratique, environ ${task.effective_est_min} min) : exécute le notebook ou le SQL dans ton compte Snowflake Free Trial (120 j / 400 $ AWS us-west-2 ou Cortex 30 j) ou dans dbt Cloud.`,
+        `Étape 3 (livrable) : vérifie le livrable attendu ("${task.deliverable}"), puis marque la tâche comme terminée.`,
       ],
       primaryButton: task.url
         ? {
             tab: 'courses',
             externalUrl: task.url,
-            label: '❄️ Ouvrir le Quickstart Officiel (Lien direct)',
+            label: 'Ouvrir le Quickstart officiel',
           }
         : {
             tab: 'courses',
-            label: '❄️ Ouvrir le Hub Snowflake & dbt (Onglet 3)',
+            coursesSubTab: 'snowflake_dbt',
+            label: 'Ouvrir Cours > Snowflake',
           },
       secondaryButton: {
         tab: 'courses',
-        label: '🌐 Voir tous les Quickstarts & Essais Snowflake (Onglet 3)',
+        coursesSubTab: 'snowflake_dbt',
+        label: 'Voir tous les Quickstarts Snowflake',
       },
     };
   }
@@ -871,28 +873,29 @@ export function getTaskActionGuide(task: UnifiedTask): TaskActionGuide {
   // Cas 2B : Parcours Officiel dbt Learn ou Ressource Interne Devoteam (Fred)
   if (task.type === 'dbt_learn' || task.type === 'devoteam') {
     return {
-      whereLabel: `1) Ressource officielle / Devoteam (${task.resource}) | 2) Onglet 3. Hub Snowflake & Devoteam + Onglet 4. Certifications (${certCode})`,
+      whereLabel: `Ressource officielle ou Devoteam (${task.resource}), puis Cours > ${certCode === 'DBT' ? 'dbt' : certCode}`,
       recommendedDay,
       steps: [
-        `Étape 1 (Accès direct) : Clique sur "🔗 Ouvrir la Ressource (${task.resource})" ci-dessous pour ouvrir le cours officiel learn.getdbt.com ou le document interne Devoteam.`,
-        `Étape 2 (Étude & Pratique, ~${task.effective_est_min} min) : Réalise le module et valide le livrable : "${task.deliverable}".`,
-        `Étape 3 (Consolidation) : Consulte les Chapitres & Fiches ${certCode} dans l'onglet 4, puis clique sur "Terminer".`,
+        `Étape 1 (accès direct) : ouvre la ressource (${task.resource}) avec le bouton ci-dessous : cours officiel learn.getdbt.com ou document interne Devoteam.`,
+        `Étape 2 (étude et pratique, environ ${task.effective_est_min} min) : réalise le module et valide le livrable : "${task.deliverable}".`,
+        `Étape 3 (consolidation) : relis les chapitres et fiches ${certCode} dans Cours, puis marque la tâche comme terminée.`,
       ],
       primaryButton: task.url
         ? {
             tab: 'courses',
             externalUrl: task.url,
-            label: `🔗 Ouvrir ${task.type === 'devoteam' ? 'la Ressource Devoteam' : 'dbt Learn Officiel'} (Nouvel onglet)`,
+            label: task.type === 'devoteam' ? 'Ouvrir la ressource Devoteam' : 'Ouvrir dbt Learn',
           }
         : {
             tab: 'courses',
-            label: '🌐 Ouvrir le Hub Ressources (Onglet 3)',
+            coursesSubTab: 'snowflake_dbt',
+            label: 'Ouvrir les ressources Snowflake et dbt',
           },
       secondaryButton: {
         tab: 'certifications',
         certCode,
         certSubTab: 'chapitres',
-        label: `📖 Lire les Chapitres & Fiches ${certCode}`,
+        label: `Lire les chapitres ${certCode}`,
       },
     };
   }
@@ -907,33 +910,33 @@ export function getTaskActionGuide(task: UnifiedTask): TaskActionGuide {
   ) {
     return {
       whereLabel: task.url
-        ? `1) Lien direct (${task.resource}) | 2) Onglet 4. Certifications & Blancs (${certCode}) > Simulation & Saisie Score`
-        : `Onglet 4. Certifications & Blancs (${certCode}) > Sous-onglet Simulation Examen Blanc / Saisie Score`,
+        ? `Lien direct (${task.resource}), puis Cours > ${certCode} > Examen blanc`
+        : `Cours > ${certCode} > Examen blanc`,
       recommendedDay,
       steps: [
         task.url
-          ? `Étape 1 : Clique sur "🌐 Ouvrir la Plateforme d'Examen Blanc" (${task.resource}) ou lance le simulateur de 65 questions dans l'onglet 4.`
-          : `Étape 1 : Passe le test blanc sur la plateforme indiquée (${task.resource}) ou lance directement le simulateur de 65 questions dans l'onglet 4. Certifications & Blancs.`,
-        'Étape 2 : Enregistre ton score (%) et tes scores par domaine dans l\'onglet "4. Certifications & Blancs" et note tes erreurs dans le Journal d\'erreurs.',
-        'Étape 3 : Reviens ici et clique sur "Terminer".',
+          ? `Étape 1 : ouvre la plateforme d'examen blanc (${task.resource}) ou lance le simulateur de 65 questions dans Cours > ${certCode} > Examen blanc.`
+          : `Étape 1 : passe le test blanc sur la plateforme indiquée (${task.resource}) ou lance le simulateur de 65 questions dans Cours > ${certCode} > Examen blanc.`,
+        `Étape 2 : enregistre ton score (%) et tes scores par domaine dans Cours > ${certCode} > Suivi, et note tes erreurs dans le journal d'erreurs.`,
+        'Étape 3 : reviens ici et marque la tâche comme terminée.',
       ],
       primaryButton: task.url
         ? {
             tab: 'certifications',
             externalUrl: task.url,
-            label: `🌐 Ouvrir ${task.resource} (Lien direct)`,
+            label: `Ouvrir ${task.resource}`,
           }
         : {
             tab: 'certifications',
             certCode,
             certSubTab: 'examen',
-            label: `📝 Ouvrir l'Examen Blanc ${certCode}`,
+            label: `Ouvrir l'examen blanc ${certCode}`,
           },
       secondaryButton: {
         tab: 'certifications',
         certCode,
         certSubTab: 'examen',
-        label: `📝 Simulateur & Saisie Score (${certCode})`,
+        label: `Simulateur et saisie du score (${certCode})`,
       },
     };
   }
@@ -945,51 +948,51 @@ export function getTaskActionGuide(task: UnifiedTask): TaskActionGuide {
         ? `leçons ${task.first_lecture} à ${task.last_lecture}`
         : task.lectures || 'leçons du bloc';
     return {
-      whereLabel: `1) Sur Udemy : regarder ${task.resource} (${rangeText}) | 2) Dans l'application : Onglet 4. Certifications (${certCode}) & Onglet 3. Cours Udemy`,
+      whereLabel: `Sur Udemy : ${task.resource} (${rangeText}), puis Cours > ${certCode === 'DBT' ? 'dbt' : certCode} et Cours > Udemy`,
       recommendedDay,
       steps: [
-        `Étape 1 : Regarde les vidéos (${rangeText}) sur ton compte Udemy${task.url ? ' (clique sur le bouton Udemy si besoin)' : ''} et fais les manipulations importantes.`,
-        `Étape 2 : Ouvre "4. Certifications & Blancs" (${certCode}) pour relire la Fiche de révision et le Chapitre d'étude correspondant aux leçons vues.`,
-        `Étape 3 : Clique sur "Terminer" : cela cochera automatiquement les ${rangeText} dans l'onglet 3 et mettra à jour ton % de certification.`,
+        `Étape 1 : regarde les vidéos (${rangeText}) sur ton compte Udemy${task.url ? ' (bouton Udemy si besoin)' : ''} et fais les manipulations importantes.`,
+        `Étape 2 : relis la fiche et le chapitre ${certCode} correspondant aux leçons vues (Cours > ${certCode}).`,
+        `Étape 3 : marque la tâche comme terminée : les ${rangeText} seront cochées automatiquement dans Cours > Udemy et ton % de certification sera mis à jour.`,
       ],
       primaryButton: {
         tab: 'certifications',
         certCode,
         certSubTab: 'chapitres',
-        label: `📖 Lire les Chapitres & Fiches ${certCode}`,
+        label: `Lire les chapitres ${certCode}`,
       },
       secondaryButton: {
         tab: 'courses',
         courseKey: task.course_key,
-        label: `🎬 Voir le détail des ${rangeText}`,
+        label: `Voir les ${rangeText} sur Udemy`,
       },
     };
   }
 
   // Cas 2E : Autres tâches certification (Examen officiel, Setup AWS, lab pratique, révision générale)
   return {
-    whereLabel: `Onglet 4. Certifications & Blancs (${certCode}) + Onglet 6. Répétition espacée (Flashcards)`,
+    whereLabel: `Cours > ${certCode} et Révision espacée (menu profil)`,
     recommendedDay,
     steps: [
-      `Étape 1 : Réalise l'action demandée : "${task.title}" (${task.resource}).`,
-      `Étape 2 : Consulte les fiches de synthèse ${certCode} dans l'onglet "4. Certifications & Blancs" ou révise tes cartes dans "6. Répétition espacée".`,
-      'Étape 3 : Clique sur "Terminer" une fois l\'étape validée.',
+      `Étape 1 : réalise l'action demandée : "${task.title}" (${task.resource}).`,
+      `Étape 2 : relis les fiches express ${certCode} dans Cours, ou révise tes cartes dans Révision espacée.`,
+      'Étape 3 : marque la tâche comme terminée une fois l\'étape validée.',
     ],
     primaryButton: task.url
       ? {
           tab: 'certifications',
           externalUrl: task.url,
-          label: `🔗 Ouvrir le Lien Officiel (${certCode})`,
+          label: `Ouvrir le lien officiel (${certCode})`,
         }
       : {
           tab: 'certifications',
           certCode,
           certSubTab: 'fiches',
-          label: `📑 Ouvrir les Fiches Mémo ${certCode}`,
+          label: `Ouvrir les fiches express ${certCode}`,
         },
     secondaryButton: {
       tab: 'srs',
-      label: '🧠 Réviser mes Flashcards (SM-2)',
+      label: 'Réviser mes cartes',
     },
   };
 }

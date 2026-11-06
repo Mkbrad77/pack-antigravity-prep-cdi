@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { BookText, Database, FileCode2, Target } from 'lucide-react';
 import { SqlEditorView } from './SqlEditorView';
 import { PythonEditorView } from './PythonEditorView';
 import { InterviewCoursesView } from './InterviewCoursesView';
@@ -14,6 +15,7 @@ export type InterviewSubTab =
 
 interface InterviewsHubViewProps {
   initialSubTab?: InterviewSubTab;
+  onSubTabChange?: (tab: InterviewSubTab) => void;
   initialCategory?: 'python' | 'sql' | 'de' | 'aie' | 'fiches_ml' | 'fiches_software';
   initialCourseId?: string;
   initialSearchQuery?: string;
@@ -22,8 +24,16 @@ interface InterviewsHubViewProps {
   navigationNonce?: number;
 }
 
+const SUB_TABS: Array<{ id: InterviewSubTab; label: string; Icon: React.ComponentType<{ size?: number; 'aria-hidden'?: boolean }>; count: string }> = [
+  { id: 'courses', label: "Cours d'entretien", Icon: BookText, count: '59' },
+  { id: 'sql', label: 'SQL', Icon: Database, count: '105' },
+  { id: 'python', label: 'Python', Icon: FileCode2, count: '70' },
+  { id: 'simulator', label: 'Simulateur', Icon: Target, count: '309' },
+];
+
 export const InterviewsHubView: React.FC<InterviewsHubViewProps> = ({
   initialSubTab = 'courses',
+  onSubTabChange,
   initialCategory,
   initialCourseId,
   initialSearchQuery,
@@ -39,48 +49,38 @@ export const InterviewsHubView: React.FC<InterviewsHubViewProps> = ({
     }
   }, [initialSubTab, navigationNonce]);
 
-  const subTabs: Array<{ id: InterviewSubTab; label: string; icon: string; countBadge?: string }> = [
-    { id: 'courses', label: '1. Cours & Fiches mémo (Modules 1 à 6)', icon: '📚', countBadge: '59 cours' },
-    { id: 'sql', label: '2. Entraînement SQL', icon: '🗄️', countBadge: '105 ex.' },
-    { id: 'python', label: '3. Entraînement Python', icon: '🐍', countBadge: '70 ex.' },
-    { id: 'simulator', label: '4. Simulateur Technique', icon: '🎯', countBadge: '309 questions' },
-    { id: 'competencies', label: '5. Matrice de Compétences', icon: '📊', countBadge: '20 comp.' },
-  ];
+  const select = (tab: InterviewSubTab) => {
+    setActiveSubTab(tab);
+    onSubTabChange?.(tab);
+  };
 
   return (
-    <div className="interview-hub">
-      {/* Barre de navigation des sous-onglets d'entretien */}
+    <div className="interview-hub" data-testid="pratique-view">
       <div className="interview-subnav">
-        <div className="interview-subnav-tabs">
-          {subTabs.map((tab) => {
-            const isActive = activeSubTab === tab.id;
+        <div className="segmented" role="tablist" aria-label="Sections de la pratique">
+          {SUB_TABS.map(({ id, label, Icon, count }) => {
+            const isActive = activeSubTab === id;
             return (
               <button
-                key={tab.id}
+                key={id}
                 type="button"
-                data-testid={`interview-subtab-${tab.id}`}
-                onClick={() => setActiveSubTab(tab.id)}
-                className={`interview-subnav-btn ${isActive ? 'active' : ''}`}
+                role="tab"
+                aria-selected={isActive}
+                data-testid={`interview-subtab-${id}`}
+                onClick={() => select(id)}
+                className="segment"
               >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
-                {tab.countBadge && (
-                  <span className="interview-badge">
-                    {tab.countBadge}
-                  </span>
-                )}
+                <Icon size={18} aria-hidden />
+                <span>{label}</span>
+                <span className="segment-count">{count}</span>
               </button>
             );
           })}
         </div>
-
-        <div className="badge badge-neutral" style={{ fontSize: '0.78rem', padding: '0.35rem 0.65rem' }}>
-          Priorité 1 : Data Engineer | Priorité 2 : AI Engineer
-        </div>
+        <span className="muted small hide-mobile">Priorité 1 : Data Engineer, priorité 2 : AI Engineer</span>
       </div>
 
-      {/* Contenu actif */}
-      <div>
+      <div role="tabpanel">
         {activeSubTab === 'courses' && (
           <InterviewCoursesView
             initialCategory={initialCategory}

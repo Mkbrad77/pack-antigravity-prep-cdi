@@ -1,4 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  ChevronDown,
+  CloudDownload,
+  CheckCircle2,
+  ExternalLink,
+  Gift,
+  Headphones,
+  Lightbulb,
+  Loader2,
+  Minus,
+  Pause,
+  Play,
+  Plus,
+  Search,
+  Trash2,
+} from 'lucide-react';
 import { apiClient, AppStateResponse } from '../apiClient';
 import { CertCode, CourseKey, LectureRangeRef, PodcastEpisode, UdemyCourse } from '../domain/types';
 import {
@@ -8,11 +24,16 @@ import {
   removeOfflineAudio,
   requestPersistentStorage,
 } from '../pwa/offlineAudio';
+import { certColor } from '../ui/navigation';
+
+export type CoursesViewMode = 'podcasts' | 'snowflake' | 'udemy';
 
 interface CoursesViewProps {
   state: AppStateResponse;
   onRefreshState: (nextState: AppStateResponse) => void;
+  mode?: CoursesViewMode;
   initialCourseKey?: CourseKey;
+  /** Ancien sélecteur d'onglet interne, conservé pour compatibilité. */
   initialSubTab?: 'udemy' | 'snowflake_dbt' | 'podcasts';
   initialPodcastCertFilter?: CertCode | 'ALL';
   navigationNonce?: number;
@@ -21,6 +42,19 @@ interface CoursesViewProps {
 }
 
 const COURSE_KEYS: CourseKey[] = ['merico', 'toth', 'weigel', 'maarek', 'nikolai'];
+const COURSE_CERT: Record<CourseKey, string> = {
+  merico: 'CLF-C02',
+  toth: 'DBT',
+  weigel: 'DBT',
+  maarek: 'DEA-C01',
+  nikolai: 'DEA-C01',
+};
+
+const PODCAST_CERTS: Array<{ code: CertCode; label: string; weeks: string; exam: string; total: number }> = [
+  { code: 'CLF-C02', label: 'AWS CLF-C02', weeks: 'S1 à S3', exam: '27 nov. 2026', total: 12 },
+  { code: 'DBT', label: 'dbt', weeks: 'S3 à S9', exam: '8 janv. 2027', total: 16 },
+  { code: 'DEA-C01', label: 'AWS DEA-C01', weeks: 'S10 à S19', exam: '19 mars 2027', total: 16 },
+];
 
 function formatRanges(ranges?: LectureRangeRef[]): string {
   if (!ranges || ranges.length === 0) return 'Aucune leçon associée';
@@ -29,9 +63,14 @@ function formatRanges(ranges?: LectureRangeRef[]): string {
     .join(', ');
 }
 
+function formatResume(sec: number): string {
+  return `${Math.floor(sec / 60)} min ${String(Math.floor(sec % 60)).padStart(2, '0')}`;
+}
+
 export const CoursesView: React.FC<CoursesViewProps> = ({
   state,
   onRefreshState,
+  mode: modeProp,
   initialCourseKey,
   initialSubTab,
   initialPodcastCertFilter,
@@ -39,28 +78,22 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
   activeEpisodeId,
   onPlayEpisode,
 }) => {
+  const mode: CoursesViewMode =
+    modeProp ||
+    (initialSubTab === 'podcasts' ? 'podcasts' : initialSubTab === 'snowflake_dbt' ? 'snowflake' : 'udemy');
+
   const [offlineUrls, setOfflineUrls] = useState<Set<string>>(new Set());
   const [offlineBusy, setOfflineBusy] = useState<Record<string, boolean>>({});
   const [offlineError, setOfflineError] = useState<string>('');
 
   useEffect(() => {
+    if (mode !== 'podcasts') return;
     listOfflineAudioUrls()
       .then(setOfflineUrls)
       .catch(() => undefined);
-  }, []);
+  }, [mode]);
 
-  const [activeHubTab, setActiveHubTab] = useState<
-    'podcasts_studio' | 'snowflake_dbt_hub' | 'udemy_courses'
-  >(
-    initialSubTab === 'podcasts'
-      ? 'podcasts_studio'
-      : initialCourseKey || initialSubTab === 'udemy'
-        ? 'udemy_courses'
-        : 'podcasts_studio'
-  );
-  const [selectedCourseKey, setSelectedCourseKey] = useState<CourseKey>(
-    initialCourseKey || 'merico'
-  );
+  const [selectedCourseKey, setSelectedCourseKey] = useState<CourseKey>(initialCourseKey || 'merico');
   const [courseDetail, setCourseDetail] = useState<UdemyCourse | null>(null);
   const [loadingCourse, setLoadingCourse] = useState<boolean>(false);
   const [rangeStart, setRangeStart] = useState<number>(1);
@@ -70,26 +103,15 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
   const [mlCategoryFilter, setMlCategoryFilter] = useState<string>('ALL');
   const [mlLevelFilter, setMlLevelFilter] = useState<string>('ALL');
 
-  // Filtres Studio Podcasts NotebookLM
-  const [podcastCertFilter, setPodcastCertFilter] = useState<CertCode | 'ALL'>(
-    initialPodcastCertFilter || 'ALL'
-  );
+  const [podcastCertFilter, setPodcastCertFilter] = useState<CertCode | 'ALL'>(initialPodcastCertFilter || 'ALL');
   const [podcastWeekFilter, setPodcastWeekFilter] = useState<number | 'ALL'>('ALL');
   const [podcastOnlyReady, setPodcastOnlyReady] = useState<boolean>(false);
+  const [openEpisodeId, setOpenEpisodeId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (initialSubTab === 'podcasts') {
-      setActiveHubTab('podcasts_studio');
-      if (initialPodcastCertFilter) {
-        setPodcastCertFilter(initialPodcastCertFilter);
-      }
-    } else if (initialCourseKey || initialSubTab === 'udemy') {
-      if (initialCourseKey) setSelectedCourseKey(initialCourseKey);
-      setActiveHubTab('udemy_courses');
-    } else if (initialSubTab === 'snowflake_dbt') {
-      setActiveHubTab('snowflake_dbt_hub');
-    }
-  }, [initialCourseKey, initialSubTab, initialPodcastCertFilter, navigationNonce]);
+    if (initialPodcastCertFilter) setPodcastCertFilter(initialPodcastCertFilter);
+    if (initialCourseKey) setSelectedCourseKey(initialCourseKey);
+  }, [initialCourseKey, initialPodcastCertFilter, navigationNonce]);
 
   const loadCourse = async (key: CourseKey) => {
     setLoadingCourse(true);
@@ -103,8 +125,9 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
   };
 
   useEffect(() => {
-    loadCourse(selectedCourseKey);
-  }, [selectedCourseKey]);
+    if (mode === 'udemy') loadCourse(selectedCourseKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCourseKey, mode]);
 
   const handleToggleSingleItem = async (itemIndex: number, done: boolean) => {
     const nextState = await apiClient.setLessonsDoneRange(selectedCourseKey, [itemIndex], done);
@@ -116,9 +139,7 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
     const lo = Math.min(startIdx, endIdx);
     const hi = Math.max(startIdx, endIdx);
     const indices: number[] = [];
-    for (let i = lo; i <= hi; i++) {
-      indices.push(i);
-    }
+    for (let i = lo; i <= hi; i++) indices.push(i);
     const nextState = await apiClient.setLessonsDoneRange(selectedCourseKey, indices, done);
     onRefreshState(nextState);
     await loadCourse(selectedCourseKey);
@@ -126,10 +147,7 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
 
   const handleUpdateEpisodeListenCount = async (ep: PodcastEpisode, delta: number) => {
     const nextCount = Math.max(0, (ep.listen_count || 0) + delta);
-    const nextState = await apiClient.updatePodcastProgress({
-      episode_id: ep.id,
-      listen_count: nextCount,
-    });
+    const nextState = await apiClient.updatePodcastProgress({ episode_id: ep.id, listen_count: nextCount });
     onRefreshState(nextState);
   };
 
@@ -137,29 +155,20 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
   const awsTopics = state.staticData.carteDesSujets.aws_topics.filter((t) => {
     if (!topicQuery.trim()) return true;
     const q = topicQuery.toLowerCase();
-    return (
-      t.label.toLowerCase().includes(q) ||
-      t.id.toLowerCase().includes(q) ||
-      t.dea_domain.toLowerCase().includes(q)
-    );
+    return t.label.toLowerCase().includes(q) || t.id.toLowerCase().includes(q) || t.dea_domain.toLowerCase().includes(q);
   });
-
   const dbtTopics = state.staticData.carteDesSujets.dbt_topics.filter((t) => {
     if (!topicQuery.trim()) return true;
     const q = topicQuery.toLowerCase();
     return t.label.toLowerCase().includes(q) || t.id.toLowerCase().includes(q);
   });
 
-  const visibleItems = (courseDetail?.items || []).filter((item) => {
-    if (selectedBlockFilter !== 'ALL' && item.block !== selectedBlockFilter) return false;
-    return true;
-  });
-
-  const hubData = state.staticData.snowflakeDbtResources;
-  const mlCategories = Array.from(
-    new Set((hubData?.snowflake_ml_quickstarts || []).map((q) => q.category))
+  const visibleItems = (courseDetail?.items || []).filter(
+    (item) => selectedBlockFilter === 'ALL' || item.block === selectedBlockFilter
   );
 
+  const hubData = state.staticData.snowflakeDbtResources;
+  const mlCategories = Array.from(new Set((hubData?.snowflake_ml_quickstarts || []).map((q) => q.category)));
   const filteredMlQuickstarts = (hubData?.snowflake_ml_quickstarts || []).filter((q) => {
     if (mlCategoryFilter !== 'ALL' && q.category !== mlCategoryFilter) return false;
     if (mlLevelFilter !== 'ALL' && q.level !== mlLevelFilter) return false;
@@ -167,23 +176,25 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
   });
 
   const allPodcasts = state.podcasts || [];
-  const clfReadyCount = allPodcasts.filter((p) => p.cert_code === 'CLF-C02' && p.file_exists).length;
-  const dbtReadyCount = allPodcasts.filter((p) => p.cert_code === 'DBT' && p.file_exists).length;
-  const deaReadyCount = allPodcasts.filter((p) => p.cert_code === 'DEA-C01' && p.file_exists).length;
-  const totalReadyCount = clfReadyCount + dbtReadyCount + deaReadyCount;
+  const readyCount = (code: CertCode) => allPodcasts.filter((p) => p.cert_code === code && p.file_exists).length;
+  const totalReadyCount = allPodcasts.filter((p) => p.file_exists).length;
 
-  const filteredPodcasts = allPodcasts.filter((ep) => {
-    if (podcastCertFilter !== 'ALL' && ep.cert_code !== podcastCertFilter) return false;
-    if (podcastOnlyReady && !ep.file_exists) return false;
-    if (
-      podcastWeekFilter !== 'ALL' &&
-      ep.primary_week !== podcastWeekFilter &&
-      !(ep.review_weeks || []).includes(podcastWeekFilter)
-    ) {
-      return false;
-    }
-    return true;
-  });
+  const filteredPodcasts = useMemo(
+    () =>
+      allPodcasts.filter((ep) => {
+        if (podcastCertFilter !== 'ALL' && ep.cert_code !== podcastCertFilter) return false;
+        if (podcastOnlyReady && !ep.file_exists) return false;
+        if (
+          podcastWeekFilter !== 'ALL' &&
+          ep.primary_week !== podcastWeekFilter &&
+          !(ep.review_weeks || []).includes(podcastWeekFilter)
+        ) {
+          return false;
+        }
+        return true;
+      }),
+    [allPodcasts, podcastCertFilter, podcastOnlyReady, podcastWeekFilter]
+  );
 
   const isCloud = state.runtimeMode === 'cloud';
   const offlineAvailable = isCloud && isOfflineAudioSupported();
@@ -219,789 +230,510 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  return (
-    <div data-testid="courses-view">
-      {/* Barre de navigation interne : Podcasts NotebookLM vs Hub Snowflake & dbt vs Cours Udemy */}
-      <div className="card" style={{ marginBottom: '1rem', borderLeft: '4px solid var(--accent-blue)' }}>
-        <div className="row-between" style={{ flexWrap: 'wrap', gap: '0.75rem' }}>
-          <div>
-            <h2 style={{ margin: 0, fontSize: '1.2rem' }}>
-              📚 Hub Formations : 44 Podcasts NotebookLM (Mobile), Quickstarts Snowflake ML (15+) & 5 Cours Udemy
-            </h2>
-            <p className="muted" style={{ margin: '0.25rem 0 0 0', fontSize: '0.86rem' }}>
-              Écoute tes podcasts NotebookLM sur mobile dans les transports (écoute récursive 3x), pratique sur Snowflake Free Trial (Fred) et suis tes 5 cours Udemy (départ 0 %).
-            </p>
+  // ==========================================================================
+  // PODCASTS
+  // ==========================================================================
+  if (mode === 'podcasts') {
+    return (
+      <div data-testid="courses-view" className="stack">
+        <div data-testid="podcasts-studio-section" className="stack">
+          <div className="segmented" role="group" aria-label="Filtrer par certification">
+            <button type="button" className="segment" aria-pressed={podcastCertFilter === 'ALL'} onClick={() => setPodcastCertFilter('ALL')}>
+              Tous <span className="segment-count">{totalReadyCount}/{allPodcasts.length}</span>
+            </button>
+            {PODCAST_CERTS.map((c) => (
+              <button
+                key={c.code}
+                type="button"
+                className="segment"
+                aria-pressed={podcastCertFilter === c.code}
+                onClick={() => setPodcastCertFilter(c.code)}
+                style={{ ['--cert-color' as string]: certColor(c.code) } as React.CSSProperties}
+              >
+                <span className="cert-dot" aria-hidden="true" />
+                {c.label}
+                <span className="segment-count">
+                  {readyCount(c.code)}/{c.total}
+                </span>
+              </button>
+            ))}
           </div>
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              data-testid="tab-podcasts-studio"
-              className={`btn ${activeHubTab === 'podcasts_studio' ? 'btn-primary' : 'btn-secondary'}`}
-              onClick={() => setActiveHubTab('podcasts_studio')}
-            >
-              🎧 Studio Podcasts NotebookLM ({totalReadyCount}/44 Prêts)
-            </button>
-            <button
-              type="button"
-              data-testid="tab-hub-snowflake-dbt"
-              className={`btn ${activeHubTab === 'snowflake_dbt_hub' ? 'btn-primary' : 'btn-secondary'}`}
-              onClick={() => setActiveHubTab('snowflake_dbt_hub')}
-            >
-              ❄️ Hub Snowflake Quickstarts, dbt Learn & Devoteam
-            </button>
-            <button
-              type="button"
-              data-testid="tab-udemy-courses"
-              className={`btn ${activeHubTab === 'udemy_courses' ? 'btn-primary' : 'btn-secondary'}`}
-              onClick={() => setActiveHubTab('udemy_courses')}
-            >
-              🎬 Mes 5 Cours Udemy & Carte des Sujets
-            </button>
-          </div>
-        </div>
-      </div>
 
-      {/* SECTION 0 : STUDIO PODCASTS NOTEBOOKLM (44 EPISODES - MOBILE & ECOUTE RECURSIVE) */}
-      {activeHubTab === 'podcasts_studio' && (
-        <div data-testid="podcasts-studio-section" style={{ marginBottom: '1.25rem' }}>
-          <div className="card" style={{ marginBottom: '1rem', borderLeft: '4px solid #38bdf8' }}>
-            <div className="row-between" style={{ flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.75rem' }}>
-              <div>
-                <h3 style={{ margin: 0, fontSize: '1.12rem' }}>
-                  🎧 Studio Audio Mobile & Écoute Récursive : 44 Podcasts NotebookLM (CLF-C02, dbt, DEA-C01)
-                </h3>
-                <p className="muted" style={{ margin: '0.25rem 0 0 0', fontSize: '0.84rem' }}>
-                  <strong>Méthode des 3 Écoutes Récursives :</strong> 1re écoute le jour des leçons Udemy (découverte à 1x), 2e écoute à J+3 dans les transports (consolidation à 1.25x), 3e écoute la veille de l'examen blanc (maîtrise à 1.5x).
-                </p>
-              </div>
-            </div>
-
-            {/* Compteurs par certification */}
-            <div className="grid-3" style={{ gap: '0.75rem', marginBottom: '0.85rem' }}>
-              <div
-                className="card card-sm"
-                style={{
-                  borderLeft: '4px solid #2563eb',
-                  cursor: 'pointer',
-                  backgroundColor: podcastCertFilter === 'CLF-C02' ? 'var(--bg-secondary)' : undefined,
-                }}
-                onClick={() => setPodcastCertFilter(podcastCertFilter === 'CLF-C02' ? 'ALL' : 'CLF-C02')}
-              >
-                <div className="row-between">
-                  <strong>1. AWS CLF-C02 (S1 à S3)</strong>
-                  <span className={`badge ${clfReadyCount === 12 ? 'badge-success' : 'badge-warning'}`}>
-                    {clfReadyCount}/12 Prêts
+          {podcastCertFilter !== 'ALL' && (() => {
+            const c = PODCAST_CERTS.find((x) => x.code === podcastCertFilter)!;
+            const ready = readyCount(c.code);
+            return (
+              <div className="card card-sm" style={{ ['--cert-color' as string]: certColor(c.code) } as React.CSSProperties}>
+                <div className="row-between small">
+                  <span>
+                    <strong>{ready} épisode{ready > 1 ? 's' : ''} prêt{ready > 1 ? 's' : ''}</strong> sur {c.total}
+                  </span>
+                  <span className="muted">
+                    {c.weeks}, examen le {c.exam}
                   </span>
                 </div>
-                <div className="muted" style={{ fontSize: '0.78rem', marginTop: '0.25rem' }}>
-                  Examen : <strong>27 nov. 2026</strong>
+                <div className="progress-track" aria-hidden="true">
+                  <div className="progress-fill" style={{ width: `${Math.round((ready / c.total) * 100)}%` }} />
                 </div>
               </div>
+            );
+          })()}
 
-              <div
-                className="card card-sm"
-                style={{
-                  borderLeft: '4px solid #d97706',
-                  cursor: 'pointer',
-                  backgroundColor: podcastCertFilter === 'DBT' ? 'var(--bg-secondary)' : undefined,
-                }}
-                onClick={() => setPodcastCertFilter(podcastCertFilter === 'DBT' ? 'ALL' : 'DBT')}
+          <div className="cluster" style={{ gap: '0.75rem' }}>
+            <label className="cluster small" style={{ gap: '0.4rem', fontWeight: 600 }}>
+              Semaine
+              <select
+                aria-label="Filtrer par semaine d'écoute"
+                value={podcastWeekFilter}
+                onChange={(e) => setPodcastWeekFilter(e.target.value === 'ALL' ? 'ALL' : Number(e.target.value))}
               >
-                <div className="row-between">
-                  <strong>2. dbt Analytics Eng. (S3 à S9)</strong>
-                  <span className={`badge ${dbtReadyCount === 16 ? 'badge-success' : 'badge-warning'}`}>
-                    {dbtReadyCount}/16 Prêts ({16 - dbtReadyCount} restants)
-                  </span>
-                </div>
-                <div className="muted" style={{ fontSize: '0.78rem', marginTop: '0.25rem' }}>
-                  Examen : <strong>8 janv. 2027</strong>
-                </div>
-              </div>
-
-              <div
-                className="card card-sm"
-                style={{
-                  borderLeft: '4px solid #059669',
-                  cursor: 'pointer',
-                  backgroundColor: podcastCertFilter === 'DEA-C01' ? 'var(--bg-secondary)' : undefined,
-                }}
-                onClick={() => setPodcastCertFilter(podcastCertFilter === 'DEA-C01' ? 'ALL' : 'DEA-C01')}
-              >
-                <div className="row-between">
-                  <strong>3. AWS DEA-C01 (S10 à S19)</strong>
-                  <span className={`badge ${deaReadyCount === 16 ? 'badge-success' : 'badge-info'}`}>
-                    {deaReadyCount}/16 Prêts
-                  </span>
-                </div>
-                <div className="muted" style={{ fontSize: '0.78rem', marginTop: '0.25rem' }}>
-                  Examen : <strong>19 mars 2027</strong>
-                </div>
-              </div>
-            </div>
-
-            {/* Barre de filtres */}
-            <div
-              style={{
-                display: 'flex',
-                gap: '0.6rem',
-                flexWrap: 'wrap',
-                alignItems: 'center',
-                paddingTop: '0.65rem',
-                borderTop: '1px solid var(--border)',
-              }}
-            >
-              <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
-                {(['ALL', 'CLF-C02', 'DBT', 'DEA-C01'] as const).map((cert) => (
-                  <button
-                    key={cert}
-                    type="button"
-                    className={`btn btn-sm ${podcastCertFilter === cert ? 'btn-primary' : 'btn-secondary'}`}
-                    onClick={() => setPodcastCertFilter(cert)}
-                  >
-                    {cert === 'ALL' ? `Tous (${allPodcasts.length})` : cert}
-                  </button>
+                <option value="ALL">Toutes</option>
+                {Array.from({ length: 22 }, (_, i) => i + 1).map((w) => (
+                  <option key={w} value={w}>
+                    S{w}
+                  </option>
                 ))}
-              </div>
-
-              <label style={{ fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                Semaine (1re écoute ou révision) :
-                <select
-                  value={podcastWeekFilter}
-                  onChange={(e) =>
-                    setPodcastWeekFilter(e.target.value === 'ALL' ? 'ALL' : Number(e.target.value))
-                  }
-                >
-                  <option value="ALL">Toutes les semaines (S1 à S22)</option>
-                  {Array.from({ length: 22 }, (_, i) => i + 1).map((w) => (
-                    <option key={w} value={w}>
-                      Semaine {w}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label style={{ fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer' }}>
-                <input
-                  type="checkbox"
-                  checked={podcastOnlyReady}
-                  onChange={(e) => setPodcastOnlyReady(e.target.checked)}
-                />
-                Afficher uniquement les audios prêts ({totalReadyCount})
-              </label>
-
-              {offlineAvailable && (
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-sm"
-                  data-testid="download-visible-offline"
-                  onClick={handleDownloadVisibleForOffline}
-                  title="Enregistre sur ce téléphone les épisodes affichés, pour les écouter sans réseau"
-                >
-                  ⬇ Télécharger les épisodes affichés (hors ligne)
-                </button>
-              )}
-            </div>
-            {offlineError && (
-              <div className="badge badge-warning" style={{ marginTop: '0.5rem' }}>
-                {offlineError}
-              </div>
+              </select>
+            </label>
+            <label className="check-row">
+              <input type="checkbox" checked={podcastOnlyReady} onChange={(e) => setPodcastOnlyReady(e.target.checked)} />
+              Prêts uniquement
+            </label>
+            {offlineAvailable && (
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                data-testid="download-visible-offline"
+                onClick={handleDownloadVisibleForOffline}
+              >
+                <CloudDownload size={16} aria-hidden />
+                Tout garder hors ligne
+              </button>
             )}
           </div>
+          {offlineError && (
+            <div className="alert alert-warning small" role="alert">
+              {offlineError}
+            </div>
+          )}
 
-          {/* Grille des episodes de Podcast */}
-          <div className="grid-2" style={{ gap: '0.85rem' }}>
+          <details className="disclosure">
+            <summary>
+              <Lightbulb size={18} aria-hidden />
+              Méthode des 3 écoutes
+              <ChevronDown size={18} className="chevron" aria-hidden />
+            </summary>
+            <div className="disclosure-body text-secondary small">
+              Première écoute le jour des leçons Udemy (découverte à 1x), deuxième écoute à J+3 dans les transports
+              (consolidation à 1,25x), troisième écoute la veille de l'examen blanc (maîtrise à 1,5x).
+            </div>
+          </details>
+
+          <ul className="episode-list" aria-label="Épisodes">
+            {filteredPodcasts.length === 0 && <li className="empty-state">Aucun épisode pour ces filtres.</li>}
             {filteredPodcasts.map((ep) => {
               const isPlayingThis = activeEpisodeId === ep.id;
               const listenCount = ep.listen_count || 0;
+              const isOpen = openEpisodeId === ep.id;
+              const isOffline = ep.audio_url ? offlineUrls.has(ep.audio_url) : false;
+              const hasResume = (ep.last_position_sec || 0) > 5;
               return (
-                <div
+                <li
                   key={ep.id}
                   data-testid={`podcast-card-${ep.id}`}
-                  className="card card-sm"
-                  style={{
-                    borderLeft: `4px solid ${
-                      isPlayingThis
-                        ? '#38bdf8'
-                        : ep.file_exists
-                          ? 'var(--accent-green)'
-                          : 'var(--border)'
-                    }`,
-                    backgroundColor: isPlayingThis ? 'rgba(56, 189, 248, 0.08)' : undefined,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                  }}
+                  className={`episode-row ${isPlayingThis ? 'is-playing' : ''} ${ep.file_exists ? '' : 'is-unavailable'}`}
+                  style={{ ['--cert-color' as string]: certColor(ep.cert_code) } as React.CSSProperties}
                 >
-                  <div>
-                    <div className="row-between" style={{ gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.35rem' }}>
-                      <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                        <span className="mono badge badge-info">{ep.id}</span>
-                        <span className="badge badge-neutral">Semaine {ep.primary_week}</span>
-                        {ep.review_weeks && ep.review_weeks.length > 0 && (
-                          <span className="mono badge badge-neutral" style={{ fontSize: '0.7rem' }}>
-                            🔁 Rév: S{ep.review_weeks.join(', S')}
-                          </span>
-                        )}
-                      </div>
-                      <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'center' }}>
-                        {ep.file_exists ? (
-                          <span className="badge badge-success">Audio Prêt (~{ep.duration_est_min} min)</span>
-                        ) : (
-                          <span className="badge badge-warning">
-                            Bientôt disponible
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <strong style={{ fontSize: '0.96rem', display: 'block', marginBottom: '0.2rem' }}>
-                      {ep.title}
-                    </strong>
-
-                    <div style={{ fontSize: '0.78rem', color: 'var(--accent-blue)', fontWeight: 600, marginBottom: '0.3rem' }}>
-                      {ep.course_lectures ? `📚 ${ep.course_lectures} | ` : ''}🗓️ {ep.schedule_days}
-                    </div>
-
-                    <div className="muted" style={{ fontSize: '0.8rem', marginBottom: '0.45rem' }}>
-                      {ep.summary}
-                    </div>
-
-                    {ep.key_traps && ep.key_traps.length > 0 && (
-                      <div
-                        style={{
-                          backgroundColor: 'var(--bg-secondary)',
-                          borderRadius: '6px',
-                          padding: '0.4rem 0.6rem',
-                          fontSize: '0.76rem',
-                          marginBottom: '0.6rem',
-                        }}
-                      >
-                        <strong>⚠️ Pièges d'examen couverts :</strong>
-                        <ul style={{ margin: '0.2rem 0 0 0', paddingLeft: '1.1rem' }}>
-                          {ep.key_traps.map((trap, idx) => (
-                            <li key={idx}>{trap}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-
-                  <div
-                    className="row-between"
-                    style={{
-                      paddingTop: '0.5rem',
-                      borderTop: '1px solid var(--border)',
-                      gap: '0.5rem',
-                      flexWrap: 'wrap',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                      <span
-                        className={`mono badge ${
-                          listenCount >= 3
-                            ? 'badge-success'
-                            : listenCount >= 1
-                              ? 'badge-info'
-                              : 'badge-neutral'
-                        }`}
-                      >
-                        🔁 Écoutes : {listenCount}/3
-                      </span>
-                      <button
-                        type="button"
-                        className="btn btn-secondary btn-sm"
-                        onClick={() => handleUpdateEpisodeListenCount(ep, 1)}
-                        title="Ajouter 1 écoute récursive"
-                      >
-                        +1
-                      </button>
-                      {listenCount > 0 && (
-                        <button
-                          type="button"
-                          className="btn btn-secondary btn-sm"
-                          onClick={() => handleUpdateEpisodeListenCount(ep, -1)}
-                          title="Retirer 1 écoute"
-                        >
-                          -1
-                        </button>
-                      )}
-                    </div>
-
+                  <div className="episode-main">
                     {ep.file_exists ? (
                       <button
                         type="button"
                         data-testid={`play-podcast-btn-${ep.id}`}
-                        className={`btn btn-sm ${isPlayingThis ? 'btn-warning' : 'btn-primary'}`}
+                        className="episode-play"
                         onClick={() => onPlayEpisode && onPlayEpisode(ep)}
-                      >
-                        {isPlayingThis
-                          ? '🔊 En cours de lecture...'
-                          : ep.last_position_sec && ep.last_position_sec > 5
-                            ? `▶ Reprendre (${Math.floor(ep.last_position_sec / 60)}m${String(Math.floor(ep.last_position_sec % 60)).padStart(2, '0')}s)`
-                            : '▶ Écouter sur le lecteur'}
-                      </button>
-                    ) : null}
-                    {ep.file_exists && offlineAvailable && ep.audio_url ? (
-                      <button
-                        type="button"
-                        data-testid={`offline-podcast-btn-${ep.id}`}
-                        className="btn btn-secondary btn-sm"
-                        disabled={Boolean(offlineBusy[ep.id])}
-                        onClick={() => handleToggleOffline(ep)}
-                        title={
-                          offlineUrls.has(ep.audio_url)
-                            ? 'Supprimer la copie hors ligne de ce téléphone'
-                            : 'Enregistrer sur ce téléphone pour écouter sans réseau'
+                        aria-label={
+                          isPlayingThis
+                            ? `En cours de lecture : ${ep.title}`
+                            : hasResume
+                              ? `Reprendre ${ep.title} à ${formatResume(ep.last_position_sec || 0)}`
+                              : `Écouter ${ep.title}`
                         }
                       >
-                        {offlineBusy[ep.id]
-                          ? '⏳ Téléchargement...'
-                          : offlineUrls.has(ep.audio_url)
-                            ? '✅ Hors ligne (retirer)'
-                            : '⬇ Hors ligne'}
+                        {isPlayingThis ? <Pause size={20} aria-hidden /> : <Play size={20} aria-hidden />}
                       </button>
-                    ) : null}
-                    {ep.file_exists ? null : (
-                      <span className="muted" style={{ fontSize: '0.76rem' }}>
-                        Audio pas encore disponible : il apparaîtra automatiquement dès son ajout.
+                    ) : (
+                      <span className="episode-play is-disabled" aria-hidden="true">
+                        <Headphones size={18} />
                       </span>
                     )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {activeHubTab === 'snowflake_dbt_hub' && hubData && (
-        <div data-testid="snowflake-dbt-hub-section">
-          {/* Section 1 : Les 2 Free Trials Snowflake de Fred + Accès Communautés Devoteam */}
-          <div className="grid-2" style={{ gap: '1rem', marginBottom: '1rem' }}>
-            <div className="card" style={{ borderLeft: '4px solid var(--accent-green)' }}>
-              <div className="row-between" style={{ marginBottom: '0.5rem', flexWrap: 'wrap', gap: '0.4rem' }}>
-                <h3 style={{ margin: 0, fontSize: '1.05rem' }}>
-                  🎁 1. Tes 2 Comptes Free Trial Snowflake (Liens spéciaux de Fred)
-                </h3>
-                <span className="badge badge-success">800 $ de crédits cumulés</span>
-              </div>
-              <p className="muted" style={{ fontSize: '0.82rem', marginTop: 0, marginBottom: '0.75rem' }}>
-                Ne les active pas tous en même temps : active le <strong>1er (120 jours + 400 $)</strong> en <strong>Semaine 4</strong> pour la certification dbt et les premiers Quickstarts ML, puis le <strong>2e (Cortex Code 30 jours)</strong> en <strong>Semaine 15</strong>.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
-                {hubData.free_trials.map((trial) => (
-                  <div
-                    key={trial.id}
-                    className="card card-sm"
-                    style={{ backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border-color)' }}
-                  >
-                    <div className="row-between" style={{ gap: '0.5rem', flexWrap: 'wrap' }}>
-                      <strong>{trial.title}</strong>
-                      <span className="badge badge-info">{trial.badge}</span>
-                    </div>
-                    <div className="muted" style={{ fontSize: '0.81rem', margin: '0.3rem 0' }}>
-                      {trial.description}
-                    </div>
-                    <div className="row-between" style={{ marginTop: '0.4rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                      <span className="mono badge badge-warning" style={{ fontSize: '0.75rem' }}>
-                        ⏰ Activation : {trial.when_to_activate}
-                      </span>
-                      <button
-                        type="button"
-                        className="btn btn-primary btn-sm"
-                        onClick={() => openExternal(trial.url)}
-                      >
-                        ❄️ Ouvrir le lien Free Trial ➔
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="card" style={{ borderLeft: '4px solid var(--accent)' }}>
-              <div className="row-between" style={{ marginBottom: '0.5rem', flexWrap: 'wrap', gap: '0.4rem' }}>
-                <h3 style={{ margin: 0, fontSize: '1.05rem' }}>
-                  🏢 2. Accès Internes Devoteam, Partner Portals & Communautés
-                </h3>
-                <span className="badge badge-info">Ressources Senior Devoteam</span>
-              </div>
-              <p className="muted" style={{ fontSize: '0.82rem', marginTop: 0, marginBottom: '0.75rem' }}>
-                Liens internes Devoteam filtrés pour ton objectif (dbt Analytics Engineering + pratique Snowflake) :
-              </p>
-              <div style={{ maxHeight: '295px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
-                {hubData.devoteam_communities.map((comm) => (
-                  <div
-                    key={comm.id}
-                    className="card card-sm"
-                    style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}
-                  >
-                    <div style={{ flex: 1, minWidth: '200px' }}>
-                      <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                        <span className="badge badge-neutral" style={{ fontSize: '0.72rem' }}>{comm.domain}</span>
-                        <strong style={{ fontSize: '0.86rem' }}>{comm.title}</strong>
-                      </div>
-                      <div className="muted" style={{ fontSize: '0.78rem', marginTop: '0.15rem' }}>
-                        {comm.description}
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div className="episode-title">{ep.title}</div>
+                      <div className="episode-meta">
+                        <span className="mono">{ep.id}</span>
+                        <span>S{ep.primary_week}</span>
+                        {ep.file_exists ? (
+                          <span>{ep.duration_est_min} min</span>
+                        ) : (
+                          <span className="badge badge-warning">Bientôt disponible</span>
+                        )}
+                        <span className={listenCount >= 3 ? 'episode-done' : undefined}>
+                          {listenCount >= 3 && <CheckCircle2 size={14} aria-hidden />}
+                          {listenCount}/3 écoutes
+                        </span>
+                        {hasResume && !isPlayingThis && <span>reprise à {formatResume(ep.last_position_sec || 0)}</span>}
+                        {isOffline && <span className="badge badge-success">Hors ligne</span>}
                       </div>
                     </div>
                     <button
                       type="button"
-                      className="btn btn-secondary btn-sm"
-                      onClick={() => openExternal(comm.url)}
+                      className="icon-btn"
+                      aria-expanded={isOpen}
+                      aria-label={isOpen ? `Masquer les détails de ${ep.id}` : `Voir les détails de ${ep.id}`}
+                      onClick={() => setOpenEpisodeId(isOpen ? null : ep.id)}
                     >
-                      🔗 Ouvrir ➔
+                      <ChevronDown size={20} aria-hidden style={{ transform: isOpen ? 'rotate(180deg)' : undefined, transition: 'transform 0.2s' }} />
                     </button>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Section 2 : Priorité Urgente N°1 - Certification dbt Analytics Engineering (Semaines 4 à 10) */}
-          <div className="card" style={{ marginBottom: '1rem', borderLeft: '4px solid var(--warning)' }}>
-            <div className="row-between" style={{ flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.6rem' }}>
-              <div>
-                <h3 style={{ margin: 0, fontSize: '1.1rem' }}>
-                  🎯 3. Priorité Urgente N°1 : Parcours Officiel Certification dbt Analytics Engineering (Semaines 4 à 10 : Examen 08/01/2027)
-                </h3>
-                <p className="muted" style={{ margin: '0.2rem 0 0 0', fontSize: '0.84rem' }}>
-                  Tous les modules officiels <code>learn.getdbt.com</code>, le Study Guide officiel, le Google Doc de retours d'expérience Devoteam et les examens blancs Qanalabs, intégrés semaine par semaine dans ton planning :
-                </p>
-              </div>
-              <span className="badge badge-warning">Semaines 4 à 10</span>
-            </div>
-
-            <div style={{ maxHeight: '340px', overflowY: 'auto', marginBottom: '1rem' }}>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Semaine</th>
-                    <th>Catégorie</th>
-                    <th>Ressource Officielle dbt / Devoteam</th>
-                    <th>Priorité</th>
-                    <th>Durée</th>
-                    <th>Action directe</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {hubData.dbt_certification_resources.map((item) => (
-                    <tr key={item.id}>
-                      <td>
-                        <span className="mono badge badge-info">S{item.week}</span>
-                      </td>
-                      <td>
-                        <span className="badge badge-neutral">{item.category}</span>
-                      </td>
-                      <td>
-                        <strong>{item.title}</strong>
-                        <div className="muted" style={{ fontSize: '0.78rem' }}>{item.description}</div>
-                      </td>
-                      <td>
-                        <span className={`badge ${item.priority === 'core' ? 'badge-core' : 'badge-bonus'}`}>
-                          {item.priority.toUpperCase()}
+                  {isOpen && (
+                    <div className="episode-details">
+                      {(ep.course_lectures || ep.schedule_days) && (
+                        <p className="small" style={{ margin: 0, fontWeight: 600 }}>
+                          {[ep.course_lectures, ep.schedule_days].filter(Boolean).join(', ')}
+                        </p>
+                      )}
+                      {ep.review_weeks && ep.review_weeks.length > 0 && (
+                        <p className="muted small" style={{ margin: 0 }}>
+                          Révision en S{ep.review_weeks.join(', S')}
+                        </p>
+                      )}
+                      <p className="text-secondary small" style={{ margin: 0 }}>
+                        {ep.summary}
+                      </p>
+                      {ep.key_traps && ep.key_traps.length > 0 && (
+                        <div className="callout callout-warning small">
+                          <strong>Pièges d'examen couverts :</strong>
+                          <ul style={{ margin: '0.25rem 0 0', paddingLeft: '1.1rem' }}>
+                            {ep.key_traps.map((trap, idx) => (
+                              <li key={idx}>{trap}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      <div className="cluster">
+                        <span className="small" style={{ fontWeight: 600 }}>
+                          Écoutes
                         </span>
-                      </td>
-                      <td className="mono">{item.est_min > 0 ? `${item.est_min} min` : 'Inclus'}</td>
-                      <td>
                         <button
                           type="button"
-                          className="btn btn-primary btn-sm"
-                          onClick={() => openExternal(item.url)}
+                          className="icon-btn"
+                          style={{ width: 40, height: 40, border: '1px solid var(--border-strong)' }}
+                          disabled={listenCount === 0}
+                          onClick={() => handleUpdateEpisodeListenCount(ep, -1)}
+                          aria-label={`Retirer une écoute à ${ep.id}`}
                         >
-                          🌐 Ouvrir ➔
+                          <Minus size={18} aria-hidden />
                         </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                        <span className="mono" aria-live="polite">
+                          {listenCount}/3
+                        </span>
+                        <button
+                          type="button"
+                          className="icon-btn"
+                          style={{ width: 40, height: 40, border: '1px solid var(--border-strong)' }}
+                          onClick={() => handleUpdateEpisodeListenCount(ep, 1)}
+                          aria-label={`Ajouter une écoute à ${ep.id}`}
+                        >
+                          <Plus size={18} aria-hidden />
+                        </button>
+                        {ep.file_exists && offlineAvailable && ep.audio_url && (
+                          <button
+                            type="button"
+                            data-testid={`offline-podcast-btn-${ep.id}`}
+                            className="btn btn-secondary btn-sm"
+                            disabled={Boolean(offlineBusy[ep.id])}
+                            onClick={() => handleToggleOffline(ep)}
+                          >
+                            {offlineBusy[ep.id] ? (
+                              <>
+                                <Loader2 size={16} aria-hidden /> Téléchargement…
+                              </>
+                            ) : isOffline ? (
+                              <>
+                                <Trash2 size={16} aria-hidden /> Retirer du hors ligne
+                              </>
+                            ) : (
+                              <>
+                                <CloudDownload size={16} aria-hidden /> Garder hors ligne
+                              </>
+                            )}
+                          </button>
+                        )}
+                      </div>
+                      {!ep.file_exists && (
+                        <p className="muted small" style={{ margin: 0 }}>
+                          L'audio apparaîtra automatiquement dès son ajout.
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    );
+  }
 
-            <h4 style={{ margin: '0.5rem 0', fontSize: '0.98rem' }}>
-              ❄️ Les 6 Quickstarts Officiels Conjoints dbt Cloud & Snowflake (Pratique SQL/Jinja/Iceberg/Cortex) :
-            </h4>
-            <div className="grid-3" style={{ gap: '0.65rem' }}>
-              {hubData.dbt_snowflake_quickstarts.map((qs) => (
-                <div key={qs.id} className="card card-sm">
-                  <div className="row-between" style={{ gap: '0.4rem', marginBottom: '0.25rem' }}>
-                    <span className="mono badge badge-info">Semaine {qs.week}</span>
-                    <span className={`badge ${qs.priority === 'core' ? 'badge-core' : 'badge-bonus'}`}>
-                      {qs.priority.toUpperCase()} ({qs.est_min} min)
-                    </span>
+  // ==========================================================================
+  // SNOWFLAKE & DBT
+  // ==========================================================================
+  if (mode === 'snowflake') {
+    if (!hubData) {
+      return <div className="empty-state">Ressources Snowflake indisponibles.</div>;
+    }
+    return (
+      <div data-testid="courses-view" className="stack">
+        <div data-testid="snowflake-dbt-hub-section" className="stack">
+          <section className="card card-accent" style={{ ['--cert-color' as string]: 'var(--cert-snow)' } as React.CSSProperties}>
+            <div className="card-header">
+              <h2 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                <Gift size={18} aria-hidden /> Tes 2 comptes Free Trial Snowflake
+              </h2>
+              <span className="badge badge-success">800 $ de crédits au total</span>
+            </div>
+            <p className="text-secondary small" style={{ marginTop: 0 }}>
+              Ne les active pas en même temps : le premier (120 jours, 400 $) en semaine 4 pour la certification dbt et
+              les premiers Quickstarts ML, le second (Cortex Code, 30 jours) en semaine 15.
+            </p>
+            <div className="grid-2" style={{ gap: '0.75rem' }}>
+              {hubData.free_trials.map((trial) => (
+                <div key={trial.id} className="card card-sm stack-sm">
+                  <div className="row-between">
+                    <strong>{trial.title}</strong>
+                    <span className="badge badge-info">{trial.badge}</span>
                   </div>
-                  <strong style={{ fontSize: '0.88rem', display: 'block', marginBottom: '0.25rem' }}>
-                    {qs.title}
-                  </strong>
-                  <div className="muted" style={{ fontSize: '0.78rem', marginBottom: '0.5rem' }}>
-                    {qs.description}
+                  <div className="text-secondary small">{trial.description}</div>
+                  <div className="row-between">
+                    <span className="badge badge-warning">Activation : {trial.when_to_activate}</span>
+                    <button type="button" className="btn btn-primary btn-sm" onClick={() => openExternal(trial.url)}>
+                      Ouvrir l'essai <ExternalLink size={16} aria-hidden />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="card card-accent" style={{ ['--cert-color' as string]: 'var(--cert-dbt)' } as React.CSSProperties}>
+            <div className="card-header">
+              <div>
+                <h2 className="card-title">Parcours officiel dbt Analytics Engineering</h2>
+                <p className="muted small" style={{ margin: '0.2rem 0 0' }}>
+                  Semaines 4 à 9, examen le 8 janvier 2027 : modules learn.getdbt.com, guide d'étude, retours Devoteam et examens blancs.
+                </p>
+              </div>
+              <span className="badge badge-warning">Urgence n°1</span>
+            </div>
+            <ul className="resource-list">
+              {hubData.dbt_certification_resources.map((item) => (
+                <li key={item.id} className="resource-row">
+                  <span className="mono badge badge-info">S{item.week}</span>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div style={{ fontWeight: 600 }}>{item.title}</div>
+                    <div className="muted small">{item.description}</div>
+                    <div className="cluster small" style={{ marginTop: '0.3rem', gap: '0.35rem' }}>
+                      <span className="badge badge-neutral">{item.category}</span>
+                      <span className={`badge ${item.priority === 'core' ? 'badge-core' : 'badge-bonus'}`}>
+                        {item.priority === 'core' ? 'Obligatoire' : 'Bonus'}
+                      </span>
+                      <span className="mono muted">{item.est_min > 0 ? `${item.est_min} min` : 'Inclus'}</span>
+                    </div>
                   </div>
                   <button
                     type="button"
                     className="btn btn-secondary btn-sm"
-                    style={{ width: '100%', borderColor: 'var(--accent-blue)', color: 'var(--accent-blue)', fontWeight: 600 }}
-                    onClick={() => openExternal(qs.url)}
+                    onClick={() => openExternal(item.url)}
+                    aria-label={`Ouvrir ${item.title}`}
                   >
-                    ❄️ Lancer le Quickstart dbt + Snowflake ➔
+                    Ouvrir <ExternalLink size={16} aria-hidden />
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            <h3 style={{ margin: '1.25rem 0 0.6rem', fontSize: '1rem' }}>Les 6 Quickstarts dbt Cloud et Snowflake</h3>
+            <div className="grid-3" style={{ gap: '0.65rem' }}>
+              {hubData.dbt_snowflake_quickstarts.map((qs) => (
+                <div key={qs.id} className="card card-sm stack-sm">
+                  <div className="cluster" style={{ gap: '0.35rem' }}>
+                    <span className="mono badge badge-info">S{qs.week}</span>
+                    <span className={`badge ${qs.priority === 'core' ? 'badge-core' : 'badge-bonus'}`}>
+                      {qs.priority === 'core' ? 'Obligatoire' : 'Bonus'}, {qs.est_min} min
+                    </span>
+                  </div>
+                  <strong>{qs.title}</strong>
+                  <div className="muted small">{qs.description}</div>
+                  <button type="button" className="btn btn-secondary btn-sm btn-block" onClick={() => openExternal(qs.url)}>
+                    Lancer le Quickstart <ExternalLink size={16} aria-hidden />
                   </button>
                 </div>
               ))}
             </div>
-          </div>
+          </section>
 
-          {/* Section 3 : Les 15 Quickstarts Officiels Snowflake ML (+ 2 Quickstarts DE / Cortex Agents) */}
-          <div className="card" style={{ marginBottom: '1rem', borderLeft: '4px solid var(--accent-blue)' }}>
-            <div className="row-between" style={{ flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.75rem' }}>
+          <section className="card card-accent" style={{ ['--cert-color' as string]: 'var(--cert-snow)' } as React.CSSProperties}>
+            <div className="card-header">
               <div>
-                <h3 style={{ margin: 0, fontSize: '1.1rem' }}>
-                  🚀 4. Catalogue Complet des 15 Quickstarts Officiels Snowflake ML (+ 2 Labs Cortex AI / Iceberg)
-                </h3>
-                <p className="muted" style={{ margin: '0.2rem 0 0 0', fontSize: '0.84rem' }}>
-                  Source officielle :{' '}
-                  <a
-                    href="https://docs.snowflake.com/en/developer-guide/snowflake-ml/quickstart"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    docs.snowflake.com/en/developer-guide/snowflake-ml/quickstart
-                  </a>{' '}
-                  | Planifiés au rythme de 1 à 2 Quickstarts par semaine entre la Semaine 5 et la Semaine 22.
+                <h2 className="card-title">Les 15 Quickstarts officiels Snowflake ML</h2>
+                <p className="muted small" style={{ margin: '0.2rem 0 0' }}>
+                  Plus 2 labs Cortex AI et Iceberg, à raison de 1 à 2 par semaine entre S5 et S22. Source :{' '}
+                  <a href="https://docs.snowflake.com/en/developer-guide/snowflake-ml/quickstart" target="_blank" rel="noopener noreferrer">
+                    docs.snowflake.com
+                  </a>
                 </p>
               </div>
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-                <label style={{ fontSize: '0.82rem' }}>
-                  Catégorie :{' '}
-                  <select
-                    value={mlCategoryFilter}
-                    onChange={(e) => setMlCategoryFilter(e.target.value)}
-                  >
-                    <option value="ALL">Toutes ({hubData.snowflake_ml_quickstarts.length})</option>
-                    {mlCategories.map((cat) => (
-                      <option key={cat} value={cat}>
-                        {cat}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label style={{ fontSize: '0.82rem' }}>
-                  Niveau :{' '}
-                  <select
-                    value={mlLevelFilter}
-                    onChange={(e) => setMlLevelFilter(e.target.value)}
-                  >
-                    <option value="ALL">Tous niveaux</option>
-                    <option value="Beginner">Beginner (Débutant)</option>
-                    <option value="Intermediate">Intermediate (Intermédiaire)</option>
-                  </select>
-                </label>
+            </div>
+            <div className="stack-sm" style={{ marginBottom: '0.85rem' }}>
+              <div className="chips scroll" role="group" aria-label="Catégorie de Quickstart">
+                <button type="button" className="chip" aria-pressed={mlCategoryFilter === 'ALL'} onClick={() => setMlCategoryFilter('ALL')}>
+                  Toutes ({hubData.snowflake_ml_quickstarts.length})
+                </button>
+                {mlCategories.map((cat) => (
+                  <button key={cat} type="button" className="chip" aria-pressed={mlCategoryFilter === cat} onClick={() => setMlCategoryFilter(cat)}>
+                    {cat}
+                  </button>
+                ))}
+              </div>
+              <div className="segmented" role="group" aria-label="Niveau" style={{ alignSelf: 'flex-start' }}>
+                {([
+                  ['ALL', 'Tous niveaux'],
+                  ['Beginner', 'Débutant'],
+                  ['Intermediate', 'Intermédiaire'],
+                ] as Array<[string, string]>).map(([id, label]) => (
+                  <button key={id} type="button" className="segment" aria-pressed={mlLevelFilter === id} onClick={() => setMlLevelFilter(id)}>
+                    {label}
+                  </button>
+                ))}
               </div>
             </div>
-
             <div className="grid-3" style={{ gap: '0.75rem' }}>
               {filteredMlQuickstarts.map((qs) => (
-                <div
-                  key={qs.id}
-                  data-testid={`ml-quickstart-card-${qs.number}`}
-                  className="card card-sm"
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    borderTop: `3px solid ${qs.level === 'Beginner' ? 'var(--accent-green)' : 'var(--accent-blue)'}`,
-                  }}
-                >
-                  <div>
-                    <div className="row-between" style={{ gap: '0.35rem', flexWrap: 'wrap', marginBottom: '0.35rem' }}>
-                      <span className="mono badge badge-neutral">#{qs.number} | S{qs.week}</span>
+                <div key={qs.id} data-testid={`ml-quickstart-card-${qs.number}`} className="card card-sm stack-sm" style={{ justifyContent: 'space-between' }}>
+                  <div className="stack-sm">
+                    <div className="cluster" style={{ gap: '0.35rem' }}>
+                      <span className="mono badge badge-neutral">
+                        n°{qs.number}, S{qs.week}
+                      </span>
                       <span className={`badge ${qs.level === 'Beginner' ? 'badge-success' : 'badge-info'}`}>
-                        {qs.level}
+                        {qs.level === 'Beginner' ? 'Débutant' : 'Intermédiaire'}
                       </span>
-                      <span className={`badge ${qs.priority === 'core' ? 'badge-core' : 'badge-bonus'}`}>
-                        {qs.priority.toUpperCase()} ({qs.est_min} min)
-                      </span>
+                      <span className={`badge ${qs.priority === 'core' ? 'badge-core' : 'badge-bonus'}`}>{qs.est_min} min</span>
                     </div>
-                    <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--accent-blue)', marginBottom: '0.2rem' }}>
-                      {qs.category}
-                    </div>
-                    <strong style={{ fontSize: '0.92rem', display: 'block', marginBottom: '0.3rem' }}>
-                      {qs.title}
-                    </strong>
-                    <div className="muted" style={{ fontSize: '0.8rem', marginBottom: '0.35rem' }}>
-                      {qs.description}
-                    </div>
-                    <div className="muted" style={{ fontSize: '0.76rem', marginBottom: '0.6rem' }}>
+                    <div className="eyebrow">{qs.category}</div>
+                    <strong>{qs.title}</strong>
+                    <div className="muted small">{qs.description}</div>
+                    <div className="muted small">
                       <strong>Livrable :</strong> {qs.deliverable}
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    className="btn btn-primary btn-sm"
-                    style={{ width: '100%' }}
-                    onClick={() => openExternal(qs.url)}
-                  >
-                    ❄️ Ouvrir le Quickstart #{qs.number} ➔
+                  <button type="button" className="btn btn-primary btn-sm btn-block" onClick={() => openExternal(qs.url)}>
+                    Ouvrir le Quickstart n°{qs.number} <ExternalLink size={16} aria-hidden />
                   </button>
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      )}
+          </section>
 
-      {/* Recherche dans la carte des sujets + 5 cours Udemy */}
-      <div className="card" style={{ marginBottom: '1rem' }}>
-        <div className="row-between" style={{ flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.75rem' }}>
-          <div>
-            <h2 style={{ margin: 0, fontSize: '1.15rem' }}>
-              Carte des sujets techniques et correspondances leçons Udemy / AWS Skill Builder
-            </h2>
-            <p className="muted" style={{ margin: '0.2rem 0 0 0', fontSize: '0.85rem' }}>
-              Recherchez un sujet (ex. Glue, Kinesis, S3, Athena, snapshots, incremental) pour
-              identifier immédiatement les plages de leçons correspondantes dans vos cours.
-            </p>
-          </div>
-          <input
-            type="search"
-            data-testid="topic-search-input"
-            placeholder="Rechercher un sujet (ex. Glue, Kinesis, snapshots)..."
-            value={topicQuery}
-            onChange={(e) => setTopicQuery(e.target.value)}
-            style={{ minWidth: '280px' }}
-          />
-        </div>
-
-        <div className="grid-2" style={{ gap: '0.85rem' }}>
-          <div>
-            <h3 style={{ fontSize: '0.95rem', marginTop: 0 }}>
-              Sujets dbt Analytics Engineering ({dbtTopics.length}) : Priorité S4-S10
-            </h3>
-            <div style={{ maxHeight: '240px', overflowY: 'auto' }}>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Sujet dbt</th>
-                    <th>Cours Zoltan C. Toth</th>
-                    <th>Cours Daniel Weigel</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dbtTopics.map((t) => (
-                    <tr key={t.id} data-testid={`topic-row-${t.id}`}>
-                      <td>
-                        <strong>{t.label}</strong>
-                      </td>
-                      <td className="mono" style={{ fontSize: '0.78rem' }}>
-                        {formatRanges(t.toth)}
-                      </td>
-                      <td className="mono" style={{ fontSize: '0.78rem' }}>
-                        {formatRanges(t.weigel)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          <details className="disclosure">
+            <summary>
+              Accès internes Devoteam et communautés
+              <span className="badge badge-neutral">{hubData.devoteam_communities.length}</span>
+              <ChevronDown size={18} className="chevron" aria-hidden />
+            </summary>
+            <div className="disclosure-body">
+              <ul className="resource-list">
+                {hubData.devoteam_communities.map((comm) => (
+                  <li key={comm.id} className="resource-row">
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div className="cluster" style={{ gap: '0.35rem' }}>
+                        <span className="badge badge-neutral">{comm.domain}</span>
+                        <strong>{comm.title}</strong>
+                      </div>
+                      <div className="muted small" style={{ marginTop: '0.2rem' }}>
+                        {comm.description}
+                      </div>
+                    </div>
+                    <button type="button" className="btn btn-secondary btn-sm" onClick={() => openExternal(comm.url)} aria-label={`Ouvrir ${comm.title}`}>
+                      Ouvrir <ExternalLink size={16} aria-hidden />
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
-
-          <div>
-            <h3 style={{ fontSize: '0.95rem', marginTop: 0 }}>
-              Sujets AWS Data Engineering ({awsTopics.length}) : S1-S3 (CLF) & S11-S20 (DEA)
-            </h3>
-            <div style={{ maxHeight: '240px', overflowY: 'auto' }}>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Sujet</th>
-                    <th>Domaine</th>
-                    <th>Maarek & Kane</th>
-                    <th>Nikolai / Merico</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {awsTopics.map((t) => (
-                    <tr key={t.id} data-testid={`topic-row-${t.id}`}>
-                      <td>
-                        <strong>{t.label}</strong>
-                      </td>
-                      <td>
-                        <span className="mono badge badge-info">{t.dea_domain}</span>
-                      </td>
-                      <td className="mono" style={{ fontSize: '0.78rem' }}>
-                        {formatRanges(t.maarek)}
-                      </td>
-                      <td className="mono" style={{ fontSize: '0.78rem' }}>
-                        N: {formatRanges(t.nikolai)} | M: {formatRanges(t.merico)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          </details>
         </div>
       </div>
+    );
+  }
 
-      {/* Selecteur des 5 cours Udemy */}
-      <div className="card" style={{ marginBottom: '1rem' }}>
-        <h2 style={{ marginTop: 0, fontSize: '1.15rem' }}>
-          Suivi détaillé de mes 5 cours Udemy (départ 0 % sur chaque cours : Merico S1-S3, Toth & Weigel S4-S10, Maarek & Nikolai S11-S20)
-        </h2>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-          {COURSE_KEYS.map((key) => {
-            const st = state.progress.courses[key];
-            const isSelected = key === selectedCourseKey;
-            return (
-              <button
-                key={key}
-                type="button"
-                data-testid={`select-course-${key}`}
-                className={`btn ${isSelected ? 'btn-primary' : 'btn-secondary'}`}
-                onClick={() => setSelectedCourseKey(key)}
-              >
-                {key.toUpperCase()} ({st?.doneItems ?? 0}/{st?.totalItems ?? 0} :{' '}
-                {st?.weightedPercent ?? 0} %)
-              </button>
-            );
-          })}
-        </div>
+  // ==========================================================================
+  // UDEMY
+  // ==========================================================================
+  return (
+    <div data-testid="courses-view" className="stack">
+      <div className="chips scroll" role="group" aria-label="Choisir un cours Udemy">
+        {COURSE_KEYS.map((key) => {
+          const st = state.progress.courses[key];
+          return (
+            <button
+              key={key}
+              type="button"
+              data-testid={`select-course-${key}`}
+              className="chip"
+              aria-pressed={key === selectedCourseKey}
+              onClick={() => setSelectedCourseKey(key)}
+              style={{ ['--cert-color' as string]: certColor(COURSE_CERT[key]) } as React.CSSProperties}
+            >
+              <span className="cert-dot" aria-hidden="true" />
+              <span style={{ textTransform: 'capitalize' }}>{key}</span>
+              <span className="mono muted">{st?.weightedPercent ?? 0} %</span>
+            </button>
+          );
+        })}
+      </div>
 
-        {courseStats && (
-          <div className="card card-sm" style={{ marginBottom: '1rem' }}>
-            <div className="row-between" style={{ flexWrap: 'wrap', gap: '0.75rem' }}>
-              <div>
-                <h3 style={{ margin: 0, fontSize: '1.05rem' }}>{courseStats.title}</h3>
-                <div className="muted" style={{ fontSize: '0.84rem' }}>
-                  Formateur : <strong>{courseStats.instructor}</strong> | Rôle : {courseStats.role}{' '}
-                  | Facteur temps : <span className="mono">x{courseStats.timeFactor}</span>
-                </div>
+      {courseStats && (
+        <section className="card card-accent" style={{ ['--cert-color' as string]: certColor(COURSE_CERT[selectedCourseKey]) } as React.CSSProperties}>
+          <div className="row-between" style={{ alignItems: 'flex-start', gap: '1rem' }}>
+            <div style={{ minWidth: 0, flex: '1 1 260px' }}>
+              <h2 style={{ margin: 0, fontSize: '1.15rem' }}>{courseStats.title}</h2>
+              <div className="muted small" style={{ marginTop: '0.25rem' }}>
+                {courseStats.instructor}, {courseStats.role}, facteur temps <span className="mono">x{courseStats.timeFactor}</span>
               </div>
-              <div style={{ textAlign: 'right' }}>
-                <div className="mono" style={{ fontSize: '1.2rem', fontWeight: 700 }}>
-                  {courseStats.weightedPercent} % pondéré
+            </div>
+            <div className="cluster" style={{ gap: '0.75rem', flexWrap: 'nowrap' }}>
+              <div className="ring" style={{ ['--pct' as string]: courseStats.weightedPercent } as React.CSSProperties} aria-hidden="true">
+                {courseStats.weightedPercent}%
+              </div>
+              <div className="small">
+                <div>
+                  <strong className="mono">{courseStats.doneItems}</strong>/{courseStats.totalItems} éléments
                 </div>
-                <div className="muted" style={{ fontSize: '0.8rem' }}>
-                  {courseStats.doneItems}/{courseStats.totalItems} éléments |{' '}
+                <div className="muted mono">
                   {courseStats.estimatedMinutesDone}/{courseStats.estimatedMinutesTotal} min
-                  estimées
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Action rapide : cocher ou decocher une plage de lecons */}
-            <div
-              style={{
-                display: 'flex',
-                gap: '0.6rem',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                marginTop: '0.85rem',
-                paddingTop: '0.75rem',
-                borderTop: '1px solid var(--border)',
-              }}
-            >
-              <strong>Validation par plage de leçons :</strong>
-              <label>
-                De n°{' '}
+          <fieldset style={{ border: 'none', padding: 0, margin: '1rem 0 0', borderTop: '1px solid var(--border-color)', paddingTop: '0.9rem' }}>
+            <legend className="small" style={{ fontWeight: 650, padding: 0, marginBottom: '0.5rem', float: 'left', width: '100%' }}>
+              Valider une plage de leçons
+            </legend>
+            <div className="cluster" style={{ clear: 'both' }}>
+              <label className="cluster small" style={{ gap: '0.35rem' }}>
+                De
                 <input
                   type="number"
                   data-testid="range-start-input"
@@ -1009,11 +741,11 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                   max={courseStats.totalItems}
                   value={rangeStart}
                   onChange={(e) => setRangeStart(Number(e.target.value))}
-                  style={{ width: '75px' }}
+                  style={{ width: '84px' }}
                 />
               </label>
-              <label>
-                à n°{' '}
+              <label className="cluster small" style={{ gap: '0.35rem' }}>
+                à
                 <input
                   type="number"
                   data-testid="range-end-input"
@@ -1021,7 +753,7 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                   max={courseStats.totalItems}
                   value={rangeEnd}
                   onChange={(e) => setRangeEnd(Number(e.target.value))}
-                  style={{ width: '75px' }}
+                  style={{ width: '84px' }}
                 />
               </label>
               <button
@@ -1030,75 +762,76 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                 className="btn btn-success btn-sm"
                 onClick={() => handleToggleRange(rangeStart, rangeEnd, true)}
               >
-                Cocher les leçons {rangeStart} à {rangeEnd} d'un coup
+                Cocher {rangeStart} à {rangeEnd}
               </button>
               <button
                 type="button"
                 data-testid="btn-uncheck-range"
-                className="btn btn-secondary btn-sm"
+                className="btn btn-ghost btn-sm"
                 onClick={() => handleToggleRange(rangeStart, rangeEnd, false)}
               >
-                Décocher la plage
+                Décocher
               </button>
             </div>
-          </div>
-        )}
+          </fieldset>
+        </section>
+      )}
 
-        {/* Blocs thematiques du cours selectionne */}
-        {courseStats && (
-          <div style={{ marginBottom: '1rem' }}>
-            <h4 style={{ margin: '0 0 0.5rem 0' }}>Blocs thématiques du cours :</h4>
-            <div className="grid-3" style={{ gap: '0.6rem' }}>
-              {courseStats.blocks.map((b) => (
-                <div key={b.blockId} className="card card-sm">
-                  <div className="row-between">
-                    <strong style={{ fontSize: '0.88rem' }}>{b.label}</strong>
-                    <span className="mono badge badge-neutral">{b.weightedPercent} %</span>
-                  </div>
-                  <div className="muted" style={{ fontSize: '0.78rem', margin: '0.25rem 0' }}>
-                    Leçons {b.firstLecture} à {b.lastLecture} ({b.doneItems}/{b.totalItems}) |
-                    Priorité : <code>{b.priority}</code>
-                  </div>
-                  <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.4rem' }}>
-                    <button
-                      type="button"
-                      className="btn btn-success btn-sm"
-                      onClick={() => handleToggleRange(b.firstLecture, b.lastLecture, true)}
-                    >
-                      Tout cocher ({b.firstLecture}-{b.lastLecture})
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-secondary btn-sm"
-                      onClick={() =>
-                        setSelectedBlockFilter(
-                          selectedBlockFilter === b.blockId ? 'ALL' : b.blockId
-                        )
-                      }
-                    >
-                      {selectedBlockFilter === b.blockId ? 'Voir tout' : 'Filtrer'}
-                    </button>
-                  </div>
+      {courseStats && (
+        <section aria-labelledby="blocks-heading">
+          <h2 id="blocks-heading" className="section-title">
+            Blocs du cours
+          </h2>
+          <div className="grid-3" style={{ gap: '0.6rem' }}>
+            {courseStats.blocks.map((b) => (
+              <div key={b.blockId} className="card card-sm stack-sm">
+                <div className="row-between">
+                  <strong className="small">{b.label}</strong>
+                  <span className="mono badge badge-neutral">{b.weightedPercent} %</span>
                 </div>
-              ))}
-            </div>
+                <div className="muted small">
+                  Leçons {b.firstLecture} à {b.lastLecture} ({b.doneItems}/{b.totalItems}), priorité {b.priority}
+                </div>
+                <div className="cluster">
+                  <button type="button" className="btn btn-success btn-sm" onClick={() => handleToggleRange(b.firstLecture, b.lastLecture, true)}>
+                    Tout cocher
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-ghost btn-sm"
+                    aria-pressed={selectedBlockFilter === b.blockId}
+                    onClick={() => setSelectedBlockFilter(selectedBlockFilter === b.blockId ? 'ALL' : b.blockId)}
+                  >
+                    {selectedBlockFilter === b.blockId ? 'Voir tout' : 'Voir ce bloc'}
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-        )}
+        </section>
+      )}
 
-        {/* Liste des lecons individuelles */}
+      <section className="card" aria-labelledby="lessons-heading">
+        <div className="card-header">
+          <h2 id="lessons-heading" className="card-title">
+            Leçons {selectedBlockFilter !== 'ALL' ? 'du bloc' : ''}
+          </h2>
+          <span className="muted small mono">{visibleItems.length}</span>
+        </div>
         {loadingCourse ? (
-          <p className="muted">Chargement des leçons...</p>
+          <p className="muted" role="status">
+            Chargement des leçons…
+          </p>
         ) : (
-          <div style={{ maxHeight: '380px', overflowY: 'auto' }}>
+          <div className="table-scroll" style={{ maxHeight: '520px' }} tabIndex={0} role="region" aria-label="Liste des leçons">
             <table className="table">
               <thead>
                 <tr>
-                  <th>Fait</th>
-                  <th>N°</th>
-                  <th>Type</th>
-                  <th>Titre de la leçon</th>
-                  <th>Bloc</th>
-                  <th>Durée vidéo</th>
+                  <th scope="col">Fait</th>
+                  <th scope="col">N°</th>
+                  <th scope="col">Leçon</th>
+                  <th scope="col" className="hide-mobile">Bloc</th>
+                  <th scope="col">Durée</th>
                 </tr>
               </thead>
               <tbody>
@@ -1110,57 +843,135 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                         data-testid={`lesson-checkbox-${selectedCourseKey}-${item.i}`}
                         checked={Boolean(item.done)}
                         onChange={(e) => handleToggleSingleItem(item.i, e.target.checked)}
+                        aria-label={`Leçon ${item.i} terminée : ${item.title}`}
                       />
                     </td>
                     <td className="mono">{item.i}</td>
                     <td>
-                      <span className="badge badge-neutral">{item.type}</span>
+                      <span className="badge badge-neutral" style={{ marginRight: '0.4rem' }}>
+                        {item.type}
+                      </span>
+                      {item.title}
                     </td>
-                    <td>{item.title}</td>
-                    <td className="mono" style={{ fontSize: '0.78rem' }}>
-                      {item.block}
+                    <td className="mono small hide-mobile">{item.block}</td>
+                    <td className="mono small" style={{ whiteSpace: 'nowrap' }}>
+                      {item.minutes} min
                     </td>
-                    <td className="mono">{item.minutes} min</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         )}
-      </div>
+      </section>
 
-      {/* Ressources AWS Skill Builder gratuites */}
-      <div className="card">
-        <h3 style={{ marginTop: 0 }}>
-          Ressources officielles AWS Skill Builder retenues (gratuites)
-        </h3>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Examen</th>
-              <th>Titre de la ressource officielle</th>
-              <th>Type</th>
-              <th>Durée</th>
-              <th>Usage recommandé</th>
-            </tr>
-          </thead>
-          <tbody>
+      <details className="disclosure">
+        <summary>
+          <Search size={18} aria-hidden />
+          Carte des sujets et correspondance avec les leçons
+          <ChevronDown size={18} className="chevron" aria-hidden />
+        </summary>
+        <div className="disclosure-body stack">
+          <div>
+            <label className="field" htmlFor="topic-search-input">
+              Rechercher un sujet (Glue, Kinesis, S3, Athena, snapshots, incremental…)
+              <input
+                id="topic-search-input"
+                type="search"
+                data-testid="topic-search-input"
+                placeholder="Ex. Kinesis"
+                value={topicQuery}
+                onChange={(e) => setTopicQuery(e.target.value)}
+              />
+            </label>
+          </div>
+          <div className="grid-2">
+            <div>
+              <h3 style={{ fontSize: '0.95rem', margin: '0 0 0.5rem' }}>
+                Sujets dbt <span className="muted mono">{dbtTopics.length}</span>
+              </h3>
+              <div className="table-scroll" style={{ maxHeight: '280px' }} tabIndex={0} role="region" aria-label="Sujets dbt">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Sujet</th>
+                      <th scope="col">Toth</th>
+                      <th scope="col">Weigel</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dbtTopics.map((t) => (
+                      <tr key={t.id} data-testid={`topic-row-${t.id}`}>
+                        <td>
+                          <strong>{t.label}</strong>
+                        </td>
+                        <td className="mono small">{formatRanges(t.toth)}</td>
+                        <td className="mono small">{formatRanges(t.weigel)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div>
+              <h3 style={{ fontSize: '0.95rem', margin: '0 0 0.5rem' }}>
+                Sujets AWS <span className="muted mono">{awsTopics.length}</span>
+              </h3>
+              <div className="table-scroll" style={{ maxHeight: '280px' }} tabIndex={0} role="region" aria-label="Sujets AWS">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Sujet</th>
+                      <th scope="col">Domaine</th>
+                      <th scope="col">Maarek et Kane</th>
+                      <th scope="col">Nikolai, Merico</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {awsTopics.map((t) => (
+                      <tr key={t.id} data-testid={`topic-row-${t.id}`}>
+                        <td>
+                          <strong>{t.label}</strong>
+                        </td>
+                        <td>
+                          <span className="mono badge badge-info">{t.dea_domain}</span>
+                        </td>
+                        <td className="mono small">{formatRanges(t.maarek)}</td>
+                        <td className="mono small">
+                          N : {formatRanges(t.nikolai)}, M : {formatRanges(t.merico)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details className="disclosure">
+        <summary>
+          Ressources AWS Skill Builder gratuites
+          <span className="badge badge-neutral">{state.staticData.awsSkillBuilderCatalogue.length}</span>
+          <ChevronDown size={18} className="chevron" aria-hidden />
+        </summary>
+        <div className="disclosure-body">
+          <ul className="resource-list">
             {state.staticData.awsSkillBuilderCatalogue.map((res, idx) => (
-              <tr key={idx}>
-                <td>
-                  <span className="badge badge-info">{res.exam}</span>
-                </td>
-                <td>
-                  <strong>{res.title}</strong>
-                </td>
-                <td>{res.type}</td>
-                <td className="mono">{res.minutes} min</td>
-                <td className="muted">{res.usage}</td>
-              </tr>
+              <li key={idx} className="resource-row">
+                <span className="badge badge-info">{res.exam}</span>
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div style={{ fontWeight: 600 }}>{res.title}</div>
+                  <div className="muted small">
+                    {res.type}, <span className="mono">{res.minutes} min</span> : {res.usage}
+                  </div>
+                </div>
+              </li>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </ul>
+        </div>
+      </details>
     </div>
   );
 };

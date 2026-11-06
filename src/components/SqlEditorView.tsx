@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { CheckCircle2, ChevronDown, Database, Eye, Lightbulb, Pause, Play, RotateCcw, Search, Timer, Trash2 } from 'lucide-react';
+import { MOBILE_QUERY, useMediaQuery } from '../ui/useMediaQuery';
 import {
   executeSqlSandbox,
   fetchSqlDatasets,
@@ -12,16 +14,16 @@ const CATEGORY_LABELS: Record<string, string> = {
   select_where: '1. SELECT & WHERE',
   group_by_having: '2. GROUP BY & HAVING',
   joins: '3. Jointures & Anti-Joins',
-  cte: '4. CTE & Modularite',
-  window_functions: '5. Fonctions de fenetrage',
+  cte: '4. CTE & Modularité',
+  window_functions: '5. Fonctions de fenêtrage',
   case_when: '6. CASE WHEN & Pivot',
   dates: '7. Dates & Intervalles',
-  deduplication: '8. Dedoublonnage de flux',
+  deduplication: '8. Dédoublonnage de flux',
   transactions: '9. Transactions & SCD',
   index_explain: '10. Index & EXPLAIN',
-  optimisation: '11. Optimisation de requetes',
-  modeling: '12. Modelisation Kimball',
-  data_engineering: '13. Qualite & Observabilite',
+  optimisation: '11. Optimisation de requêtes',
+  modeling: '12. Modélisation Kimball',
+  data_engineering: '13. Qualité & Observabilité',
 };
 
 interface SqlEditorViewProps {
@@ -68,7 +70,12 @@ export const SqlEditorView: React.FC<SqlEditorViewProps> = ({
   // Chronometre d'entretien
   const [seconds, setSeconds] = useState<number>(0);
   const [timerRunning, setTimerRunning] = useState<boolean>(false);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [notice, setNotice] = useState<string>('');
+  const isMobile = useMediaQuery(MOBILE_QUERY);
+  const [filtersOpenAtStart] = useState<boolean>(() => !window.matchMedia(MOBILE_QUERY).matches);
+  const [listOpen, setListOpen] = useState<boolean>(false);
+  const editorRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     Promise.all([fetchSqlDatasets(), fetchSqlExercises()])
@@ -119,9 +126,10 @@ export const SqlEditorView: React.FC<SqlEditorViewProps> = ({
   }, [timerRunning]);
 
   const selectExercise = (ex: SqlExerciseSummary) => {
+    setNotice('');
     setCurrentExercise(ex);
     setSelectedDatasetId(ex.datasetId);
-    setUserQuery(`-- Exercice : ${ex.title}\n-- Jeu de donnees : ${ex.datasetId}\nSELECT * FROM \nLIMIT 20;`);
+    setUserQuery(`-- Exercice : ${ex.title}\n-- Jeu de données : ${ex.datasetId}\nSELECT * FROM \nLIMIT 20;`);
     setSandboxResult(null);
     setAttemptCount(0);
     setSolutionRevealed(false);
@@ -165,7 +173,7 @@ export const SqlEditorView: React.FC<SqlEditorViewProps> = ({
 
   const handleRevealSolution = async () => {
     if (attemptCount === 0) {
-      alert('Regle de validation : Vous devez d\'abord executer au moins une tentative de requete avant de pouvoir afficher la solution.');
+      setNotice('Exécute au moins une tentative de requête avant d\'afficher la solution.');
       return;
     }
 
@@ -189,7 +197,7 @@ export const SqlEditorView: React.FC<SqlEditorViewProps> = ({
         setActiveResultTab('solution');
       }
     } catch (err) {
-      alert(`Erreur lors de la recuperation de la solution : ${err instanceof Error ? err.message : String(err)}`);
+      setNotice(`Erreur lors de la récupération de la solution : ${err instanceof Error ? err.message : String(err)}`);
     }
   };
 
@@ -220,18 +228,14 @@ export const SqlEditorView: React.FC<SqlEditorViewProps> = ({
 
   if (loading) {
     return (
-      <div className="card" style={{ padding: '2rem' }}>
-        Chargement des exercices SQL et du bac a sable SQLite in-memory...
+      <div className="card" role="status">
+        Chargement des exercices SQL et du bac à sable…
       </div>
     );
   }
 
   if (error) {
-    return (
-      <div className="alert alert-danger">
-        Erreur de chargement : {error}
-      </div>
-    );
+    return <div className="alert alert-danger" role="alert">Erreur de chargement : {error}</div>;
   }
 
   const filteredExercises = exercises.filter((ex) => {
@@ -252,28 +256,63 @@ export const SqlEditorView: React.FC<SqlEditorViewProps> = ({
   });
 
   const currentDataset = datasets.find((d) => d.id === selectedDatasetId);
+  const difficultyLabel = (d: string) => (d === 'avance' ? 'Avancé' : d === 'intermediaire' ? 'Intermédiaire' : 'Débutant');
+
+  const exerciseList = (
+    <div className="stack-sm">
+      <div className="row-between small">
+        <strong>Exercices ({filteredExercises.length})</strong>
+        <span className="badge badge-success mono">{Object.keys(passedMap).length} réussis</span>
+      </div>
+      <div className="item-list-container" role="list" aria-label="Exercices SQL">
+        {filteredExercises.length === 0 && <div className="empty-state small">Aucun exercice pour ces filtres.</div>}
+        {filteredExercises.map((ex) => {
+          const isSelected = currentExercise?.id === ex.id;
+          const isPassed = passedMap[ex.id];
+          return (
+            <div role="listitem" key={ex.id}>
+              <button
+                type="button"
+                onClick={() => {
+                  selectExercise(ex);
+                  if (isMobile) {
+                    setListOpen(false);
+                    window.setTimeout(() => editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+                  }
+                }}
+                className={`item-card ${isSelected ? 'selected' : ''}`}
+                aria-current={isSelected ? 'true' : undefined}
+              >
+                <span className="row-between small" style={{ width: '100%' }}>
+                  <span className="mono muted">{ex.id}</span>
+                  <span className={`badge ${ex.difficulty === 'avance' ? 'badge-danger' : ex.difficulty === 'intermediaire' ? 'badge-warning' : 'badge-neutral'}`}>
+                    {difficultyLabel(ex.difficulty)}
+                  </span>
+                </span>
+                <span style={{ fontWeight: isSelected ? 650 : 500, display: 'flex', gap: '0.35rem', alignItems: 'flex-start' }}>
+                  {isPassed && <CheckCircle2 size={16} aria-label="Réussi" style={{ color: 'var(--accent-green)', flex: '0 0 auto', marginTop: '2px' }} />}
+                  {ex.title}
+                </span>
+                <span className="muted small">{CATEGORY_LABELS[ex.category] || ex.category}</span>
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 
   return (
-    <div className="sql-editor-container" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      {/* Bandeau de séance ciblée si ouvert depuis une tâche du planning */}
+    <div className="sql-editor-container stack">
       {sessionFilterIds && sessionFilterIds.length > 0 && (
-        <div
-          className="card"
-          style={{
-            padding: '0.85rem 1.15rem',
-            borderLeft: '4px solid var(--accent-blue)',
-            backgroundColor: 'rgba(59, 130, 246, 0.08)',
-          }}
-        >
-          <div className="row-between" style={{ flexWrap: 'wrap', gap: '0.75rem' }}>
-            <div>
-              <div style={{ fontWeight: 700, color: 'var(--accent-blue)', fontSize: '0.95rem' }}>
-                🎯 Séance ciblée : {activeTaskLabel || 'Exercices SQL de ta tâche hebdomadaire'}
+        <div className="callout callout-info">
+          <div className="row-between" style={{ alignItems: 'flex-start' }}>
+            <div style={{ minWidth: 0 }}>
+              <strong>Séance ciblée : {activeTaskLabel || 'exercices SQL de ta tâche hebdomadaire'}</strong>
+              <div className="small" style={{ marginTop: '0.2rem' }}>
+                Seuls les {sessionFilterIds.length} exercices de cette séance sont affichés. Résous-les dans l'ordre :
               </div>
-              <div style={{ fontSize: '0.83rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
-                Seuls les <strong>{sessionFilterIds.length} exercices SQL au programme de cette séance</strong> sont affichés ci-dessous. Clique sur chacun pour les résoudre dans l'ordre :
-              </div>
-              <div style={{ display: 'flex', gap: '0.45rem', flexWrap: 'wrap', marginTop: '0.45rem' }}>
+              <div className="cluster" style={{ marginTop: '0.5rem' }}>
                 {sessionFilterIds.map((exId, idx) => {
                   const exObj = exercises.find((e) => e.id === exId);
                   const isCurrent = currentExercise?.id === exId;
@@ -284,91 +323,77 @@ export const SqlEditorView: React.FC<SqlEditorViewProps> = ({
                       type="button"
                       onClick={() => exObj && selectExercise(exObj)}
                       className={`btn btn-sm ${isCurrent ? 'btn-primary' : 'btn-secondary'}`}
-                      style={{ fontSize: '0.78rem' }}
                     >
-                      {isDone ? '✓ ' : `${idx + 1}. `}
-                      <span className="mono">{exId}</span> : {exObj ? exObj.title : exId}
+                      {isDone ? <CheckCircle2 size={16} aria-label="Réussi" /> : <span className="mono">{idx + 1}.</span>}
+                      <span className="mono">{exId}</span>
                     </button>
                   );
                 })}
               </div>
             </div>
-            <button
-              type="button"
-              className="btn btn-secondary btn-sm"
-              onClick={() => setSessionFilterIds(null)}
-            >
-              Afficher les {exercises.length} exercices SQL du catalogue
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => setSessionFilterIds(null)}>
+              Voir les {exercises.length} exercices
             </button>
           </div>
         </div>
       )}
 
-      {/* En-tete du module SQL */}
-      <div className="card" style={{ padding: '1rem 1.25rem' }}>
-        <div className="row-between" style={{ flexWrap: 'wrap', gap: '1rem' }}>
-          <div>
-            <h2 style={{ margin: 0, fontSize: '1.25rem' }}>
-              Editeur SQL Temps Reel : Entrainement Entretiens Data Engineer
-            </h2>
-            <div className="muted" style={{ fontSize: '0.85rem', marginTop: '0.2rem' }}>
-              Moteur SQLite en memoire avec 4 jeux de donnees reels. Comparaison intelligente et plan EXPLAIN.
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <div className="badge badge-neutral mono" style={{ fontSize: '0.9rem', padding: '0.35rem 0.6rem' }}>
-              Chrono : {formatTimer(seconds)}
-            </div>
-            <button
-              type="button"
-              className={`btn btn-sm ${timerRunning ? 'btn-warning' : 'btn-secondary'}`}
-              onClick={() => setTimerRunning(!timerRunning)}
-            >
-              {timerRunning ? 'Pause' : 'Demarrer'}
-            </button>
-            <button
-              type="button"
-              className="btn btn-sm btn-secondary"
-              onClick={() => {
-                setSeconds(0);
-                setTimerRunning(false);
-              }}
-            >
-              Reinitialiser
-            </button>
-          </div>
+      <div className="row-between" style={{ alignItems: 'flex-end' }}>
+        <div style={{ minWidth: 0 }}>
+          <h2 style={{ margin: 0, fontSize: '1.2rem' }}>Atelier SQL</h2>
+          <div className="muted small">Moteur SQLite en mémoire, 4 jeux de données réels, correction automatique et plan EXPLAIN.</div>
+        </div>
+        <div className="cluster" role="group" aria-label="Chronomètre d'entretien">
+          <span className="badge badge-neutral mono" style={{ fontSize: '0.88rem', padding: '0.3rem 0.65rem' }} aria-live="off">
+            <Timer size={14} aria-hidden /> {formatTimer(seconds)}
+          </span>
+          <button type="button" className={`btn btn-sm ${timerRunning ? 'btn-warning' : 'btn-secondary'}`} onClick={() => setTimerRunning(!timerRunning)}>
+            {timerRunning ? <Pause size={16} aria-hidden /> : <Play size={16} aria-hidden />}
+            {timerRunning ? 'Pause' : 'Démarrer'}
+          </button>
+          <button
+            type="button"
+            className="btn btn-sm btn-ghost"
+            onClick={() => {
+              setSeconds(0);
+              setTimerRunning(false);
+            }}
+            aria-label="Réinitialiser le chronomètre"
+          >
+            <RotateCcw size={16} aria-hidden />
+          </button>
         </div>
       </div>
 
-      {/* Barre de selection de jeu de donnees et filtres */}
-      <div className="card" style={{ padding: '0.85rem 1rem' }}>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <label style={{ fontWeight: 600, fontSize: '0.85rem' }}>Dataset :</label>
-            <select
-              value={selectedDatasetId}
-              onChange={(e) => setSelectedDatasetId(e.target.value)}
-              className="select"
-              style={{ width: 'auto', padding: '0.35rem 0.6rem' }}
-            >
-              {datasets.map((d) => (
-                <option key={d.id} value={d.id}>
-                  {d.name} ({d.tables.join(', ')})
-                </option>
-              ))}
-            </select>
-            <button
-              type="button"
-              className="btn btn-secondary btn-sm"
-              onClick={() => setShowSchema(!showSchema)}
-            >
-              {showSchema ? 'Masquer le schema' : 'Inspecter le schema'}
-            </button>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <label style={{ fontWeight: 600, fontSize: '0.85rem' }}>Categorie :</label>
+      {/* Filtres */}
+      <details className="disclosure" open={filtersOpenAtStart}>
+        <summary>
+          <Search size={18} aria-hidden />
+          Filtrer les exercices
+          {(searchTerm || selectedCategory !== 'all' || selectedDifficulty !== 'all') && <span className="badge badge-info">actifs</span>}
+          <ChevronDown size={18} className="chevron" aria-hidden />
+        </summary>
+        <div className="disclosure-body">
+        <div className="cluster" style={{ gap: '0.75rem', alignItems: 'flex-end' }}>
+          <label className="field" style={{ flex: '1 1 200px', minWidth: 0 }}>
+            Rechercher
+            <span style={{ position: 'relative', display: 'block' }}>
+              <Search size={16} aria-hidden style={{ position: 'absolute', left: '0.7rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+              <input
+                type="search"
+                placeholder="sql-004, CTE, RANK…"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSessionFilterIds(null);
+                  setSearchTerm(e.target.value);
+                }}
+                className="input"
+                style={{ paddingLeft: '2.1rem' }}
+              />
+            </span>
+          </label>
+          <label className="field" style={{ flex: '1 1 200px', minWidth: 0 }}>
+            Catégorie
             <select
               value={selectedCategory}
               onChange={(e) => {
@@ -376,331 +401,273 @@ export const SqlEditorView: React.FC<SqlEditorViewProps> = ({
                 setSelectedCategory(e.target.value);
               }}
               className="select"
-              style={{ width: 'auto', padding: '0.35rem 0.6rem' }}
             >
-              <option value="all">Toutes les categories ({exercises.length})</option>
+              <option value="all">Toutes ({exercises.length})</option>
               {Object.entries(CATEGORY_LABELS).map(([k, label]) => (
                 <option key={k} value={k}>
                   {label}
                 </option>
               ))}
             </select>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <label style={{ fontWeight: 600, fontSize: '0.85rem' }}>Difficulte :</label>
-            <select
-              value={selectedDifficulty}
-              onChange={(e) => {
-                setSessionFilterIds(null);
-                setSelectedDifficulty(e.target.value);
-              }}
-              className="select"
-              style={{ width: 'auto', padding: '0.35rem 0.6rem' }}
-            >
-              <option value="all">Toutes</option>
-              <option value="debutant">Debutant</option>
-              <option value="intermediaire">Intermediaire</option>
-              <option value="avance">Avance</option>
-            </select>
-          </div>
-
-          <div style={{ flex: 1, minWidth: '180px' }}>
-            <input
-              type="text"
-              placeholder="Rechercher par ID (ex: sql-004), mot-cle (CTE, RANK)..."
-              value={searchTerm}
-              onChange={(e) => {
-                setSessionFilterIds(null);
-                setSearchTerm(e.target.value);
-              }}
-              className="input"
-              style={{ width: '100%', padding: '0.35rem 0.6rem' }}
-            />
-          </div>
-        </div>
-
-        {/* Panneau Schema detaille */}
-        {showSchema && currentDataset && (
-          <div style={{ marginTop: '0.75rem', padding: '0.85rem', background: 'var(--bg-input)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
-            <div style={{ fontWeight: 600, marginBottom: '0.3rem', color: 'var(--text-primary)' }}>
-              Schema SQL du jeu : {currentDataset.name}
-            </div>
-            <div className="muted" style={{ fontSize: '0.82rem', marginBottom: '0.5rem' }}>
-              {currentDataset.description}
-            </div>
-            <pre style={{ margin: 0, padding: '0.6rem', background: '#0d1117', color: '#f8fafc', borderRadius: '4px', fontSize: '0.82rem', maxHeight: '180px', overflowY: 'auto', border: '1px solid var(--border-color)' }}>
-              {currentDataset.schemaSql.trim()}
-            </pre>
-          </div>
-        )}
-      </div>
-
-      {/* Corps principal : Liste d'exercices a gauche + Editeur et Resultats a droite */}
-      <div className="interview-grid">
-        {/* Colonne Gauche : Liste des exercices */}
-        <div className="card" style={{ padding: '0.75rem', maxHeight: '720px', overflowY: 'auto' }}>
-          <div style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '0.5rem', display: 'flex', justifyContent: 'space-between' }}>
-            <span>Exercices ({filteredExercises.length})</span>
-            <span className="mono badge badge-success" style={{ fontSize: '0.75rem' }}>
-              {Object.keys(passedMap).length} reussis
-            </span>
-          </div>
-
-          <div className="item-list-container">
-            {filteredExercises.map((ex) => {
-              const isSelected = currentExercise?.id === ex.id;
-              const isPassed = passedMap[ex.id];
-
-              return (
-                <div
-                  key={ex.id}
-                  onClick={() => selectExercise(ex)}
-                  className={`item-card ${isSelected ? 'selected' : ''}`}
+          </label>
+          <div className="field" style={{ minWidth: 0 }}>
+            <span id="sql-difficulty-label">Difficulté</span>
+            <div className="segmented" role="group" aria-labelledby="sql-difficulty-label">
+              {([
+                ['all', 'Toutes'],
+                ['debutant', 'Débutant'],
+                ['intermediaire', 'Intermédiaire'],
+                ['avance', 'Avancé'],
+              ] as Array<[string, string]>).map(([id, label]) => (
+                <button
+                  key={id}
+                  type="button"
+                  className="segment"
+                  aria-pressed={selectedDifficulty === id}
+                  onClick={() => {
+                    setSessionFilterIds(null);
+                    setSelectedDifficulty(id);
+                  }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span className="mono muted" style={{ fontSize: '0.75rem' }}>
-                      {ex.id}
-                    </span>
-                    <span
-                      className={`badge ${
-                        ex.difficulty === 'avance'
-                          ? 'badge-danger'
-                          : ex.difficulty === 'intermediaire'
-                          ? 'badge-warning'
-                          : 'badge-neutral'
-                      }`}
-                      style={{ fontSize: '0.7rem' }}
-                    >
-                      {ex.difficulty}
-                    </span>
-                  </div>
-                  <div style={{ fontWeight: isSelected ? 600 : 500, fontSize: '0.85rem', color: isSelected ? 'var(--accent-blue)' : 'var(--text-primary)' }}>
-                    {isPassed ? 'OK ' : ''}{ex.title}
-                  </div>
-                  <div className="muted" style={{ fontSize: '0.75rem' }}>
-                    {CATEGORY_LABELS[ex.category] || ex.category}
-                  </div>
-                </div>
-              );
-            })}
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
+        </div>
+      </details>
 
-        {/* Colonne Droite : Enonce, Editeur et Resultats */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div className="interview-grid">
+        {isMobile ? (
+          <details className="disclosure" open={listOpen} onToggle={(e) => setListOpen((e.currentTarget as HTMLDetailsElement).open)}>
+            <summary>
+              <span style={{ minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+                <span className="eyebrow">Exercice</span>
+                <span style={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {currentExercise ? `${currentExercise.id} : ${currentExercise.title}` : 'Choisir'}
+                </span>
+              </span>
+              <span className="badge badge-neutral">{filteredExercises.length}</span>
+              <ChevronDown size={18} className="chevron" aria-hidden />
+            </summary>
+            <div className="disclosure-body">{exerciseList}</div>
+          </details>
+        ) : (
+          <div className="card" style={{ position: 'sticky', top: 'calc(var(--topbar-height) + 1rem)' }}>{exerciseList}</div>
+        )}
+
+        <div ref={editorRef} className="stack" style={{ minWidth: 0, scrollMarginTop: '72px' }}>
           {currentExercise && (
-            <div className="card" style={{ padding: '1rem 1.25rem' }}>
-              <div className="row-between" style={{ alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem' }}>
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span className="mono badge badge-neutral">{currentExercise.id}</span>
-                    <span className="badge badge-info">{CATEGORY_LABELS[currentExercise.category]}</span>
-                    <span className="badge badge-secondary">Table: {currentExercise.datasetId}</span>
-                  </div>
-                  <h3 style={{ margin: '0.4rem 0 0.2rem 0', fontSize: '1.15rem', color: 'var(--text-primary)' }}>
-                    {currentExercise.title}
-                  </h3>
-                </div>
-
-                <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+            <section className="card" aria-labelledby="sql-ex-title">
+              <div className="cluster" style={{ gap: '0.35rem' }}>
+                <span className="mono badge badge-neutral">{currentExercise.id}</span>
+                <span className="badge badge-info">{CATEGORY_LABELS[currentExercise.category] || currentExercise.category}</span>
+                <span className="badge badge-neutral">Jeu : {currentExercise.datasetId}</span>
+              </div>
+              <h3 id="sql-ex-title" style={{ margin: '0.5rem 0 0.35rem', fontSize: '1.12rem' }}>
+                {currentExercise.title}
+              </h3>
+              <p className="text-secondary" style={{ margin: '0.25rem 0 0.6rem', lineHeight: 1.6 }}>
+                {currentExercise.description}
+              </p>
+              <div className="callout">
+                <strong className="small">Consignes</strong>
+                <ul style={{ margin: '0.35rem 0 0', paddingLeft: '1.2rem' }} className="small">
+                  {currentExercise.instructions.map((inst, idx) => (
+                    <li key={idx} style={{ margin: '0.2rem 0' }}>
+                      {inst}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {currentExercise.tags.length > 0 && (
+                <div className="cluster" style={{ gap: '0.3rem', marginTop: '0.6rem' }}>
                   {currentExercise.tags.map((t) => (
                     <span key={t} className="tag-badge">
                       #{t}
                     </span>
                   ))}
                 </div>
-              </div>
-
-              <p style={{ margin: '0.5rem 0', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                {currentExercise.description}
-              </p>
-
-              <div className="callout" style={{ marginTop: '0.65rem' }}>
-                <strong style={{ fontSize: '0.85rem' }}>Instructions :</strong>
-                <ul style={{ margin: '0.35rem 0 0 0', paddingLeft: '1.25rem', fontSize: '0.85rem' }}>
-                  {currentExercise.instructions.map((inst, idx) => (
-                    <li key={idx} style={{ margin: '0.2rem 0' }}>{inst}</li>
-                  ))}
-                </ul>
-              </div>
-
+              )}
               {currentExercise.hints.length > 0 && (
-                <details style={{ marginTop: '0.65rem', fontSize: '0.85rem' }}>
-                  <summary style={{ cursor: 'pointer', color: 'var(--accent-indigo)', fontWeight: 500 }}>
-                    Indice pour l entretien (cliquer pour reveler)
+                <details className="disclosure" style={{ marginTop: '0.75rem' }}>
+                  <summary>
+                    <Lightbulb size={16} aria-hidden /> Indices pour l'entretien
+                    <ChevronDown size={18} className="chevron" aria-hidden />
                   </summary>
-                  <ul style={{ margin: '0.35rem 0 0 0', paddingLeft: '1.25rem', color: 'var(--text-secondary)' }}>
+                  <ul className="disclosure-body small" style={{ margin: 0, paddingLeft: '2.2rem' }}>
                     {currentExercise.hints.map((h, idx) => (
-                      <li key={idx} style={{ margin: '0.2rem 0' }}>{h}</li>
+                      <li key={idx} style={{ margin: '0.2rem 0' }}>
+                        {h}
+                      </li>
                     ))}
                   </ul>
                 </details>
               )}
-            </div>
+            </section>
           )}
 
-          {/* Zone de saisie SQL */}
-          <div className="card" style={{ padding: '0.75rem 1rem' }}>
+          {/* Éditeur */}
+          <section className="card" aria-label="Éditeur SQL">
             <div className="row-between" style={{ marginBottom: '0.5rem' }}>
-              <span style={{ fontWeight: 600, fontSize: '0.85rem' }}>
-                Requete SQL (SQLite en memoire) :
-              </span>
-              <span className="muted" style={{ fontSize: '0.75rem' }}>
-                Raccourci : <strong>Ctrl + Entree</strong> pour executer | Tabulation active
-              </span>
+              <label htmlFor="sql-editor" style={{ fontWeight: 650 }}>
+                Requête SQL
+              </label>
+              <div className="cluster small" style={{ gap: '0.5rem' }}>
+                <label className="sr-only" htmlFor="sql-dataset">Jeu de données</label>
+                <select
+                  id="sql-dataset"
+                  value={selectedDatasetId}
+                  onChange={(e) => setSelectedDatasetId(e.target.value)}
+                  className="select"
+                  style={{ width: 'auto', maxWidth: '220px' }}
+                >
+                  {datasets.map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.name}
+                    </option>
+                  ))}
+                </select>
+                <button type="button" className="btn btn-ghost btn-sm" aria-expanded={showSchema} onClick={() => setShowSchema(!showSchema)}>
+                  <Database size={16} aria-hidden />
+                  Schéma
+                </button>
+              </div>
             </div>
 
+            {showSchema && currentDataset && (
+              <div className="card card-sm" style={{ marginBottom: '0.75rem' }}>
+                <div style={{ fontWeight: 650 }}>
+                  {currentDataset.name} <span className="muted small mono">({currentDataset.tables.join(', ')})</span>
+                </div>
+                <div className="muted small" style={{ margin: '0.25rem 0 0.5rem' }}>
+                  {currentDataset.description}
+                </div>
+                <pre className="code-terminal-box" style={{ margin: 0, maxHeight: '200px' }} tabIndex={0} aria-label="Schéma SQL">
+                  {currentDataset.schemaSql.trim()}
+                </pre>
+              </div>
+            )}
+
             <textarea
+              id="sql-editor"
               value={userQuery}
               onChange={(e) => setUserQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              rows={8}
-              style={{
-                width: '100%',
-                fontFamily: 'Consolas, Monaco, "Courier New", monospace',
-                fontSize: '0.9rem',
-                lineHeight: 1.45,
-                padding: '0.6rem',
-                borderRadius: '4px',
-                border: '1px solid #ced4da',
-                background: '#1e1e1e',
-                color: '#d4d4d4',
-                resize: 'vertical',
-              }}
+              rows={isMobile ? 7 : 9}
+              className="code-editor-area"
+              spellCheck={false}
+              autoCapitalize="off"
+              autoCorrect="off"
             />
+            <div className="muted small hide-mobile" style={{ marginTop: '0.35rem' }}>
+              Ctrl + Entrée pour exécuter, Tab pour indenter.
+            </div>
 
-            <div className="row-between" style={{ marginTop: '0.6rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={handleRunQuery}
-                  disabled={running}
-                  style={{ minWidth: '150px' }}
-                >
-                  {running ? 'Execution...' : 'Executer la requete'}
+            {notice && (
+              <div className="alert alert-warning small" role="status" style={{ marginTop: '0.6rem' }}>
+                {notice}
+              </div>
+            )}
+
+            <div className="row-between" style={{ marginTop: '0.75rem' }}>
+              <div className="cluster">
+                <button type="button" className="btn btn-primary" onClick={handleRunQuery} disabled={running}>
+                  <Play size={16} aria-hidden />
+                  {running ? 'Exécution…' : 'Exécuter'}
                 </button>
-
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-sm"
-                  onClick={() => setUserQuery('')}
-                >
+                <button type="button" className="btn btn-ghost btn-sm" onClick={() => setUserQuery('')}>
+                  <Trash2 size={16} aria-hidden />
                   Effacer
                 </button>
               </div>
-
-              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                <span className="muted" style={{ fontSize: '0.8rem' }}>
-                  Tentatives : <strong>{attemptCount}</strong>
+              <div className="cluster">
+                <span className="muted small">
+                  Tentatives : <strong className="mono">{attemptCount}</strong>
                 </span>
-
                 <button
                   type="button"
                   className={`btn btn-sm ${attemptCount === 0 ? 'btn-secondary' : 'btn-warning'}`}
                   onClick={handleRevealSolution}
                   disabled={attemptCount === 0}
-                  title={attemptCount === 0 ? 'Faites au moins une tentative avant de voir la solution' : 'Afficher la requete optimale et explication'}
+                  title={attemptCount === 0 ? 'Fais au moins une tentative avant de voir la solution' : 'Afficher la requête optimale et son explication'}
                 >
-                  {solutionRevealed ? 'Voir la solution' : 'Reveler la solution'}
+                  <Eye size={16} aria-hidden />
+                  {solutionRevealed ? 'Voir la solution' : 'Révéler la solution'}
                 </button>
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* Onglets et resultats d'execution */}
           {sandboxResult && (
-            <div className="card" style={{ padding: '1rem' }}>
-              <div style={{ display: 'flex', borderBottom: '1px solid var(--border-color)', marginBottom: '0.75rem', gap: '0.5rem' }}>
-                <button
-                  type="button"
-                  className={`btn btn-sm ${activeResultTab === 'results' ? 'btn-primary' : 'btn-secondary'}`}
-                  onClick={() => setActiveResultTab('results')}
-                >
-                  Resultats ({sandboxResult.totalRowCount} lignes)
-                </button>
-
-                {sandboxResult.queryPlan && sandboxResult.queryPlan.length > 0 && (
-                  <button
-                    type="button"
-                    className={`btn btn-sm ${activeResultTab === 'plan' ? 'btn-primary' : 'btn-secondary'}`}
-                    onClick={() => setActiveResultTab('plan')}
-                  >
-                    Plan d'execution (EXPLAIN)
+            <section className="card" aria-label="Résultat de la requête">
+              <div className="row-between" style={{ marginBottom: '0.75rem' }}>
+                <div className="segmented" role="tablist" aria-label="Affichage du résultat">
+                  <button type="button" role="tab" aria-selected={activeResultTab === 'results'} className="segment" onClick={() => setActiveResultTab('results')}>
+                    Résultats <span className="segment-count">{sandboxResult.totalRowCount}</span>
                   </button>
-                )}
-
-                {revealedSolution && (
-                  <button
-                    type="button"
-                    className={`btn btn-sm ${activeResultTab === 'solution' ? 'btn-warning' : 'btn-secondary'}`}
-                    onClick={() => setActiveResultTab('solution')}
-                  >
-                    Solution de reference
-                  </button>
-                )}
-
-                <div style={{ marginLeft: 'auto', fontSize: '0.8rem', color: 'var(--text-muted)', alignSelf: 'center' }}>
-                  Temps d'execution : <strong style={{ color: 'var(--accent-blue)' }}>{sandboxResult.executionTimeMs} ms</strong>
+                  {sandboxResult.queryPlan && sandboxResult.queryPlan.length > 0 && (
+                    <button type="button" role="tab" aria-selected={activeResultTab === 'plan'} className="segment" onClick={() => setActiveResultTab('plan')}>
+                      Plan EXPLAIN
+                    </button>
+                  )}
+                  {revealedSolution && (
+                    <button type="button" role="tab" aria-selected={activeResultTab === 'solution'} className="segment" onClick={() => setActiveResultTab('solution')}>
+                      Solution
+                    </button>
+                  )}
                 </div>
+                <span className="muted small">
+                  Exécution : <strong className="mono" style={{ color: 'var(--text-primary)' }}>{sandboxResult.executionTimeMs} ms</strong>
+                </span>
               </div>
 
-              {/* Statut de validation de l'exercice */}
               {sandboxResult.comparison && (
-                <div
-                  className={`alert ${sandboxResult.comparison.passed ? 'alert-success' : 'alert-warning'}`}
-                  style={{ marginBottom: '0.75rem', padding: '0.6rem 0.8rem', fontSize: '0.85rem' }}
-                >
+                <div className={`alert ${sandboxResult.comparison.passed ? 'alert-success' : 'alert-warning'} small`} role="status" style={{ marginBottom: '0.75rem' }}>
                   {sandboxResult.comparison.passed ? (
-                    <div>
-                      <strong>Felicitations !</strong> Votre requete retourne exactement le resultat attendu.
-                    </div>
+                    <span>
+                      <strong>Bravo !</strong> Ta requête retourne exactement le résultat attendu.
+                    </span>
                   ) : (
                     <div>
-                      <strong>Ecart detecte par rapport a la solution de reference :</strong>
+                      <strong>Écart avec la solution de référence :</strong>
                       <div style={{ marginTop: '0.2rem' }}>{sandboxResult.comparison.diffSummary}</div>
                     </div>
                   )}
                 </div>
               )}
 
-              {/* Erreur SQL */}
               {!sandboxResult.success && (
-                <div className="alert alert-danger" style={{ fontSize: '0.85rem' }}>
+                <div className="alert alert-danger small mono" role="alert" style={{ whiteSpace: 'pre-wrap' }}>
                   {sandboxResult.error}
                 </div>
               )}
 
-              {/* Tableau de resultats */}
               {activeResultTab === 'results' && sandboxResult.success && (
                 <div>
                   {sandboxResult.rows.length === 0 ? (
-                    <div className="muted" style={{ padding: '1rem', textAlign: 'center', fontSize: '0.9rem' }}>
-                      Requete valide, mais aucune ligne retournee.
-                    </div>
+                    <div className="empty-state small">Requête valide, mais aucune ligne retournée.</div>
                   ) : (
-                    <div style={{ overflowX: 'auto', maxHeight: '350px' }}>
-                      <table className="table" style={{ fontSize: '0.82rem', width: '100%' }}>
+                    <div className="table-scroll" style={{ maxHeight: '380px' }} tabIndex={0} role="region" aria-label="Lignes retournées">
+                      <table className="table" style={{ fontSize: '0.84rem' }}>
                         <thead>
                           <tr>
-                            <th style={{ width: '40px' }}>#</th>
+                            <th scope="col" style={{ width: '40px' }}>#</th>
                             {sandboxResult.columns.map((col) => (
-                              <th key={col}>{col}</th>
+                              <th key={col} scope="col">
+                                {col}
+                              </th>
                             ))}
                           </tr>
                         </thead>
                         <tbody>
                           {sandboxResult.rows.map((row, rIdx) => (
                             <tr key={rIdx}>
-                              <td className="muted mono" style={{ fontSize: '0.75rem' }}>{rIdx + 1}</td>
+                              <td className="muted mono">{rIdx + 1}</td>
                               {sandboxResult.columns.map((col) => (
-                                <td key={col} className="mono">
-                                  {row[col] === null || row[col] === undefined ? (
-                                    <span className="badge badge-neutral" style={{ fontSize: '0.7rem' }}>NULL</span>
-                                  ) : (
-                                    String(row[col])
-                                  )}
+                                <td key={col} className="mono" style={{ whiteSpace: 'nowrap' }}>
+                                  {row[col] === null || row[col] === undefined ? <span className="badge badge-neutral">NULL</span> : String(row[col])}
                                 </td>
                               ))}
                             </tr>
@@ -709,60 +676,60 @@ export const SqlEditorView: React.FC<SqlEditorViewProps> = ({
                       </table>
                     </div>
                   )}
-
                   {sandboxResult.truncated && (
-                    <div className="muted" style={{ fontSize: '0.75rem', marginTop: '0.4rem', textAlign: 'right' }}>
-                      Affichage tronque aux 200 premieres lignes (sur {sandboxResult.totalRowCount} au total).
+                    <div className="muted small" style={{ marginTop: '0.4rem', textAlign: 'right' }}>
+                      Affichage limité aux 200 premières lignes (sur {sandboxResult.totalRowCount}).
                     </div>
                   )}
                 </div>
               )}
 
-              {/* Plan d'execution EXPLAIN */}
               {activeResultTab === 'plan' && sandboxResult.queryPlan && (
-                <div style={{ fontSize: '0.85rem' }}>
-                  <div className="muted" style={{ marginBottom: '0.5rem' }}>
-                    Analyse de l'optimiseur de requetes SQLite (SCAN TABLE = parcours complet, SEARCH TABLE = utilisation d'index).
-                  </div>
-                  <table className="table" style={{ fontSize: '0.8rem', width: '100%' }}>
-                    <thead>
-                      <tr>
-                        <th style={{ width: '50px' }}>Id</th>
-                        <th style={{ width: '50px' }}>Parent</th>
-                        <th>Detail de l'operation de bas niveau</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sandboxResult.queryPlan.map((node, nIdx) => (
-                        <tr key={nIdx}>
-                          <td className="mono">{node.id}</td>
-                          <td className="mono">{node.parent}</td>
-                          <td className="mono" style={{ color: node.detail.includes('SCAN') ? '#f87171' : '#4ade80' }}>
-                            {node.detail}
-                          </td>
+                <div className="small">
+                  <p className="muted" style={{ marginTop: 0 }}>
+                    Plan de l'optimiseur SQLite : SCAN TABLE = parcours complet, SEARCH TABLE = utilisation d'un index.
+                  </p>
+                  <div className="table-scroll" tabIndex={0} role="region" aria-label="Plan d'exécution">
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th scope="col" style={{ width: '50px' }}>Id</th>
+                          <th scope="col" style={{ width: '60px' }}>Parent</th>
+                          <th scope="col">Opération</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {sandboxResult.queryPlan.map((node, nIdx) => (
+                          <tr key={nIdx}>
+                            <td className="mono">{node.id}</td>
+                            <td className="mono">{node.parent}</td>
+                            <td className="mono">
+                              <span className={`badge ${node.detail.includes('SCAN') ? 'badge-danger' : 'badge-success'}`} style={{ marginRight: '0.4rem' }}>
+                                {node.detail.includes('SCAN') ? 'Scan' : 'Index'}
+                              </span>
+                              {node.detail}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               )}
 
-              {/* Onglet Solution revelee */}
               {activeResultTab === 'solution' && revealedSolution && (
-                <div className="callout-warning" style={{ padding: '0.85rem' }}>
-                  <div style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.4rem', color: '#fde68a' }}>
-                    Requete de reference officielle :
-                  </div>
-                  <pre style={{ margin: 0, padding: '0.65rem', background: '#0d1117', color: '#f8fafc', borderRadius: '4px', fontSize: '0.85rem', border: '1px solid var(--border-color)' }}>
+                <div className="stack-sm">
+                  <strong>Requête de référence</strong>
+                  <pre className="code-terminal-box" style={{ margin: 0 }} tabIndex={0} aria-label="Requête de référence">
                     {revealedSolution.query}
                   </pre>
-                  <div style={{ marginTop: '0.75rem', fontSize: '0.85rem' }}>
-                    <strong style={{ color: 'var(--text-primary)' }}>Explication technique et conseils pour l entretien :</strong>
-                    <p style={{ margin: '0.35rem 0 0 0', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{revealedSolution.explanation}</p>
+                  <div className="callout callout-warning">
+                    <strong>Explication et conseils pour l'entretien</strong>
+                    <p style={{ margin: '0.35rem 0 0', lineHeight: 1.6 }}>{revealedSolution.explanation}</p>
                   </div>
                 </div>
               )}
-            </div>
+            </section>
           )}
         </div>
       </div>
