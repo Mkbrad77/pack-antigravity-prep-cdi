@@ -1,4 +1,4 @@
-import { ALLOWED_PROVENANCE_TAGS, CertCode, Flashcard, ProvenanceTag } from './types';
+import { ALLOWED_PROVENANCE_TAGS, isAllowedProvenance, CertCode, Flashcard, ProvenanceTag } from './types';
 
 export type ReviewGrade = 0 | 3 | 4 | 5;
 
@@ -125,7 +125,7 @@ export function createFlashcardInput(params: {
   if (!params.front.trim() || !params.back.trim()) {
     throw new Error('La question (recto) et la réponse (verso) sont obligatoires.');
   }
-  if (!ALLOWED_PROVENANCE_TAGS.includes(params.provenance)) {
+  if (!isAllowedProvenance(params.provenance)) {
     throw new Error(`Étiquette de provenance invalide : ${params.provenance}`);
   }
   return {

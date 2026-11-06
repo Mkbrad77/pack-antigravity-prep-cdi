@@ -130,3 +130,13 @@ describe('API en mode local', () => {
     expect(res.status).toBe(200);
   });
 });
+
+describe('Etiquettes de provenance des flashcards', () => {
+  it('accepte la version datee exigee par AGENTS.md et refuse le reste', async () => {
+    const { isAllowedProvenance } = await import('../../src/domain/types');
+    expect(isAllowedProvenance('générée par IA et vérifiée dans la documentation (2026-10-31)')).toBe(true);
+    expect(isAllowedProvenance('officielle')).toBe(true);
+    expect(isAllowedProvenance('générée par IA et vérifiée dans la documentation (hier)')).toBe(false);
+    expect(isAllowedProvenance('braindump')).toBe(false);
+  });
+});

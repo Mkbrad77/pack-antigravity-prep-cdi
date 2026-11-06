@@ -8,6 +8,7 @@ export type ProvenanceTag =
   | 'officielle'
   | 'communauté (URL)'
   | 'générée par IA et vérifiée dans la documentation (date)'
+  | `générée par IA et vérifiée dans la documentation (${string})`
   | 'générée par IA non vérifiée';
 
 export const ALLOWED_PROVENANCE_TAGS: ProvenanceTag[] = [
@@ -16,6 +17,16 @@ export const ALLOWED_PROVENANCE_TAGS: ProvenanceTag[] = [
   'générée par IA et vérifiée dans la documentation (date)',
   'générée par IA non vérifiée',
 ];
+
+/**
+ * Etiquette de provenance valide : l'une des 4 etiquettes officielles, ou la version datee
+ * exigee par AGENTS.md, ex. "générée par IA et vérifiée dans la documentation (2026-10-31)".
+ */
+export function isAllowedProvenance(tag: unknown): tag is ProvenanceTag {
+  if (typeof tag !== 'string') return false;
+  if ((ALLOWED_PROVENANCE_TAGS as string[]).includes(tag)) return true;
+  return /^générée par IA et vérifiée dans la documentation \(\d{4}-\d{2}-\d{2}\)$/.test(tag);
+}
 
 export interface CourseBlock {
   id: string;

@@ -22,6 +22,8 @@ export default defineConfig(() => {
       {
         name: 'local-sqlite-api-server',
         configureServer(server) {
+          // Pendant les tests (Vitest), ne jamais ouvrir la vraie base storage/user_data.sqlite
+          if (process.env.VITEST) return;
           server.middlewares.use(getMiddleware());
         },
         configurePreviewServer(server) {

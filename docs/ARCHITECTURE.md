@@ -57,7 +57,7 @@ Une règle d'or de l'architecture est l'isolation totale entre le **référentie
 | **Données Statiques** | `data/catalogue_formations.json`<br>`data/planning_hebdo.json`<br>`data/planning_entretiens.json`<br>`data/carte_des_sujets.json`<br>`data/skillbuilder_aws.json`<br>`docs/01_verification_examens.md` | **Lecture seule** | Peuvent être enrichies ou corrigées à tout moment (ex. ajout de chapitres en Phase 3) sans jamais altérer la base SQLite utilisateur. |
 | **Données Utilisateur** | `storage/user_data.sqlite` | **Lecture / Écriture ACID** | Référence les entités statiques par clés stables (`course_key` + `item_index`, `task_id`, `topic_id`, `cert_code`). |
 
-Lors du tout premier lancement (ou après une réinitialisation complète), le serveur lit l'état initial des leçons déjà cochées dans `data/catalogue_formations.json` (`done: true` au 31 octobre 2026 : 127 éléments sur 237 dans le cours français CLF d'Amadou Merico et 56 éléments sur 198 dans le cours dbt de Zoltan C. Toth) pour pré-peupler la table `lesson_progress`. Par la suite, seule la table SQLite fait foi pour l'avancement utilisateur.
+Aucune leçon n'est pré-cochée : le catalogue ne contient plus aucun `done: true` et la migration `v2` vide la table `lesson_progress` (décision D-13). Les 5 cours, les 3 certifications et les 44 podcasts démarrent à 0 % (leçon 1) le lundi 9 novembre 2026. Seule la table SQLite fait foi pour l'avancement utilisateur.
 
 ---
 
@@ -177,8 +177,8 @@ erDiagram
 
 ### 4.2 Moteur de Replanification Sans Dette (`src/domain/rescheduler.ts`)
 Implémente la spécification corrigée de `docs/05_planning_entretiens_et_replanification.md` :
-1. **Plafond strict (Principe 1) :** `max_weekly_minutes = 600` (10 h) en semaine normale, `360` (6 h) en semaine allégée (`light_week = true`, semaines 8 et 9).
-2. **Priorité à l'examen le plus proche (Principe 2 corrigé) :** Les tâches à replanifier sont triées par priorité d'échéance d'examen : `CLF-C02` (20 nov) > `DEA-C01` (5 fév) > `Entretiens Core` > `dbt` (19 mars).
+1. **Plafond strict (Principe 1) :** `max_weekly_minutes = 660` (11 h) en semaine normale, `360` (6 h) en semaine allégée (`light_week = true`, semaines 7 de Noël et 8 du Nouvel An).
+2. **Priorité à l'examen le plus proche (Principe 2 corrigé) :** Les tâches à replanifier sont triées selon la phase en cours (`getTaskExamPriorityRank`) : semaines 1 à 3, `CLF-C02` (27 nov. 2026) > `dbt` > Entretiens ; semaines 4 à 9, `dbt` (8 janv. 2027, urgence n°1) > Entretiens > `DEA-C01` ; semaines 10 à 22, `DEA-C01` (19 mars 2027) > Entretiens.
 3. **Sacrifice des Bonus en premier (Principe 3) :** En cas de dépassement du plafond ou de retard, toutes les tâches `bonus` de la semaine courante et des semaines d'absorption passent automatiquement au statut `skipped` avant toute compression du socle `core`.
 4. **Compression proportionnelle des chapitres d'entretien (Principe 4 corrigé) :** Au lieu d'une durée fixe arbitraire de 15 minutes, lorsqu'une tâche d'entretien doit être compressée en « mode fiche mémo » pour tenir dans le plafond après purge des bonus, sa durée est multipliée par un facteur de compression configurable (par défaut `0.5`, soit 50 % de la durée initiale, avec un plancher minimal de `15` minutes et un plafond de `30` minutes par fiche condensée).
 5. **Explicabilité totale :** Chaque exécution retourne un journal structuré (`changes[]` et `explanation_fr`) expliquant à l'utilisateur quelles tâches bonus ont été sacrifiées, quelles tâches Core ont été déplacées et dans quelle semaine, et quel est le nouveau total d'heures de chaque semaine impactée.
@@ -280,3 +280,9 @@ pack-antigravity-prep-cdi/
 ├── tsconfig.json                         # Configuration TypeScript stricte
 └── vite.config.ts                        # Configuration Vite + plugin API SQLite local
 ```
+
+---
+
+## Mode Cloud (Cloudflare, novembre 2026)
+
+Le même code métier tourne aussi en ligne pour l'usage mobile : Worker Cloudflare `prep-cdi` (interface + API), base SQLite hébergée dans un Durable Object (mêmes migrations), podcasts dans le bucket R2 privé `prep-cdi-audios`, accès protégé par Cloudflare Access. Détails, procédure et invariants : `docs/DEPLOIEMENT_CLOUD.md` et section 5 de `AGENTS.md`.

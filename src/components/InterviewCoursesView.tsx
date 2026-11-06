@@ -62,12 +62,15 @@ interface InterviewCoursesViewProps {
   initialCategory?: InterviewCourseCategory;
   initialCourseId?: string;
   initialSearchQuery?: string;
+  /** Change a chaque navigation externe (lien depuis une autre vue) pour re-cibler le cours. */
+  navigationNonce?: number;
 }
 
 export const InterviewCoursesView: React.FC<InterviewCoursesViewProps> = ({
   initialCategory = 'python',
   initialCourseId,
   initialSearchQuery = '',
+  navigationNonce,
 }) => {
   const [manifest, setManifest] = useState<InterviewCoursesManifestResponse | null>(null);
   const [activeCategory, setActiveCategory] = useState<InterviewCourseCategory>(initialCategory);
@@ -107,6 +110,14 @@ export const InterviewCoursesView: React.FC<InterviewCoursesViewProps> = ({
         setLoading(false);
       });
   }, []);
+
+  // Navigation externe alors que la vue est deja ouverte : on re-cible categorie et chapitre
+  useEffect(() => {
+    if (!manifest || navigationNonce === undefined) return;
+    selectCategoryAndCourse(manifest, initialCategory || 'python', initialCourseId);
+    if (initialSearchQuery) setSearchQuery(initialSearchQuery);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigationNonce]);
 
   useEffect(() => {
     if (manifest && initialCategory) {

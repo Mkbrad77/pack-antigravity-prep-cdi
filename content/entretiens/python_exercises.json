@@ -681,7 +681,7 @@
     "difficulty": "intermediaire",
     "description": "Implémente un décorateur paramétré @retry(max_attempts=3, delay_sec=0.01, backoff=2) qui intercepte les exceptions et réessaie avec délai croissant. Lève l'exception si toutes les tentatives échouent.",
     "starterCode": "import functools\nimport time\n\ndef retry(max_attempts=3, delay_sec=0.01, backoff=2):\n    # Ton code ici\n    pass\n",
-    "testCode": "attempts = 0\n\n@retry(max_attempts=3, delay_sec=0.01, backoff=1)\ndef unstable_api():\n    nonlocal attempts\n    attempts += 1\n    if attempts < 3:\n        raise ConnectionError(\"Timeout API\")\n    return \"SUCCESS\"\n\ncheck_assert(unstable_api() == \"SUCCESS\", 'Reussite a la 3e tentative')\ncheck_assert(attempts == 3, '3 tentatives effectuees')\n",
+    "testCode": "attempts = 0\n\n@retry(max_attempts=3, delay_sec=0.01, backoff=1)\ndef unstable_api():\n    global attempts\n    attempts += 1\n    if attempts < 3:\n        raise ConnectionError(\"Timeout API\")\n    return \"SUCCESS\"\n\ncheck_assert(unstable_api() == \"SUCCESS\", 'Reussite a la 3e tentative')\ncheck_assert(attempts == 3, '3 tentatives effectuees')\n",
     "hints": [
       "Un décorateur avec arguments nécessite une triple imbrication : def retry(...) -> def decorator(func) -> def wrapper(*args, **kwargs)."
     ],
@@ -701,7 +701,7 @@
     "difficulty": "intermediaire",
     "description": "Crée un décorateur @memoize_ttl(ttl_sec) qui met en cache les résultats d'une fonction pour une durée déterminée. Au-delà du TTL, la fonction est recalculée.",
     "starterCode": "import functools\nimport time\n\ndef memoize_ttl(ttl_sec=1.0):\n    # Ton code ici\n    pass\n",
-    "testCode": "call_count = 0\n\n@memoize_ttl(ttl_sec=0.1)\ndef get_user_data(uid):\n    nonlocal call_count\n    call_count += 1\n    return f\"user_{uid}\"\n\nget_user_data(1)\nget_user_data(1)\ncheck_assert(call_count == 1, 'Deuxieme appel servi depuis le cache')\ntime.sleep(0.12)\nget_user_data(1)\ncheck_assert(call_count == 2, 'Troisieme appel recalculé apres expiration TTL')\n",
+    "testCode": "call_count = 0\n\n@memoize_ttl(ttl_sec=0.1)\ndef get_user_data(uid):\n    global call_count\n    call_count += 1\n    return f\"user_{uid}\"\n\nget_user_data(1)\nget_user_data(1)\ncheck_assert(call_count == 1, 'Deuxieme appel servi depuis le cache')\ntime.sleep(0.12)\nget_user_data(1)\ncheck_assert(call_count == 2, 'Troisieme appel recalculé apres expiration TTL')\n",
     "hints": [
       "Stocke dans un dictionnaire cache[args] = (result, timestamp)."
     ],

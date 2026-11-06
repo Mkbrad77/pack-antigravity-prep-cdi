@@ -1,4 +1,4 @@
-import { ALLOWED_PROVENANCE_TAGS, BackupPayload } from './types';
+import { ALLOWED_PROVENANCE_TAGS, isAllowedProvenance, BackupPayload } from './types';
 
 export const CURRENT_BACKUP_SCHEMA_VERSION = 1;
 
@@ -69,7 +69,7 @@ export function validateBackupPayload(input: unknown): BackupValidationResult {
         errors.push(`Carte flashcard à l'index ${i} mal formée.`);
         continue;
       }
-      if (!ALLOWED_PROVENANCE_TAGS.includes(card.provenance as never)) {
+      if (!isAllowedProvenance(card.provenance)) {
         errors.push(
           `Carte flashcard "${card.id}" possède une étiquette de provenance non autorisée : "${String(card.provenance)}".`
         );

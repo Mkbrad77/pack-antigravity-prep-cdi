@@ -8,6 +8,8 @@
 
 ## 1. Décision D-01 : Séquencement Chronologique des Trois Certifications
 
+> **Remplacée par D-18** (ordre et dates en vigueur depuis le 6 novembre 2026).
+
 - **Date :** 31 octobre 2026
 - **Décision prise :** Maintenir l'ordre chronologique strict :
   1. AWS Certified Cloud Practitioner (CLF-C02) : examen le 20 novembre 2026.
@@ -52,6 +54,8 @@
 ---
 
 ## 5. Décision D-05 : Règles de Replanification Dynamique à Capacité Constante
+
+> **Plafonds et fusible mis à jour par D-18** (principes inchangés).
 
 - **Date :** 31 octobre 2026
 - **Décision prise :** Adopter un moteur de replanification stricte qui :
@@ -195,4 +199,20 @@
   - Le badge brut `600 / 600 min` créait une ambiguïté visuelle : l'utilisateur pouvait interpréter cela comme 600 minutes déjà accomplies (100 % terminé), alors qu'il repart de 0 % et qu'il s'agissait du ratio charge planifiée / plafond maximal.
   - La Semaine 1 dans `data/planning_hebdo.json` et la règle `AGENTS.md` prévoyaient expressément 540 minutes (9h00) pour la Semaine 1.
 
+---
 
+## 18. Décision D-18 : Ordre, Dates et Plafonds en Vigueur (Départ du 9 novembre 2026)
+
+- **Date :** 6 novembre 2026
+- **Décision prise :** Alignement de la documentation sur le planning réellement implémenté (`data/planning_hebdo.json`, `src/domain/rescheduler.ts`, `AGENTS.md`) :
+  1. AWS Cloud Practitioner (`CLF-C02`) : semaines 1 à 3, examen le 27 novembre 2026.
+  2. dbt Analytics Engineering (`DBT`, urgence n°1) : semaines 4 à 9, examen le 8 janvier 2027.
+  3. AWS Data Engineer Associate (`DEA-C01`) + 15 Quickstarts Snowflake ML : semaines 10 à 19, examen le 19 mars 2027.
+  4. Plafond : 660 min (11 h) par semaine ; semaines 7 (Noël) et 8 (Nouvel An) strictement allégées à 360 min (6 h).
+- **Justification :** D-01 et D-05 décrivaient l'ordre initial (CLF, puis DEA, puis dbt) et un plafond de 10 h. L'ordre a été inversé pour faire de dbt la priorité n°1 avant les fêtes, et le code appliquait déjà ces valeurs : la documentation est mise en cohérence avec le code.
+
+## 19. Décision D-19 : Version Mobile 24h/24 sur Cloudflare
+
+- **Date :** 6 novembre 2026
+- **Décision prise :** Héberger l'application sur Cloudflare (Worker + Durable Object SQLite + R2 + Access), sans frais récurrents, en conservant le mode local à l'identique.
+- **Justification :** Accès au planning et aux podcasts en 4G/5G, PC éteint. Le Durable Object expose un SQLite synchrone, ce qui permet de réutiliser `src/server/db.ts` sans réécriture (contrairement à D1, asynchrone). Voir `docs/DEPLOIEMENT_CLOUD.md`.
