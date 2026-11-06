@@ -63,6 +63,7 @@ for (const folder of FOLDERS) {
     if (!CANONICAL.test(file)) continue;
     const key = `${folder}/${file}`;
     const full = path.join(dir, file);
+    const rel = path.relative(root, full).replace(/\\/g, '/');
     const st = fs.statSync(full);
     present.add(file.replace(/\.[^.]+$/, '').toUpperCase());
 
@@ -78,7 +79,7 @@ for (const folder of FOLDERS) {
 
     const res = spawnSync(
       npx,
-      ['wrangler', 'r2', 'object', 'put', `${BUCKET}/${key}`, '--file', full, '--content-type', MIME[ext] ?? 'application/octet-stream', '--remote'],
+      ['wrangler', 'r2', 'object', 'put', `${BUCKET}/${key}`, '--file', rel, '--content-type', MIME[ext] ?? 'application/octet-stream', '--remote'],
       { stdio: 'inherit', shell: process.platform === 'win32' }
     );
     if (res.status === 0) {
