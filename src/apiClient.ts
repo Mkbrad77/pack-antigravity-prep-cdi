@@ -140,20 +140,6 @@ export const apiClient = {
       body: JSON.stringify(params),
     }),
 
-  autoRenamePodcasts: () =>
-    requestJson<{
-      renamed: Array<{
-        certCode: CertCode;
-        from: string;
-        to: string;
-        episodeId: string;
-        title: string;
-      }>;
-      state: AppStateResponse;
-    }>('/api/podcasts/auto-rename', {
-      method: 'POST',
-    }),
-
   fetchCourseDetails: (courseKey: CourseKey) =>
     requestJson<UdemyCourse>(`/api/courses/${courseKey}`),
 

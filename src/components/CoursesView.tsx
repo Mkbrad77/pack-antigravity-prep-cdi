@@ -76,8 +76,6 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
   );
   const [podcastWeekFilter, setPodcastWeekFilter] = useState<number | 'ALL'>('ALL');
   const [podcastOnlyReady, setPodcastOnlyReady] = useState<boolean>(false);
-  const [autoRenameBanner, setAutoRenameBanner] = useState<string>('');
-  const [scanningAudios, setScanningAudios] = useState<boolean>(false);
 
   useEffect(() => {
     if (initialSubTab === 'podcasts') {
@@ -124,29 +122,6 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
     const nextState = await apiClient.setLessonsDoneRange(selectedCourseKey, indices, done);
     onRefreshState(nextState);
     await loadCourse(selectedCourseKey);
-  };
-
-  const handleScanAndAutoRename = async () => {
-    setScanningAudios(true);
-    setAutoRenameBanner('');
-    try {
-      const res = await apiClient.autoRenamePodcasts();
-      onRefreshState(res.state);
-      if (res.renamed.length > 0) {
-        const listStr = res.renamed
-          .map((r) => `${r.from} -> ${r.to} (${r.title})`)
-          .join(' | ');
-        setAutoRenameBanner(
-          `✅ ${res.renamed.length} nouveau(x) fichier(s) audio détecté(s) et renommé(s) automatiquement : ${listStr}`
-        );
-      } else {
-        setAutoRenameBanner(
-          '✅ Scan terminé : tous les fichiers audio présents dans public/audios/ sont déjà correctement nommés et synchronisés.'
-        );
-      }
-    } finally {
-      setScanningAudios(false);
-    }
   };
 
   const handleUpdateEpisodeListenCount = async (ep: PodcastEpisode, delta: number) => {
@@ -299,28 +274,9 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                   <strong>Méthode des 3 Écoutes Récursives :</strong> 1re écoute le jour des leçons Udemy (découverte à 1x), 2e écoute à J+3 dans les transports (consolidation à 1.25x), 3e écoute la veille de l'examen blanc (maîtrise à 1.5x).
                 </p>
               </div>
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-                <button
-                  type="button"
-                  data-testid="btn-auto-rename-audios"
-                  className="btn btn-primary btn-sm"
-                  disabled={scanningAudios}
-                  onClick={handleScanAndAutoRename}
-                >
-                  {scanningAudios
-                    ? '🔄 Scan en cours...'
-                    : '🔄 Scanner & Auto-Renommer les nouveaux audios'}
-                </button>
-              </div>
             </div>
 
-            {autoRenameBanner && (
-              <div className="alert alert-info" style={{ marginBottom: '0.75rem', fontSize: '0.85rem' }}>
-                {autoRenameBanner}
-              </div>
-            )}
-
-            {/* Compteurs par certification + dossier de depot */}
+            {/* Compteurs par certification */}
             <div className="grid-3" style={{ gap: '0.75rem', marginBottom: '0.85rem' }}>
               <div
                 className="card card-sm"
@@ -333,10 +289,12 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
               >
                 <div className="row-between">
                   <strong>1. AWS CLF-C02 (S1 à S3)</strong>
-                  <span className="badge badge-success">{clfReadyCount}/12 Prêts ✅</span>
+                  <span className={`badge ${clfReadyCount === 12 ? 'badge-success' : 'badge-warning'}`}>
+                    {clfReadyCount}/12 Prêts
+                  </span>
                 </div>
                 <div className="muted" style={{ fontSize: '0.78rem', marginTop: '0.25rem' }}>
-                  Dossier : <code>public/audios/clf-c02/</code> | Examen : <strong>27 nov. 2026</strong>
+                  Examen : <strong>27 nov. 2026</strong>
                 </div>
               </div>
 
@@ -356,7 +314,7 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                   </span>
                 </div>
                 <div className="muted" style={{ fontSize: '0.78rem', marginTop: '0.25rem' }}>
-                  Dossier : <code>public/audios/dbt/</code> | Dépose les 9 restants demain : renommage auto !
+                  Examen : <strong>8 janv. 2027</strong>
                 </div>
               </div>
 
@@ -376,7 +334,7 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                   </span>
                 </div>
                 <div className="muted" style={{ fontSize: '0.78rem', marginTop: '0.25rem' }}>
-                  Dossier : <code>public/audios/dea-c01/</code> | Dépose tes fichiers : renommage auto !
+                  Examen : <strong>19 mars 2027</strong>
                 </div>
               </div>
             </div>
@@ -490,7 +448,7 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                           <span className="badge badge-success">Audio Prêt (~{ep.duration_est_min} min)</span>
                         ) : (
                           <span className="badge badge-warning">
-                            {isCloud ? 'Bientôt disponible' : `À déposer (${ep.filename})`}
+                            Bientôt disponible
                           </span>
                         )}
                       </div>
@@ -603,13 +561,9 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                             : '⬇ Hors ligne'}
                       </button>
                     ) : null}
-                    {ep.file_exists ? null : isCloud ? (
+                    {ep.file_exists ? null : (
                       <span className="muted" style={{ fontSize: '0.76rem' }}>
-                        Audio pas encore en ligne : il apparaîtra automatiquement dès son ajout.
-                      </span>
-                    ) : (
-                      <span className="muted" style={{ fontSize: '0.76rem' }}>
-                        Dépose l'audio dans <code>public/audios/{ep.cert_code === 'DBT' ? 'dbt' : ep.cert_code.toLowerCase()}/</code>
+                        Audio pas encore disponible : il apparaîtra automatiquement dès son ajout.
                       </span>
                     )}
                   </div>
