@@ -238,3 +238,13 @@
   2. Guide des tâches podcast (« Comment faire ») : calendrier du lundi au dimanche, compteur des écoutes de la semaine et de l'objectif de 3 écoutes, rappels prévus plus tard, message quand la semaine est complète.
 - **Règles de lecture :** une écoute n°N est faite dès que le compteur de l'épisode atteint N. Une « veille d'examen » sans jour est placée le jeudi (examens le vendredi). Un rappel sans jour est à placer librement dans la semaine indiquée. Une écoute prévue au-delà de la 3e est affichée comme rappel bonus.
 - **Ce qui n'a pas changé :** le catalogue et les textes des tâches (les livrables hebdomadaires restent ceux du planning ; la 3e écoute de certains épisodes est prévue par le catalogue dans une semaine ultérieure).
+
+## 22. Décision D-22 : Formations officielles AWS Skill Builder intégrées au planning
+
+- **Date :** 6 novembre 2026
+- **Décision prise (validée par Auren) :** intégrer les modules gratuits de préparation à l'examen, sans décaler les examens. Les tâches pointent vers le lien général `https://skillbuilder.aws/` ; leur guide indique la page de préparation, les filtres (« Niveau d'accès : Gratuit », langue) et le titre exact de chaque formation, avec un bouton pour copier le titre.
+  - **CLF-C02 (versions françaises) :** S1 (W01-C5) Exam Prep Overview, Exam Prep Plan Overview, Domain 1 Review ; S2 (W02-C3, remplace l'ancienne tâche générique) Domain 2 et 3 Review ; S3 (W03-C4, conseillée le mardi) Domain 4 Review et Exam Prep Summary ; l'Official Practice Question Set reste dans W03-C1.
+  - **DEA-C01 (versions anglaises) :** S10 (W10-C5) Exam Prep Overview et Plan Overview ; Domain 1 à 4 Review en obligatoire, une par semaine de S13 à S16 (W13-C5 à W16-C5, 1 h 20 chacune, à la place des anciennes revues bonus W13-B1 et W15-B1) ; Official Practice Question Set dans W17-C2 ; Exam Prep Summary en S18 (W18-C3).
+  - **Labs « Data Engineering on AWS Learning Plans » :** en bonus, 6 séances de S12 à S17 (120, 60, 45, 75, 45 et 120 min), soit environ 7 h 45 sur les 20 h 20 du plan. La S11 n'avait pas de marge (640 min).
+- **Écarté :** les « Exam Prep Plan » complets (32 h 20 pour CLF-C02, 17 h 15 pour DEA-C01), qui reprennent ces modules et recoupent les cours Udemy.
+- **Contrôle :** toutes les semaines restent sous 660 min (test `tests/unit/skillBuilderPlan.test.ts`). Charges après ajout : S1 645, S2 590, S3 565, S10 660, S12 610, S13 655, S14 660, S15 655, S16 655, S17 650, S18 580 min.

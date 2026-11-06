@@ -2485,3 +2485,49 @@ a:not(.btn) {
     gap: 0.25rem;
   }
 }
+
+/* Formations AWS Skill Builder dans le guide d'une tâche */
+.skillbuilder-box {
+  margin-top: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+}
+
+.skillbuilder-list {
+  margin: 0;
+  padding-left: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.skillbuilder-list li {
+  padding-left: 0.2rem;
+}
+
+.skillbuilder-list li > div,
+.skillbuilder-list li {
+  overflow-wrap: anywhere;
+}
+
+.skillbuilder-list li {
+  display: list-item;
+}
+
+.skillbuilder-list li > div:first-child {
+  display: inline-block;
+  vertical-align: top;
+  width: calc(100% - 6.5rem);
+}
+
+.skillbuilder-list li > button {
+  float: right;
+}
+
+.skillbuilder-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  user-select: all;
+}

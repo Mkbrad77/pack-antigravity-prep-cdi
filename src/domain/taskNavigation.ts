@@ -679,6 +679,7 @@ const EXACT_INTERVIEW_PLANS: Record<string, ExactInterviewTaskPlan> = {
 };
 
 function getRecommendedDayForTask(task: UnifiedTask): string {
+  if (task.recommended_day) return task.recommended_day;
   const id = task.id.toUpperCase();
   if (EXACT_INTERVIEW_PLANS[id]) {
     return EXACT_INTERVIEW_PLANS[id].recommendedDay;
@@ -831,6 +832,33 @@ export function getTaskActionGuide(task: UnifiedTask): TaskActionGuide {
         coursesSubTab: 'podcasts',
         podcastCertFilter: certCode,
         label: `Ouvrir les podcasts ${certCode}`,
+      },
+      secondaryButton: {
+        tab: 'certifications',
+        certCode,
+        certSubTab: 'fiches',
+        label: `Voir les fiches express ${certCode}`,
+      },
+    };
+  }
+
+  // Cas 2.1 : Formations officielles AWS Skill Builder (lien général + titre exact et filtres)
+  if (task.type === 'skill_builder' && task.skillbuilder) {
+    const sb = task.skillbuilder;
+    const search = certCode === 'CLF-C02' ? 'Cloud Practitioner' : 'Data Engineer Associate';
+    return {
+      whereLabel: `skillbuilder.aws > page de préparation « ${sb.exam_page} », filtres « ${sb.access} » et « ${sb.language} »`,
+      recommendedDay,
+      steps: [
+        'Étape 1 : ouvre AWS Skill Builder avec le bouton ci-dessous et connecte-toi (compte AWS Builder ID, gratuit).',
+        `Étape 2 : tape « ${search} » dans la recherche, puis ouvre la page de préparation à l'examen « ${sb.exam_page} ».`,
+        `Étape 3 : dans « Filtrer », choisis « Niveau d'accès : ${sb.access} » et la langue « ${sb.language} ».`,
+        `Étape 4 : ouvre ${sb.items.length > 1 ? `les ${sb.items.length} formations de la liste ci-dessous, dans l'ordre` : 'la formation indiquée ci-dessous'} (titre exact à rechercher), puis marque la tâche comme terminée.`,
+      ],
+      primaryButton: {
+        tab: 'certifications',
+        externalUrl: task.url || 'https://skillbuilder.aws/',
+        label: 'Ouvrir AWS Skill Builder',
       },
       secondaryButton: {
         tab: 'certifications',

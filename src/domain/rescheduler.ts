@@ -172,6 +172,8 @@ export function buildUnifiedTasks(
         notes: state?.notes ?? '',
         topic_ids: [],
         url: t.url,
+        recommended_day: t.recommended_day,
+        skillbuilder: t.skillbuilder,
       });
     }
   }

@@ -32,9 +32,9 @@
       "theme": "Introduction au Cloud AWS, IAM, EC2, S3, RDS, VPC (Merico leçons 1 à 120) + Écoute récursive Audios CLF 01 à 06",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 485,
+      "cert_budget_min": 585,
       "interview_budget_min": 60,
-      "total_planned_min": 545,
+      "total_planned_min": 645,
       "checkpoint": "Leçons 1 à 120 du cours Merico validées + Audios CLF-AUDIO-01 à 06 écoutés (cycle récursif) + Accès Devoteam",
       "tasks": [
         {
@@ -91,6 +91,41 @@
           "deliverable": "Épisodes CLF-AUDIO-01 à 06 écoutés au moins 2 fois chacun sur mobile"
         },
         {
+          "id": "W01-C5",
+          "priority": "core",
+          "type": "skill_builder",
+          "title": "AWS Skill Builder (CLF-C02, français) : Exam Prep Overview, Exam Prep Plan Overview et Domain 1 Review (Concepts du cloud)",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "3 formations officielles : panorama de l'examen, aperçu du plan d'étude, revue du domaine 1",
+          "video_min": 100,
+          "est_min": 100,
+          "url": "https://skillbuilder.aws/",
+          "recommended_day": "Samedi (après-midi)",
+          "deliverable": "Les 3 formations terminées sur Skill Builder et le domaine 1 (concepts du cloud, 24 %) relu",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Cloud Practitioner (CLF-C02)",
+            "language": "Français",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Exam Prep Overview: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
+                "minutes": 20,
+                "kind": "Préparation à l'examen de certification"
+              },
+              {
+                "name": "Exam Prep Plan Overview: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
+                "minutes": 15,
+                "kind": "Préparation à l'examen de certification"
+              },
+              {
+                "name": "Domain 1 Review: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
+                "minutes": 65,
+                "kind": "Préparation à l'examen de certification"
+              }
+            ]
+          }
+        },
+        {
           "id": "W01-B1",
           "priority": "bonus",
           "type": "devoteam",
@@ -112,9 +147,9 @@
       "theme": "Sécurité, Gouvernance, Facturation, CAF, Well-Architected + Écoute récursive Audios CLF 07 à 11",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 520,
+      "cert_budget_min": 530,
       "interview_budget_min": 60,
-      "total_planned_min": 580,
+      "total_planned_min": 590,
       "checkpoint": "Cours Merico quasi achevé (199/203), Audios CLF 07 à 11 assimilés et premier examen blanc >= 75 %",
       "tasks": [
         {
@@ -149,13 +184,31 @@
           "id": "W02-C3",
           "priority": "core",
           "type": "skill_builder",
-          "title": "AWS Skill Builder : Exam Prep Standard Course : AWS Certified Cloud Practitioner (CLF-C02)",
-          "resource": "AWS Skill Builder (Gratuit)",
-          "lectures": "Domaines 1 à 4",
-          "video_min": 75,
-          "est_min": 85,
-          "url": "https://explore.skillbuilder.aws/learn",
-          "deliverable": "Validation des points clés du guide d'examen officiel CLF-C02"
+          "title": "AWS Skill Builder (CLF-C02, français) : Domain 2 Review (Sécurité et conformité) et Domain 3 Review (Technologies et services cloud)",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "2 revues officielles de domaine (2 x 1 h 05)",
+          "video_min": 130,
+          "est_min": 130,
+          "url": "https://skillbuilder.aws/",
+          "deliverable": "Domaines 2 (30 %) et 3 (34 %) relus avec les revues officielles, après les leçons Merico sur la sécurité",
+          "recommended_day": "Jeudi (soir) et samedi",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Cloud Practitioner (CLF-C02)",
+            "language": "Français",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Domain 2 Review: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
+                "minutes": 65,
+                "kind": "Préparation à l'examen de certification"
+              },
+              {
+                "name": "Domain 3 Review: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
+                "minutes": 65,
+                "kind": "Préparation à l'examen de certification"
+              }
+            ]
+          }
         },
         {
           "id": "W02-C4",
@@ -189,9 +242,9 @@
       "theme": "Passage officiel CLF-C02 (27/11/2026) + Compensation du décalage initial : Activation Snowflake 120j & Début Zoltan Toth (leçons 1 à 25)",
       "light_week": false,
       "exam": "AWS Certified Cloud Practitioner (CLF-C02) - Vendredi 27/11/2026",
-      "cert_budget_min": 495,
+      "cert_budget_min": 505,
       "interview_budget_min": 60,
-      "total_planned_min": 555,
+      "total_planned_min": 565,
       "checkpoint": "CERTIFICATION N°1 (CLF-C02) VALIDÉE + Compte Snowflake 120j actif + Toth leçons 1 à 25 & DBT-AUDIO-01 terminés dès fin novembre !",
       "tasks": [
         {
@@ -206,7 +259,49 @@
           "last": 203,
           "video_min": 45,
           "est_min": 135,
-          "deliverable": "Cours Merico 100 % complété (203/203), CLF-AUDIO-12 écouté et score blanc >= 82 %"
+          "deliverable": "Cours Merico 100 % complété (203/203), CLF-AUDIO-12 écouté et score blanc >= 82 %",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Cloud Practitioner (CLF-C02)",
+            "language": "Français",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Official Practice Question Set: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
+                "minutes": 30,
+                "kind": "Préparation à l'examen de certification"
+              }
+            ]
+          }
+        },
+        {
+          "id": "W03-C4",
+          "priority": "core",
+          "type": "skill_builder",
+          "title": "AWS Skill Builder (CLF-C02, français) : Domain 4 Review (Facturation, tarification et support) et Exam Prep Summary",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "Revue officielle du domaine 4 + synthèse finale de l'examen",
+          "video_min": 70,
+          "est_min": 70,
+          "url": "https://skillbuilder.aws/",
+          "recommended_day": "Mardi (soir), avant l'examen du vendredi",
+          "deliverable": "Domaine 4 (12 %) relu et synthèse officielle consultée avant l'examen",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Cloud Practitioner (CLF-C02)",
+            "language": "Français",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Domain 4 Review: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
+                "minutes": 65,
+                "kind": "Préparation à l'examen de certification"
+              },
+              {
+                "name": "Exam Prep Summary: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
+                "minutes": 5,
+                "kind": "Préparation à l'examen de certification"
+              }
+            ]
+          }
         },
         {
           "id": "W03-C2",
@@ -636,9 +731,9 @@
       "theme": "Fondations AWS Data, S3 & Ingestion Streaming (Kinesis, MSK, DMS) + Quickstarts Snowflake ML #2/#3 + Audios DEA 01 & 02",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 415,
+      "cert_budget_min": 540,
       "interview_budget_min": 120,
-      "total_planned_min": 535,
+      "total_planned_min": 660,
       "checkpoint": "Maarek leçons 1 à 64 validées + Audios DEA-AUDIO-01 & 02 écoutés + Quickstart Snowflake ML #4 (XGBoost GPU) terminé",
       "tasks": [
         {
@@ -691,6 +786,36 @@
           "video_min": 0,
           "est_min": 55,
           "deliverable": "Épisodes DEA-AUDIO-01 et 02 écoutés et maîtrisés"
+        },
+        {
+          "id": "W10-C5",
+          "priority": "core",
+          "type": "skill_builder",
+          "title": "AWS Skill Builder (DEA-C01, anglais) : Exam Prep Overview et Exam Prep Plan Overview",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "Panorama officiel de l'examen et aperçu du plan d'étude",
+          "video_min": 30,
+          "est_min": 30,
+          "url": "https://skillbuilder.aws/",
+          "recommended_day": "Samedi (après-midi)",
+          "deliverable": "Les 4 domaines DEA-C01 et leur poids connus avant d'attaquer le cours Maarek",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
+            "language": "English",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Exam Prep Overview: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
+                "minutes": 15,
+                "kind": "Préparation à l'examen de certification"
+              },
+              {
+                "name": "Exam Prep Plan Overview: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
+                "minutes": 15,
+                "kind": "Préparation à l'examen de certification"
+              }
+            ]
+          }
         },
         {
           "id": "W10-B1",
@@ -796,9 +921,9 @@
       "theme": "Maarek (139-166) + Nikolai (149-160) + Quickstarts Snowflake ML #6 & #7 + Audios DEA 06 (EMR/Spark) & 08 (Iceberg/Hudi/Delta)",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 325,
+      "cert_budget_min": 490,
       "interview_budget_min": 120,
-      "total_planned_min": 445,
+      "total_planned_min": 610,
       "checkpoint": "EMR, Spark & Formats Iceberg/Hudi/Delta maîtrisés + APIs Offline/Online Feature Store Snowflake pratiquées",
       "tasks": [
         {
@@ -863,6 +988,30 @@
           "est_min": 45,
           "url": "https://www.snowflake.com/en/developers/guides/intro-to-online-feature-store-in-snowflake/",
           "deliverable": "Serving temps réel basse latence sur Snowflake Online Feature Store"
+        },
+        {
+          "id": "W12-B2",
+          "priority": "bonus",
+          "type": "skill_builder",
+          "title": "AWS Skill Builder (DEA-C01, anglais) : Data Engineering on AWS Learning Plans, labs (séance 1 sur 6, 120 min)",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "Reprendre le plan là où tu t'es arrêté, dans l'ordre des 5 formations",
+          "video_min": 0,
+          "est_min": 120,
+          "url": "https://skillbuilder.aws/",
+          "deliverable": "120 min de pratique sur les labs du plan (bonus sacrifiable en premier en cas d'imprévu)",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
+            "language": "English",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Data Engineering on AWS Learning Plans (includes labs)",
+                "minutes": 1220,
+                "kind": "Plan d'apprentissage (5 formations, labs inclus)"
+              }
+            ]
+          }
         }
       ]
     },
@@ -874,9 +1023,9 @@
       "theme": "Athena, Redshift (Distribution Styles, Sort Keys, Spectrum, Data Sharing) + Quickstart ML #8 + Audios DEA 07, 09 et 10",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 395,
+      "cert_budget_min": 535,
       "interview_budget_min": 120,
-      "total_planned_min": 515,
+      "total_planned_min": 655,
       "checkpoint": "Redshift & Athena maîtrisés + Audios DEA 07, 09, 10 assimilés + Cycle Feature Store + Model Registry sur Snowflake",
       "tasks": [
         {
@@ -931,15 +1080,53 @@
           "deliverable": "Épisodes DEA-AUDIO-07, 09 et 10 écoutés et maîtrisés"
         },
         {
+          "id": "W13-C5",
+          "priority": "core",
+          "type": "skill_builder",
+          "title": "AWS Skill Builder (DEA-C01, anglais) : Domain 1 Review (Ingestion et transformation des données)",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "Revue officielle du domaine 1 (34 % de l'examen)",
+          "video_min": 80,
+          "est_min": 80,
+          "url": "https://skillbuilder.aws/",
+          "recommended_day": "Samedi (après-midi)",
+          "deliverable": "Domaine 1 (Ingestion et transformation des données, 34 %) relu avec la revue officielle",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
+            "language": "English",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Domain 1 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
+                "minutes": 80,
+                "kind": "Préparation à l'examen de certification"
+              }
+            ]
+          }
+        },
+        {
           "id": "W13-B1",
           "priority": "bonus",
           "type": "skill_builder",
-          "title": "AWS Skill Builder : DEA-C01 Domain 1 (Ingestion/Transform) & Domain 2 (Data Store Management) Review",
-          "resource": "AWS Skill Builder (Gratuit)",
-          "lectures": "Domaines 1 & 2",
-          "video_min": 90,
-          "est_min": 120,
-          "deliverable": "Validation officielle AWS Skill Builder des domaines 1 et 2"
+          "title": "AWS Skill Builder (DEA-C01, anglais) : Data Engineering on AWS Learning Plans, labs (séance 2 sur 6, 60 min)",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "Reprendre le plan là où tu t'es arrêté, dans l'ordre des 5 formations",
+          "video_min": 0,
+          "est_min": 60,
+          "url": "https://skillbuilder.aws/",
+          "deliverable": "60 min de pratique sur les labs du plan (bonus sacrifiable en premier en cas d'imprévu)",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
+            "language": "English",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Data Engineering on AWS Learning Plans (includes labs)",
+                "minutes": 1220,
+                "kind": "Plan d'apprentissage (5 formations, labs inclus)"
+              }
+            ]
+          }
         }
       ]
     },
@@ -951,9 +1138,9 @@
       "theme": "Maarek (196-226) + Quickstart ML #9 (Task Graphs) + Activation Free Trial Cortex Code 30j + Audios DEA 11 & 12",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 325,
+      "cert_budget_min": 560,
       "interview_budget_min": 120,
-      "total_planned_min": 445,
+      "total_planned_min": 680,
       "checkpoint": "DynamoDB & Orchestration maîtrisés + Pipeline ML Task Graphs sur Snowflake + Compte Cortex 30j activé",
       "tasks": [
         {
@@ -1006,6 +1193,31 @@
           "deliverable": "Épisodes DEA-AUDIO-11 et 12 écoutés et maîtrisés"
         },
         {
+          "id": "W14-C5",
+          "priority": "core",
+          "type": "skill_builder",
+          "title": "AWS Skill Builder (DEA-C01, anglais) : Domain 2 Review (Gestion des magasins de données)",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "Revue officielle du domaine 2 (26 % de l'examen)",
+          "video_min": 80,
+          "est_min": 80,
+          "url": "https://skillbuilder.aws/",
+          "recommended_day": "Samedi (après-midi)",
+          "deliverable": "Domaine 2 (Gestion des magasins de données, 26 %) relu avec la revue officielle",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
+            "language": "English",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Domain 2 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
+                "minutes": 80,
+                "kind": "Préparation à l'examen de certification"
+              }
+            ]
+          }
+        },
+        {
           "id": "W14-B1",
           "course": "nikolai",
           "priority": "bonus",
@@ -1018,6 +1230,30 @@
           "video_min": 85,
           "est_min": 110,
           "deliverable": "Révision complémentaire Nikolai sur DynamoDB et QuickSight"
+        },
+        {
+          "id": "W14-B2",
+          "priority": "bonus",
+          "type": "skill_builder",
+          "title": "AWS Skill Builder (DEA-C01, anglais) : Data Engineering on AWS Learning Plans, labs (séance 3 sur 6, 45 min)",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "Reprendre le plan là où tu t'es arrêté, dans l'ordre des 5 formations",
+          "video_min": 0,
+          "est_min": 45,
+          "url": "https://skillbuilder.aws/",
+          "deliverable": "45 min de pratique sur les labs du plan (bonus sacrifiable en premier en cas d'imprévu)",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
+            "language": "English",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Data Engineering on AWS Learning Plans (includes labs)",
+                "minutes": 1220,
+                "kind": "Plan d'apprentissage (5 formations, labs inclus)"
+              }
+            ]
+          }
         }
       ]
     },
@@ -1029,9 +1265,9 @@
       "theme": "Maarek (227-262) + Nikolai (199-230) + Quickstart ML #10 (ML Observability) + Audios DEA 13 (Glue DQ/Schema Registry) & 15 (Lake Formation)",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 380,
+      "cert_budget_min": 535,
       "interview_budget_min": 120,
-      "total_planned_min": 500,
+      "total_planned_min": 655,
       "checkpoint": "Domaine 4 DEA-C01 (Sécurité & Lake Formation) bouclé + ML Observability sur Snowflake + Audios DEA 13 & 15 assimilés",
       "tasks": [
         {
@@ -1086,15 +1322,53 @@
           "deliverable": "Épisodes DEA-AUDIO-13 et 15 écoutés et maîtrisés"
         },
         {
+          "id": "W15-C5",
+          "priority": "core",
+          "type": "skill_builder",
+          "title": "AWS Skill Builder (DEA-C01, anglais) : Domain 3 Review (Opérations et support des données)",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "Revue officielle du domaine 3 (22 % de l'examen)",
+          "video_min": 80,
+          "est_min": 80,
+          "url": "https://skillbuilder.aws/",
+          "recommended_day": "Samedi (après-midi)",
+          "deliverable": "Domaine 3 (Opérations et support des données, 22 %) relu avec la revue officielle",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
+            "language": "English",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Domain 3 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
+                "minutes": 80,
+                "kind": "Préparation à l'examen de certification"
+              }
+            ]
+          }
+        },
+        {
           "id": "W15-B1",
           "priority": "bonus",
           "type": "skill_builder",
-          "title": "AWS Skill Builder : DEA-C01 Domain 3 (Data Operations) & Domain 4 (Data Security and Governance) Review",
-          "resource": "AWS Skill Builder (Gratuit)",
-          "lectures": "Domaines 3 & 4",
-          "video_min": 90,
-          "est_min": 120,
-          "deliverable": "Validation officielle AWS Skill Builder des domaines 3 et 4"
+          "title": "AWS Skill Builder (DEA-C01, anglais) : Data Engineering on AWS Learning Plans, labs (séance 4 sur 6, 75 min)",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "Reprendre le plan là où tu t'es arrêté, dans l'ordre des 5 formations",
+          "video_min": 0,
+          "est_min": 75,
+          "url": "https://skillbuilder.aws/",
+          "deliverable": "75 min de pratique sur les labs du plan (bonus sacrifiable en premier en cas d'imprévu)",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
+            "language": "English",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Data Engineering on AWS Learning Plans (includes labs)",
+                "minutes": 1220,
+                "kind": "Plan d'apprentissage (5 formations, labs inclus)"
+              }
+            ]
+          }
         }
       ]
     },
@@ -1106,9 +1380,9 @@
       "theme": "Fin de Maarek (263-298) et Nikolai (231-261) + Quickstarts ML #11 & #12 + Audios DEA 14 (Observabilité) & 16 (KMS/VPC & 30 Pièges)",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 350,
+      "cert_budget_min": 535,
       "interview_budget_min": 120,
-      "total_planned_min": 470,
+      "total_planned_min": 655,
       "checkpoint": "100 % des leçons théoriques Maarek/Nikolai et des 16 Audios DEA terminés + Inférence batch GPU d'embeddings pratiquée",
       "tasks": [
         {
@@ -1163,6 +1437,31 @@
           "deliverable": "Les 16 épisodes DEA-AUDIO-01 à 16 ont tous été écoutés au moins 2 fois"
         },
         {
+          "id": "W16-C5",
+          "priority": "core",
+          "type": "skill_builder",
+          "title": "AWS Skill Builder (DEA-C01, anglais) : Domain 4 Review (Sécurité et gouvernance des données)",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "Revue officielle du domaine 4 (18 % de l'examen)",
+          "video_min": 80,
+          "est_min": 80,
+          "url": "https://skillbuilder.aws/",
+          "recommended_day": "Samedi (après-midi)",
+          "deliverable": "Domaine 4 (Sécurité et gouvernance des données, 18 %) relu avec la revue officielle",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
+            "language": "English",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Domain 4 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
+                "minutes": 80,
+                "kind": "Préparation à l'examen de certification"
+              }
+            ]
+          }
+        },
+        {
           "id": "W16-B1",
           "priority": "bonus",
           "type": "quickstart",
@@ -1173,6 +1472,30 @@
           "est_min": 60,
           "url": "https://quickstarts.snowflake.com/guide/build-ml-models-for-customer-conversions/",
           "deliverable": "Pipeline combinant analyse de sentiment GenAI et classification XGBoost sur Snowflake"
+        },
+        {
+          "id": "W16-B2",
+          "priority": "bonus",
+          "type": "skill_builder",
+          "title": "AWS Skill Builder (DEA-C01, anglais) : Data Engineering on AWS Learning Plans, labs (séance 5 sur 6, 45 min)",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "Reprendre le plan là où tu t'es arrêté, dans l'ordre des 5 formations",
+          "video_min": 0,
+          "est_min": 45,
+          "url": "https://skillbuilder.aws/",
+          "deliverable": "45 min de pratique sur les labs du plan (bonus sacrifiable en premier en cas d'imprévu)",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
+            "language": "English",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Data Engineering on AWS Learning Plans (includes labs)",
+                "minutes": 1220,
+                "kind": "Plan d'apprentissage (5 formations, labs inclus)"
+              }
+            ]
+          }
         }
       ]
     },
@@ -1184,9 +1507,9 @@
       "theme": "Nikolai Practice Tests #1 & #2 (262-263) + AWS Official Question Set + Quickstart ML #13 (PyTorch GPU) + Réécoute 1.5x Audios DEA 01 à 08",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 410,
+      "cert_budget_min": 530,
       "interview_budget_min": 120,
-      "total_planned_min": 530,
+      "total_planned_min": 650,
       "checkpoint": "2 premiers examens blancs DEA-C01 analysés + Modèle PyTorch distribué sur GPU exécuté dans Snowflake",
       "tasks": [
         {
@@ -1212,7 +1535,20 @@
           "lectures": "20 questions officielles + Écoute 3 DEA-AUDIO-01 à 08",
           "video_min": 0,
           "est_min": 110,
-          "deliverable": "Score >= 80 % sur le jeu officiel AWS et 3e écoute validée sur les audios d'ingestion/stockage"
+          "deliverable": "Score >= 80 % sur le jeu officiel AWS et 3e écoute validée sur les audios d'ingestion/stockage",
+          "url": "https://skillbuilder.aws/",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
+            "language": "English",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Official Practice Question Set: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
+                "minutes": 40,
+                "kind": "Préparation à l'examen de certification"
+              }
+            ]
+          }
         },
         {
           "id": "W17-C3",
@@ -1225,6 +1561,30 @@
           "est_min": 60,
           "url": "https://www.snowflake.com/en/developers/solutions-center/running-distributed-pytorch-models-on-snowflake-an-end-to-end-ml-solution/",
           "deliverable": "Modèle de recommandation PyTorch entraîné en distribué sur GPU dans Snowflake"
+        },
+        {
+          "id": "W17-B1",
+          "priority": "bonus",
+          "type": "skill_builder",
+          "title": "AWS Skill Builder (DEA-C01, anglais) : Data Engineering on AWS Learning Plans, labs (séance 6 sur 6, 120 min)",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "Reprendre le plan là où tu t'es arrêté, dans l'ordre des 5 formations",
+          "video_min": 0,
+          "est_min": 120,
+          "url": "https://skillbuilder.aws/",
+          "deliverable": "120 min de pratique sur les labs du plan (bonus sacrifiable en premier en cas d'imprévu)",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
+            "language": "English",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Data Engineering on AWS Learning Plans (includes labs)",
+                "minutes": 1220,
+                "kind": "Plan d'apprentissage (5 formations, labs inclus)"
+              }
+            ]
+          }
         }
       ]
     },
@@ -1236,9 +1596,9 @@
       "theme": "Nikolai Practice Tests #3 & #4 (264-265) + Maarek Practice Exam (299) + Quickstart ML #14 + Réécoute 1.5x Audios DEA 09 à 16",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 415,
+      "cert_budget_min": 480,
       "interview_budget_min": 120,
-      "total_planned_min": 535,
+      "total_planned_min": 600,
       "checkpoint": "Cours Maarek (299/299) achevé, 3e écoute des 16 Audios DEA terminée et moyenne des examens blancs >= 80 %",
       "tasks": [
         {
@@ -1268,6 +1628,30 @@
           "video_min": 0,
           "est_min": 175,
           "deliverable": "Cours Maarek 100 % complété (299/299), score >= 80 % et 3e écoute validée sur les audios Redshift/Orchestration/Lake Formation"
+        },
+        {
+          "id": "W18-C3",
+          "priority": "core",
+          "type": "skill_builder",
+          "title": "AWS Skill Builder (DEA-C01, anglais) : Exam Prep Summary",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "Synthèse officielle finale avant l'examen",
+          "video_min": 5,
+          "est_min": 5,
+          "url": "https://skillbuilder.aws/",
+          "deliverable": "Synthèse officielle consultée la semaine précédant l'examen",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
+            "language": "English",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Exam Prep Summary: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
+                "minutes": 5,
+                "kind": "Préparation à l'examen de certification"
+              }
+            ]
+          }
         },
         {
           "id": "W18-B1",

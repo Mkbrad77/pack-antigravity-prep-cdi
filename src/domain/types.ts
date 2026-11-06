@@ -108,6 +108,20 @@ export interface RawPlanningTask {
   note?: string;
   deliverable?: string;
   url?: string;
+  /** Jour conseillé explicite (sinon déduit de l'identifiant de la tâche). */
+  recommended_day?: string;
+  /** Formations AWS Skill Builder à retrouver sur skillbuilder.aws (titre exact et filtres). */
+  skillbuilder?: SkillBuilderTaskRef;
+}
+
+export interface SkillBuilderTaskRef {
+  /** Titre de la page de préparation à l'examen sur Skill Builder. */
+  exam_page: string;
+  /** Valeur du filtre de langue à sélectionner. */
+  language: 'Français' | 'English';
+  /** Valeur du filtre « Niveau d'accès ». */
+  access: string;
+  items: Array<{ name: string; minutes: number; kind: string }>;
 }
 
 export interface RawPlanningWeek {
@@ -251,6 +265,8 @@ export interface UnifiedTask {
   notes: string;
   topic_ids: string[];
   url?: string;
+  recommended_day?: string;
+  skillbuilder?: SkillBuilderTaskRef;
 }
 
 export interface TaskStateRow {

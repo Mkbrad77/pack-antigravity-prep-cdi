@@ -5,6 +5,7 @@ import {
   Check,
   ChevronDown,
   Clock,
+  Copy,
   ExternalLink,
   RotateCcw,
   SkipForward,
@@ -91,6 +92,17 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   const [draft, setDraft] = useState<number>(task.effective_est_min);
   const accent = task.category === 'interview' ? certColor('INTERVIEW') : certColor(task.cert_code);
   const showExternal = task.url && !guide.primaryButton.externalUrl && !guide.secondaryButton?.externalUrl;
+  const [copied, setCopied] = useState<string | null>(null);
+  const copyTitle = async (name: string) => {
+    try {
+      await navigator.clipboard.writeText(name);
+      setCopied(name);
+      window.setTimeout(() => setCopied(null), 1800);
+    } catch {
+      // presse-papiers indisponible : le titre reste sélectionnable à la main
+    }
+  };
+  const formatMinutes = (m: number) => (m >= 60 ? `${Math.floor(m / 60)} h${m % 60 ? ` ${String(m % 60).padStart(2, '0')}` : ''}` : `${m} min`);
 
   return (
     <article
@@ -255,6 +267,39 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             <li key={idx}>{step}</li>
           ))}
         </ol>
+        {task.skillbuilder && (
+          <div className="skillbuilder-box" data-testid={`skillbuilder-${task.id}`}>
+            <div className="small" style={{ fontWeight: 650, marginBottom: '0.4rem' }}>
+              À retrouver sur skillbuilder.aws
+            </div>
+            <div className="cluster" style={{ gap: '0.35rem', marginBottom: '0.6rem' }}>
+              <span className="badge badge-neutral">Page : {task.skillbuilder.exam_page}</span>
+              <span className="badge badge-info">Niveau d'accès : {task.skillbuilder.access}</span>
+              <span className="badge badge-info">Langue : {task.skillbuilder.language}</span>
+            </div>
+            <ol className="skillbuilder-list">
+              {task.skillbuilder.items.map((it) => (
+                <li key={it.name}>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div className="skillbuilder-name">{it.name}</div>
+                    <div className="muted small">
+                      {it.kind}, {formatMinutes(it.minutes)}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-ghost btn-sm"
+                    onClick={() => copyTitle(it.name)}
+                    aria-label={`Copier le titre : ${it.name}`}
+                  >
+                    <Copy size={16} aria-hidden />
+                    {copied === it.name ? 'Copié' : 'Copier'}
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
         {podcasts && (
           <WeekListeningGrid
             episodes={podcasts}

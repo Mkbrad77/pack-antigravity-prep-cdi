@@ -12628,63 +12628,63 @@
  "aws_skill_builder": [
   {
    "exam": "CLF-C02",
-   "title": "Exam Prep Summary: AWS Certified Cloud Practitioner (CLF-C02 - English)",
+   "title": "Exam Prep Summary: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
    "type": "Préparation à l'examen",
    "minutes": 5,
-   "usage": "optionnel"
+   "usage": "planifié en S3"
   },
   {
    "exam": "CLF-C02",
-   "title": "Exam Prep Overview: AWS Certified Cloud Practitioner (CLF-C02 - English)",
+   "title": "Exam Prep Overview: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
    "type": "Préparation à l'examen",
    "minutes": 20,
-   "usage": "indispensable"
+   "usage": "planifié en S1"
   },
   {
    "exam": "CLF-C02",
-   "title": "Exam Prep Plan Overview: AWS Certified Cloud Practitioner (CLF-C02 - English)",
+   "title": "Exam Prep Plan Overview: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
    "type": "Préparation à l'examen",
    "minutes": 15,
-   "usage": "optionnel"
+   "usage": "planifié en S1"
   },
   {
    "exam": "CLF-C02",
-   "title": "Domain 1 Review: AWS Certified Cloud Practitioner (CLF-C02 - English)",
+   "title": "Domain 1 Review: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
    "type": "Préparation à l'examen",
    "minutes": 65,
-   "usage": "ciblé : seulement si le domaine est faible"
+   "usage": "planifié en S1"
   },
   {
    "exam": "CLF-C02",
-   "title": "Domain 2 Review: AWS Certified Cloud Practitioner (CLF-C02 - English)",
+   "title": "Domain 2 Review: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
    "type": "Préparation à l'examen",
    "minutes": 65,
-   "usage": "ciblé : seulement si le domaine est faible"
+   "usage": "planifié en S2"
   },
   {
    "exam": "CLF-C02",
-   "title": "Domain 3 Review: AWS Certified Cloud Practitioner (CLF-C02 - English)",
+   "title": "Domain 3 Review: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
    "type": "Préparation à l'examen",
    "minutes": 65,
-   "usage": "ciblé : seulement si le domaine est faible"
+   "usage": "planifié en S2"
   },
   {
    "exam": "CLF-C02",
-   "title": "Domain 4 Review: AWS Certified Cloud Practitioner (CLF-C02 - English)",
+   "title": "Domain 4 Review: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
    "type": "Préparation à l'examen",
    "minutes": 65,
-   "usage": "ciblé : seulement si le domaine est faible"
+   "usage": "planifié en S3"
   },
   {
    "exam": "CLF-C02",
-   "title": "Official Practice Question Set: AWS Certified Cloud Practitioner (CLF-C02 - English)",
+   "title": "Official Practice Question Set: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
    "type": "Préparation à l'examen",
    "minutes": 30,
-   "usage": "indispensable"
+   "usage": "planifié en S3"
   },
   {
    "exam": "CLF-C02",
-   "title": "Exam Prep Plan: AWS Certified Cloud Practitioner (CLF-C02 - English) [plan d'apprentissage, 19 formations]",
+   "title": "Exam Prep Plan: AWS Certified Cloud Practitioner (CLF-C02 - Français) [plan d'apprentissage, 19 formations]",
    "type": "Plan d'apprentissage",
    "minutes": 1940,
    "usage": "hors budget : redondant avec le cours Udemy"
@@ -12715,49 +12715,49 @@
    "title": "Exam Prep Overview: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
    "type": "Préparation à l'examen",
    "minutes": 15,
-   "usage": "indispensable"
+   "usage": "planifié en S10"
   },
   {
    "exam": "DEA-C01",
    "title": "Exam Prep Plan Overview: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
    "type": "Préparation à l'examen",
    "minutes": 15,
-   "usage": "indispensable"
+   "usage": "planifié en S10"
   },
   {
    "exam": "DEA-C01",
    "title": "Domain 1 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
    "type": "Préparation à l'examen",
    "minutes": 80,
-   "usage": "indispensable (ingestion et transformation, 34 %)"
+   "usage": "planifié en S13"
   },
   {
    "exam": "DEA-C01",
    "title": "Domain 2 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
    "type": "Préparation à l'examen",
    "minutes": 80,
-   "usage": "indispensable (gestion des stockages, 26 %)"
+   "usage": "planifié en S14"
   },
   {
    "exam": "DEA-C01",
    "title": "Domain 3 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
    "type": "Préparation à l'examen",
    "minutes": 80,
-   "usage": "indispensable (opérations et support, 22 %)"
+   "usage": "planifié en S15"
   },
   {
    "exam": "DEA-C01",
    "title": "Domain 4 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
    "type": "Préparation à l'examen",
    "minutes": 80,
-   "usage": "indispensable (sécurité et gouvernance, 18 %)"
+   "usage": "planifié en S16"
   },
   {
    "exam": "DEA-C01",
    "title": "Official Practice Question Set: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
    "type": "Préparation à l'examen",
    "minutes": 40,
-   "usage": "indispensable"
+   "usage": "planifié en S17"
   },
   {
    "exam": "DEA-C01",
@@ -12799,7 +12799,7 @@
    "title": "Data Engineering on AWS Learning Plans (includes labs) [5 formations, laboratoires inclus]",
    "type": "Plan d'apprentissage",
    "minutes": 1220,
-   "usage": "facultatif : à utiliser seulement s'il reste du temps, après le 1er février"
+   "usage": "bonus : 6 séances de S12 à S17 (2 h max par semaine)"
   },
   {
    "exam": "AIF-C01 (hors périmètre actuel)",
