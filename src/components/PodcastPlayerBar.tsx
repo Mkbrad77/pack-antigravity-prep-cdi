@@ -80,7 +80,9 @@ export const PodcastPlayerBar: React.FC<PodcastPlayerBarProps> = ({
       navigator.mediaSession.metadata = new MediaMetadata({
         title: `${episode.id} : ${episode.title}`,
         artist: `Podcast NotebookLM (${episode.cert_code})`,
-        album: `Semaine ${episode.primary_week} | ${episode.course_lectures}`,
+        album: episode.course_lectures
+          ? `Semaine ${episode.primary_week} | ${episode.course_lectures}`
+          : `Semaine ${episode.primary_week} | ${episode.cert_code}`,
       });
 
       navigator.mediaSession.setActionHandler('play', () => {
@@ -288,7 +290,7 @@ export const PodcastPlayerBar: React.FC<PodcastPlayerBarProps> = ({
             </span>
             <strong style={{ fontSize: '0.92rem', color: '#ffffff' }}>{episode.title}</strong>
             <span style={{ fontSize: '0.78rem', color: '#94a3b8' }}>
-              ({episode.course_lectures} | Semaine {episode.primary_week})
+              ({episode.course_lectures ? `${episode.course_lectures} | ` : ''}Semaine {episode.primary_week})
             </span>
           </div>
 

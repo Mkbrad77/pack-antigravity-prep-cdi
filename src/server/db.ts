@@ -1,11 +1,5 @@
-import fs from 'node:fs';
-import { createRequire } from 'node:module';
-import path from 'node:path';
-import type { DatabaseSync as DatabaseSyncType } from 'node:sqlite';
-
-const { DatabaseSync } = createRequire(import.meta.url)('node:sqlite') as {
-  DatabaseSync: typeof DatabaseSyncType;
-};
+import { SqlDb, openNodeSqlite, requireNodeBuiltin } from './sqlDb';
+import { ContentSource, createNodeContentSource } from './contentSource';
 import {
   AppSettings,
   BackupPayload,
@@ -38,31 +32,33 @@ export interface StaticDatasetBundle {
 
 let cachedCatalogue: CatalogueData | null = null;
 
-export function loadStaticDatasets(rootDir = process.cwd()): StaticDatasetBundle {
-  const dataDir = path.join(rootDir, 'data');
+export function loadStaticDatasets(source?: ContentSource | string): StaticDatasetBundle {
+  const content: ContentSource =
+    typeof source === 'object' && source !== null ? source : createNodeContentSource(source);
+  const readData = (file: string): string => content.read(`data/${file}`);
 
   if (!cachedCatalogue) {
     cachedCatalogue = JSON.parse(
-      fs.readFileSync(path.join(dataDir, 'catalogue_formations.json'), 'utf-8')
+      readData('catalogue_formations.json')
     ) as CatalogueData;
   }
   const planningHebdo: PlanningHebdoData = JSON.parse(
-    fs.readFileSync(path.join(dataDir, 'planning_hebdo.json'), 'utf-8')
+    readData('planning_hebdo.json')
   );
   const planningEntretiens: PlanningEntretiensData = JSON.parse(
-    fs.readFileSync(path.join(dataDir, 'planning_entretiens.json'), 'utf-8')
+    readData('planning_entretiens.json')
   );
   const carteDesSujets: CarteDesSujetsData = JSON.parse(
-    fs.readFileSync(path.join(dataDir, 'carte_des_sujets.json'), 'utf-8')
+    readData('carte_des_sujets.json')
   );
   const skillBuilderAws: unknown = JSON.parse(
-    fs.readFileSync(path.join(dataDir, 'skillbuilder_aws.json'), 'utf-8')
+    readData('skillbuilder_aws.json')
   );
   const snowflakeDbtResources: SnowflakeDbtResourcesData = JSON.parse(
-    fs.readFileSync(path.join(dataDir, 'snowflake_dbt_resources.json'), 'utf-8')
+    readData('snowflake_dbt_resources.json')
   );
-  const podcastsCatalog: PodcastsCatalogData = JSON.parse(
-    fs.readFileSync(path.join(dataDir, 'podcasts_catalog.json'), 'utf-8')
+  const podcastsCatalog = normalizePodcastsCatalog(
+    JSON.parse(readData('podcasts_catalog.json')) as PodcastsCatalogData
   );
 
   return {
@@ -74,6 +70,32 @@ export function loadStaticDatasets(rootDir = process.cwd()): StaticDatasetBundle
     snowflakeDbtResources,
     podcastsCatalog,
   };
+}
+
+/**
+ * Lecture tolerante du catalogue des podcasts : accepte l'ancien format (order, filename,
+ * duration_est_min...) et le format actuel du fichier (episode_number, audio_path, est_min).
+ * Le fichier data/podcasts_catalog.json n'est jamais modifie.
+ */
+export function normalizePodcastsCatalog(catalog: PodcastsCatalogData): PodcastsCatalogData {
+  const episodes = (catalog.episodes || []).map((raw) => {
+    const ep = raw as unknown as Record<string, unknown>;
+    const audioPath = typeof ep.audio_path === 'string' ? ep.audio_path : '';
+    const fromPath = audioPath ? audioPath.split('/').pop() || '' : '';
+    return {
+      ...raw,
+      order: Number(ep.order ?? ep.episode_number ?? 0),
+      filename: String(ep.filename || fromPath || `${String(ep.id)}.m4a`),
+      duration_est_min: Number(ep.duration_est_min ?? ep.est_min ?? 0),
+      domain: String(ep.domain ?? ep.kind ?? ''),
+      course_lectures: String(ep.course_lectures ?? ''),
+      summary: String(ep.summary ?? ''),
+      keywords: Array.isArray(ep.keywords) ? (ep.keywords as string[]) : [],
+      key_traps: Array.isArray(ep.key_traps) ? (ep.key_traps as string[]) : [],
+      review_weeks: Array.isArray(ep.review_weeks) ? (ep.review_weeks as number[]) : [],
+    };
+  });
+  return { ...catalog, episodes } as PodcastsCatalogData;
 }
 
 export function getDefaultSettings(catalogue: CatalogueData): AppSettings {
@@ -93,25 +115,46 @@ export function getDefaultSettings(catalogue: CatalogueData): AppSettings {
     },
     readiness_rules: { ...DEFAULT_READINESS_RULES },
     last_backup_at: null,
-    active_week_override: 1,
-    simulated_today: '2026-11-09',
+    active_week_override: null,
+    simulated_today: '',
   };
 }
 
+/** Options du mode cloud : base SQLite et contenu fournis par l'hôte (Durable Object Cloudflare). */
+export interface SqliteStoreOptions {
+  db: SqlDb;
+  content: ContentSource;
+  dbLabel: string;
+}
+
 export class LocalSqliteStore {
-  public readonly db: DatabaseSyncType;
+  public readonly db: SqlDb;
   public readonly dbPath: string;
+  public readonly content: ContentSource;
   private readonly staticData: StaticDatasetBundle;
 
-  constructor(customDbPath?: string, rootDir = process.cwd()) {
-    this.staticData = loadStaticDatasets(rootDir);
-    const storageDir = path.join(rootDir, 'storage');
-    if (!fs.existsSync(storageDir)) {
-      fs.mkdirSync(storageDir, { recursive: true });
+  constructor(customDbPathOrOptions?: string | SqliteStoreOptions, rootDir?: string) {
+    if (typeof customDbPathOrOptions === 'object' && customDbPathOrOptions !== null) {
+      // Mode cloud : base et contenu injectés
+      this.content = customDbPathOrOptions.content;
+      this.staticData = loadStaticDatasets(this.content);
+      this.dbPath = customDbPathOrOptions.dbLabel;
+      this.db = customDbPathOrOptions.db;
+    } else {
+      // Mode local (comportement historique) : fichier SQLite sur le disque
+      const fs = requireNodeBuiltin<typeof import('node:fs')>('node:fs');
+      const path = requireNodeBuiltin<typeof import('node:path')>('node:path');
+      const root = rootDir ?? process.cwd();
+      this.content = createNodeContentSource(root);
+      this.staticData = loadStaticDatasets(this.content);
+      const storageDir = path.join(root, 'storage');
+      if (!fs.existsSync(storageDir)) {
+        fs.mkdirSync(storageDir, { recursive: true });
+      }
+      this.dbPath = customDbPathOrOptions ?? path.join(storageDir, 'user_data.sqlite');
+      this.db = openNodeSqlite(this.dbPath);
+      this.db.exec('PRAGMA journal_mode = WAL;');
     }
-    this.dbPath = customDbPath ?? path.join(storageDir, 'user_data.sqlite');
-    this.db = new DatabaseSync(this.dbPath);
-    this.db.exec('PRAGMA journal_mode = WAL;');
     this.db.exec('PRAGMA foreign_keys = ON;');
     this.runMigrations();
     this.ensureSeeded();
@@ -463,6 +506,42 @@ export class LocalSqliteStore {
         this.db
           .prepare('INSERT INTO schema_migrations (version, name, applied_at) VALUES (?, ?, ?)')
           .run(7, 'v7_shift_start_nov09_and_podcasts', now);
+        this.db.exec('COMMIT;');
+      } catch (err) {
+        this.db.exec('ROLLBACK;');
+        throw err;
+      }
+    }
+
+    const v8Applied = this.db
+      .prepare('SELECT version FROM schema_migrations WHERE version = 8')
+      .get() as { version: number } | undefined;
+
+    if (!v8Applied) {
+      this.db.exec('BEGIN IMMEDIATE;');
+      try {
+        // La date de reference suit desormais le calendrier reel (voir src/domain/dates.ts).
+        // On ne retire que les valeurs figees posees par la migration v7, jamais un choix manuel.
+        const settingsRow = this.db
+          .prepare('SELECT value_json FROM settings WHERE key = ?')
+          .get('app_settings') as { value_json: string } | undefined;
+
+        if (settingsRow) {
+          try {
+            const parsed = JSON.parse(settingsRow.value_json) as AppSettings;
+            if (parsed.simulated_today === '2026-11-09') parsed.simulated_today = '';
+            if (parsed.active_week_override === 1) parsed.active_week_override = null;
+            this.db
+              .prepare('UPDATE settings SET value_json = ?, updated_at = ? WHERE key = ?')
+              .run(JSON.stringify(parsed), new Date().toISOString(), 'app_settings');
+          } catch {
+            // ignore parse error
+          }
+        }
+
+        this.db
+          .prepare('INSERT INTO schema_migrations (version, name, applied_at) VALUES (?, ?, ?)')
+          .run(8, 'v8_real_calendar_date', new Date().toISOString());
         this.db.exec('COMMIT;');
       } catch (err) {
         this.db.exec('ROLLBACK;');
@@ -1309,7 +1388,7 @@ export class LocalSqliteStore {
   }
 
   public close(): void {
-    this.db.close();
+    this.db.close?.();
   }
 }
 

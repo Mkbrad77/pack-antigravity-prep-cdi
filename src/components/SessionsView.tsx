@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { apiClient, AppStateResponse } from '../apiClient';
 import { TaskCategory } from '../domain/types';
+import { getEffectiveTodayIso } from '../domain/dates';
 
 interface SessionsViewProps {
   state: AppStateResponse;
@@ -22,7 +23,7 @@ export const SessionsView: React.FC<SessionsViewProps> = ({
   const [weekNumber, setWeekNumber] = useState<number>(activeWeek);
   const [category, setCategory] = useState<TaskCategory>('certification');
   const [sessionDate, setSessionDate] = useState<string>(
-    state.settings.simulated_today || '2026-11-02'
+    getEffectiveTodayIso(state.settings)
   );
   const [durationMin, setDurationMin] = useState<number>(45);
   const [notes, setNotes] = useState<string>('');

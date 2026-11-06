@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AppStateResponse } from '../apiClient';
 import { CertCode, UnifiedTask } from '../domain/types';
 import { getTaskActionGuide, TaskNavigationTarget } from '../domain/taskNavigation';
+import { getEffectiveTodayIso } from '../domain/dates';
 
 interface DashboardViewProps {
   state: AppStateResponse;
@@ -33,7 +34,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onNavigateToTarget,
 }) => {
   const [showGuide, setShowGuide] = useState<boolean>(true);
-  const todayIso = state.settings.simulated_today || '2026-11-02';
+  const todayIso = getEffectiveTodayIso(state.settings);
   const weekMeta = state.staticData.planningHebdo.weeks.find((w) => w.week === activeWeek);
   const weekSummary = state.weekSummaries[activeWeek];
 
@@ -294,6 +295,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 onChange={(e) => onUpdateSimulatedDate(e.target.value)}
                 style={{ marginLeft: '0.35rem' }}
               />
+              {state.settings.simulated_today ? (
+                <button
+                  type="button"
+                  className="btn"
+                  data-testid="reset-simulated-date"
+                  onClick={() => onUpdateSimulatedDate('')}
+                  style={{ marginLeft: '0.35rem', fontSize: '0.75rem' }}
+                  title="Revenir à la date réelle du jour"
+                >
+                  Aujourd'hui
+                </button>
+              ) : null}
             </label>
           </div>
         </div>

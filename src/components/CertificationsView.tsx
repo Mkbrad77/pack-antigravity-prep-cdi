@@ -10,6 +10,7 @@ import {
 } from '../apiClient';
 import { CertCode } from '../domain/types';
 import { MarkdownViewer } from './MarkdownViewer';
+import { getEffectiveTodayIso } from '../domain/dates';
 
 interface CertificationsViewProps {
   state: AppStateResponse;
@@ -196,7 +197,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
 
   // Formulaire d'ajout manuel de score d'examen
   const [examSource, setExamSource] = useState<string>('Examen blanc officiel AWS Skill Builder');
-  const [examDate, setExamDate] = useState<string>(state.settings.simulated_today || '2026-11-02');
+  const [examDate, setExamDate] = useState<string>(getEffectiveTodayIso(state.settings));
   const [scorePct, setScorePct] = useState<number>(85);
   const [rawScore, setRawScore] = useState<string>('850');
   const [examNotes, setExamNotes] = useState<string>('');
@@ -409,7 +410,7 @@ export const CertificationsView: React.FC<CertificationsViewProps> = ({
     const nextState = await apiClient.addMockExam({
       cert_code: selectedCert,
       source: `Simulation Examen Blanc Officiel (${examStats.totalCount} questions)`,
-      date: state.settings.simulated_today || new Date().toISOString().slice(0, 10),
+      date: getEffectiveTodayIso(state.settings),
       score_pct: examStats.scorePercent,
       raw_score: selectedCert !== 'DBT' ? examStats.rawScoreCalc : null,
       domain_scores: examStats.domainScoresPercent,

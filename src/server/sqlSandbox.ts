@@ -1,11 +1,11 @@
-import { createRequire } from 'node:module';
-import type { DatabaseSync as DatabaseSyncType } from 'node:sqlite';
 import { getDatasetById, SqlDatasetDefinition } from '../domain/sqlDatasets';
 import { compareSqlResults } from '../domain/sqlComparison';
+import { SqlDb, openNodeSqlite } from './sqlDb';
 
-const { DatabaseSync } = createRequire(import.meta.url)('node:sqlite') as {
-  DatabaseSync: typeof DatabaseSyncType;
-};
+/** Fabrique d'une base SQLite vide en mémoire (node:sqlite en local, sql.js en mode cloud). */
+export type InMemorySqlDbFactory = () => SqlDb;
+
+const defaultInMemoryFactory: InMemorySqlDbFactory = () => openNodeSqlite(':memory:');
 
 export interface SqlSandboxParams {
   datasetId: 'ecommerce' | 'streaming_events' | 'hr_payroll' | 'banking_fraud' | 'none';
@@ -43,8 +43,8 @@ function sanitizeSql(sql: string): string {
   return trimmed.replace(/;+\s*$/, '');
 }
 
-function initInMemoryDb(dataset?: SqlDatasetDefinition): InstanceType<typeof DatabaseSync> {
-  const db = new DatabaseSync(':memory:');
+function initInMemoryDb(openDb: InMemorySqlDbFactory, dataset?: SqlDatasetDefinition): SqlDb {
+  const db = openDb();
   if (dataset) {
     db.exec(dataset.schemaSql);
     db.exec(dataset.seedSql);
@@ -52,7 +52,10 @@ function initInMemoryDb(dataset?: SqlDatasetDefinition): InstanceType<typeof Dat
   return db;
 }
 
-export function executeSqlSandbox(params: SqlSandboxParams): SqlSandboxResult {
+export function executeSqlSandbox(
+  params: SqlSandboxParams,
+  openDb: InMemorySqlDbFactory = defaultInMemoryFactory
+): SqlSandboxResult {
   const startTime = performance.now();
   const maxRows = params.maxRows ?? 200;
   const cleanUserQuery = sanitizeSql(params.userQuery);
@@ -82,9 +85,9 @@ export function executeSqlSandbox(params: SqlSandboxParams): SqlSandboxResult {
     };
   }
 
-  let userDb: InstanceType<typeof DatabaseSync> | null = null;
+  let userDb: SqlDb | null = null;
   try {
-    userDb = initInMemoryDb(dataset);
+    userDb = initInMemoryDb(openDb, dataset);
 
     // Extraction du plan d'execution (EXPLAIN QUERY PLAN) si requete de selection
     let queryPlan: QueryPlanNode[] | undefined;
@@ -121,9 +124,9 @@ export function executeSqlSandbox(params: SqlSandboxParams): SqlSandboxResult {
     // Comparaison avec la requete attendue si fournie
     let comparison: { passed: boolean; diffSummary: string } | undefined;
     if (params.expectedQuery && params.expectedQuery.trim()) {
-      let expectedDb: InstanceType<typeof DatabaseSync> | null = null;
+      let expectedDb: SqlDb | null = null;
       try {
-        expectedDb = initInMemoryDb(dataset);
+        expectedDb = initInMemoryDb(openDb, dataset);
         const cleanExpected = sanitizeSql(params.expectedQuery);
         const expStmt = expectedDb.prepare(cleanExpected);
         const expRows = expStmt.all() as unknown as Array<Record<string, unknown>>;
@@ -143,7 +146,7 @@ export function executeSqlSandbox(params: SqlSandboxParams): SqlSandboxResult {
         };
       } finally {
         if (expectedDb) {
-          expectedDb.close();
+          expectedDb.close?.();
         }
       }
     }
@@ -173,7 +176,7 @@ export function executeSqlSandbox(params: SqlSandboxParams): SqlSandboxResult {
     };
   } finally {
     if (userDb) {
-      userDb.close();
+      userDb.close?.();
     }
   }
 }

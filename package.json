@@ -16,21 +16,30 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "validate:content": "node scripts/validate_certification_content.js"
+    "validate:content": "node scripts/validate_certification_content.js",
+    "cloud:build": "npm run build && node scripts/build_content_bundle.mjs",
+    "cloud:dev": "npm run cloud:build && wrangler dev",
+    "cloud:deploy": "npm run cloud:build && wrangler deploy",
+    "audios:upload": "vite-node scripts/upload_audios_r2.ts"
   },
   "dependencies": {
+    "jose": "^6.2.15",
     "lucide-react": "^0.468.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "sql.js": "^1.15.2"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261106.1",
     "@playwright/test": "^1.49.1",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
+    "@types/sql.js": "^1.4.11",
     "@vitejs/plugin-react": "^4.3.4",
     "typescript": "^5.7.2",
     "vite": "^6.0.5",
-    "vitest": "^2.1.8"
+    "vitest": "^2.1.8",
+    "wrangler": "^4.158.0"
   }
 }

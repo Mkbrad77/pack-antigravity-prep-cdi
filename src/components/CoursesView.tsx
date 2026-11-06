@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { apiClient, AppStateResponse } from '../apiClient';
 import { CertCode, CourseKey, LectureRangeRef, PodcastEpisode, UdemyCourse } from '../domain/types';
+import {
+  downloadAudioForOffline,
+  isOfflineAudioSupported,
+  listOfflineAudioUrls,
+  removeOfflineAudio,
+  requestPersistentStorage,
+} from '../pwa/offlineAudio';
 
 interface CoursesViewProps {
   state: AppStateResponse;
@@ -32,6 +39,16 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
   activeEpisodeId,
   onPlayEpisode,
 }) => {
+  const [offlineUrls, setOfflineUrls] = useState<Set<string>>(new Set());
+  const [offlineBusy, setOfflineBusy] = useState<Record<string, boolean>>({});
+  const [offlineError, setOfflineError] = useState<string>('');
+
+  useEffect(() => {
+    listOfflineAudioUrls()
+      .then(setOfflineUrls)
+      .catch(() => undefined);
+  }, []);
+
   const [activeHubTab, setActiveHubTab] = useState<
     'podcasts_studio' | 'snowflake_dbt_hub' | 'udemy_courses'
   >(
@@ -192,6 +209,36 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
     }
     return true;
   });
+
+  const isCloud = state.runtimeMode === 'cloud';
+  const offlineAvailable = isCloud && isOfflineAudioSupported();
+
+  const handleToggleOffline = async (ep: PodcastEpisode) => {
+    if (!ep.audio_url) return;
+    setOfflineBusy((prev) => ({ ...prev, [ep.id]: true }));
+    setOfflineError('');
+    try {
+      if (offlineUrls.has(ep.audio_url)) {
+        await removeOfflineAudio(ep.audio_url);
+      } else {
+        await requestPersistentStorage();
+        await downloadAudioForOffline(ep.audio_url);
+      }
+      setOfflineUrls(await listOfflineAudioUrls());
+    } catch (err) {
+      setOfflineError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setOfflineBusy((prev) => ({ ...prev, [ep.id]: false }));
+    }
+  };
+
+  const handleDownloadVisibleForOffline = async () => {
+    const targets = filteredPodcasts.filter((ep) => ep.file_exists && ep.audio_url && !offlineUrls.has(ep.audio_url));
+    for (const ep of targets) {
+      // eslint-disable-next-line no-await-in-loop
+      await handleToggleOffline(ep);
+    }
+  };
 
   const openExternal = (url: string) => {
     window.open(url, '_blank', 'noopener,noreferrer');
@@ -383,7 +430,24 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                 />
                 Afficher uniquement les audios prêts ({totalReadyCount})
               </label>
+
+              {offlineAvailable && (
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm"
+                  data-testid="download-visible-offline"
+                  onClick={handleDownloadVisibleForOffline}
+                  title="Enregistre sur ce téléphone les épisodes affichés, pour les écouter sans réseau"
+                >
+                  ⬇ Télécharger les épisodes affichés (hors ligne)
+                </button>
+              )}
             </div>
+            {offlineError && (
+              <div className="badge badge-warning" style={{ marginTop: '0.5rem' }}>
+                {offlineError}
+              </div>
+            )}
           </div>
 
           {/* Grille des episodes de Podcast */}
@@ -425,7 +489,9 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                         {ep.file_exists ? (
                           <span className="badge badge-success">Audio Prêt (~{ep.duration_est_min} min)</span>
                         ) : (
-                          <span className="badge badge-warning">À déposer ({ep.filename})</span>
+                          <span className="badge badge-warning">
+                            {isCloud ? 'Bientôt disponible' : `À déposer (${ep.filename})`}
+                          </span>
                         )}
                       </div>
                     </div>
@@ -435,7 +501,7 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                     </strong>
 
                     <div style={{ fontSize: '0.78rem', color: 'var(--accent-blue)', fontWeight: 600, marginBottom: '0.3rem' }}>
-                      📚 {ep.course_lectures} | 🗓️ {ep.schedule_days}
+                      {ep.course_lectures ? `📚 ${ep.course_lectures} | ` : ''}🗓️ {ep.schedule_days}
                     </div>
 
                     <div className="muted" style={{ fontSize: '0.8rem', marginBottom: '0.45rem' }}>
@@ -516,6 +582,31 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                             ? `▶ Reprendre (${Math.floor(ep.last_position_sec / 60)}m${String(Math.floor(ep.last_position_sec % 60)).padStart(2, '0')}s)`
                             : '▶ Écouter sur le lecteur'}
                       </button>
+                    ) : null}
+                    {ep.file_exists && offlineAvailable && ep.audio_url ? (
+                      <button
+                        type="button"
+                        data-testid={`offline-podcast-btn-${ep.id}`}
+                        className="btn btn-secondary btn-sm"
+                        disabled={Boolean(offlineBusy[ep.id])}
+                        onClick={() => handleToggleOffline(ep)}
+                        title={
+                          offlineUrls.has(ep.audio_url)
+                            ? 'Supprimer la copie hors ligne de ce téléphone'
+                            : 'Enregistrer sur ce téléphone pour écouter sans réseau'
+                        }
+                      >
+                        {offlineBusy[ep.id]
+                          ? '⏳ Téléchargement...'
+                          : offlineUrls.has(ep.audio_url)
+                            ? '✅ Hors ligne (retirer)'
+                            : '⬇ Hors ligne'}
+                      </button>
+                    ) : null}
+                    {ep.file_exists ? null : isCloud ? (
+                      <span className="muted" style={{ fontSize: '0.76rem' }}>
+                        Audio pas encore en ligne : il apparaîtra automatiquement dès son ajout.
+                      </span>
                     ) : (
                       <span className="muted" style={{ fontSize: '0.76rem' }}>
                         Dépose l'audio dans <code>public/audios/{ep.cert_code === 'DBT' ? 'dbt' : ep.cert_code.toLowerCase()}/</code>

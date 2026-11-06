@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { apiClient, AppStateResponse } from '../apiClient';
 import { ALLOWED_PROVENANCE_TAGS, CertCode, ProvenanceTag } from '../domain/types';
 import { getCardMasteryStatus, ReviewGrade } from '../domain/spacedRepetition';
+import { getEffectiveTodayIso } from '../domain/dates';
 
 interface SpacedRepetitionViewProps {
   state: AppStateResponse;
@@ -64,7 +65,7 @@ export const SpacedRepetitionView: React.FC<SpacedRepetitionViewProps> = ({
             </p>
           </div>
           <span className="mono badge badge-info">
-            Date de référence : {state.settings.simulated_today}
+            Date de référence : {getEffectiveTodayIso(state.settings)}
           </span>
         </div>
 

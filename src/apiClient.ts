@@ -32,6 +32,7 @@ import { CertReadinessEvaluation } from './domain/readiness';
 import { RescheduleChange, RescheduleTrigger, WeekLoadSummary } from './domain/rescheduler';
 import { ReviewGrade } from './domain/spacedRepetition';
 import { EngineStatusSummary, SandboxEngineType } from './workers/types';
+import { ClientExecutionRequest, runPythonInBrowser } from './sandbox/pythonInBrowser';
 
 export interface AppStateResponse {
   staticData: {
@@ -66,6 +67,8 @@ export interface AppStateResponse {
   taskHistory: TaskHistoryEntry[];
   podcasts?: PodcastEpisode[];
   networkUrls?: string[];
+  /** 'cloud' quand l'appli tourne sur Cloudflare (mobile), 'local' sur le PC. */
+  runtimeMode?: 'local' | 'cloud';
   hasDemoData: boolean;
   workersStatus: Record<SandboxEngineType, EngineStatusSummary>;
   dbPath: string;
@@ -81,11 +84,40 @@ export interface RescheduleApiResponse {
   state: AppStateResponse;
 }
 
+/**
+ * En ligne, une erreur reseau alors que le telephone a du reseau signifie presque toujours que la
+ * session Cloudflare Access a expire : on recharge la page (une seule fois) pour se reconnecter.
+ */
+function handleNetworkFailure(err: unknown): never {
+  if (typeof navigator !== 'undefined' && !navigator.onLine) {
+    throw new Error('Hors ligne : cette action sera possible dès le retour du réseau.');
+  }
+  if (typeof window !== 'undefined' && window.isSecureContext && location.hostname !== 'localhost') {
+    const key = 'prep-cdi-reauth-at';
+    const last = Number(sessionStorage.getItem(key) || 0);
+    if (Date.now() - last > 60_000) {
+      sessionStorage.setItem(key, String(Date.now()));
+      location.reload();
+    }
+  }
+  throw err instanceof Error ? err : new Error(String(err));
+}
+
 async function requestJson<T>(url: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(url, {
-    headers: { 'Content-Type': 'application/json' },
-    ...options,
-  });
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      headers: { 'Content-Type': 'application/json' },
+      ...options,
+    });
+  } catch (err) {
+    handleNetworkFailure(err);
+  }
+  const contentType = res.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    // Page de connexion ou de configuration a la place des donnees
+    handleNetworkFailure(new Error(`Réponse inattendue du serveur (HTTP ${res.status}).`));
+  }
   const data = await res.json();
   if (!res.ok) {
     const details = Array.isArray(data?.details) ? ` (${data.details.join(' | ')})` : '';
@@ -453,7 +485,13 @@ export async function executePythonSandbox(params: {
     body: JSON.stringify(params),
   });
   if (!res.ok) throw new Error('Erreur de communication avec le sandbox Python.');
-  return res.json();
+  const data = await res.json();
+  // Mode cloud : le serveur renvoie le harnais a executer ici, dans le navigateur (Pyodide)
+  if (data && data.clientExecution) {
+    const result = await runPythonInBrowser(data.clientExecution as ClientExecutionRequest);
+    return { ...result, solution: data.solution };
+  }
+  return data;
 }
 
 // --- API Client pour Cours Condenses ---

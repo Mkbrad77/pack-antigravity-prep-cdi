@@ -12,6 +12,7 @@ import { SpacedRepetitionView } from './components/SpacedRepetitionView';
 import { SettingsView } from './components/SettingsView';
 import { InterviewsHubView } from './components/InterviewsHubView';
 import { PodcastPlayerBar } from './components/PodcastPlayerBar';
+import { getEffectiveTodayIso } from './domain/dates';
 
 export type NavTab =
   | 'dashboard'
@@ -39,6 +40,18 @@ export const App: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
   const [activeWeek, setActiveWeek] = useState<number>(1);
+  const [isOnline, setIsOnline] = useState<boolean>(typeof navigator === 'undefined' ? true : navigator.onLine);
+
+  useEffect(() => {
+    const goOnline = () => setIsOnline(true);
+    const goOffline = () => setIsOnline(false);
+    window.addEventListener('online', goOnline);
+    window.addEventListener('offline', goOffline);
+    return () => {
+      window.removeEventListener('online', goOnline);
+      window.removeEventListener('offline', goOffline);
+    };
+  }, []);
   const [lastRescheduleReport, setLastRescheduleReport] = useState<
     RescheduleApiResponse['rescheduleReport'] | null
   >(null);
@@ -65,7 +78,7 @@ export const App: React.FC = () => {
         setState(initialState);
         const w =
           initialState.settings.active_week_override ||
-          findWeekFromDate(initialState.settings.simulated_today || '2026-11-09', initialState);
+          findWeekFromDate(getEffectiveTodayIso(initialState.settings), initialState);
         setActiveWeek(w);
       })
       .catch((err) => {
@@ -152,7 +165,7 @@ export const App: React.FC = () => {
   const handleUpdateSimulatedDate = async (dateIso: string) => {
     const nextState = await apiClient.saveSettings({ simulated_today: dateIso });
     setState(nextState);
-    const matchedWeek = findWeekFromDate(dateIso, nextState);
+    const matchedWeek = findWeekFromDate(getEffectiveTodayIso(nextState.settings), nextState);
     setActiveWeek(matchedWeek);
   };
 
@@ -188,6 +201,16 @@ export const App: React.FC = () => {
 
   return (
     <div className="app-shell" style={{ paddingBottom: activePodcastEpisode ? '120px' : undefined }}>
+      {!isOnline && (
+        <div
+          role="status"
+          data-testid="offline-banner"
+          className="badge badge-warning"
+          style={{ display: 'block', textAlign: 'center', marginBottom: '0.5rem', padding: '0.45rem' }}
+        >
+          Hors ligne : consultation des dernières données et des épisodes téléchargés. Les modifications reprendront au retour du réseau.
+        </div>
+      )}
       <header className="app-header">
         <div className="row-between" style={{ flexWrap: 'wrap', gap: '0.75rem' }}>
           <div>

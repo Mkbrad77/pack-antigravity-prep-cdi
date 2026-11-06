@@ -19,3 +19,9 @@ public/audios/**/*.wav
 .DS_Store
 Thumbs.db
 *.log
+
+# Cloudflare (mode cloud)
+.wrangler/
+.dev.vars
+worker/generated/
+.r2-uploads.json

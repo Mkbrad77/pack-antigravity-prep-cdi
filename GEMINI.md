@@ -52,3 +52,9 @@ Auren repart strictement de **0 %** sur l'ensemble des 5 cours Udemy, des 3 cert
 - Zéro braindump, zéro copie de cours payants.
 - Étiquette obligatoire : `générée par IA et vérifiée dans la documentation (2026-10-31)`.
 - Réfutation explicite obligatoire pour chaque option incorrecte.
+
+---
+
+## Mode Cloud (Cloudflare)
+
+L'application est aussi déployée en ligne (Worker `prep-cdi`, bucket R2 `prep-cdi-audios`). Avant toute modification du serveur, lire la section 5 de `AGENTS.md` (aucun import Node statique dans le code partagé). Pour ajouter des podcasts : `docs/PROMPT_ANTIGRAVITY_AUDIOS.md` (aucun code à modifier).

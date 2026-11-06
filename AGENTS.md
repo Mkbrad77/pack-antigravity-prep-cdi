@@ -59,3 +59,14 @@ L'application scanne automatiquement `public/audios/clf-c02`, `public/audios/dbt
 - Ne jamais utiliser de braindumps ni copier de questions payantes.
 - Chaque question porte son étiquette de traçabilité : `générée par IA et vérifiée dans la documentation (2026-10-31)`.
 - Chaque option fausse doit avoir sa réfutation explicite argumentée dans l'explication.
+
+---
+
+## 5. Mode Cloud (Cloudflare) : invariants à préserver
+
+L'application tourne aussi en ligne (Worker Cloudflare `prep-cdi`, voir `docs/DEPLOIEMENT_CLOUD.md`). Le même code métier sert les deux modes, donc :
+- **Aucun import Node statique** (`node:fs`, `node:path`, `node:sqlite`, `node:child_process`, `node:os`) dans `src/server/db.ts`, `src/server/api.ts`, `src/server/sqlSandbox.ts` ou `src/domain/`. Utiliser `requireNodeBuiltin()` (`src/server/sqlDb.ts`) dans les fonctions propres au mode local, ou passer par `src/server/nodeRuntime.ts`.
+- **Lecture du contenu** (`data/`, `content/`) uniquement via `store.content` (`ContentSource`), jamais via `fs` dans le routeur API.
+- **Disponibilité des podcasts** : via `ApiRuntime.audioExists()` (disque en local, bucket R2 en ligne). Ajouter un podcast ne demande aucune modification de code : `npm run audios:upload`.
+- **Date du jour** : toujours `getEffectiveTodayIso(settings)` (`src/domain/dates.ts`), jamais une date codée en dur.
+- **Avant de livrer** : `npm test`, `npx tsc --noEmit -p worker/tsconfig.json` et `npx wrangler deploy --dry-run` doivent passer.

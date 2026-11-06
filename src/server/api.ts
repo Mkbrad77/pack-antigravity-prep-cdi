@@ -1,7 +1,4 @@
-import { IncomingMessage, ServerResponse } from 'node:http';
-import fs from 'node:fs';
-import os from 'node:os';
-import path from 'node:path';
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import { LocalSqliteStore, loadStaticDatasets } from './db';
 import {
   computeAllCertificationsProgress,
@@ -22,160 +19,12 @@ import {
 } from '../domain/spacedRepetition';
 import { validateBackupPayload } from '../domain/backupValidator';
 import { sandboxBridge } from '../workers/sandboxBridge';
-import { CertCode, CourseKey, PodcastEpisode, PodcastsCatalogData } from '../domain/types';
+import { CertCode, CourseKey, PodcastEpisode } from '../domain/types';
 import { executeSqlSandbox } from './sqlSandbox';
-import { executePythonCode } from './pythonSandbox';
+import { buildPythonHarness } from './pythonHarness';
+import { ApiRuntime, getDefaultNodeRuntime } from './apiRuntime';
+import { getEffectiveTodayIso } from '../domain/dates';
 import { ALL_SQL_DATASETS } from '../domain/sqlDatasets';
-
-function normalizeForMatch(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim();
-}
-
-export interface AutoRenamedAudioEntry {
-  certCode: CertCode;
-  from: string;
-  to: string;
-  episodeId: string;
-  title: string;
-}
-
-export function autoRenameNewAudioFiles(
-  podcastsCatalog: PodcastsCatalogData,
-  rootDir = process.cwd()
-): AutoRenamedAudioEntry[] {
-  const renamed: AutoRenamedAudioEntry[] = [];
-  const certFolders: Record<CertCode, string> = {
-    'CLF-C02': 'clf-c02',
-    DBT: 'dbt',
-    'DEA-C01': 'dea-c01',
-  };
-
-  for (const certCode of ['CLF-C02', 'DBT', 'DEA-C01'] as CertCode[]) {
-    const folderName = certFolders[certCode];
-    const dirPath = path.join(rootDir, 'public', 'audios', folderName);
-    if (!fs.existsSync(dirPath)) {
-      try {
-        fs.mkdirSync(dirPath, { recursive: true });
-      } catch {
-        continue;
-      }
-    }
-
-    let allFiles: string[] = [];
-    try {
-      allFiles = fs.readdirSync(dirPath);
-    } catch {
-      continue;
-    }
-
-    const audioRegex = /\.(m4a|mp3|wav|aac|ogg)$/i;
-    const canonicalRegex = /^(CLF|DBT|DEA)-AUDIO-\d{2}\.(m4a|mp3|wav|aac|ogg)$/i;
-
-    const unrenamedFiles = allFiles
-      .filter((f) => audioRegex.test(f) && !canonicalRegex.test(f))
-      .map((f) => {
-        const full = path.join(dirPath, f);
-        let timeMs = 0;
-        try {
-          const st = fs.statSync(full);
-          timeMs = st.birthtimeMs && st.birthtimeMs > 0 ? st.birthtimeMs : st.mtimeMs;
-        } catch {
-          timeMs = 0;
-        }
-        return { name: f, full, timeMs };
-      })
-      .sort((a, b) => a.timeMs - b.timeMs || a.name.localeCompare(b.name));
-
-    if (unrenamedFiles.length === 0) continue;
-
-    const certEpisodes = podcastsCatalog.episodes
-      .filter((ep) => ep.cert_code === certCode)
-      .sort((a, b) => a.order - b.order);
-
-    const existingCanonicalIds = new Set(
-      allFiles
-        .filter((f) => canonicalRegex.test(f))
-        .map((f) => f.replace(/\.[^.]+$/, '').toUpperCase())
-    );
-
-    const missingEpisodes = certEpisodes.filter(
-      (ep) => !existingCanonicalIds.has(ep.id.toUpperCase())
-    );
-
-    for (const fileObj of unrenamedFiles) {
-      if (missingEpisodes.length === 0) break;
-
-      const normFile = normalizeForMatch(fileObj.name.replace(/\.[^.]+$/, ''));
-      const fileWords = new Set(normFile.split(/\s+/).filter((w) => w.length >= 3));
-
-      // Chercher si un episode manquant a une correspondance forte par mots-cles (>= 3 points)
-      let bestIdx = 0;
-      let bestScore = -1;
-      for (let i = 0; i < missingEpisodes.length; i++) {
-        const ep = missingEpisodes[i];
-        let score = 0;
-        for (const kw of ep.keywords || []) {
-          const normKw = normalizeForMatch(kw);
-          if (normKw && normFile.includes(normKw)) {
-            score += 2;
-          } else if (normKw && fileWords.has(normKw)) {
-            score += 1;
-          }
-        }
-        if (score > bestScore) {
-          bestScore = score;
-          bestIdx = i;
-        }
-      }
-
-      // Si aucun mot-cle tres specifique ne se demarque (score < 4), on suit l'ordre chronologique strict (missingEpisodes[0])
-      const chosenIdx = bestScore >= 4 ? bestIdx : 0;
-      const targetEp = missingEpisodes.splice(chosenIdx, 1)[0];
-      const ext = path.extname(fileObj.name) || '.m4a';
-      const targetFilename = `${targetEp.id}${ext}`;
-      const targetFull = path.join(dirPath, targetFilename);
-
-      try {
-        if (!fs.existsSync(targetFull)) {
-          fs.renameSync(fileObj.full, targetFull);
-          renamed.push({
-            certCode,
-            from: fileObj.name,
-            to: targetFilename,
-            episodeId: targetEp.id,
-            title: targetEp.title,
-          });
-        }
-      } catch {
-        // ignore rename error if file locked
-      }
-    }
-  }
-
-  return renamed;
-}
-
-export function getLocalNetworkUrls(port = 5173): string[] {
-  const urls: string[] = [];
-  try {
-    const interfaces = os.networkInterfaces();
-    for (const name of Object.keys(interfaces)) {
-      for (const iface of interfaces[name] || []) {
-        if (iface.family === 'IPv4' && !iface.internal) {
-          urls.push(`http://${iface.address}:${port}`);
-        }
-      }
-    }
-  } catch {
-    // ignore
-  }
-  return urls;
-}
 
 async function readJsonBody(req: IncomingMessage): Promise<Record<string, unknown>> {
   return new Promise((resolve, reject) => {
@@ -204,12 +53,12 @@ function sendJson(res: ServerResponse, statusCode: number, payload: unknown): vo
   res.end(JSON.stringify(payload));
 }
 
-export function buildFullAppStatePayload(store: LocalSqliteStore) {
+export function buildFullAppStatePayload(store: LocalSqliteStore, rt: ApiRuntime = getDefaultNodeRuntime()) {
   store.runMigrations();
-  const staticData = loadStaticDatasets();
+  const staticData = loadStaticDatasets(store.content);
 
-  // Auto-renommage transparent des nouveaux fichiers audio deposes dans public/audios/
-  autoRenameNewAudioFiles(staticData.podcastsCatalog);
+  // Auto-renommage transparent des nouveaux fichiers audio deposes dans public/audios/ (mode local uniquement)
+  rt.autoRenameAudios?.(staticData.podcastsCatalog);
 
   const settings = store.getSettings();
   const lessonDoneMap = store.getLessonProgressMap();
@@ -235,7 +84,7 @@ export function buildFullAppStatePayload(store: LocalSqliteStore) {
   };
 
   const flashcards = store.getFlashcards();
-  const dueFlashcards = getDueFlashcards(flashcards, settings.simulated_today || '2026-11-09');
+  const dueFlashcards = getDueFlashcards(flashcards, getEffectiveTodayIso(settings));
 
   const weekSummaries: Record<number, ReturnType<typeof computeWeekLoadSummary>> = {};
   for (let w = 1; w <= 22; w++) {
@@ -255,13 +104,12 @@ export function buildFullAppStatePayload(store: LocalSqliteStore) {
 
   const podcasts: PodcastEpisode[] = staticData.podcastsCatalog.episodes.map((ep) => {
     const folder = certFolderMap[ep.cert_code];
-    const baseDir = path.join(process.cwd(), 'public', 'audios', folder);
     let actualFile = ep.filename;
-    let exists = fs.existsSync(path.join(baseDir, ep.filename));
+    let exists = rt.audioExists(folder, ep.filename);
     if (!exists) {
       for (const ext of ['.m4a', '.mp3', '.wav', '.aac', '.ogg']) {
         const candidate = `${ep.id}${ext}`;
-        if (fs.existsSync(path.join(baseDir, candidate))) {
+        if (rt.audioExists(folder, candidate)) {
           exists = true;
           actualFile = candidate;
           break;
@@ -308,39 +156,48 @@ export function buildFullAppStatePayload(store: LocalSqliteStore) {
     dueFlashcards,
     taskHistory,
     podcasts,
-    networkUrls: getLocalNetworkUrls(5173),
+    networkUrls: rt.networkUrls(),
+    runtimeMode: rt.mode,
     hasDemoData,
     workersStatus: sandboxBridge.getEnginesStatus(),
     dbPath: store.dbPath,
   };
 }
 
-export function createApiMiddleware(store: LocalSqliteStore) {
-  return async (req: IncomingMessage, res: ServerResponse, next?: () => void) => {
-    const url = req.url || '';
-    if (!url.startsWith('/api/')) {
-      if (next) next();
-      return;
-    }
+export interface ApiResponse {
+  status: number;
+  payload: unknown;
+}
 
-    const pathname = url.split('?')[0];
-    const method = req.method || 'GET';
-
+/**
+ * Coeur du routeur API, independant de Node : utilise par le middleware Vite (mode local)
+ * et par le Durable Object Cloudflare (mode cloud / mobile).
+ */
+export async function handleApiRequest(
+  store: LocalSqliteStore,
+  rt: ApiRuntime,
+  method: string,
+  url: string,
+  readBody: () => Promise<Record<string, unknown>>
+): Promise<ApiResponse> {
+  const pathname = url.split('?')[0];
+  const contentSrc = store.content;
+  const reply = (status: number, payload: unknown): ApiResponse => ({ status, payload });
+  const fullState = () => buildFullAppStatePayload(store, rt);
+  {
     try {
       // 1. Etat global de l'application
       if (pathname === '/api/state' && method === 'GET') {
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       // 2. Detail des lecons d'un cours Udemy (chargement rapide par cours)
       if (pathname.startsWith('/api/courses/') && method === 'GET') {
         const courseKey = pathname.replace('/api/courses/', '') as CourseKey;
-        const staticData = loadStaticDatasets();
+        const staticData = loadStaticDatasets(contentSrc);
         const course = staticData.catalogue.udemy_courses.find((c) => c.key === courseKey);
         if (!course) {
-          sendJson(res, 404, { error: `Cours introuvable : ${courseKey}` });
-          return;
+          return reply(404, { error: `Cours introuvable : ${courseKey}` });
         }
         const lessonDoneMap = store.getLessonProgressMap();
         const itemsWithStatus = course.items.map((item) => ({
@@ -350,33 +207,30 @@ export function createApiMiddleware(store: LocalSqliteStore) {
               ? lessonDoneMap[`${course.key}:${item.i}`]
               : Boolean(item.done),
         }));
-        sendJson(res, 200, {
+        return reply(200, {
           ...course,
           items: itemsWithStatus,
         });
-        return;
       }
 
       // 3. Cocher / decocher une lecon ou une plage entiere de lecons
       if (pathname === '/api/courses/lessons' && method === 'POST') {
-        const body = await readJsonBody(req);
+        const body = await readBody();
         const courseKey = body.courseKey as CourseKey;
         const itemIndices = body.itemIndices as number[];
         const done = Boolean(body.done);
 
         if (!courseKey || !Array.isArray(itemIndices)) {
-          sendJson(res, 400, { error: 'Paramètres courseKey et itemIndices requis.' });
-          return;
+          return reply(400, { error: 'Paramètres courseKey et itemIndices requis.' });
         }
 
         store.setLessonsDoneRange(courseKey, itemIndices, done);
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       // 4. Actions sur une tache du planning (terminer, rouvrir, modifier la duree, ignorer bonus)
       if (pathname === '/api/tasks/update' && method === 'POST') {
-        const body = await readJsonBody(req);
+        const body = await readBody();
         const taskId = String(body.taskId || '');
         const status = body.status as 'todo' | 'in_progress' | 'done' | 'postponed' | 'skipped' | 'compressed';
         const targetWeek = Number(body.targetWeek);
@@ -387,7 +241,7 @@ export function createApiMiddleware(store: LocalSqliteStore) {
         const notes = body.notes !== undefined ? String(body.notes) : undefined;
         const reason = String(body.reason || '');
 
-        const staticData = loadStaticDatasets();
+        const staticData = loadStaticDatasets(contentSrc);
         const currentTasks = buildUnifiedTasks(
           staticData.planningHebdo,
           staticData.planningEntretiens,
@@ -395,8 +249,7 @@ export function createApiMiddleware(store: LocalSqliteStore) {
         );
         const existingTask = currentTasks.find((t) => t.id === taskId);
         if (!existingTask) {
-          sendJson(res, 404, { error: `Tâche introuvable : ${taskId}` });
-          return;
+          return reply(404, { error: `Tâche introuvable : ${taskId}` });
         }
 
         const finalTargetWeek = !Number.isNaN(targetWeek) && targetWeek > 0 ? targetWeek : existingTask.target_week;
@@ -465,20 +318,18 @@ export function createApiMiddleware(store: LocalSqliteStore) {
           }
         }
 
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       // 5. Declencher le moteur de replanification dynamique
       if (pathname === '/api/reschedule' && method === 'POST') {
-        const body = await readJsonBody(req);
+        const body = await readBody();
         const trigger = body.trigger as RescheduleTrigger;
         if (!trigger || !trigger.type) {
-          sendJson(res, 400, { error: 'Le déclencheur de replanification (trigger) est requis.' });
-          return;
+          return reply(400, { error: 'Le déclencheur de replanification (trigger) est requis.' });
         }
 
-        const staticData = loadStaticDatasets();
+        const staticData = loadStaticDatasets(contentSrc);
         const settings = store.getSettings();
         const currentTasks = buildUnifiedTasks(
           staticData.planningHebdo,
@@ -529,21 +380,20 @@ export function createApiMiddleware(store: LocalSqliteStore) {
           });
         }
 
-        sendJson(res, 200, {
+        return reply(200, {
           rescheduleReport: {
             triggerType: result.triggerType,
             changes: result.changes,
             explanationFr: result.explanationFr,
             updatedExamDates: result.updatedExamDates,
           },
-          state: buildFullAppStatePayload(store),
+          state: fullState(),
         });
-        return;
       }
 
       // 6. Journal des seances d'etude (ajout / suppression)
       if (pathname === '/api/sessions' && method === 'POST') {
-        const body = await readJsonBody(req);
+        const body = await readBody();
         store.addStudySession({
           task_id: body.task_id ? String(body.task_id) : null,
           week_number: Number(body.week_number || 1),
@@ -554,20 +404,18 @@ export function createApiMiddleware(store: LocalSqliteStore) {
           notes: String(body.notes || ''),
           is_demo: 0,
         });
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       if (pathname.startsWith('/api/sessions/') && method === 'DELETE') {
         const id = Number(pathname.replace('/api/sessions/', ''));
         store.deleteStudySession(id);
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       // 7. Examens blancs (ajout / suppression)
       if (pathname === '/api/mock-exams' && method === 'POST') {
-        const body = await readJsonBody(req);
+        const body = await readBody();
         store.addMockExam({
           cert_code: (body.cert_code as CertCode) || 'CLF-C02',
           source: String(body.source || 'Examen blanc'),
@@ -578,20 +426,18 @@ export function createApiMiddleware(store: LocalSqliteStore) {
           notes: String(body.notes || ''),
           is_demo: 0,
         });
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       if (pathname.startsWith('/api/mock-exams/') && method === 'DELETE') {
         const id = Number(pathname.replace('/api/mock-exams/', ''));
         store.deleteMockExam(id);
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       // 8. Journal des erreurs (ajout / resolution / suppression)
       if (pathname === '/api/errors' && method === 'POST') {
-        const body = await readJsonBody(req);
+        const body = await readBody();
         store.addErrorJournalEntry({
           cert_code: (body.cert_code as CertCode) || 'CLF-C02',
           domain_id: String(body.domain_id || 'Domaine général'),
@@ -602,27 +448,24 @@ export function createApiMiddleware(store: LocalSqliteStore) {
           resolved: 0,
           is_demo: 0,
         });
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       if (pathname === '/api/errors/toggle' && method === 'POST') {
-        const body = await readJsonBody(req);
+        const body = await readBody();
         store.toggleErrorResolved(Number(body.id), Boolean(body.resolved));
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       if (pathname.startsWith('/api/errors/') && method === 'DELETE') {
         const id = Number(pathname.replace('/api/errors/', ''));
         store.deleteErrorJournalEntry(id);
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       // 9. Repetition espacee SM-2 (creation de carte, revision SM-2, suppression)
       if (pathname === '/api/flashcards' && method === 'POST') {
-        const body = await readJsonBody(req);
+        const body = await readBody();
         const settings = store.getSettings();
         const card = createFlashcardInput({
           id: `fc-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
@@ -632,44 +475,40 @@ export function createApiMiddleware(store: LocalSqliteStore) {
           back: String(body.back || ''),
           provenance: body.provenance as never,
           source_url: String(body.source_url || ''),
-          todayIso: settings.simulated_today || '2026-11-02',
+          todayIso: getEffectiveTodayIso(settings),
           is_demo: 0,
         });
         store.upsertFlashcard(card);
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       if (pathname === '/api/flashcards/review' && method === 'POST') {
-        const body = await readJsonBody(req);
+        const body = await readBody();
         const cardId = String(body.id || '');
         const grade = Number(body.grade) as ReviewGrade;
         const settings = store.getSettings();
         const existing = store.getFlashcards().find((c) => c.id === cardId);
         if (!existing) {
-          sendJson(res, 404, { error: `Carte introuvable : ${cardId}` });
-          return;
+          return reply(404, { error: `Carte introuvable : ${cardId}` });
         }
         const updated = reviewFlashcardSM2(
           existing,
           grade,
-          settings.simulated_today || '2026-11-02'
+          getEffectiveTodayIso(settings)
         );
         store.upsertFlashcard(updated);
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       if (pathname.startsWith('/api/flashcards/') && method === 'DELETE') {
         const id = decodeURIComponent(pathname.replace('/api/flashcards/', ''));
         store.deleteFlashcard(id);
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       // 10. Reglages (budgets, facteurs de temps, dates d'examens, seuils de preparation)
       if (pathname === '/api/settings' && method === 'POST') {
-        const body = await readJsonBody(req);
+        const body = await readBody();
         const current = store.getSettings();
         const nextSettings = {
           ...current,
@@ -688,51 +527,44 @@ export function createApiMiddleware(store: LocalSqliteStore) {
           },
         };
         store.saveSettings(nextSettings);
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       // 11. Sauvegarde JSON datee (Export)
       if (pathname === '/api/backup/export' && method === 'GET') {
         const backup = store.exportBackup();
-        sendJson(res, 200, backup);
-        return;
+        return reply(200, backup);
       }
 
       // 12. Restauration JSON avec validation du schema (Import)
       if (pathname === '/api/backup/import' && method === 'POST') {
-        const body = await readJsonBody(req);
+        const body = await readBody();
         const validation = validateBackupPayload(body);
         if (!validation.valid || !validation.payload) {
-          sendJson(res, 400, {
+          return reply(400, {
             error: 'Fichier de sauvegarde invalide.',
             details: validation.errors,
           });
-          return;
         }
         store.importBackup(validation.payload);
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       // 13. Gestion des donnees DEMO (charger / supprimer en un clic)
       if (pathname === '/api/demo/load' && method === 'POST') {
         store.loadDemoData();
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       if (pathname === '/api/demo/clear' && method === 'POST') {
         store.clearDemoData();
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       // 14. Tout supprimer / Reinitialiser
       if (pathname === '/api/reset' && method === 'POST') {
         store.resetAllUserData();
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       // 15. Contenu des Certifications : Chapitres, Fiches Express et Questions
@@ -743,97 +575,86 @@ export function createApiMiddleware(store: LocalSqliteStore) {
         const certKey = lowerCert.includes('clf') ? 'clf' : lowerCert.includes('dea') ? 'dea' : lowerCert.includes('dbt') ? 'dbt' : null;
 
         if (!certKey) {
-          sendJson(res, 400, { error: `Certification non reconnue : ${rawCert}` });
-          return;
+          return reply(400, { error: `Certification non reconnue : ${rawCert}` });
         }
 
-        const certDir = path.resolve(process.cwd(), 'content', 'certifications', certKey);
+        const certDir = `content/certifications/${certKey}`;
 
         // GET /api/certifications/:cert/chapters
         if (parts.length === 2 && parts[1] === 'chapters' && method === 'GET') {
-          const chaptersDir = path.join(certDir, 'chapters');
-          if (!fs.existsSync(chaptersDir)) {
-            sendJson(res, 200, []);
-            return;
+          const chaptersDir = `${certDir}/chapters`;
+          if (!contentSrc.exists(chaptersDir)) {
+            return reply(200, []);
           }
-          const files = fs.readdirSync(chaptersDir).filter((f) => f.endsWith('.md')).sort();
+          const files = contentSrc.list(chaptersDir).filter((f) => f.endsWith('.md')).sort();
           const items = files.map((filename) => {
-            const fullPath = path.join(chaptersDir, filename);
-            const content = fs.readFileSync(fullPath, 'utf-8');
+            const fullPath = `${chaptersDir}/${filename}`;
+            const content = contentSrc.read(fullPath);
             const lines = content.split('\n');
             const title = (lines[0] || '').replace(/^#\s*/, '').trim();
             const wordsCount = content.trim().split(/\s+/).filter(Boolean).length;
             const id = filename.replace(/\.md$/, '');
             return { id, filename, title, wordsCount };
           });
-          sendJson(res, 200, items);
-          return;
+          return reply(200, items);
         }
 
         // GET /api/certifications/:cert/chapters/:id
         if (parts.length === 3 && parts[1] === 'chapters' && method === 'GET') {
           const safeId = parts[2].replace(/[^a-zA-Z0-9_-]/g, '');
-          const filePath = path.join(certDir, 'chapters', `${safeId}.md`);
-          if (!fs.existsSync(filePath)) {
-            sendJson(res, 404, { error: `Chapitre introuvable : ${safeId}` });
-            return;
+          const filePath = `${certDir}/chapters/${safeId}.md`;
+          if (!contentSrc.exists(filePath)) {
+            return reply(404, { error: `Chapitre introuvable : ${safeId}` });
           }
-          const content = fs.readFileSync(filePath, 'utf-8');
+          const content = contentSrc.read(filePath);
           const lines = content.split('\n');
           const title = (lines[0] || '').replace(/^#\s*/, '').trim();
           const wordsCount = content.trim().split(/\s+/).filter(Boolean).length;
-          sendJson(res, 200, { id: safeId, filename: `${safeId}.md`, title, content, wordsCount });
-          return;
+          return reply(200, { id: safeId, filename: `${safeId}.md`, title, content, wordsCount });
         }
 
         // GET /api/certifications/:cert/fiches
         if (parts.length === 2 && parts[1] === 'fiches' && method === 'GET') {
-          const fichesDir = path.join(certDir, 'fiches_express');
-          if (!fs.existsSync(fichesDir)) {
-            sendJson(res, 200, []);
-            return;
+          const fichesDir = `${certDir}/fiches_express`;
+          if (!contentSrc.exists(fichesDir)) {
+            return reply(200, []);
           }
-          const files = fs.readdirSync(fichesDir).filter((f) => f.endsWith('.md')).sort();
+          const files = contentSrc.list(fichesDir).filter((f) => f.endsWith('.md')).sort();
           const items = files.map((filename) => {
-            const fullPath = path.join(fichesDir, filename);
-            const content = fs.readFileSync(fullPath, 'utf-8');
+            const fullPath = `${fichesDir}/${filename}`;
+            const content = contentSrc.read(fullPath);
             const lines = content.split('\n');
             const title = (lines[0] || '').replace(/^#\s*/, '').trim();
             const wordsCount = content.trim().split(/\s+/).filter(Boolean).length;
             const id = filename.replace(/\.md$/, '');
             return { id, filename, title, wordsCount };
           });
-          sendJson(res, 200, items);
-          return;
+          return reply(200, items);
         }
 
         // GET /api/certifications/:cert/fiches/:id
         if (parts.length === 3 && parts[1] === 'fiches' && method === 'GET') {
           const safeId = parts[2].replace(/[^a-zA-Z0-9_-]/g, '');
-          const filePath = path.join(certDir, 'fiches_express', `${safeId}.md`);
-          if (!fs.existsSync(filePath)) {
-            sendJson(res, 404, { error: `Fiche express introuvable : ${safeId}` });
-            return;
+          const filePath = `${certDir}/fiches_express/${safeId}.md`;
+          if (!contentSrc.exists(filePath)) {
+            return reply(404, { error: `Fiche express introuvable : ${safeId}` });
           }
-          const content = fs.readFileSync(filePath, 'utf-8');
+          const content = contentSrc.read(filePath);
           const lines = content.split('\n');
           const title = (lines[0] || '').replace(/^#\s*/, '').trim();
           const wordsCount = content.trim().split(/\s+/).filter(Boolean).length;
-          sendJson(res, 200, { id: safeId, filename: `${safeId}.md`, title, content, wordsCount });
-          return;
+          return reply(200, { id: safeId, filename: `${safeId}.md`, title, content, wordsCount });
         }
 
         // GET /api/certifications/:cert/questions
         if (parts.length === 2 && parts[1] === 'questions' && method === 'GET') {
-          const questionsPath = path.join(certDir, 'questions.json');
-          if (!fs.existsSync(questionsPath)) {
-            sendJson(res, 404, { error: `Banque de questions introuvable pour ${certKey}` });
-            return;
+          const questionsPath = `${certDir}/questions.json`;
+          if (!contentSrc.exists(questionsPath)) {
+            return reply(404, { error: `Banque de questions introuvable pour ${certKey}` });
           }
-          const questionsRaw = fs.readFileSync(questionsPath, 'utf-8');
+          const questionsRaw = contentSrc.read(questionsPath);
           const questions = JSON.parse(questionsRaw);
-          sendJson(res, 200, questions);
-          return;
+          return reply(200, questions);
         }
       }
 
@@ -846,17 +667,15 @@ export function createApiMiddleware(store: LocalSqliteStore) {
           tables: d.tables,
           schemaSql: d.schemaSql,
         }));
-        sendJson(res, 200, datasets);
-        return;
+        return reply(200, datasets);
       }
 
       if (pathname === '/api/entretiens/sql/exercises' && method === 'GET') {
-        const exercisesPath = path.resolve(process.cwd(), 'content', 'entretiens', 'sql_exercises.json');
-        if (!fs.existsSync(exercisesPath)) {
-          sendJson(res, 200, []);
-          return;
+        const exercisesPath = 'content/entretiens/sql_exercises.json';
+        if (!contentSrc.exists(exercisesPath)) {
+          return reply(200, []);
         }
-        const exercisesRaw = fs.readFileSync(exercisesPath, 'utf-8');
+        const exercisesRaw = contentSrc.read(exercisesPath);
         const exercises = JSON.parse(exercisesRaw);
         // Règle : Ne jamais révéler la solution dans le chargement de la liste
         const sanitized = exercises.map((ex: Record<string, unknown>) => ({
@@ -872,13 +691,12 @@ export function createApiMiddleware(store: LocalSqliteStore) {
           tags: ex.tags,
           hasSolution: true,
         }));
-        sendJson(res, 200, sanitized);
-        return;
+        return reply(200, sanitized);
       }
 
       // POST /api/sandbox/sql
       if (pathname === '/api/sandbox/sql' && method === 'POST') {
-        const body = (await readJsonBody(req)) as {
+        const body = (await readBody()) as {
           exerciseId?: string;
           datasetId: 'ecommerce' | 'streaming_events' | 'hr_payroll' | 'banking_fraud' | 'none';
           userQuery: string;
@@ -891,9 +709,9 @@ export function createApiMiddleware(store: LocalSqliteStore) {
         let orderDependent = false;
 
         if (body.exerciseId) {
-          const exercisesPath = path.resolve(process.cwd(), 'content', 'entretiens', 'sql_exercises.json');
-          if (fs.existsSync(exercisesPath)) {
-            const exercises = JSON.parse(fs.readFileSync(exercisesPath, 'utf-8'));
+          const exercisesPath = 'content/entretiens/sql_exercises.json';
+          if (contentSrc.exists(exercisesPath)) {
+            const exercises = JSON.parse(contentSrc.read(exercisesPath));
             const found = exercises.find((ex: { id: string }) => ex.id === body.exerciseId);
             if (found) {
               expectedQuery = found.expectedQuery;
@@ -908,7 +726,7 @@ export function createApiMiddleware(store: LocalSqliteStore) {
           userQuery: body.userQuery || '',
           expectedQuery,
           orderDependent,
-        });
+        }, rt.openInMemorySqlDb);
 
         // Solution révélée uniquement après tentative explicite de l'utilisateur
         const solution =
@@ -919,21 +737,19 @@ export function createApiMiddleware(store: LocalSqliteStore) {
               }
             : undefined;
 
-        sendJson(res, 200, {
+        return reply(200, {
           ...result,
           solution,
         });
-        return;
       }
 
       // 17. Entretien Technique : Exercices et Sandbox Python
       if (pathname === '/api/entretiens/python/exercises' && method === 'GET') {
-        const exercisesPath = path.resolve(process.cwd(), 'content', 'entretiens', 'python_exercises.json');
-        if (!fs.existsSync(exercisesPath)) {
-          sendJson(res, 200, []);
-          return;
+        const exercisesPath = 'content/entretiens/python_exercises.json';
+        if (!contentSrc.exists(exercisesPath)) {
+          return reply(200, []);
         }
-        const exercisesRaw = fs.readFileSync(exercisesPath, 'utf-8');
+        const exercisesRaw = contentSrc.read(exercisesPath);
         const exercises = JSON.parse(exercisesRaw);
         // Regle de securite pedagogique : ne jamais reveler les solutions lors du listing initial
         const sanitized = exercises.map((ex: Record<string, unknown>) => ({
@@ -947,13 +763,12 @@ export function createApiMiddleware(store: LocalSqliteStore) {
           tags: ex.tags,
           hasSolution: true,
         }));
-        sendJson(res, 200, sanitized);
-        return;
+        return reply(200, sanitized);
       }
 
       // POST /api/sandbox/python
       if (pathname === '/api/sandbox/python' && method === 'POST') {
-        const body = (await readJsonBody(req)) as {
+        const body = (await readBody()) as {
           exerciseId?: string;
           userCode: string;
           revealSolution?: boolean;
@@ -966,9 +781,9 @@ export function createApiMiddleware(store: LocalSqliteStore) {
         let solutionExplanation: string | undefined;
 
         if (body.exerciseId) {
-          const exercisesPath = path.resolve(process.cwd(), 'content', 'entretiens', 'python_exercises.json');
-          if (fs.existsSync(exercisesPath)) {
-            const exercises = JSON.parse(fs.readFileSync(exercisesPath, 'utf-8'));
+          const exercisesPath = 'content/entretiens/python_exercises.json';
+          if (contentSrc.exists(exercisesPath)) {
+            const exercises = JSON.parse(contentSrc.read(exercisesPath));
             const found = exercises.find((ex: { id: string }) => ex.id === body.exerciseId);
             if (found) {
               testCode = found.testCode;
@@ -978,13 +793,6 @@ export function createApiMiddleware(store: LocalSqliteStore) {
           }
         }
 
-        const result = await executePythonCode({
-          code: body.userCode || '',
-          testCode,
-          timeoutMs: body.timeoutMs || 4000,
-        });
-
-        // Solution revelee uniquement apres tentative explicite de l utilisateur
         const solution =
           body.revealSolution && body.userAttempted && solutionCode
             ? {
@@ -993,23 +801,39 @@ export function createApiMiddleware(store: LocalSqliteStore) {
               }
             : undefined;
 
-        sendJson(res, 200, {
+        // Mode cloud : aucun interpreteur Python cote serveur, execution deleguee au navigateur (Pyodide)
+        if (!rt.executePython) {
+          return reply(200, {
+            clientExecution: {
+              engine: 'pyodide',
+              harness: buildPythonHarness(body.userCode || '', testCode),
+              hasTests: Boolean(testCode),
+              timeoutMs: Math.max(body.timeoutMs || 4000, 15000),
+            },
+            solution,
+          });
+        }
+
+        const result = await rt.executePython({
+          code: body.userCode || '',
+          testCode,
+          timeoutMs: body.timeoutMs || 4000,
+        });
+
+        return reply(200, {
           ...result,
           solution,
         });
-        return;
       }
 
       // 18. Entretien Technique : Cours et Fiches condensées
       if (pathname === '/api/entretiens/courses' && method === 'GET') {
-        const manifestPath = path.resolve(process.cwd(), 'content', 'entretiens', 'courses', 'manifest.json');
-        if (!fs.existsSync(manifestPath)) {
-          sendJson(res, 404, { error: 'Manifest des cours d entretien introuvable' });
-          return;
+        const manifestPath = 'content/entretiens/courses/manifest.json';
+        if (!contentSrc.exists(manifestPath)) {
+          return reply(404, { error: 'Manifest des cours d entretien introuvable' });
         }
-        const raw = fs.readFileSync(manifestPath, 'utf-8');
-        sendJson(res, 200, JSON.parse(raw));
-        return;
+        const raw = contentSrc.read(manifestPath);
+        return reply(200, JSON.parse(raw));
       }
 
       if (pathname?.startsWith('/api/entretiens/courses/') && method === 'GET') {
@@ -1017,42 +841,37 @@ export function createApiMiddleware(store: LocalSqliteStore) {
         const parts = cleanPath.split('/');
         if (parts.length === 2) {
           const [cat, courseId] = parts;
-          const courseFilePath = path.resolve(process.cwd(), 'content', 'entretiens', 'courses', cat, `${courseId}.md`);
-          if (!fs.existsSync(courseFilePath)) {
-            sendJson(res, 404, { error: `Chapitre introuvable : ${cat}/${courseId}` });
-            return;
+          const courseFilePath = `content/entretiens/courses/${cat.replace(/[^a-zA-Z0-9_-]/g, '')}/${courseId.replace(/[^a-zA-Z0-9_.-]/g, '')}.md`;
+          if (!contentSrc.exists(courseFilePath)) {
+            return reply(404, { error: `Chapitre introuvable : ${cat}/${courseId}` });
           }
-          const content = fs.readFileSync(courseFilePath, 'utf-8');
-          sendJson(res, 200, {
+          const content = contentSrc.read(courseFilePath);
+          return reply(200, {
             id: courseId,
             category: cat,
             content,
           });
-          return;
         }
       }
 
       // 19. Entretien Technique : Banque de questions
       if (pathname === '/api/entretiens/questions' && method === 'GET') {
-        const questionsPath = path.resolve(process.cwd(), 'content', 'entretiens', 'interview_questions.json');
-        if (!fs.existsSync(questionsPath)) {
-          sendJson(res, 200, []);
-          return;
+        const questionsPath = 'content/entretiens/interview_questions.json';
+        if (!contentSrc.exists(questionsPath)) {
+          return reply(200, []);
         }
-        const raw = fs.readFileSync(questionsPath, 'utf-8');
-        sendJson(res, 200, JSON.parse(raw));
-        return;
+        const raw = contentSrc.read(questionsPath);
+        return reply(200, JSON.parse(raw));
       }
 
       // 20. Entretien Technique : Simulations d entretien
       if (pathname === '/api/entretiens/simulations' && method === 'GET') {
         const simulations = store.getInterviewSimulations();
-        sendJson(res, 200, simulations);
-        return;
+        return reply(200, simulations);
       }
 
       if (pathname === '/api/entretiens/simulations' && method === 'POST') {
-        const body = (await readJsonBody(req)) as {
+        const body = (await readBody()) as {
           id?: string;
           role: string;
           seniority: string;
@@ -1071,19 +890,17 @@ export function createApiMiddleware(store: LocalSqliteStore) {
           duration_seconds: body.duration_seconds,
           details_json: detailsJson,
         });
-        sendJson(res, 200, { success: true, id: simId });
-        return;
+        return reply(200, { success: true, id: simId });
       }
 
       // 21. Entretien Technique : Competences
       if (pathname === '/api/entretiens/competencies' && method === 'GET') {
         const status = store.getCompetenciesStatus();
-        sendJson(res, 200, status);
-        return;
+        return reply(200, status);
       }
 
       if (pathname === '/api/entretiens/competencies/record' && method === 'POST') {
-        const body = (await readJsonBody(req)) as {
+        const body = (await readBody()) as {
           competency_id: string;
           session_id: string;
           success: boolean;
@@ -1096,17 +913,15 @@ export function createApiMiddleware(store: LocalSqliteStore) {
           notes: body.notes,
         });
         const updated = store.getCompetenciesStatus();
-        sendJson(res, 200, { success: true, competencies: updated });
-        return;
+        return reply(200, { success: true, competencies: updated });
       }
 
       // 22. Podcasts & Audios NotebookLM : progression d'ecoute recursive & auto-renommage
       if (pathname === '/api/podcasts/progress' && method === 'POST') {
-        const body = await readJsonBody(req);
+        const body = await readBody();
         const episodeId = String(body.episode_id || '');
         if (!episodeId) {
-          sendJson(res, 400, { error: 'episode_id requis.' });
-          return;
+          return reply(400, { error: 'episode_id requis.' });
         }
         store.upsertPodcastProgress({
           episode_id: episodeId,
@@ -1120,25 +935,36 @@ export function createApiMiddleware(store: LocalSqliteStore) {
               ? Number(body.last_position_sec)
               : undefined,
         });
-        sendJson(res, 200, buildFullAppStatePayload(store));
-        return;
+        return reply(200, fullState());
       }
 
       if (pathname === '/api/podcasts/auto-rename' && method === 'POST') {
-        const staticData = loadStaticDatasets();
-        const renamed = autoRenameNewAudioFiles(staticData.podcastsCatalog);
-        sendJson(res, 200, {
+        const staticData = loadStaticDatasets(contentSrc);
+        const renamed = rt.autoRenameAudios ? rt.autoRenameAudios(staticData.podcastsCatalog) : [];
+        return reply(200, {
           renamed,
-          state: buildFullAppStatePayload(store),
+          state: fullState(),
         });
-        return;
       }
 
-      sendJson(res, 404, { error: `Route API inconnue : ${method} ${pathname}` });
+      return reply(404, { error: `Route API inconnue : ${method} ${pathname}` });
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      sendJson(res, 500, { error: msg });
+      return reply(500, { error: msg });
     }
+  }
+}
+
+/** Middleware Node (Vite dev / preview) : comportement historique du mode local. */
+export function createApiMiddleware(store: LocalSqliteStore, rt: ApiRuntime = getDefaultNodeRuntime()) {
+  return async (req: IncomingMessage, res: ServerResponse, next?: () => void) => {
+    const url = req.url || '';
+    if (!url.startsWith('/api/')) {
+      if (next) next();
+      return;
+    }
+    const result = await handleApiRequest(store, rt, req.method || 'GET', url, () => readJsonBody(req));
+    sendJson(res, result.status, result.payload);
   };
 }
 

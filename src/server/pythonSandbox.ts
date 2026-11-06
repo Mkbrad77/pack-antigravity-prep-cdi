@@ -1,5 +1,6 @@
-import { spawn } from 'node:child_process';
 import { PythonExecutionResult } from '../workers/types';
+import { buildPythonHarness, interpretPythonRun } from './pythonHarness';
+import { requireNodeBuiltin } from './sqlDb';
 
 export interface PythonSandboxParams {
   code: string;
@@ -7,37 +8,13 @@ export interface PythonSandboxParams {
   timeoutMs?: number;
 }
 
-function stripAnsi(text: string): string {
-  return text.replace(/\x1B\[[0-?]*[ -/]*[@-~]/g, '');
-}
-
 export async function executePythonCode(params: PythonSandboxParams): Promise<PythonExecutionResult> {
   const startTime = performance.now();
   const timeoutMs = params.timeoutMs ?? 4000;
 
-  const testHarness = `
-import sys
-import time
+  const testHarness = buildPythonHarness(params.code, params.testCode);
 
-# Code candidat
-${params.code}
-
-# Execution des tests unitaires
-${params.testCode ? `
-_passed_tests = 0
-_total_tests = 0
-
-def check_assert(condition, desc=""):
-    global _passed_tests, _total_tests
-    _total_tests += 1
-    assert condition, desc
-    _passed_tests += 1
-
-${params.testCode}
-
-print(f"\\n__TEST_RESULTS__:{_passed_tests}/{_total_tests}")
-` : ''}
-`;
+  const { spawn } = requireNodeBuiltin<typeof import('node:child_process')>('node:child_process');
 
   return new Promise((resolve) => {
     // Essayer 'python' puis 'python3' ou 'py' selon le systeme
@@ -101,46 +78,17 @@ print(f"\\n__TEST_RESULTS__:{_passed_tests}/{_total_tests}")
     child.on('close', (code) => {
       clearTimeout(timer);
       const execTime = Math.round((performance.now() - startTime) * 100) / 100;
-
-      if (killedByTimeout) {
-        resolve({
-          requestId: `py-${Date.now()}`,
-          success: false,
+      resolve(
+        interpretPythonRun({
           stdout,
-          stderr: `Timeout : Le script a depasse le delai limite de ${timeoutMs} ms (boucle infinie probable).`,
+          stderr,
+          exitCode: code,
+          killedByTimeout,
+          timeoutMs,
+          hasTests: Boolean(params.testCode),
           executionTimeMs: execTime,
-          error: `Execution interrompue : Temps d'execution superieur a ${timeoutMs} ms.`,
-        });
-        return;
-      }
-
-      // Extraction des resultats de tests
-      let passedAssertions = 0;
-      let totalAssertions = 0;
-      const testMarkerRegex = /__TEST_RESULTS__:(\d+)\/(\d+)/;
-      const match = stdout.match(testMarkerRegex);
-
-      if (match) {
-        passedAssertions = parseInt(match[1], 10);
-        totalAssertions = parseInt(match[2], 10);
-        stdout = stdout.replace(testMarkerRegex, '').trim();
-      }
-
-      const success = code === 0 && (!params.testCode || (totalAssertions > 0 && passedAssertions === totalAssertions));
-
-      const cleanedStdout = stripAnsi(stdout).trim();
-      const cleanedStderr = stripAnsi(stderr).trim();
-
-      resolve({
-        requestId: `py-${Date.now()}`,
-        success,
-        stdout: cleanedStdout,
-        stderr: cleanedStderr,
-        executionTimeMs: execTime,
-        passedAssertions,
-        totalAssertions,
-        error: code !== 0 ? (cleanedStderr || `Le script a quitte avec le code d'erreur ${code}`) : undefined,
-      });
+        })
+      );
     });
   });
 }
