@@ -1,0 +1,36 @@
+{
+  "name": "pack-antigravity-prep-cdi",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Application locale de pilotage des certifications (AWS CLF-C02, DEA-C01, dbt) et de preparation aux entretiens Data/AI Engineer",
+  "type": "module",
+  "scripts": {
+    "postinstall": "node scripts/fix_rollup_wdac.cjs",
+    "prestart": "node scripts/fix_rollup_wdac.cjs",
+    "start": "vite --port 5173 --host 0.0.0.0",
+    "predev": "node scripts/fix_rollup_wdac.cjs",
+    "dev": "vite --port 5173 --host 0.0.0.0",
+    "prebuild": "node scripts/fix_rollup_wdac.cjs",
+    "build": "vite build",
+    "preview": "vite preview --port 5173 --host 0.0.0.0",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "validate:content": "node scripts/validate_certification_content.js"
+  },
+  "dependencies": {
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5",
+    "vitest": "^2.1.8"
+  }
+}

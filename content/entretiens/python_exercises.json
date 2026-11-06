@@ -1,0 +1,1357 @@
+[
+  {
+    "id": "py-001",
+    "title": "Two Sum : Indices de la somme cible",
+    "category": "algo_data",
+    "difficulty": "debutant",
+    "description": "Étant donné un tableau d'entiers nums et un entier target, renvoie les indices des deux nombres dont la somme vaut target. Complexité attendue : O(N) en temps et en espace.",
+    "starterCode": "def two_sum(nums: list[int], target: int) -> list[int]:\n    # Ton code ici\n    pass\n",
+    "testCode": "check_assert(two_sum([2, 7, 11, 15], 9) == [0, 1], 'Cas standard [2, 7]')\ncheck_assert(two_sum([3, 2, 4], 6) == [1, 2], 'Indices non ordonnes [2, 4]')\ncheck_assert(two_sum([3, 3], 6) == [0, 1], 'Doublons [3, 3]')\n",
+    "hints": [
+      "Utilise un dictionnaire pour stocker le complement (target - num) et son indice au fur et a mesure du parcours."
+    ],
+    "solutionCode": "def two_sum(nums: list[int], target: int) -> list[int]:\n    seen = {}\n    for i, num in enumerate(nums):\n        diff = target - num\n        if diff in seen:\n            return [seen[diff], i]\n        seen[num] = i\n    return []\n",
+    "solutionExplanation": "L'utilisation d'une table de hachage permet une recherche en O(1) du complementaire, ramenant la complexite globale a O(N) contre O(N^2) pour l'approche naive a double boucle.",
+    "tags": [
+      "DICT",
+      "HASH_MAP",
+      "COMPLEXITY_O_N"
+    ]
+  },
+  {
+    "id": "py-002",
+    "title": "Fusion d'intervalles temporels chevauchants",
+    "category": "algo_data",
+    "difficulty": "intermediaire",
+    "description": "Étant donnée une liste d'intervalles [start, end], fusionne tous les intervalles qui se chevauchent ou se touchent.",
+    "starterCode": "def merge_intervals(intervals: list[list[int]]) -> list[list[int]]:\n    # Ton code ici\n    pass\n",
+    "testCode": "check_assert(merge_intervals([[1, 3], [2, 6], [8, 10], [15, 18]]) == [[1, 6], [8, 10], [15, 18]], 'Cas standard avec chevauchement')\ncheck_assert(merge_intervals([[1, 4], [4, 5]]) == [[1, 5]], 'Intervalles tangents')\ncheck_assert(merge_intervals([]) == [], 'Liste vide')\n",
+    "hints": [
+      "Trie prealablement la liste des intervalles selon leur borne de depart."
+    ],
+    "solutionCode": "def merge_intervals(intervals: list[list[int]]) -> list[list[int]]:\n    if not intervals:\n        return []\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n    for current in intervals[1:]:\n        prev = merged[-1]\n        if current[0] <= prev[1]:\n            prev[1] = max(prev[1], current[1])\n        else:\n            merged.append(current)\n    return merged\n",
+    "solutionExplanation": "Le tri initial en O(N log N) garantit que les intervalles candidats a la fusion sont adjacents. Le balayage lineaire O(N) fusionne les bornes avec max(prev[1], current[1]).",
+    "tags": [
+      "INTERVALS",
+      "SORTING",
+      "DATA_PIPELINES"
+    ]
+  },
+  {
+    "id": "py-003",
+    "title": "Top K éléments les plus fréquents",
+    "category": "algo_data",
+    "difficulty": "intermediaire",
+    "description": "Étant donné un tableau d'entiers et un entier k, renvoie les k éléments les plus fréquents. La solution doit être plus rapide que O(N log N).",
+    "starterCode": "def top_k_frequent(nums: list[int], k: int) -> list[int]:\n    # Ton code ici\n    pass\n",
+    "testCode": "res = top_k_frequent([1, 1, 1, 2, 2, 3], 2)\ncheck_assert(sorted(res) == [1, 2], 'Top 2 frequent')\ncheck_assert(top_k_frequent([1], 1) == [1], 'Element unique')\n",
+    "hints": [
+      "Compte les occurrences avec collections.Counter puis utilise un min-heap de taille k (heapq) ou le bucket sort."
+    ],
+    "solutionCode": "import collections\n\ndef top_k_frequent(nums: list[int], k: int) -> list[int]:\n    counts = collections.Counter(nums)\n    return [item for item, _ in counts.most_common(k)]\n",
+    "solutionExplanation": "Counter.most_common(k) utilise heapq.nlargest sous le capot en O(N log k), ce qui est optimal pour k << N.",
+    "tags": [
+      "HEAP",
+      "COUNTER",
+      "TOP_K"
+    ]
+  },
+  {
+    "id": "py-004",
+    "title": "Maximum dans une fenêtre glissante (Sliding Window Maximum)",
+    "category": "algo_data",
+    "difficulty": "avance",
+    "description": "Étant donné un tableau nums et une fenêtre de taille k glissant de gauche à droite, renvoie la liste du maximum de chaque fenêtre. Complexité O(N) requise.",
+    "starterCode": "def max_sliding_window(nums: list[int], k: int) -> list[int]:\n    # Ton code ici\n    pass\n",
+    "testCode": "check_assert(max_sliding_window([1, 3, -1, -3, 5, 3, 6, 7], 3) == [3, 3, 5, 5, 6, 7], 'Fenetre k=3')\ncheck_assert(max_sliding_window([1], 1) == [1], 'Fenetre k=1')\n",
+    "hints": [
+      "Utilise une deque monotone stockant les indices ordonnés de manière décroissante selon leur valeur."
+    ],
+    "solutionCode": "from collections import deque\n\ndef max_sliding_window(nums: list[int], k: int) -> list[int]:\n    if not nums or k == 0:\n        return []\n    q = deque()\n    result = []\n    for i, n in enumerate(nums):\n        while q and nums[q[-1]] < n:\n            q.pop()\n        q.append(i)\n        if q[0] <= i - k:\n            q.popleft()\n        if i >= k - 1:\n            result.append(nums[q[0]])\n    return result\n",
+    "solutionExplanation": "La file à double extrémité monotone maintient en tête (q[0]) l'indice du maximum courant. Chaque élément est inséré et retiré au plus une fois, assurant O(N).",
+    "tags": [
+      "DEQUE",
+      "SLIDING_WINDOW",
+      "MONOTONIC_QUEUE"
+    ]
+  },
+  {
+    "id": "py-005",
+    "title": "Cache LRU (Least Recently Used Cache)",
+    "category": "algo_data",
+    "difficulty": "avance",
+    "description": "Implémente une classe LRUCache avec une capacité maximale. get(key) et put(key, value) doivent s'exécuter en O(1) de temps moyen.",
+    "starterCode": "class LRUCache:\n    def __init__(self, capacity: int):\n        # Ton code ici\n        pass\n\n    def get(self, key: int) -> int:\n        pass\n\n    def put(self, key: int, value: int) -> None:\n        pass\n",
+    "testCode": "cache = LRUCache(2)\ncache.put(1, 1)\ncache.put(2, 2)\ncheck_assert(cache.get(1) == 1, 'Get 1')\ncache.put(3, 3)\ncheck_assert(cache.get(2) == -1, '2 doit avoir ete evince')\ncache.put(4, 4)\ncheck_assert(cache.get(1) == -1, '1 doit avoir ete evince')\ncheck_assert(cache.get(3) == 3, 'Get 3')\ncheck_assert(cache.get(4) == 4, 'Get 4')\n",
+    "hints": [
+      "Utilise collections.OrderedDict ou une combinaison de dict et liste doublement chainee."
+    ],
+    "solutionCode": "from collections import OrderedDict\n\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.capacity = capacity\n        self.cache = OrderedDict()\n\n    def get(self, key: int) -> int:\n        if key not in self.cache:\n            return -1\n        self.cache.move_to_end(key)\n        return self.cache[key]\n\n    def put(self, key: int, value: int) -> None:\n        if key in self.cache:\n            self.cache.move_to_end(key)\n        self.cache[key] = value\n        if len(self.cache) > self.capacity:\n            self.cache.popitem(last=False)\n",
+    "solutionExplanation": "OrderedDict maintient l'ordre d'insertion en O(1). move_to_end rafraîchit la récence et popitem(last=False) élimine l'élément le plus ancien.",
+    "tags": [
+      "LRU",
+      "CACHE",
+      "ORDERED_DICT"
+    ]
+  },
+  {
+    "id": "py-006",
+    "title": "Validation de parenthèses et balises imbriquées",
+    "category": "algo_data",
+    "difficulty": "debutant",
+    "description": "Étant donnée une chaîne de caractères s contenant '()', '[]', '{}', vérifie si la chaîne est valide et correctement fermée.",
+    "starterCode": "def is_valid_parentheses(s: str) -> bool:\n    # Ton code ici\n    pass\n",
+    "testCode": "check_assert(is_valid_parentheses(\"()\") == True, 'Simple parenthese')\ncheck_assert(is_valid_parentheses(\"()[]{}\") == True, 'Plusieurs types')\ncheck_assert(is_valid_parentheses(\"(]\") == False, 'Incompatible')\ncheck_assert(is_valid_parentheses(\"([)]\") == False, 'Croisement invalide')\ncheck_assert(is_valid_parentheses(\"{[]}\") == True, 'Imbrication correcte')\n",
+    "hints": [
+      "Utilise une pile (stack) sous forme de liste Python avec append() et pop()."
+    ],
+    "solutionCode": "def is_valid_parentheses(s: str) -> bool:\n    stack = []\n    mapping = {')': '(', '}': '{', ']': '['}\n    for char in s:\n        if char in mapping:\n            top_elem = stack.pop() if stack else '#'\n            if mapping[char] != top_elem:\n                return False\n        else:\n            stack.append(char)\n    return not stack\n",
+    "solutionExplanation": "La pile LIFO (Dernier Entré Premier Sorti) assure la vérification de fermeture dans le bon ordre en O(N) temps et O(N) espace.",
+    "tags": [
+      "STACK",
+      "STRINGS",
+      "PARSING"
+    ]
+  },
+  {
+    "id": "py-007",
+    "title": "Recherche binaire dans un tableau trié et décalé",
+    "category": "algo_data",
+    "difficulty": "intermediaire",
+    "description": "Un tableau d'entiers trié par ordre croissant est décalé circulairement (rotated). Trouve l'indice d'une cible en O(log N). Renvoie -1 si absent.",
+    "starterCode": "def search_rotated(nums: list[int], target: int) -> int:\n    # Ton code ici\n    pass\n",
+    "testCode": "check_assert(search_rotated([4, 5, 6, 7, 0, 1, 2], 0) == 4, 'Trouve 0 a indice 4')\ncheck_assert(search_rotated([4, 5, 6, 7, 0, 1, 2], 3) == -1, 'Absent')\ncheck_assert(search_rotated([1], 0) == -1, 'Unique element absent')\ncheck_assert(search_rotated([1], 1) == 0, 'Unique element present')\n",
+    "hints": [
+      "Dans un tableau trié décalé, au moins une des deux moitiés (gauche ou droite) est toujours strictement ordonnée."
+    ],
+    "solutionCode": "def search_rotated(nums: list[int], target: int) -> int:\n    low, high = 0, len(nums) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        if nums[mid] == target:\n            return mid\n        if nums[low] <= nums[mid]:\n            if nums[low] <= target < nums[mid]:\n                high = mid - 1\n            else:\n                low = mid + 1\n        else:\n            if nums[mid] < target <= nums[high]:\n                low = mid + 1\n            else:\n                high = mid - 1\n    return -1\n",
+    "solutionExplanation": "En déterminant quelle moitié est ordonnée, on élimine la moitié non pertinente à chaque étape, conservant une complexité logarithmique O(log N).",
+    "tags": [
+      "BINARY_SEARCH",
+      "ROTATED_ARRAY",
+      "COMPLEXITY_O_LOG_N"
+    ]
+  },
+  {
+    "id": "py-008",
+    "title": "K-ième plus grand élément (QuickSelect)",
+    "category": "algo_data",
+    "difficulty": "intermediaire",
+    "description": "Trouve le k-ième plus grand élément dans un tableau non trié. Vise une complexité moyenne en O(N).",
+    "starterCode": "def find_kth_largest(nums: list[int], k: int) -> int:\n    # Ton code ici\n    pass\n",
+    "testCode": "check_assert(find_kth_largest([3, 2, 1, 5, 6, 4], 2) == 5, '2e plus grand est 5')\ncheck_assert(find_kth_largest([3, 2, 3, 1, 2, 4, 5, 5, 6], 4) == 4, '4e plus grand est 4')\n",
+    "hints": [
+      "Utilise un min-heap de taille k ou l'algorithme de partitionnement QuickSelect."
+    ],
+    "solutionCode": "import heapq\n\ndef find_kth_largest(nums: list[int], k: int) -> int:\n    heap = []\n    for num in nums:\n        heapq.heappush(heap, num)\n        if len(heap) > k:\n            heapq.heappop(heap)\n    return heap[0]\n",
+    "solutionExplanation": "Un min-heap de taille k maintient les k plus grands éléments rencontrés. À la fin, la racine du tas heap[0] est exactement le k-ième plus grand élément en O(N log k).",
+    "tags": [
+      "HEAP",
+      "QUICKSELECT",
+      "ALGO"
+    ]
+  },
+  {
+    "id": "py-009",
+    "title": "Détection de cycle dans un graphe de dépendance (DAG dbt/Airflow)",
+    "category": "algo_data",
+    "difficulty": "avance",
+    "description": "Étant donné un graphe orienté représenté sous forme de dictionnaire {node: [voisins]}, renvoie True si le graphe contient un cycle (DAG corrompu), sinon False.",
+    "starterCode": "def has_cycle(graph: dict[str, list[str]]) -> bool:\n    # Ton code ici\n    pass\n",
+    "testCode": "g1 = {'A': ['B'], 'B': ['C'], 'C': []}\ncheck_assert(has_cycle(g1) == False, 'Pipeline lineaire sans cycle')\ng2 = {'A': ['B'], 'B': ['C'], 'C': ['A']}\ncheck_assert(has_cycle(g2) == True, 'Cycle simple A -> B -> C -> A')\ng3 = {'raw': ['stg_orders', 'stg_customers'], 'stg_orders': ['fct_orders'], 'stg_customers': ['fct_orders'], 'fct_orders': []}\ncheck_assert(has_cycle(g3) == False, 'DAG dbt en diamant valide')\n",
+    "hints": [
+      "Utilise un parcours en profondeur (DFS) avec 3 états de visite : 0 = non visité, 1 = en cours dans la pile courante, 2 = terminé."
+    ],
+    "solutionCode": "def has_cycle(graph: dict[str, list[str]]) -> bool:\n    # 0 = unvisited, 1 = visiting (dans la pile de récursion), 2 = visited\n    state = {node: 0 for node in graph}\n\n    def dfs(node: str) -> bool:\n        state[node] = 1\n        for neighbor in graph.get(node, []):\n            if state.get(neighbor, 0) == 1:\n                return True\n            if state.get(neighbor, 0) == 0:\n                if dfs(neighbor):\n                    return True\n        state[node] = 2\n        return False\n\n    for node in graph:\n        if state[node] == 0:\n            if dfs(node):\n                return True\n    return False\n",
+    "solutionExplanation": "L'algorithme de coloration DFS (3 états) détecte les arcs arrières en temps linéaire O(V + E), fondamental pour la validation des DAG dbt et Airflow.",
+    "tags": [
+      "GRAPH",
+      "DFS",
+      "DAG",
+      "AIRFLOW",
+      "DBT"
+    ]
+  },
+  {
+    "id": "py-010",
+    "title": "Tri topologique d'un DAG de tâches",
+    "category": "algo_data",
+    "difficulty": "avance",
+    "description": "Renvoie un ordre d'exécution valide pour un DAG de tâches où {task: [dépendances_amont]}. Si impossible (cycle), renvoie une liste vide.",
+    "starterCode": "def topological_sort(tasks: dict[str, list[str]]) -> list[str]:\n    # Ton code ici\n    pass\n",
+    "testCode": "dag = {\n    'load_s3': [],\n    'clean_silver': ['load_s3'],\n    'aggregate_gold': ['clean_silver'],\n    'send_alert': ['clean_silver']\n}\nres = topological_sort(dag)\ncheck_assert(res.index('load_s3') < res.index('clean_silver'), 'load avant clean')\ncheck_assert(res.index('clean_silver') < res.index('aggregate_gold'), 'clean avant gold')\ncheck_assert(res.index('clean_silver') < res.index('send_alert'), 'clean avant alert')\n",
+    "hints": [
+      "Utilise l'algorithme de Kahn basé sur le calcul des degrés entrants (in-degrees) et une file d'attente."
+    ],
+    "solutionCode": "from collections import deque\n\ndef topological_sort(tasks: dict[str, list[str]]) -> list[str]:\n    # Inversion : dependances_amont -> qui doit s'exécuter après qui\n    graph = {t: [] for t in tasks}\n    in_degree = {t: 0 for t in tasks}\n\n    for task, deps in tasks.items():\n        for dep in deps:\n            if dep not in graph:\n                graph[dep] = []\n                in_degree[dep] = 0\n            graph[dep].append(task)\n            in_degree[task] += 1\n\n    queue = deque([t for t, deg in in_degree.items() if deg == 0])\n    order = []\n\n    while queue:\n        curr = queue.popleft()\n        order.append(curr)\n        for succ in graph.get(curr, []):\n            in_degree[succ] -= 1\n            if in_degree[succ] == 0:\n                queue.append(succ)\n\n    if len(order) == len(in_degree):\n        return order\n    return []\n",
+    "solutionExplanation": "L'algorithme de Kahn calcule l'ordre topologique en temps O(V + E) en dépilant progressivement les sommets dont le degré entrant est nul.",
+    "tags": [
+      "TOPOLOGICAL_SORT",
+      "KAHN",
+      "DAG",
+      "PIPELINES"
+    ]
+  },
+  {
+    "id": "py-011",
+    "title": "Regroupement d'anagrammes",
+    "category": "collections",
+    "difficulty": "debutant",
+    "description": "Étant donné un tableau de chaînes strs, regroupe les anagrammes ensemble dans une liste de listes.",
+    "starterCode": "def group_anagrams(strs: list[str]) -> list[list[str]]:\n    # Ton code ici\n    pass\n",
+    "testCode": "res = group_anagrams([\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"])\nres_sorted = sorted([sorted(g) for g in res])\ncheck_assert([\"bat\"] in res_sorted, 'Groupe bat')\ncheck_assert([\"ate\", \"eat\", \"tea\"] in res_sorted, 'Groupe ate-eat-tea')\ncheck_assert([\"nat\", \"tan\"] in res_sorted, 'Groupe nat-tan')\n",
+    "hints": [
+      "Utilise une chaîne triée comme clé d'un collections.defaultdict(list)."
+    ],
+    "solutionCode": "from collections import defaultdict\n\ndef group_anagrams(strs: list[str]) -> list[list[str]]:\n    groups = defaultdict(list)\n    for s in strs:\n        key = ''.join(sorted(s))\n        groups[key].append(s)\n    return list(groups.values())\n",
+    "solutionExplanation": "Les mots anagrammes partagent la même signature ordonnée. En groupant par tuple ou string trié, on opère en O(N * K log K) où K est la longueur maximale d'un mot.",
+    "tags": [
+      "ANAGRAM",
+      "DEFAULTDICT",
+      "STRINGS"
+    ]
+  },
+  {
+    "id": "py-012",
+    "title": "Compteur d'erreurs HTTP par code d'état (Counter)",
+    "category": "collections",
+    "difficulty": "debutant",
+    "description": "Étant donnée une liste de codes de retour HTTP entiers, renvoie les 3 codes d'erreur les plus fréquents (codes >= 400) avec leur nombre d'occurrences.",
+    "starterCode": "def top_http_errors(status_codes: list[int]) -> list[tuple[int, int]]:\n    # Ton code ici\n    pass\n",
+    "testCode": "codes = [200, 200, 404, 500, 404, 403, 404, 500, 200, 503]\nres = top_http_errors(codes)\ncheck_assert(res == [(404, 3), (500, 2), (403, 1)] or res == [(404, 3), (500, 2), (503, 1)], 'Top erreurs identifiees')\n",
+    "hints": [
+      "Filtre les codes >= 400 et utilise collections.Counter.most_common(3)."
+    ],
+    "solutionCode": "from collections import Counter\n\ndef top_http_errors(status_codes: list[int]) -> list[tuple[int, int]]:\n    error_codes = [code for code in status_codes if code >= 400]\n    return Counter(error_codes).most_common(3)\n",
+    "solutionExplanation": "Counter() encapsule le comptage en table de hachage O(N) et most_common(k) extrait les plus fréquents en O(k log U).",
+    "tags": [
+      "COUNTER",
+      "OBSERVABILITY",
+      "LOGS"
+    ]
+  },
+  {
+    "id": "py-013",
+    "title": "Modélisation d'enregistrement immuable (namedtuple vs dataclass)",
+    "category": "collections",
+    "difficulty": "debutant",
+    "description": "Crée une fonction qui instancie un namedtuple DataRecord avec les champs : user_id (int), country (str), amount (float). Calcule le montant total par pays.",
+    "starterCode": "from collections import namedtuple\n\nDataRecord = namedtuple('DataRecord', ['user_id', 'country', 'amount'])\n\ndef total_amount_by_country(records: list[DataRecord]) -> dict[str, float]:\n    # Ton code ici\n    pass\n",
+    "testCode": "records = [\n    DataRecord(1, 'FR', 100.5),\n    DataRecord(2, 'US', 200.0),\n    DataRecord(3, 'FR', 49.5),\n    DataRecord(4, 'UK', 75.0)\n]\nres = total_amount_by_country(records)\ncheck_assert(res['FR'] == 150.0, 'Total FR 150.0')\ncheck_assert(res['US'] == 200.0, 'Total US 200.0')\ncheck_assert(res['UK'] == 75.0, 'Total UK 75.0')\n",
+    "hints": [
+      "Utilise collections.defaultdict(float) pour accumuler les montants par pays."
+    ],
+    "solutionCode": "from collections import defaultdict, namedtuple\n\nDataRecord = namedtuple('DataRecord', ['user_id', 'country', 'amount'])\n\ndef total_amount_by_country(records: list[DataRecord]) -> dict[str, float]:\n    totals = defaultdict(float)\n    for r in records:\n        totals[r.country] += r.amount\n    return dict(totals)\n",
+    "solutionExplanation": "namedtuple fournit un accès rapide par attribut tout en consommant moins de mémoire qu'une classe standard grâce à l'absence de dictionnaire d'instance __dict__.",
+    "tags": [
+      "NAMEDTUPLE",
+      "DATA_RECORDS",
+      "AGGREGATION"
+    ]
+  },
+  {
+    "id": "py-014",
+    "title": "Dictionnaire imbriqué auto-vivant (Tree / Autovivification)",
+    "category": "collections",
+    "difficulty": "intermediaire",
+    "description": "Implémente une structure de données dictionnaire auto-vivifiante (arborescence infinie) permettant d'assigner tree[\"data\"][\"analytics\"][\"users\"] = 42 sans KeyError préalable.",
+    "starterCode": "from collections import defaultdict\n\ndef create_tree():\n    # Renvoie une fonction ou structure auto-vivifiante\n    pass\n",
+    "testCode": "tree = create_tree()\ntree['cloud']['aws']['regions']['eu-west-3'] = 'Paris'\ncheck_assert(tree['cloud']['aws']['regions']['eu-west-3'] == 'Paris', 'Acces imbrique reussi')\n",
+    "hints": [
+      "defaultdict peut prendre une fonction récursive lambda: create_tree()."
+    ],
+    "solutionCode": "from collections import defaultdict\n\ndef create_tree():\n    return defaultdict(create_tree)\n",
+    "solutionExplanation": "Une fonction récursive defaultdict(create_tree) crée automatiquement un sous-dictionnaire à la volée dès qu'une clé inexistante est accédée, idéal pour parser des structures JSON complexes.",
+    "tags": [
+      "DEFAULTDICT",
+      "RECURSION",
+      "JSON_PARSING"
+    ]
+  },
+  {
+    "id": "py-015",
+    "title": "File d'attente prioritaire avec mise à jour de priorité",
+    "category": "collections",
+    "difficulty": "avance",
+    "description": "Implémente une PriorityQueue avec put(item, priority) et pop() -> item (priorité la plus faible extraite en premier). Si un item est réinséré avec une nouvelle priorité, la mise à jour doit être prise en compte.",
+    "starterCode": "class UpdatablePriorityQueue:\n    def __init__(self):\n        pass\n\n    def put(self, item: str, priority: int) -> None:\n        pass\n\n    def pop(self) -> str:\n        pass\n",
+    "testCode": "pq = UpdatablePriorityQueue()\npq.put('job1', 10)\npq.put('job2', 5)\npq.put('job3', 20)\npq.put('job1', 2) # Mise a jour priorite prioritaire\ncheck_assert(pq.pop() == 'job1', 'job1 doit sortir premier car priorite 2')\ncheck_assert(pq.pop() == 'job2', 'job2 en deuxieme')\ncheck_assert(pq.pop() == 'job3', 'job3 en dernier')\n",
+    "hints": [
+      "Utilise heapq avec des entrées [priority, count, item] et un dictionnaire de repérage pour marquer les entrées obsolètes."
+    ],
+    "solutionCode": "import heapq\n\nclass UpdatablePriorityQueue:\n    def __init__(self):\n        self.heap = []\n        self.entry_finder = {}\n        self.REMOVED = '<removed-task>'\n        self.counter = 0\n\n    def put(self, item: str, priority: int) -> None:\n        if item in self.entry_finder:\n            # Marquer l'ancienne entree comme supprimee\n            old_entry = self.entry_finder.pop(item)\n            old_entry[-1] = self.REMOVED\n        self.counter += 1\n        entry = [priority, self.counter, item]\n        self.entry_finder[item] = entry\n        heapq.heappush(self.heap, entry)\n\n    def pop(self) -> str:\n        while self.heap:\n            priority, count, item = heapq.heappop(self.heap)\n            if item is not self.REMOVED:\n                del self.entry_finder[item]\n                return item\n        raise KeyError('pop from an empty priority queue')\n",
+    "solutionExplanation": "Le pattern de suppression paresseuse (lazy deletion) avec heapq permet la mise à jour de priorités en O(log N) sans avoir à réorganiser l'arbre binaire complet.",
+    "tags": [
+      "HEAPQ",
+      "PRIORITY_QUEUE",
+      "TASK_SCHEDULING"
+    ]
+  },
+  {
+    "id": "py-016",
+    "title": "Union et intersection d'ensembles de clés clients",
+    "category": "collections",
+    "difficulty": "debutant",
+    "description": "Étant donné deux listes de clés clients list_a et list_b, renvoie un dictionnaire avec : 'in_both' (ensemble des clés communes), 'only_a' (clés uniques à A) et 'only_b' (clés uniques à B).",
+    "starterCode": "def segment_keys(list_a: list[str], list_b: list[str]) -> dict[str, set[str]]:\n    # Ton code ici\n    pass\n",
+    "testCode": "res = segment_keys(['c1', 'c2', 'c3'], ['c2', 'c3', 'c4'])\ncheck_assert(res['in_both'] == {'c2', 'c3'}, 'Intersection')\ncheck_assert(res['only_a'] == {'c1'}, 'Diff A')\ncheck_assert(res['only_b'] == {'c4'}, 'Diff B')\n",
+    "hints": [
+      "Utilise les opérateurs d'ensembles set(a) & set(b), set(a) - set(b)."
+    ],
+    "solutionCode": "def segment_keys(list_a: list[str], list_b: list[str]) -> dict[str, set[str]]:\n    set_a = set(list_a)\n    set_b = set(list_b)\n    return {\n        'in_both': set_a & set_b,\n        'only_a': set_a - set_b,\n        'only_b': set_b - set_a,\n    }\n",
+    "solutionExplanation": "Les opérations ensemblistes Python s'exécutent en O(len(a) + len(b)) en mémoire grâce aux tables de hachage des sets, bien plus rapide que des boucles imbriquées en O(N^2).",
+    "tags": [
+      "SETS",
+      "DATA_QUALITY",
+      "RECONCILIATION"
+    ]
+  },
+  {
+    "id": "py-017",
+    "title": "Aplatissement de matrice et filtrage par compréhension",
+    "category": "comprehensions_strings",
+    "difficulty": "debutant",
+    "description": "Étant donnée une matrice 2D d'entiers, écris une compréhension de liste qui aplatit la matrice en ne conservant que les nombres pairs positifs.",
+    "starterCode": "def flatten_positive_even(matrix: list[list[int]]) -> list[int]:\n    # Ton code ici\n    pass\n",
+    "testCode": "m = [[-2, 1, 4], [0, 8, -5], [10, 3, 2]]\ncheck_assert(flatten_positive_even(m) == [4, 8, 10, 2], 'Filtre pair positif strict')\n",
+    "hints": [
+      "Utilise la syntaxe [val for row in matrix for val in row if ...]"
+    ],
+    "solutionCode": "def flatten_positive_even(matrix: list[list[int]]) -> list[int]:\n    return [val for row in matrix for val in row if val > 0 and val % 2 == 0]\n",
+    "solutionExplanation": "Une compréhension imbriquée s'évalue dans l'ordre naturel des boucles for externes puis internes, sans surcoût d'appels de fonctions.",
+    "tags": [
+      "COMPREHENSION",
+      "LISTS",
+      "FILTERING"
+    ]
+  },
+  {
+    "id": "py-018",
+    "title": "Compréhension de dictionnaire : Inversion clé/valeur avec gestion des doublons",
+    "category": "comprehensions_strings",
+    "difficulty": "debutant",
+    "description": "Étant donné un dictionnaire d'attributions {employe: departement}, renvoie un dictionnaire inversé {departement: liste_employes_tries}.",
+    "starterCode": "def invert_department_mapping(d: dict[str, str]) -> dict[str, list[str]]:\n    # Ton code ici\n    pass\n",
+    "testCode": "dept_map = {'Alice': 'Data', 'Bob': 'AI', 'Charlie': 'Data', 'David': 'Cloud'}\nres = invert_department_mapping(dept_map)\ncheck_assert(res['Data'] == ['Alice', 'Charlie'], 'Data dept')\ncheck_assert(res['AI'] == ['Bob'], 'AI dept')\ncheck_assert(res['Cloud'] == ['David'], 'Cloud dept')\n",
+    "hints": [
+      "Regroupe les valeurs puis applique un tri sur chaque liste de sortie."
+    ],
+    "solutionCode": "from collections import defaultdict\n\ndef invert_department_mapping(d: dict[str, str]) -> dict[str, list[str]]:\n    inverted = defaultdict(list)\n    for emp, dept in d.items():\n        inverted[dept].append(emp)\n    return {dept: sorted(emps) for dept, emps in inverted.items()}\n",
+    "solutionExplanation": "La combinaison de defaultdict(list) et d'une compréhension de dictionnaire pour le tri final garantit une structure ordonnée et déterministe.",
+    "tags": [
+      "DICT_COMPREHENSION",
+      "INVERSION",
+      "GROUPING"
+    ]
+  },
+  {
+    "id": "py-019",
+    "title": "Nettoyage et normalisation de texte pour tokenisation LLM",
+    "category": "comprehensions_strings",
+    "difficulty": "debutant",
+    "description": "Nettoie une chaîne brute : supprime la ponctuation superflue, remplace les espaces multiples par un seul espace, convertit en minuscules et renvoie la liste des tokens.",
+    "starterCode": "def clean_tokenize(text: str) -> list[str]:\n    # Ton code ici\n    pass\n",
+    "testCode": "t = \"  Hello,   World! Welcome to Data & AI Engineering...  \"\nres = clean_tokenize(t)\ncheck_assert(res == ['hello', 'world', 'welcome', 'to', 'data', 'ai', 'engineering'], 'Tokens normalises')\n",
+    "hints": [
+      "Utilise re.findall(r'\\b\\w+\\b', text.lower()) ou re.sub."
+    ],
+    "solutionCode": "import re\n\ndef clean_tokenize(text: str) -> list[str]:\n    return re.findall(r'[a-zA-Z0-9]+', text.lower())\n",
+    "solutionExplanation": "L'expression régulière r'[a-zA-Z0-9]+' extrait directement les mots alphanumériques et gère naturellement les espacements et ponctuations multiples.",
+    "tags": [
+      "REGEX",
+      "NLP",
+      "TOKENIZATION",
+      "STRINGS"
+    ]
+  },
+  {
+    "id": "py-020",
+    "title": "Plus longue sous-chaîne sans répétition de caractères",
+    "category": "comprehensions_strings",
+    "difficulty": "intermediaire",
+    "description": "Étant donnée une chaîne s, trouve la longueur de la plus longue sous-chaîne sans caractères répétés.",
+    "starterCode": "def length_of_longest_substring(s: str) -> int:\n    # Ton code ici\n    pass\n",
+    "testCode": "check_assert(length_of_longest_substring(\"abcabcbb\") == 3, 'abc = 3')\ncheck_assert(length_of_longest_substring(\"bbbbb\") == 1, 'b = 1')\ncheck_assert(length_of_longest_substring(\"pwwkew\") == 3, 'wke = 3')\ncheck_assert(length_of_longest_substring(\"\") == 0, 'Vide')\n",
+    "hints": [
+      "Utilise une fenêtre glissante avec deux pointeurs et un dictionnaire de dernière position vue."
+    ],
+    "solutionCode": "def length_of_longest_substring(s: str) -> int:\n    char_map = {}\n    max_len = 0\n    start = 0\n    for end, char in enumerate(s):\n        if char in char_map and char_map[char] >= start:\n            start = char_map[char] + 1\n        char_map[char] = end\n        max_len = max(max_len, end - start + 1)\n    return max_len\n",
+    "solutionExplanation": "L'algorithme de fenêtre glissante ajuste le pointeur de début dès qu'une répétition survient, assurant une complexité en O(N) temps et O(min(N, alphabet)) en espace.",
+    "tags": [
+      "SLIDING_WINDOW",
+      "STRINGS",
+      "HASH_MAP"
+    ]
+  },
+  {
+    "id": "py-021",
+    "title": "Compression Run-Length Encoding (RLE) de données",
+    "category": "comprehensions_strings",
+    "difficulty": "debutant",
+    "description": "Implémente un compresseur RLE qui transforme \"AAABBBCCDAA\" en \"A3B3C2D1A2\".",
+    "starterCode": "def rle_encode(text: str) -> str:\n    # Ton code ici\n    pass\n",
+    "testCode": "check_assert(rle_encode(\"AAABBBCCDAA\") == \"A3B3C2D1A2\", 'Standard RLE')\ncheck_assert(rle_encode(\"A\") == \"A1\", 'Unique')\ncheck_assert(rle_encode(\"\") == \"\", 'Vide')\n",
+    "hints": [
+      "Parcours la chaîne en comptant les répétitions consécutives ou utilise itertools.groupby."
+    ],
+    "solutionCode": "import itertools\n\ndef rle_encode(text: str) -> str:\n    if not text:\n        return \"\"\n    result = []\n    for char, group in itertools.groupby(text):\n        count = sum(1 for _ in group)\n        result.append(f\"{char}{count}\")\n    return \"\".join(result)\n",
+    "solutionExplanation": "itertools.groupby regroupe de manière paresseuse les caractères adjacents identiques en O(N), principe fondamental des encodages de colonnes en formats Parquet et ORC.",
+    "tags": [
+      "RLE",
+      "COMPRESSION",
+      "PARQUET",
+      "ITERTOOLS"
+    ]
+  },
+  {
+    "id": "py-022",
+    "title": "Vérification de palindrome ignorant la casse et la ponctuation",
+    "category": "comprehensions_strings",
+    "difficulty": "debutant",
+    "description": "Vérifie si une phrase est un palindrome après avoir retiré tous les caractères non alphanumériques et converti en minuscules.",
+    "starterCode": "def is_palindrome_clean(s: str) -> bool:\n    # Ton code ici\n    pass\n",
+    "testCode": "check_assert(is_palindrome_clean(\"A man, a plan, a canal: Panama\") == True, 'Panama palindrome')\ncheck_assert(is_palindrome_clean(\"race a car\") == False, 'Non palindrome')\ncheck_assert(is_palindrome_clean(\" \") == True, 'Chaine vide de lettres')\n",
+    "hints": [
+      "Filtre avec c.isalnum() et compare avec la chaîne inversée [::-1]."
+    ],
+    "solutionCode": "def is_palindrome_clean(s: str) -> bool:\n    cleaned = [c.lower() for c in s if c.isalnum()]\n    return cleaned == cleaned[::-1]\n",
+    "solutionExplanation": "La compréhension de liste normalise les caractères en O(N) puis le slice [::-1] valide la symétrie en O(N).",
+    "tags": [
+      "STRINGS",
+      "PALINDROME",
+      "CLEANING"
+    ]
+  },
+  {
+    "id": "py-023",
+    "title": "Générateur de lots pour ingestion de données (Batch Generator)",
+    "category": "generators",
+    "difficulty": "debutant",
+    "description": "Crée un générateur batch_chunks(iterable, batch_size) qui découpe un flux de données quelconque en sous-listes de taille batch_size.",
+    "starterCode": "from typing import Iterator, Iterable, TypeVar\n\nT = TypeVar('T')\n\ndef batch_chunks(iterable: Iterable[T], batch_size: int) -> Iterator[list[T]]:\n    # Ton code ici\n    pass\n",
+    "testCode": "items = list(range(10))\nbatches = list(batch_chunks(items, 3))\ncheck_assert(batches == [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9]], 'Lots de 3 avec reste de 1')\ncheck_assert(list(batch_chunks([], 5)) == [], 'Flux vide')\n",
+    "hints": [
+      "Utilise yield et accumule dans un buffer local vidé quand sa taille atteint batch_size."
+    ],
+    "solutionCode": "from typing import Iterator, Iterable, TypeVar\n\nT = TypeVar('T')\n\ndef batch_chunks(iterable: Iterable[T], batch_size: int) -> Iterator[list[T]]:\n    batch = []\n    for item in iterable:\n        batch.append(item)\n        if len(batch) == batch_size:\n            yield batch\n            batch = []\n    if batch:\n        yield batch\n",
+    "solutionExplanation": "Les générateurs yield évitent de charger l'intégralité des 10 millions de lignes en RAM, assurant une consommation mémoire constante O(batch_size).",
+    "tags": [
+      "GENERATOR",
+      "YIELD",
+      "BATCHING",
+      "STREAMING"
+    ]
+  },
+  {
+    "id": "py-024",
+    "title": "Générateur infini de séquence Fibonacci avec filtre",
+    "category": "generators",
+    "difficulty": "debutant",
+    "description": "Crée un générateur infini fibonacci_gen() qui produit la suite de Fibonacci (0, 1, 1, 2, 3, 5...). Crée une fonction get_first_n_even_fib(n) qui extrait les n premiers termes pairs.",
+    "starterCode": "from typing import Iterator\n\ndef fibonacci_gen() -> Iterator[int]:\n    # Ton code ici\n    pass\n\ndef get_first_n_even_fib(n: int) -> list[int]:\n    # Ton code ici\n    pass\n",
+    "testCode": "check_assert(get_first_n_even_fib(4) == [0, 2, 8, 34], '4 premiers nombres pairs de Fibonacci')\n",
+    "hints": [
+      "Utilise une boucle while True dans le générateur et itertools.islice pour la consommation."
+    ],
+    "solutionCode": "from typing import Iterator\n\ndef fibonacci_gen() -> Iterator[int]:\n    a, b = 0, 1\n    while True:\n        yield a\n        a, b = b, a + b\n\ndef get_first_n_even_fib(n: int) -> list[int]:\n    res = []\n    for fib in fibonacci_gen():\n        if fib % 2 == 0:\n            res.append(fib)\n            if len(res) == n:\n                break\n    return res\n",
+    "solutionExplanation": "Les séquences infinies en Python sont rendues possibles sans overflow mémoire grâce aux coroutines de génération paresseuse (lazy evaluation).",
+    "tags": [
+      "GENERATOR",
+      "FIBONACCI",
+      "LAZY_EVALUATION"
+    ]
+  },
+  {
+    "id": "py-025",
+    "title": "Chaînage de générateurs pour pipeline ETL (Pipe / Stream Processing)",
+    "category": "generators",
+    "difficulty": "intermediaire",
+    "description": "Compose un pipeline de générateurs : stream_raw(numbers) -> filter_odd() -> square() -> limit(k). Écris la fonction composant ces étapes.",
+    "starterCode": "def stream_pipeline(numbers: list[int], limit_count: int) -> list[int]:\n    # Compose le pipeline avec des expressions de generateurs\n    pass\n",
+    "testCode": "res = stream_pipeline(list(range(20)), 4)\n# Nombres impairs : 1, 3, 5, 7, 9... Carres : 1, 9, 25, 49...\ncheck_assert(res == [1, 9, 25, 49], '4 premiers carres impairs')\n",
+    "hints": [
+      "Chaque étape du pipeline consomme le générateur de l'étape précédente sans instancier de liste intermédiaire."
+    ],
+    "solutionCode": "import itertools\n\ndef stream_pipeline(numbers: list[int], limit_count: int) -> list[int]:\n    # Etape 1 : flux brut\n    raw_stream = (x for x in numbers)\n    # Etape 2 : filtre impairs\n    odd_stream = (x for x in raw_stream if x % 2 != 0)\n    # Etape 3 : calcul carre\n    squared_stream = (x * x for x in odd_stream)\n    # Etape 4 : extraction limite\n    return list(itertools.islice(squared_stream, limit_count))\n",
+    "solutionExplanation": "Le chaînage d'expressions génératrices constitue l'architecture fondamentale du streaming en mémoire (Python Generators Pipeline), où chaque enregistrement circule de bout en bout sans copie globale.",
+    "tags": [
+      "GENERATOR",
+      "STREAMING",
+      "PIPELINE",
+      "ITERTOOLS"
+    ]
+  },
+  {
+    "id": "py-026",
+    "title": "Générateur de fenêtrage temporel (Tumbling Window Generator)",
+    "category": "generators",
+    "difficulty": "intermediaire",
+    "description": "Étant donné un flux d'événements horodatés (dict avec timestamp et value), découpe le flux en fenêtres disjointes (tumbling) d'une durée window_sec fixée.",
+    "starterCode": "from typing import Iterator\n\ndef tumbling_window_agg(events: list[dict], window_sec: int) -> Iterator[dict]:\n    # events est ordonne par 'timestamp' croissant\n    # Renvoie { 'window_start': int, 'sum_value': float, 'count': int }\n    pass\n",
+    "testCode": "events = [\n    {'timestamp': 1000, 'value': 10},\n    {'timestamp': 1005, 'value': 20},\n    {'timestamp': 1012, 'value': 15},\n    {'timestamp': 1025, 'value': 30}\n]\nres = list(tumbling_window_agg(events, 10))\n# Fenetre 1 : [1000, 1010) -> sum=30, count=2\n# Fenetre 2 : [1010, 1020) -> sum=15, count=1\n# Fenetre 3 : [1020, 1030) -> sum=30, count=1\ncheck_assert(len(res) == 3, '3 fenetres produites')\ncheck_assert(res[0]['sum_value'] == 30 and res[0]['count'] == 2, 'Fenetre 1 valide')\ncheck_assert(res[1]['sum_value'] == 15 and res[1]['count'] == 1, 'Fenetre 2 valide')\n",
+    "hints": [
+      "Calcule l'index de début de fenêtre avec (timestamp // window_sec) * window_sec."
+    ],
+    "solutionCode": "from typing import Iterator\n\ndef tumbling_window_agg(events: list[dict], window_sec: int) -> Iterator[dict]:\n    if not events:\n        return\n    current_start = (events[0]['timestamp'] // window_sec) * window_sec\n    current_sum = 0\n    current_count = 0\n\n    for ev in events:\n        w_start = (ev['timestamp'] // window_sec) * window_sec\n        if w_start == current_start:\n            current_sum += ev['value']\n            current_count += 1\n        else:\n            yield {'window_start': current_start, 'sum_value': current_sum, 'count': current_count}\n            current_start = w_start\n            current_sum = ev['value']\n            current_count = 1\n\n    if current_count > 0:\n        yield {'window_start': current_start, 'sum_value': current_sum, 'count': current_count}\n",
+    "solutionExplanation": "Le calcul par fenêtre glissante ou fixe sans état global permet d'émuler le comportement de moteurs de streaming comme Apache Flink ou Spark Streaming.",
+    "tags": [
+      "STREAMING",
+      "TUMBLING_WINDOW",
+      "GENERATORS"
+    ]
+  },
+  {
+    "id": "py-027",
+    "title": "Parcours paresseux de pagination API (Cursor Pagination Generator)",
+    "category": "generators",
+    "difficulty": "intermediaire",
+    "description": "Étant donnée une fonction de requête simulée fetch_page(cursor) renvoyant {\"items\": [...], \"next_cursor\": str | None}, écris un générateur qui produit tous les éléments de manière fluide un par un.",
+    "starterCode": "from typing import Iterator, Callable\n\ndef paginate_all_items(fetch_page: Callable[[str | None], dict]) -> Iterator[dict]:\n    # Ton code ici\n    pass\n",
+    "testCode": "pages = {\n    None: {'items': [{'id': 1}, {'id': 2}], 'next_cursor': 'cur_1'},\n    'cur_1': {'items': [{'id': 3}], 'next_cursor': 'cur_2'},\n    'cur_2': {'items': [{'id': 4}, {'id': 5}], 'next_cursor': None}\n}\ndef mock_fetch(cur):\n    return pages.get(cur, {'items': [], 'next_cursor': None})\n\nitems = list(paginate_all_items(mock_fetch))\ncheck_assert([x['id'] for x in items] == [1, 2, 3, 4, 5], 'Extraction complete paginee')\n",
+    "hints": [
+      "Boucle tant que cursor est disponible ou première page, puis itère sur items avec yield."
+    ],
+    "solutionCode": "from typing import Iterator, Callable\n\ndef paginate_all_items(fetch_page: Callable[[str | None], dict]) -> Iterator[dict]:\n    cursor = None\n    first = True\n    while first or cursor is not None:\n        first = False\n        response = fetch_page(cursor)\n        for item in response.get('items', []):\n            yield item\n        cursor = response.get('next_cursor')\n",
+    "solutionExplanation": "Ce pattern masque la complexité de pagination des API REST (Stripe, Salesforce, AWS) derrière un itérateur Python transparent.",
+    "tags": [
+      "API",
+      "PAGINATION",
+      "GENERATOR"
+    ]
+  },
+  {
+    "id": "py-028",
+    "title": "Itérateur personnalisé avec protocole __iter__ et __next__",
+    "category": "generators",
+    "difficulty": "intermediaire",
+    "description": "Crée une classe RangeStepIterator qui implémente le protocole d'itération (__iter__ et __next__) prenant start, stop, step (flottants autorisés). Lève StopIteration à la fin.",
+    "starterCode": "class RangeStepIterator:\n    def __init__(self, start: float, stop: float, step: float):\n        pass\n\n    def __iter__(self):\n        return self\n\n    def __next__(self) -> float:\n        pass\n",
+    "testCode": "it = RangeStepIterator(0.0, 1.0, 0.4)\nres = [round(x, 2) for x in it]\ncheck_assert(res == [0.0, 0.4, 0.8], 'Iteration avec step flottant')\n",
+    "hints": [
+      "Maintiens un attribut self.current et incrémente self.current += self.step dans __next__."
+    ],
+    "solutionCode": "class RangeStepIterator:\n    def __init__(self, start: float, stop: float, step: float):\n        self.current = start\n        self.stop = stop\n        self.step = step\n\n    def __iter__(self):\n        return self\n\n    def __next__(self) -> float:\n        if (self.step > 0 and self.current >= self.stop) or (self.step < 0 and self.current <= self.stop):\n            raise StopIteration\n        val = self.current\n        self.current += self.step\n        return val\n",
+    "solutionExplanation": "L'implémentation explicite de __iter__ et __next__ respecte le standard PEP 234 d'itération Python, permettant l'intégration avec toutes les boucles for et fonctions zip/enumerate.",
+    "tags": [
+      "ITERATOR_PROTOCOL",
+      "OOP",
+      "MAGIC_METHODS"
+    ]
+  },
+  {
+    "id": "py-029",
+    "title": "Pattern Template Method : Pipeline ETL abstrait",
+    "category": "oop_patterns",
+    "difficulty": "intermediaire",
+    "description": "Crée une classe de base abstraite BasePipeline avec une méthode run() qui orchestre extract(), transform(), load() et calcule le temps d'exécution. Implémente une sous-classe concrète MemoryPipeline.",
+    "starterCode": "from abc import ABC, abstractmethod\n\nclass BasePipeline(ABC):\n    def run(self) -> dict:\n        # Orchestre extract -> transform -> load\n        pass\n\n    @abstractmethod\n    def extract(self) -> list:\n        pass\n\n    @abstractmethod\n    def transform(self, data: list) -> list:\n        pass\n\n    @abstractmethod\n    def load(self, data: list) -> int:\n        pass\n",
+    "testCode": "class DoublingPipeline(BasePipeline):\n    def extract(self):\n        return [1, 2, 3]\n    def transform(self, data):\n        return [x * 2 for x in data]\n    def load(self, data):\n        return len(data)\n\np = DoublingPipeline()\nreport = p.run()\ncheck_assert(report['loaded_count'] == 3, 'Chargement de 3 elements')\ncheck_assert('duration_sec' in report, 'Duree rapportee')\n",
+    "hints": [
+      "Utilise time.perf_counter() pour chronométrer l'enchaînement des étapes dans run()."
+    ],
+    "solutionCode": "import time\nfrom abc import ABC, abstractmethod\n\nclass BasePipeline(ABC):\n    def run(self) -> dict:\n        t0 = time.perf_counter()\n        raw = self.extract()\n        transformed = self.transform(raw)\n        count = self.load(transformed)\n        duration = time.perf_counter() - t0\n        return {'loaded_count': count, 'duration_sec': round(duration, 4)}\n\n    @abstractmethod\n    def extract(self) -> list:\n        pass\n\n    @abstractmethod\n    def transform(self, data: list) -> list:\n        pass\n\n    @abstractmethod\n    def load(self, data: list) -> int:\n        pass\n",
+    "solutionExplanation": "Le pattern Template Method fixe l'algorithme invariant d'exécution dans la classe mère tout en déléguant l'implémentation technique des étapes aux classes filles.",
+    "tags": [
+      "OOP",
+      "DESIGN_PATTERNS",
+      "TEMPLATE_METHOD",
+      "ETL"
+    ]
+  },
+  {
+    "id": "py-030",
+    "title": "Métaclasse Singleton pour gestionnaire de connexion (Pool de base)",
+    "category": "oop_patterns",
+    "difficulty": "intermediaire",
+    "description": "Implémente une métaclasse SingletonMeta garantissant qu'une classe DatabaseConnection ne possède qu'une seule et unique instance physique dans tout le runtime.",
+    "starterCode": "class SingletonMeta(type):\n    # Ton code ici\n    pass\n\nclass DatabaseConnection(metaclass=SingletonMeta):\n    def __init__(self, uri=\"sqlite:///:memory:\"):\n        self.uri = uri\n",
+    "testCode": "db1 = DatabaseConnection(\"conn1\")\ndb2 = DatabaseConnection(\"conn2\")\ncheck_assert(db1 is db2, 'db1 et db2 sont la meme instance physique')\ncheck_assert(db1.uri == \"conn1\", 'L initialisation ne doit pas ecraser la premiere instance')\n",
+    "hints": [
+      "Surcharge la méthode __call__ de la métaclasse en maintenant un dictionnaire de classes vers instances."
+    ],
+    "solutionCode": "class SingletonMeta(type):\n    _instances = {}\n\n    def __call__(cls, *args, **kwargs):\n        if cls not in cls._instances:\n            instance = super().__call__(*args, **kwargs)\n            cls._instances[cls] = instance\n        return cls._instances[cls]\n\nclass DatabaseConnection(metaclass=SingletonMeta):\n    def __init__(self, uri=\"sqlite:///:memory:\"):\n        self.uri = uri\n",
+    "solutionExplanation": "Une métaclasse Singleton intercepte l'instanciation lors de l'appel __call__, assurant le partage de ressources lourdes comme les pools de connexions SQL.",
+    "tags": [
+      "SINGLETON",
+      "METACLASS",
+      "OOP",
+      "DATABASES"
+    ]
+  },
+  {
+    "id": "py-031",
+    "title": "Gestionnaire de contexte personnalisé (__enter__ et __exit__)",
+    "category": "oop_patterns",
+    "difficulty": "intermediaire",
+    "description": "Implémente une classe TimerContext qui mesure le temps d'exécution d'un bloc \"with TimerContext() as t:\" et stocke le temps écoulé dans l'attribut elapsed_sec.",
+    "starterCode": "class TimerContext:\n    def __enter__(self):\n        pass\n\n    def __exit__(self, exc_type, exc_val, exc_tb):\n        pass\n",
+    "testCode": "import time\nwith TimerContext() as t:\n    time.sleep(0.05)\ncheck_assert(t.elapsed_sec >= 0.04, 'Mesure du bloc reussie')\n",
+    "hints": [
+      "Initialise self.start dans __enter__ et calcule self.elapsed_sec = time.perf_counter() - self.start dans __exit__."
+    ],
+    "solutionCode": "import time\n\nclass TimerContext:\n    def __init__(self):\n        self.elapsed_sec = 0.0\n        self.start = 0.0\n\n    def __enter__(self):\n        self.start = time.perf_counter()\n        return self\n\n    def __exit__(self, exc_type, exc_val, exc_tb):\n        self.elapsed_sec = time.perf_counter() - self.start\n        return False\n",
+    "solutionExplanation": "Le protocole context manager assure le nettoyage et la finalisation des ressources même en cas d'exception inattendue.",
+    "tags": [
+      "CONTEXT_MANAGER",
+      "WITH",
+      "PROFILING"
+    ]
+  },
+  {
+    "id": "py-032",
+    "title": "Pattern Factory pour connecteurs de stockage (S3, GCS, Local)",
+    "category": "oop_patterns",
+    "difficulty": "intermediaire",
+    "description": "Crée un pattern Factory StorageFactory.get_storage(provider: str) renvoyant un adaptateur implémentant read(path) et write(path, data) selon \"s3\", \"gcs\" ou \"local\". Lève ValueError si inconnu.",
+    "starterCode": "class StorageFactory:\n    @staticmethod\n    def get_storage(provider: str):\n        pass\n",
+    "testCode": "s3 = StorageFactory.get_storage(\"s3\")\ncheck_assert(s3.read(\"s3://bucket/test\") == \"S3: s3://bucket/test\", 'Lecture S3')\nlocal = StorageFactory.get_storage(\"local\")\ncheck_assert(local.read(\"/tmp/data\") == \"LOCAL: /tmp/data\", 'Lecture Local')\n",
+    "hints": [
+      "Définit une interface ou sous-classes simples et un mapping dans la Factory."
+    ],
+    "solutionCode": "class S3Storage:\n    def read(self, path: str) -> str:\n        return f\"S3: {path}\"\n    def write(self, path: str, data: str) -> bool:\n        return True\n\nclass LocalStorage:\n    def read(self, path: str) -> str:\n        return f\"LOCAL: {path}\"\n    def write(self, path: str, data: str) -> bool:\n        return True\n\nclass StorageFactory:\n    _registry = {\n        's3': S3Storage,\n        'local': LocalStorage,\n    }\n\n    @classmethod\n    def get_storage(cls, provider: str):\n        provider_key = provider.lower()\n        if provider_key not in cls._registry:\n            raise ValueError(f\"Provider inconnu : {provider}\")\n        return cls._registry[provider_key]()\n",
+    "solutionExplanation": "Le Factory Pattern découple le code applicatif des implémentations concrètes des fournisseurs cloud, facilitant les tests et le switch multi-cloud.",
+    "tags": [
+      "FACTORY",
+      "OOP",
+      "CLOUD_STORAGE"
+    ]
+  },
+  {
+    "id": "py-033",
+    "title": "Pattern Strategy pour algorithmes de compression de fichiers",
+    "category": "oop_patterns",
+    "difficulty": "intermediaire",
+    "description": "Implémente le pattern Strategy avec un FileExporter qui accepte un objet CompressionStrategy (GzipStrategy, SnappyStrategy, NoCompressionStrategy) et applique la compression.",
+    "starterCode": "class FileExporter:\n    def __init__(self, strategy):\n        self.strategy = strategy\n\n    def export(self, payload: str) -> str:\n        pass\n",
+    "testCode": "class GzipStrategy:\n    def compress(self, text: str) -> str:\n        return f\"GZIP({text})\"\n\nclass SnappyStrategy:\n    def compress(self, text: str) -> str:\n        return f\"SNAPPY({text})\"\n\nexp_gzip = FileExporter(GzipStrategy())\ncheck_assert(exp_gzip.export(\"data\") == \"GZIP(data)\", 'Compression Gzip')\nexp_snappy = FileExporter(SnappyStrategy())\ncheck_assert(exp_snappy.export(\"data\") == \"SNAPPY(data)\", 'Compression Snappy')\n",
+    "hints": [
+      "FileExporter.export délègue simplement l'appel à self.strategy.compress(payload)."
+    ],
+    "solutionCode": "class FileExporter:\n    def __init__(self, strategy):\n        self.strategy = strategy\n\n    def export(self, payload: str) -> str:\n        return self.strategy.compress(payload)\n",
+    "solutionExplanation": "Le pattern Strategy respecte le principe Open/Closed (SOLID) : on ajoute de nouvelles stratégies de compression sans modifier la classe FileExporter.",
+    "tags": [
+      "STRATEGY",
+      "SOLID",
+      "COMPRESSION"
+    ]
+  },
+  {
+    "id": "py-034",
+    "title": "Protocole Structurel (typing.Protocol pour Duck Typing)",
+    "category": "oop_patterns",
+    "difficulty": "avance",
+    "description": "Définit un Protocol Transformable avec une méthode transform(data: list) -> list. Écris une fonction execute_transformation(step: Transformable, data: list).",
+    "starterCode": "from typing import Protocol\n\nclass Transformable(Protocol):\n    def transform(self, data: list) -> list:\n        ...\n\ndef execute_transformation(step: Transformable, data: list) -> list:\n    # Ton code ici\n    pass\n",
+    "testCode": "class CleanStep:\n    def transform(self, data):\n        return [x.strip() for x in data if x]\n\nres = execute_transformation(CleanStep(), [\"  a \", \"\", \" b \"])\ncheck_assert(res == [\"a\", \"b\"], 'Duck typing structurel reussi')\n",
+    "hints": [
+      "Le protocole permet la vérification de type statique par mypy sans héritage explicite."
+    ],
+    "solutionCode": "from typing import Protocol\n\nclass Transformable(Protocol):\n    def transform(self, data: list) -> list:\n        ...\n\ndef execute_transformation(step: Transformable, data: list) -> list:\n    return step.transform(data)\n",
+    "solutionExplanation": "typing.Protocol (PEP 544) formalise le Duck Typing en Python : n'importe quelle classe possédant la signature requise est acceptée sans couplage d'héritage.",
+    "tags": [
+      "TYPING",
+      "PROTOCOL",
+      "DUCK_TYPING"
+    ]
+  },
+  {
+    "id": "py-035",
+    "title": "Décorateur de mesure de temps d'exécution (@timed)",
+    "category": "decorators",
+    "difficulty": "debutant",
+    "description": "Crée un décorateur @timed qui mesure le temps d'exécution d'une fonction et enregistre le résultat dans un dictionnaire global EXECUTION_TIMES = {func_name: duration_sec}. Utilise functools.wraps.",
+    "starterCode": "import functools\nimport time\n\nEXECUTION_TIMES = {}\n\ndef timed(func):\n    # Ton code ici\n    pass\n",
+    "testCode": "@timed\ndef compute_sum(n):\n    return sum(range(n))\n\ncompute_sum(100000)\ncheck_assert('compute_sum' in EXECUTION_TIMES, 'Fonction enregistree')\ncheck_assert(EXECUTION_TIMES['compute_sum'] >= 0.0, 'Duree valide')\n",
+    "hints": [
+      "Utilise functools.wraps pour préserver le nom __name__ et la docstring de la fonction d'origine."
+    ],
+    "solutionCode": "import functools\nimport time\n\nEXECUTION_TIMES = {}\n\ndef timed(func):\n    @functools.wraps(func)\n    def wrapper(*args, **kwargs):\n        start = time.perf_counter()\n        result = func(*args, **kwargs)\n        duration = time.perf_counter() - start\n        EXECUTION_TIMES[func.__name__] = duration\n        return result\n    return wrapper\n",
+    "solutionExplanation": "functools.wraps est indispensable pour préserver la signature, la documentation et les métadonnées de la fonction décorée.",
+    "tags": [
+      "DECORATOR",
+      "WRAPS",
+      "METRICS",
+      "PROFILING"
+    ]
+  },
+  {
+    "id": "py-036",
+    "title": "Décorateur de relance avec backoff exponentiel (@retry)",
+    "category": "decorators",
+    "difficulty": "intermediaire",
+    "description": "Implémente un décorateur paramétré @retry(max_attempts=3, delay_sec=0.01, backoff=2) qui intercepte les exceptions et réessaie avec délai croissant. Lève l'exception si toutes les tentatives échouent.",
+    "starterCode": "import functools\nimport time\n\ndef retry(max_attempts=3, delay_sec=0.01, backoff=2):\n    # Ton code ici\n    pass\n",
+    "testCode": "attempts = 0\n\n@retry(max_attempts=3, delay_sec=0.01, backoff=1)\ndef unstable_api():\n    nonlocal attempts\n    attempts += 1\n    if attempts < 3:\n        raise ConnectionError(\"Timeout API\")\n    return \"SUCCESS\"\n\ncheck_assert(unstable_api() == \"SUCCESS\", 'Reussite a la 3e tentative')\ncheck_assert(attempts == 3, '3 tentatives effectuees')\n",
+    "hints": [
+      "Un décorateur avec arguments nécessite une triple imbrication : def retry(...) -> def decorator(func) -> def wrapper(*args, **kwargs)."
+    ],
+    "solutionCode": "import functools\nimport time\n\ndef retry(max_attempts=3, delay_sec=0.01, backoff=2):\n    def decorator(func):\n        @functools.wraps(func)\n        def wrapper(*args, **kwargs):\n            current_delay = delay_sec\n            last_err = None\n            for attempt in range(1, max_attempts + 1):\n                try:\n                    return func(*args, **kwargs)\n                except Exception as err:\n                    last_err = err\n                    if attempt == max_attempts:\n                        raise last_err\n                    time.sleep(current_delay)\n                    current_delay *= backoff\n            raise last_err\n        return wrapper\n    return decorator\n",
+    "solutionExplanation": "Le backoff exponentiel prévient l'effondrement en cascade des services distants en espaçant les tentatives de reconnexion.",
+    "tags": [
+      "DECORATOR",
+      "RETRY",
+      "RESILIENCE",
+      "API"
+    ]
+  },
+  {
+    "id": "py-037",
+    "title": "Décorateur de mémoïsation avec TTL (Cache avec expiration)",
+    "category": "decorators",
+    "difficulty": "intermediaire",
+    "description": "Crée un décorateur @memoize_ttl(ttl_sec) qui met en cache les résultats d'une fonction pour une durée déterminée. Au-delà du TTL, la fonction est recalculée.",
+    "starterCode": "import functools\nimport time\n\ndef memoize_ttl(ttl_sec=1.0):\n    # Ton code ici\n    pass\n",
+    "testCode": "call_count = 0\n\n@memoize_ttl(ttl_sec=0.1)\ndef get_user_data(uid):\n    nonlocal call_count\n    call_count += 1\n    return f\"user_{uid}\"\n\nget_user_data(1)\nget_user_data(1)\ncheck_assert(call_count == 1, 'Deuxieme appel servi depuis le cache')\ntime.sleep(0.12)\nget_user_data(1)\ncheck_assert(call_count == 2, 'Troisieme appel recalculé apres expiration TTL')\n",
+    "hints": [
+      "Stocke dans un dictionnaire cache[args] = (result, timestamp)."
+    ],
+    "solutionCode": "import functools\nimport time\n\ndef memoize_ttl(ttl_sec=1.0):\n    def decorator(func):\n        cache = {}\n        @functools.wraps(func)\n        def wrapper(*args, **kwargs):\n            key = (args, tuple(sorted(kwargs.items())))\n            now = time.time()\n            if key in cache:\n                result, timestamp = cache[key]\n                if now - timestamp < ttl_sec:\n                    return result\n            result = func(*args, **kwargs)\n            cache[key] = (result, now)\n            return result\n        return wrapper\n    return decorator\n",
+    "solutionExplanation": "La mise en cache avec TTL évite les requêtes redondantes vers des métadonnées ou bases SQL tout en garantissant la fraîcheur des données.",
+    "tags": [
+      "DECORATOR",
+      "CACHE",
+      "MEMOIZE",
+      "TTL"
+    ]
+  },
+  {
+    "id": "py-038",
+    "title": "Décorateur de validation de types à l'exécution (@validate_types)",
+    "category": "decorators",
+    "difficulty": "intermediaire",
+    "description": "Crée un décorateur @validate_types qui inspecte func.__annotations__ et lève TypeError si un argument passé à l'exécution ne correspond pas au type annoté.",
+    "starterCode": "import functools\n\ndef validate_types(func):\n    # Ton code ici\n    pass\n",
+    "testCode": "@validate_types\ndef multiply(a: int, b: int) -> int:\n    return a * b\n\ncheck_assert(multiply(3, 4) == 12, 'Types valides')\npassed = False\ntry:\n    multiply(\"3\", 4)\nexcept TypeError:\n    passed = True\ncheck_assert(passed, 'TypeError leve sur argument string')\n",
+    "hints": [
+      "Associe les arguments positionnels aux noms de paramètres via inspect.signature ou zip(func.__annotations__.keys(), args)."
+    ],
+    "solutionCode": "import functools\nimport inspect\n\ndef validate_types(func):\n    sig = inspect.signature(func)\n    @functools.wraps(func)\n    def wrapper(*args, **kwargs):\n        bound = sig.bind(*args, **kwargs)\n        bound.apply_defaults()\n        for name, value in bound.arguments.items():\n            expected = func.__annotations__.get(name)\n            if expected is not None and not isinstance(value, expected):\n                raise TypeError(f\"Argument '{name}' doit etre de type {expected.__name__}, recu {type(value).__name__}\")\n        return func(*args, **kwargs)\n    return wrapper\n",
+    "solutionExplanation": "L'inspection de signature dynamique avec inspect.signature permet d'imposer un contrat fort à l'exécution similaire aux briques de base de Pydantic.",
+    "tags": [
+      "DECORATOR",
+      "INSPECT",
+      "TYPING",
+      "VALIDATION"
+    ]
+  },
+  {
+    "id": "py-039",
+    "title": "Décorateur limiteur de débit (Rate Limiter Token Bucket)",
+    "category": "decorators",
+    "difficulty": "avance",
+    "description": "Crée un décorateur @rate_limit(max_per_sec=5) qui limite le nombre d'appels par seconde. Si le quota est dépassé, il bloque avec time.sleep le temps nécessaire.",
+    "starterCode": "import functools\nimport time\n\ndef rate_limit(max_per_sec=5):\n    # Ton code ici\n    pass\n",
+    "testCode": "call_times = []\n\n@rate_limit(max_per_sec=10)\ndef api_call():\n    call_times.append(time.time())\n\nfor _ in range(5):\n    api_call()\n\ncheck_assert(len(call_times) == 5, 'Tous les appels effectues')\n",
+    "hints": [
+      "Maintiens un timestamp du dernier appel et impose un écart minimal de 1.0 / max_per_sec."
+    ],
+    "solutionCode": "import functools\nimport time\n\ndef rate_limit(max_per_sec=5):\n    min_interval = 1.0 / max_per_sec\n    def decorator(func):\n        last_called = 0.0\n        @functools.wraps(func)\n        def wrapper(*args, **kwargs):\n            nonlocal last_called\n            now = time.time()\n            elapsed = now - last_called\n            if elapsed < min_interval:\n                time.sleep(min_interval - elapsed)\n            last_called = time.time()\n            return func(*args, **kwargs)\n        return wrapper\n    return decorator\n",
+    "solutionExplanation": "Ce rate limiter protège les API tierces de tout dépassement de quota (429 Too Many Requests) lors d'ingestions massives.",
+    "tags": [
+      "RATE_LIMIT",
+      "CONCURRENCY",
+      "API",
+      "DECORATOR"
+    ]
+  },
+  {
+    "id": "py-040",
+    "title": "Décorateur d'audit et de traçabilité des mutations de données",
+    "category": "decorators",
+    "difficulty": "intermediaire",
+    "description": "Crée un décorateur @audit_log(table_name) qui capture l'identifiant utilisateur passé dans kwargs et enregistre un journal {\"table\": table_name, \"action\": func.__name__, \"user\": user, \"status\": \"OK\"}.",
+    "starterCode": "AUDIT_TRAIL = []\n\ndef audit_log(table_name: str):\n    # Ton code ici\n    pass\n",
+    "testCode": "@audit_log(\"dim_customers\")\ndef update_email(customer_id: int, new_email: str, user=\"admin\"):\n    return True\n\nupdate_email(101, \"new@corp.com\", user=\"auren\")\ncheck_assert(len(AUDIT_TRAIL) == 1, 'Audit enregistre')\ncheck_assert(AUDIT_TRAIL[0]['table'] == 'dim_customers', 'Bonne table')\ncheck_assert(AUDIT_TRAIL[0]['user'] == 'auren', 'Bon utilisateur')\n",
+    "hints": [
+      "Extrait user de kwargs ou arguments et insère dans la liste AUDIT_TRAIL."
+    ],
+    "solutionCode": "import functools\n\nAUDIT_TRAIL = []\n\ndef audit_log(table_name: str):\n    def decorator(func):\n        @functools.wraps(func)\n        def wrapper(*args, **kwargs):\n            user = kwargs.get('user', 'unknown')\n            res = func(*args, **kwargs)\n            AUDIT_TRAIL.append({\n                'table': table_name,\n                'action': func.__name__,\n                'user': user,\n                'status': 'OK'\n            })\n            return res\n        return wrapper\n    return decorator\n",
+    "solutionExplanation": "La traçabilité et le lignage d'accès sont des exigences strictes en gouvernance des données (RGPD, SOC2, HIPAA).",
+    "tags": [
+      "GOVERNANCE",
+      "SECURITY",
+      "AUDIT",
+      "DECORATOR"
+    ]
+  },
+  {
+    "id": "py-041",
+    "title": "Aplatissement de dictionnaire JSON hiérarchique complexe (Flatten JSON)",
+    "category": "data_processing",
+    "difficulty": "intermediaire",
+    "description": "Aplatit un dictionnaire imbriqué arbitraire avec un séparateur \".\" : {\"user\": {\"profile\": {\"name\": \"Auren\"}}} devient {\"user.profile.name\": \"Auren\"}.",
+    "starterCode": "def flatten_json(nested_dict: dict, sep: str = '.') -> dict:\n    # Ton code ici\n    pass\n",
+    "testCode": "payload = {\n    'id': 1,\n    'device': {\n        'ip': '192.168.1.1',\n        'geo': {'country': 'FR', 'city': 'Paris'}\n    },\n    'tags': ['a', 'b']\n}\nflat = flatten_json(payload)\ncheck_assert(flat['device.geo.city'] == 'Paris', 'Cle imbriquee 2 niveaux')\ncheck_assert(flat['device.ip'] == '192.168.1.1', 'Cle imbriquee 1 niveau')\ncheck_assert(flat['id'] == 1, 'Cle racine')\n",
+    "hints": [
+      "Utilise une fonction récursive en propageant le préfixe accumulé."
+    ],
+    "solutionCode": "def flatten_json(nested_dict: dict, sep: str = '.') -> dict:\n    flat = {}\n    def recurse(current, prefix=''):\n        for key, value in current.items():\n            new_key = f\"{prefix}{sep}{key}\" if prefix else str(key)\n            if isinstance(value, dict) and value:\n                recurse(value, new_key)\n            else:\n                flat[new_key] = value\n    recurse(nested_dict)\n    return flat\n",
+    "solutionExplanation": "L'aplatissement récursif de JSON semi-structuré est une tâche récurrente lors de l'ingestion de documents MongoDB ou d'événements Kafka vers Snowflake ou BigQuery.",
+    "tags": [
+      "RECURSION",
+      "JSON",
+      "FLATTEN",
+      "INGESTION"
+    ]
+  },
+  {
+    "id": "py-042",
+    "title": "Parser de logs Apache / Nginx par expression régulière",
+    "category": "regex_parsing",
+    "difficulty": "intermediaire",
+    "description": "Extrait l'adresse IP, l'horodatage, la méthode HTTP, le chemin et le code d'état d'une ligne de log standard Common Log Format (CLF).",
+    "starterCode": "def parse_log_line(log_line: str) -> dict | None:\n    # Renvoie {'ip': str, 'timestamp': str, 'method': str, 'path': str, 'status': int}\n    pass\n",
+    "testCode": "line = '127.0.0.1 - - [10/Oct/2026:13:55:36 +0200] \"GET /api/v1/users HTTP/1.1\" 200 2326'\nres = parse_log_line(line)\ncheck_assert(res is not None, 'Ligne bien parsee')\ncheck_assert(res['ip'] == '127.0.0.1', 'IP correcte')\ncheck_assert(res['method'] == 'GET', 'Methode correcte')\ncheck_assert(res['path'] == '/api/v1/users', 'Chemin correct')\ncheck_assert(res['status'] == 200, 'Code statut int correct')\n",
+    "hints": [
+      "Compile une regex avec des groupes nommés (?P<ip>\\S+) (?P<timestamp>\\[[^\\]]+\\]) etc."
+    ],
+    "solutionCode": "import re\n\nLOG_REGEX = re.compile(\n    r'^(?P<ip>\\S+)\\s+\\S+\\s+\\S+\\s+\\[(?P<timestamp>[^\\]]+)\\]\\s+\"(?P<method>[A-Z]+)\\s+(?P<path>\\S+)\\s+[^\"]+\"\\s+(?P<status>\\d{3})'\n)\n\ndef parse_log_line(log_line: str) -> dict | None:\n    match = LOG_REGEX.match(log_line)\n    if not match:\n        return None\n    data = match.groupdict()\n    data['status'] = int(data['status'])\n    return data\n",
+    "solutionExplanation": "Les groupes nommés dans les expressions régulières Python offrent un parsing performant et maintenable des flux de logs bruts non structurés.",
+    "tags": [
+      "REGEX",
+      "LOGS",
+      "PARSING",
+      "OBSERVABILITY"
+    ]
+  },
+  {
+    "id": "py-043",
+    "title": "Anonymisation et masquage des données sensibles PII (RGPD)",
+    "category": "regex_parsing",
+    "difficulty": "intermediaire",
+    "description": "Masque les numéros de cartes de crédit (16 chiffres avec ou sans tirets/espaces) et les adresses email dans un texte libre pour respecter la conformité RGPD.",
+    "starterCode": "def mask_pii(text: str) -> str:\n    # Remplace email par [EMAIL_MASKED] et CB par [CARD_MASKED]\n    pass\n",
+    "testCode": "raw = \"Client contact: john.doe@example.com, carte: 4532-1234-5678-9012 pour paiement.\"\nmasked = mask_pii(raw)\ncheck_assert(\"[EMAIL_MASKED]\" in masked, 'Email masque')\ncheck_assert(\"[CARD_MASKED]\" in masked, 'Carte masquee')\ncheck_assert(\"john.doe\" not in masked, 'Aucune fuite email')\ncheck_assert(\"4532\" not in masked, 'Aucune fuite carte')\n",
+    "hints": [
+      "Utilise re.sub pour les emails r'[\\w\\.-]+@[\\w\\.-]+\\.\\w+' puis pour les cartes r'\\b(?:\\d[ -]*?){13,16}\\b'."
+    ],
+    "solutionCode": "import re\n\ndef mask_pii(text: str) -> str:\n    # Masquage emails\n    text = re.sub(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+', '[EMAIL_MASKED]', text)\n    # Masquage cartes bancaires (13 a 16 chiffres avec separateurs optionnels)\n    text = re.sub(r'\\b(?:\\d[ -]?){13,16}\\b', '[CARD_MASKED]', text)\n    return text\n",
+    "solutionExplanation": "La tokenisation et l'obfuscation automatique des données identifiables à caractère personnel (PII) préviennent les fuites de données dans les lacs de données et dashboards.",
+    "tags": [
+      "PII",
+      "RGPD",
+      "DATA_MASKING",
+      "REGEX"
+    ]
+  },
+  {
+    "id": "py-044",
+    "title": "Fusion intelligente de deux flux d'événements désordonnés",
+    "category": "data_processing",
+    "difficulty": "intermediaire",
+    "description": "Étant données deux listes ordonnées d'événements chronologiques stream_a et stream_b, fusionne-les en une seule liste ordonnée en O(N + M) sans charger de tri complet.",
+    "starterCode": "def merge_chronological_streams(stream_a: list[dict], stream_b: list[dict]) -> list[dict]:\n    # Chaque event contient la cle 'ts' (timestamp int)\n    pass\n",
+    "testCode": "s_a = [{'ts': 1, 'v': 'a1'}, {'ts': 4, 'v': 'a2'}]\ns_b = [{'ts': 2, 'v': 'b1'}, {'ts': 3, 'v': 'b2'}, {'ts': 5, 'v': 'b3'}]\nres = merge_chronological_streams(s_a, s_b)\ncheck_assert([x['ts'] for x in res] == [1, 2, 3, 4, 5], 'Ordre chrono parfait')\n",
+    "hints": [
+      "Utilise deux pointeurs ou heapq.merge."
+    ],
+    "solutionCode": "def merge_chronological_streams(stream_a: list[dict], stream_b: list[dict]) -> list[dict]:\n    i, j = 0, 0\n    merged = []\n    while i < len(stream_a) and j < len(stream_b):\n        if stream_a[i]['ts'] <= stream_b[j]['ts']:\n            merged.append(stream_a[i])\n            i += 1\n        else:\n            merged.append(stream_b[j])\n            j += 1\n    merged.extend(stream_a[i:])\n    merged.extend(stream_b[j:])\n    return merged\n",
+    "solutionExplanation": "La phase de fusion de MergeSort garantit un traitement linéaire en temps O(N + M) et en espace O(N + M), idéal pour agréger des partitions Kafka ordonnées.",
+    "tags": [
+      "TWO_POINTERS",
+      "MERGE",
+      "STREAMING"
+    ]
+  },
+  {
+    "id": "py-045",
+    "title": "Détection d'anomalies par écart type (Z-Score)",
+    "category": "data_processing",
+    "difficulty": "debutant",
+    "description": "Calcule la moyenne et l'écart type d'une série de valeurs flottantes. Renvoie les indices des valeurs dont le Z-Score absolu |(x - mu) / sigma| dépasse un seuil threshold donné.",
+    "starterCode": "import math\n\ndef detect_outliers_zscore(values: list[float], threshold: float = 2.5) -> list[int]:\n    # Ton code ici\n    pass\n",
+    "testCode": "vals = [10.0, 10.2, 9.8, 10.1, 10.0, 9.9, 100.0, 10.1]\noutliers = detect_outliers_zscore(vals, threshold=2.0)\ncheck_assert(outliers == [6], 'Anomalie detectee a l indice 6 (valeur 100.0)')\n",
+    "hints": [
+      "Calcule mu = sum(values)/N et sigma = sqrt(sum((x - mu)**2)/N). Attention si sigma == 0."
+    ],
+    "solutionCode": "import math\n\ndef detect_outliers_zscore(values: list[float], threshold: float = 2.5) -> list[int]:\n    n = len(values)\n    if n < 2:\n        return []\n    mu = sum(values) / n\n    variance = sum((x - mu) ** 2 for x in values) / n\n    sigma = math.sqrt(variance)\n    if sigma == 0:\n        return []\n    outliers = []\n    for i, x in enumerate(values):\n        z = abs(x - mu) / sigma\n        if z > threshold:\n            outliers.append(i)\n    return outliers\n",
+    "solutionExplanation": "Le Z-score mesure le nombre d'écarts types séparant une valeur de la moyenne, méthode standard de détection de dérive (data drift) en qualité des données.",
+    "tags": [
+      "DATA_QUALITY",
+      "OUTLIERS",
+      "STATISTICS"
+    ]
+  },
+  {
+    "id": "py-046",
+    "title": "Déduplication de flux avec fenêtre de rétention d'identifiants",
+    "category": "data_processing",
+    "difficulty": "intermediaire",
+    "description": "Implémente un dédoublonneur StreamDeduplicator(ttl_seconds) qui vérifie si un event_id a déjà été vu durant les ttl_seconds écoulées. is_duplicate(event_id, timestamp) renvoie bool.",
+    "starterCode": "class StreamDeduplicator:\n    def __init__(self, ttl_seconds: int):\n        pass\n\n    def is_duplicate(self, event_id: str, timestamp: int) -> bool:\n        pass\n",
+    "testCode": "dedup = StreamDeduplicator(ttl_seconds=10)\ncheck_assert(dedup.is_duplicate(\"evt_1\", 100) == False, 'Premier passage non doublon')\ncheck_assert(dedup.is_duplicate(\"evt_1\", 105) == True, 'Doublon dans la fenetre TTL')\ncheck_assert(dedup.is_duplicate(\"evt_1\", 115) == False, 'Non doublon car fenetre expiree')\n",
+    "hints": [
+      "Maintiens un dictionnaire {event_id: last_seen_timestamp} et purge les clés obsolètes."
+    ],
+    "solutionCode": "class StreamDeduplicator:\n    def __init__(self, ttl_seconds: int):\n        self.ttl = ttl_seconds\n        self.seen = {}\n\n    def is_duplicate(self, event_id: str, timestamp: int) -> bool:\n        # Nettoyage paresseux ou verification directe\n        if event_id in self.seen:\n            last_ts = self.seen[event_id]\n            if timestamp - last_ts <= self.ttl:\n                return True\n        self.seen[event_id] = timestamp\n        return False\n",
+    "solutionExplanation": "La déduplication avec fenêtre de rétention est le composant central garantissant la sémantique de traitement Exactly-Once dans les architectures d'ingestion Kafka / Kinesis.",
+    "tags": [
+      "DEDUPLICATION",
+      "EXACTLY_ONCE",
+      "STREAMING"
+    ]
+  },
+  {
+    "id": "py-047",
+    "title": "Calcul de métriques de classification binaire (Confusion Matrix)",
+    "category": "ml_metrics",
+    "difficulty": "debutant",
+    "description": "Étant données les listes d'entiers y_true et y_pred (0 ou 1), calcule et renvoie un dictionnaire avec : 'precision', 'recall', 'f1_score', 'accuracy'. Arrondis à 4 décimales.",
+    "starterCode": "def compute_classification_metrics(y_true: list[int], y_pred: list[int]) -> dict[str, float]:\n    # Ton code ici\n    pass\n",
+    "testCode": "yt = [1, 1, 0, 1, 0, 0, 1, 0]\nyp = [1, 0, 0, 1, 0, 1, 1, 0]\nres = compute_classification_metrics(yt, yp)\ncheck_assert(res['accuracy'] == 0.75, 'Accuracy 75%')\ncheck_assert(res['recall'] == 0.75, 'Recall 3/4 = 75%')\ncheck_assert(res['precision'] == 0.75, 'Precision 3/4 = 75%')\n",
+    "hints": [
+      "Compte TP, FP, TN, FN en une seule passe de zip(y_true, y_pred)."
+    ],
+    "solutionCode": "def compute_classification_metrics(y_true: list[int], y_pred: list[int]) -> dict[str, float]:\n    tp = sum(1 for yt, yp in zip(y_true, y_pred) if yt == 1 and yp == 1)\n    fp = sum(1 for yt, yp in zip(y_true, y_pred) if yt == 0 and yp == 1)\n    tn = sum(1 for yt, yp in zip(y_true, y_pred) if yt == 0 and yp == 0)\n    fn = sum(1 for yt, yp in zip(y_true, y_pred) if yt == 1 and yp == 0)\n\n    total = len(y_true)\n    accuracy = (tp + tn) / total if total > 0 else 0.0\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0\n\n    return {\n        'accuracy': round(accuracy, 4),\n        'precision': round(precision, 4),\n        'recall': round(recall, 4),\n        'f1_score': round(f1, 4),\n    }\n",
+    "solutionExplanation": "Ces formules fondamentales constituent les questions de premier tour incontournables en entretien Machine Learning et Data Science.",
+    "tags": [
+      "ML",
+      "METRICS",
+      "CLASSIFICATION",
+      "EVALUATION"
+    ]
+  },
+  {
+    "id": "py-048",
+    "title": "Calcul de l'aire sous la courbe ROC (ROC-AUC from scratch)",
+    "category": "ml_metrics",
+    "difficulty": "avance",
+    "description": "Calcule l'aire sous la courbe ROC (AUC) à partir des probabilités prédites y_score et des étiquettes binaires réelles y_true, par intégration trapézoïdale ou méthode de Mann-Whitney.",
+    "starterCode": "def calculate_roc_auc(y_true: list[int], y_scores: list[float]) -> float:\n    # Ton code ici sans scikit-learn\n    pass\n",
+    "testCode": "yt = [0, 0, 1, 1]\nys = [0.1, 0.4, 0.35, 0.8]\nauc = calculate_roc_auc(yt, ys)\ncheck_assert(0.70 <= auc <= 0.80, 'AUC attendu autour de 0.75')\ncheck_assert(calculate_roc_auc([0, 1], [0.1, 0.9]) == 1.0, 'AUC parfait 1.0')\n",
+    "hints": [
+      "L'AUC équivaut à la probabilité qu'un exemple positif tiré au sort ait un score supérieur à un exemple négatif tiré au sort (statistique U de Mann-Whitney)."
+    ],
+    "solutionCode": "def calculate_roc_auc(y_true: list[int], y_scores: list[float]) -> float:\n    positives = [score for yt, score in zip(y_true, y_scores) if yt == 1]\n    negatives = [score for yt, score in zip(y_true, y_scores) if yt == 0]\n    if not positives or not negatives:\n        return 0.5\n    concordant = 0\n    ties = 0\n    for p in positives:\n        for n in negatives:\n            if p > n:\n                concordant += 1\n            elif p == n:\n                ties += 0.5\n    return (concordant + ties) / (len(positives) * len(negatives))\n",
+    "solutionExplanation": "La formulation probabiliste de Wilcoxon-Mann-Whitney calcule exactement l'AUC en évaluant la capacité du modèle à classer les paires (positif, négatif) dans le bon ordre.",
+    "tags": [
+      "ROC_AUC",
+      "ML",
+      "MATHEMATICS",
+      "STATISTICS"
+    ]
+  },
+  {
+    "id": "py-049",
+    "title": "Compteur partagé thread-safe avec Lock",
+    "category": "concurrency",
+    "difficulty": "intermediaire",
+    "description": "Implémente une classe ThreadSafeCounter avec un threading.Lock garantissant l'incrémentation sans race condition sous forte concurrence.",
+    "starterCode": "import threading\n\nclass ThreadSafeCounter:\n    def __init__(self):\n        pass\n\n    def increment(self, step: int = 1) -> None:\n        pass\n\n    def get_value(self) -> int:\n        pass\n",
+    "testCode": "import threading\n\ncounter = ThreadSafeCounter()\nthreads = []\nfor _ in range(10):\n    t = threading.Thread(target=lambda: [counter.increment(1) for _ in range(1000)])\n    threads.append(t)\n    t.start()\nfor t in threads:\n    t.join()\ncheck_assert(counter.get_value() == 10000, 'Valeur exacte 10 000 sans perte de mise a jour')\n",
+    "hints": [
+      "Utilise un threading.Lock() dans un bloc with self.lock: pour protéger l'opération self.value += step."
+    ],
+    "solutionCode": "import threading\n\nclass ThreadSafeCounter:\n    def __init__(self):\n        self.value = 0\n        self.lock = threading.Lock()\n\n    def increment(self, step: int = 1) -> None:\n        with self.lock:\n            self.value += step\n\n    def get_value(self) -> int:\n        with self.lock:\n            return self.value\n",
+    "solutionExplanation": "En Python CPython, bien que le GIL protège les structures C internes, les opérations d'incrémentation au niveau bytecode comportent plusieurs étapes (LOAD, INPLACE_ADD, STORE) et nécessitent un verrou explicite.",
+    "tags": [
+      "CONCURRENCY",
+      "THREADS",
+      "LOCK",
+      "RACE_CONDITION"
+    ]
+  },
+  {
+    "id": "py-050",
+    "title": "Exécution concurrente avec ThreadPoolExecutor (Map parallèle)",
+    "category": "concurrency",
+    "difficulty": "intermediaire",
+    "description": "Écris une fonction parallel_fetch(urls: list[str], max_workers: int) qui exécute en parallèle une fonction simulant un téléchargement et renvoie les résultats ordonnés.",
+    "starterCode": "from concurrent.futures import ThreadPoolExecutor\n\ndef mock_download(url: str) -> dict:\n    return {'url': url, 'bytes': len(url) * 100}\n\ndef parallel_fetch(urls: list[str], max_workers: int = 4) -> list[dict]:\n    # Ton code ici\n    pass\n",
+    "testCode": "urls = ['http://site1.org', 'http://site2.org', 'http://site3.org']\nres = parallel_fetch(urls, max_workers=2)\ncheck_assert(len(res) == 3, '3 resultats recuperes')\ncheck_assert(res[0]['url'] == urls[0], 'Ordre preserve')\n",
+    "hints": [
+      "Utilise executor.map(mock_download, urls) dans un contexte with ThreadPoolExecutor."
+    ],
+    "solutionCode": "from concurrent.futures import ThreadPoolExecutor\n\ndef mock_download(url: str) -> dict:\n    return {'url': url, 'bytes': len(url) * 100}\n\ndef parallel_fetch(urls: list[str], max_workers: int = 4) -> list[dict]:\n    with ThreadPoolExecutor(max_workers=max_workers) as executor:\n        results = list(executor.map(mock_download, urls))\n    return results\n",
+    "solutionExplanation": "ThreadPoolExecutor libère le GIL pendant les opérations d'E/S bloquantes réseau ou disque, multipliant le débit des pipelines d'extraction d'API.",
+    "tags": [
+      "CONCURRENCY",
+      "THREAD_POOL",
+      "PARALLELISM"
+    ]
+  },
+  {
+    "id": "py-051",
+    "title": "Producteur-Consommateur avec Queue bornée (Pipeline asynchrone)",
+    "category": "concurrency",
+    "difficulty": "avance",
+    "description": "Implémente un pipeline Producer-Consumer utilisant queue.Queue(maxsize=k) où 1 worker produit des items et 1 worker les consomme, avec gestion du signal de fin (None).",
+    "starterCode": "import queue\nimport threading\n\ndef run_bounded_pipeline(items: list[int]) -> list[int]:\n    # Ton code ici\n    pass\n",
+    "testCode": "raw = list(range(10))\nres = run_bounded_pipeline(raw)\ncheck_assert(sorted(res) == [x * 2 for x in raw], 'Tous les elements traites et multiplies par 2')\n",
+    "hints": [
+      "Le producteur pousse les items puis insère None comme sentinelle de fin (poison pill)."
+    ],
+    "solutionCode": "import queue\nimport threading\n\ndef run_bounded_pipeline(items: list[int]) -> list[int]:\n    q = queue.Queue(maxsize=5)\n    processed = []\n\n    def producer():\n        for item in items:\n            q.put(item)\n        q.put(None) # Sentinelle\n\n    def consumer():\n        while True:\n            item = q.get()\n            if item is None:\n                q.task_done()\n                break\n            processed.append(item * 2)\n            q.task_done()\n\n    t_prod = threading.Thread(target=producer)\n    t_cons = threading.Thread(target=consumer)\n    t_prod.start()\n    t_cons.start()\n    t_prod.join()\n    t_cons.join()\n    return processed\n",
+    "solutionExplanation": "Le pattern Poison Pill avec une queue synchronisée garantit un arrêt propre des threads sans interblocage (deadlock).",
+    "tags": [
+      "CONCURRENCY",
+      "QUEUE",
+      "PRODUCER_CONSUMER"
+    ]
+  },
+  {
+    "id": "py-052",
+    "title": "Verrou en lecture-écriture (Read-Write Lock Pattern)",
+    "category": "concurrency",
+    "difficulty": "avance",
+    "description": "Implémente une classe ReadWriteLock qui autorise plusieurs lecteurs simultanés, mais un seul écrivain exclusif (aucun lecteur actif pendant l'écriture).",
+    "starterCode": "import threading\n\nclass RWLock:\n    def __init__(self):\n        pass\n\n    def acquire_read(self):\n        pass\n\n    def release_read(self):\n        pass\n\n    def acquire_write(self):\n        pass\n\n    def release_write(self):\n        pass\n",
+    "testCode": "rw = RWLock()\nrw.acquire_read()\nrw.acquire_read() # 2 lecteurs simultanes\nrw.release_read()\nrw.release_read()\nrw.acquire_write() # Ecrivain exclusif\nrw.release_write()\ncheck_assert(True, 'Cycle RW valide sans deadlock')\n",
+    "hints": [
+      "Utilise un compteur de lecteurs self.readers et un verrou exclusif pour l'écriture, protégé par un lock interne."
+    ],
+    "solutionCode": "import threading\n\nclass RWLock:\n    def __init__(self):\n        self.readers = 0\n        self._mutex = threading.Lock()\n        self._write_lock = threading.Lock()\n\n    def acquire_read(self):\n        with self._mutex:\n            self.readers += 1\n            if self.readers == 1:\n                self._write_lock.acquire()\n\n    def release_read(self):\n        with self._mutex:\n            self.readers -= 1\n            if self.readers == 0:\n                self._write_lock.release()\n\n    def acquire_write(self):\n        self._write_lock.acquire()\n\n    def release_write(self):\n        self._write_lock.release()\n",
+    "solutionExplanation": "Le verrou RWLock permet d'optimiser les caches en mémoire très consultés en lecture sans bloquer les multiples threads lecteurs.",
+    "tags": [
+      "CONCURRENCY",
+      "RWLOCK",
+      "SYNCHRONIZATION"
+    ]
+  },
+  {
+    "id": "py-053",
+    "title": "Barrière de synchronisation de tâches distribuées (threading.Barrier)",
+    "category": "concurrency",
+    "difficulty": "intermediaire",
+    "description": "Simule 3 étapes de calcul parallèles qui doivent attendre que tous les threads aient terminé l'étape 1 avant de commencer l'étape 2 en utilisant threading.Barrier(3).",
+    "starterCode": "import threading\n\ndef run_barrier_sync() -> list[str]:\n    # Ton code ici\n    pass\n",
+    "testCode": "events = run_barrier_sync()\ncheck_assert(len(events) == 6, '6 etapes enregistrees')\ncheck_assert(events[:3].count('step_1_done') == 3, 'Toutes les etapes 1 terminees avant l etape 2')\n",
+    "hints": [
+      "Instancie threading.Barrier(parties=3) et appelle barrier.wait() dans chaque thread."
+    ],
+    "solutionCode": "import threading\n\ndef run_barrier_sync() -> list[str]:\n    barrier = threading.Barrier(3)\n    log = []\n    lock = threading.Lock()\n\n    def worker(worker_id: int):\n        with lock:\n            log.append('step_1_done')\n        barrier.wait()\n        with lock:\n            log.append('step_2_started')\n\n    threads = [threading.Thread(target=worker, args=(i,)) for i in range(3)]\n    for t in threads:\n        t.start()\n    for t in threads:\n        t.join()\n    return log\n",
+    "solutionExplanation": "threading.Barrier force un rendez-vous synchrone entre plusieurs processus ou threads parallèles, crucial pour synchroniser des mini-lots d'entraînement ML.",
+    "tags": [
+      "CONCURRENCY",
+      "BARRIER",
+      "SYNCHRONIZATION"
+    ]
+  },
+  {
+    "id": "py-054",
+    "title": "Limiteur de concurrence avec Semaphore (Web Scraper / Rate Limiter)",
+    "category": "concurrency",
+    "difficulty": "intermediaire",
+    "description": "Crée une fonction process_with_semaphore(items: list, max_concurrent: int) garantissant qu'au plus max_concurrent threads s'exécutent simultanément en utilisant threading.Semaphore.",
+    "starterCode": "import threading\n\ndef process_with_semaphore(items: list[int], max_concurrent: int = 3) -> list[int]:\n    # Ton code ici\n    pass\n",
+    "testCode": "res = process_with_semaphore(list(range(6)), max_concurrent=2)\ncheck_assert(sorted(res) == [x * 10 for x in range(6)], 'Tous les elements traites sous controle de semaphore')\n",
+    "hints": [
+      "Encapsule le traitement du thread dans with sem: ..."
+    ],
+    "solutionCode": "import threading\n\ndef process_with_semaphore(items: list[int], max_concurrent: int = 3) -> list[int]:\n    sem = threading.Semaphore(max_concurrent)\n    results = []\n    lock = threading.Lock()\n\n    def worker(val):\n        with sem:\n            out = val * 10\n            with lock:\n                results.append(out)\n\n    threads = [threading.Thread(target=worker, args=(x,)) for x in items]\n    for t in threads:\n        t.start()\n    for t in threads:\n        t.join()\n    return results\n",
+    "solutionExplanation": "Le sémaphore de comptage régule l'accès concurrent à une ressource limitée (comme le nombre maximal de connexions à une base Snowflake ou Postgres).",
+    "tags": [
+      "SEMAPHORE",
+      "CONCURRENCY",
+      "RESOURCE_MANAGEMENT"
+    ]
+  },
+  {
+    "id": "py-055",
+    "title": "Mini-validateur de schéma de données (Mini-Pydantic)",
+    "category": "data_quality",
+    "difficulty": "intermediaire",
+    "description": "Implémente une classe SchemaValidator qui valide un dictionnaire d'enregistrement contre des spécifications {champ: (type, requis, min_val, max_val)}. Lève DataValidationError avec liste précise des erreurs.",
+    "starterCode": "class DataValidationError(Exception):\n    pass\n\nclass SchemaValidator:\n    def __init__(self, schema: dict):\n        self.schema = schema\n\n    def validate(self, record: dict) -> bool:\n        # Ton code ici\n        pass\n",
+    "testCode": "schema = {\n    'age': {'type': int, 'required': True, 'min': 18, 'max': 120},\n    'score': {'type': float, 'required': False, 'min': 0.0, 'max': 100.0}\n}\nv = SchemaValidator(schema)\ncheck_assert(v.validate({'age': 25, 'score': 85.5}) == True, 'Valide')\nfailed = False\ntry:\n    v.validate({'age': 15}) # Moins de 18\nexcept DataValidationError:\n    failed = True\ncheck_assert(failed, 'Rejet age < 18')\n",
+    "hints": [
+      "Parcours le schéma en vérifiant l'existence, le type isinstance() et les bornes."
+    ],
+    "solutionCode": "class DataValidationError(Exception):\n    pass\n\nclass SchemaValidator:\n    def __init__(self, schema: dict):\n        self.schema = schema\n\n    def validate(self, record: dict) -> bool:\n        errors = []\n        for field, rules in self.schema.items():\n            if rules.get('required', False) and field not in record:\n                errors.append(f\"Champ obligatoire manquant : {field}\")\n                continue\n            if field in record:\n                val = record[field]\n                exp_type = rules.get('type')\n                if exp_type and not isinstance(val, exp_type):\n                    errors.append(f\"Type invalide pour {field} : attendu {exp_type.__name__}\")\n                if 'min' in rules and val < rules['min']:\n                    errors.append(f\"Valeur trop petite pour {field} : {val} < {rules['min']}\")\n                if 'max' in rules and val > rules['max']:\n                    errors.append(f\"Valeur trop grande pour {field} : {val} > {rules['max']}\")\n        if errors:\n            raise DataValidationError(\"; \".join(errors))\n        return True\n",
+    "solutionExplanation": "La validation contractuelle des flux en amont de l'ingestion prévient l'empoisonnement des tables de données (Garbage In, Garbage Out).",
+    "tags": [
+      "DATA_QUALITY",
+      "SCHEMA_VALIDATION",
+      "EXCEPTIONS"
+    ]
+  },
+  {
+    "id": "py-056",
+    "title": "Logger contextuel avec identifiant de corrélation (Correlation ID)",
+    "category": "exceptions_typing_logging",
+    "difficulty": "intermediaire",
+    "description": "Crée une classe ContextLogger qui injecte automatiquement un correlation_id (UUID ou chaîne) dans tous les messages de log générés dans son contexte.",
+    "starterCode": "class ContextLogger:\n    def __init__(self, correlation_id: str):\n        self.correlation_id = correlation_id\n        self.logs = []\n\n    def info(self, msg: str) -> str:\n        # Ton code ici\n        pass\n",
+    "testCode": "logger = ContextLogger(\"req-abc-123\")\nlog_entry = logger.info(\"Debut de traitement du lot\")\ncheck_assert(\"[req-abc-123]\" in log_entry, 'Correlation ID present')\ncheck_assert(\"Debut de traitement\" in log_entry, 'Message present')\n",
+    "hints": [
+      "Formate avec f\"[{self.correlation_id}] [INFO] {msg}\"."
+    ],
+    "solutionCode": "class ContextLogger:\n    def __init__(self, correlation_id: str):\n        self.correlation_id = correlation_id\n        self.logs = []\n\n    def info(self, msg: str) -> str:\n        entry = f\"[{self.correlation_id}] [INFO] {msg}\"\n        self.logs.append(entry)\n        return entry\n",
+    "solutionExplanation": "L'injection de Correlation ID dans les microservices et pipelines d'ingestion permet le traçage distribué des requêtes de bout en bout dans OpenSearch ou CloudWatch.",
+    "tags": [
+      "LOGGING",
+      "OBSERVABILITY",
+      "CORRELATION_ID"
+    ]
+  },
+  {
+    "id": "py-057",
+    "title": "Gestionnaire d'exceptions personnalisées avec code d'erreur hiérarchique",
+    "category": "exceptions_typing_logging",
+    "difficulty": "debutant",
+    "description": "Définis une hiérarchie d'exceptions PipelineError -> ExtractionError et TransformationError. Chaque exception porte un code d'erreur HTTP/interne et une méthode to_dict().",
+    "starterCode": "class PipelineError(Exception):\n    def __init__(self, message: str, error_code: str):\n        super().__init__(message)\n        self.message = message\n        self.error_code = error_code\n\n    def to_dict(self) -> dict:\n        pass\n",
+    "testCode": "err = PipelineError(\"Table introuvable\", \"DATA_NOT_FOUND\")\nd = err.to_dict()\ncheck_assert(d['code'] == 'DATA_NOT_FOUND', 'Code extrait')\ncheck_assert(d['message'] == 'Table introuvable', 'Message extrait')\n",
+    "hints": [
+      "to_dict renvoie simplement un dictionnaire sérialisable en JSON."
+    ],
+    "solutionCode": "class PipelineError(Exception):\n    def __init__(self, message: str, error_code: str):\n        super().__init__(message)\n        self.message = message\n        self.error_code = error_code\n\n    def to_dict(self) -> dict:\n        return {'code': self.error_code, 'message': self.message}\n\nclass ExtractionError(PipelineError):\n    def __init__(self, message: str):\n        super().__init__(message, \"EXTRACTION_FAILED\")\n\nclass TransformationError(PipelineError):\n    def __init__(self, message: str):\n        super().__init__(message, \"TRANSFORMATION_FAILED\")\n",
+    "solutionExplanation": "La typologie fine des exceptions permet au moteur d'orchestration (Airflow, Step Functions) de décider s'il doit relancer la tâche ou alerter l'astreinte.",
+    "tags": [
+      "EXCEPTIONS",
+      "OOP",
+      "PIPELINE_ERROR"
+    ]
+  },
+  {
+    "id": "py-058",
+    "title": "Typage strict avec Literal et TypeGuard (PEP 647)",
+    "category": "exceptions_typing_logging",
+    "difficulty": "intermediaire",
+    "description": "Écris une fonction de garde de type is_valid_environment(env: str) -> bool vérifiant si la chaîne vaut \"dev\", \"staging\" ou \"prod\".",
+    "starterCode": "from typing import Literal\n\nEnvironment = Literal['dev', 'staging', 'prod']\n\ndef is_valid_environment(env: str) -> bool:\n    # Ton code ici\n    pass\n",
+    "testCode": "check_assert(is_valid_environment('dev') == True, 'Dev valide')\ncheck_assert(is_valid_environment('prod') == True, 'Prod valide')\ncheck_assert(is_valid_environment('local') == False, 'Local invalide')\n",
+    "hints": [
+      "Compare avec le tuple ('dev', 'staging', 'prod')."
+    ],
+    "solutionCode": "from typing import Literal\n\nEnvironment = Literal['dev', 'staging', 'prod']\nVALID_ENVS = {'dev', 'staging', 'prod'}\n\ndef is_valid_environment(env: str) -> bool:\n    return env in VALID_ENVS\n",
+    "solutionExplanation": "Les types Literal et TypeGuard permettent au linter statique de garantir qu'aucun déploiement accidentel vers un environnement erroné n'est possible.",
+    "tags": [
+      "TYPING",
+      "LITERAL",
+      "TYPEGUARD"
+    ]
+  },
+  {
+    "id": "py-059",
+    "title": "Tests unitaires avec Assertions personnalisées et rapport d'erreurs",
+    "category": "exceptions_typing_logging",
+    "difficulty": "debutant",
+    "description": "Écris une fonction de test assert_almost_equal(actual: float, expected: float, tolerance: float = 1e-4) qui lève AssertionError avec un message explicite si l'écart dépasse la tolérance.",
+    "starterCode": "def assert_almost_equal(actual: float, expected: float, tolerance: float = 1e-4):\n    # Ton code ici\n    pass\n",
+    "testCode": "assert_almost_equal(1.00001, 1.0, tolerance=1e-3)\nfailed = False\ntry:\n    assert_almost_equal(1.05, 1.0, tolerance=1e-3)\nexcept AssertionError:\n    failed = True\ncheck_assert(failed, 'AssertionError declenchee')\n",
+    "hints": [
+      "Vérifie if abs(actual - expected) > tolerance: raise AssertionError(...)"
+    ],
+    "solutionCode": "def assert_almost_equal(actual: float, expected: float, tolerance: float = 1e-4):\n    diff = abs(actual - expected)\n    if diff > tolerance:\n        raise AssertionError(f\"Ecart trop grand : {actual} != {expected} (diff: {diff} > tol: {tolerance})\")\n",
+    "solutionExplanation": "En calcul flottant, les erreurs d'arrondi IEEE 754 imposent de toujours comparer avec une tolérance epsilon plutôt qu'avec l'opérateur == strict.",
+    "tags": [
+      "TESTING",
+      "UNIT_TESTS",
+      "ASSERTIONS",
+      "FLOATS"
+    ]
+  },
+  {
+    "id": "py-060",
+    "title": "Débogueur de pipeline : Isolation de la première division par zéro",
+    "category": "exceptions_typing_logging",
+    "difficulty": "debutant",
+    "description": "Étant donnée une liste de tuples (numerateur, denominateur), calcule le quotient. En cas de division par zéro ou valeur non numérique, remplace par None et consigne l'indice fautif dans bad_indices.",
+    "starterCode": "def safe_divide_series(pairs: list[tuple]) -> tuple[list[float | None], list[int]]:\n    # Renvoie (quotients, bad_indices)\n    pass\n",
+    "testCode": "pairs = [(10, 2), (5, 0), (8, 4), (\"abc\", 2), (12, 3)]\nres, bad = safe_divide_series(pairs)\ncheck_assert(res == [5.0, None, 2.0, None, 4.0], 'Quotients avec None')\ncheck_assert(bad == [1, 3], 'Indices 1 et 3 isoles')\n",
+    "hints": [
+      "Utilise try/except (ZeroDivisionError, TypeError, ValueError)."
+    ],
+    "solutionCode": "def safe_divide_series(pairs: list[tuple]) -> tuple[list[float | None], list[int]]:\n    results = []\n    bad_indices = []\n    for i, pair in enumerate(pairs):\n        try:\n            num, denom = pair\n            quotient = float(num) / float(denom)\n            results.append(quotient)\n        except (ZeroDivisionError, TypeError, ValueError):\n            results.append(None)\n            bad_indices.append(i)\n    return results, bad_indices\n",
+    "solutionExplanation": "La gestion défensive des erreurs arithmétiques évite le crash brutal d'un traitement batch de plusieurs heures sur une seule ligne corrompue.",
+    "tags": [
+      "DEBUGGING",
+      "DEFENSIVE_CODING",
+      "EXCEPTIONS"
+    ]
+  },
+  {
+    "id": "py-061",
+    "title": "Similarité Cosinus vectorielle pour RAG et Embeddings",
+    "category": "ml_metrics",
+    "difficulty": "intermediaire",
+    "description": "Calcule la similarité cosinus entre deux vecteurs d'embeddings flottants u et v : cos_sim = (u . v) / (||u|| * ||v||). Renvoie 0.0 si un vecteur est nul.",
+    "starterCode": "import math\n\ndef cosine_similarity(u: list[float], v: list[float]) -> float:\n    # Ton code ici sans numpy\n    pass\n",
+    "testCode": "v1 = [1.0, 0.0, 0.0]\nv2 = [1.0, 0.0, 0.0]\ncheck_assert(cosine_similarity(v1, v2) == 1.0, 'Vecteurs identiques = 1.0')\nv3 = [0.0, 1.0, 0.0]\ncheck_assert(cosine_similarity(v1, v3) == 0.0, 'Vecteurs orthogonaux = 0.0')\n",
+    "hints": [
+      "Calcule le produit scalaire sum(a*b) et les normes math.sqrt(sum(x**2))."
+    ],
+    "solutionCode": "import math\n\ndef cosine_similarity(u: list[float], v: list[float]) -> float:\n    if len(u) != len(v) or not u:\n        return 0.0\n    dot_product = sum(a * b for a, b in zip(u, v))\n    norm_u = math.sqrt(sum(a * a for a in u))\n    norm_v = math.sqrt(sum(b * b for b in v))\n    if norm_u == 0.0 or norm_v == 0.0:\n        return 0.0\n    return dot_product / (norm_u * norm_v)\n",
+    "solutionExplanation": "La similarité cosinus est la métrique reine pour la recherche sémantique dans les bases vectorielles (Pinecone, Qdrant, ChromaDB, PGVector).",
+    "tags": [
+      "COSINE_SIMILARITY",
+      "EMBEDDINGS",
+      "RAG",
+      "VECTOR_SEARCH"
+    ]
+  },
+  {
+    "id": "py-062",
+    "title": "Normalisation Min-Max et Standardisation Z de vecteurs de features",
+    "category": "ml_metrics",
+    "difficulty": "debutant",
+    "description": "Normalise une liste de valeurs numériques selon la méthode Min-Max : (x - min) / (max - min) ramenant les valeurs dans l'intervalle [0, 1].",
+    "starterCode": "def min_max_scale(values: list[float]) -> list[float]:\n    # Ton code ici\n    pass\n",
+    "testCode": "res = min_max_scale([10.0, 20.0, 30.0, 40.0, 50.0])\ncheck_assert(res == [0.0, 0.25, 0.5, 0.75, 1.0], 'Normalisation Min-Max exacte')\ncheck_assert(min_max_scale([5.0]) == [0.0], 'Cas valeur unique')\n",
+    "hints": [
+      "Gère le cas où max_val == min_val pour éviter une division par zéro."
+    ],
+    "solutionCode": "def min_max_scale(values: list[float]) -> list[float]:\n    if not values:\n        return []\n    min_val = min(values)\n    max_val = max(values)\n    spread = max_val - min_val\n    if spread == 0.0:\n        return [0.0 for _ in values]\n    return [(x - min_val) / spread for x in values]\n",
+    "solutionExplanation": "La mise à l'échelle des variables d'entrée accélère la convergence des réseaux de neurones et évite la domination de variables à large échelle.",
+    "tags": [
+      "DATA_PREPROCESSING",
+      "NORMALIZATION",
+      "FEATURE_ENGINEERING"
+    ]
+  },
+  {
+    "id": "py-063",
+    "title": "Produit Matriciel 2D from scratch",
+    "category": "ml_metrics",
+    "difficulty": "intermediaire",
+    "description": "Calcule le produit de deux matrices 2D A (de dimension M x K) et B (de dimension K x N). Lève ValueError si les dimensions intérieures sont incompatibles.",
+    "starterCode": "def matrix_multiply(a: list[list[float]], b: list[list[float]]) -> list[list[float]]:\n    # Ton code ici\n    pass\n",
+    "testCode": "m1 = [[1, 2], [3, 4]]\nm2 = [[2, 0], [1, 2]]\nres = matrix_multiply(m1, m2)\ncheck_assert(res == [[4, 4], [10, 8]], 'Produit matriciel 2x2 correct')\n",
+    "hints": [
+      "Vérifie que len(a[0]) == len(b). Utilise 3 boucles imbriquées i, j, k."
+    ],
+    "solutionCode": "def matrix_multiply(a: list[list[float]], b: list[list[float]]) -> list[list[float]]:\n    if not a or not b or not a[0] or not b[0]:\n        return []\n    rows_a, cols_a = len(a), len(a[0])\n    rows_b, cols_b = len(b), len(b[0])\n    if cols_a != rows_b:\n        raise ValueError(f\"Dimensions incompatibles : {cols_a} != {rows_b}\")\n    result = [[0.0 for _ in range(cols_b)] for _ in range(rows_a)]\n    for i in range(rows_a):\n        for j in range(cols_b):\n            result[i][j] = sum(a[i][k] * b[k][j] for k in range(cols_a))\n    return result\n",
+    "solutionExplanation": "La multiplication matricielle est l'opération de calcul élémentaire au cœur des couches linéaires et mécanismes d'auto-attention des Transformers.",
+    "tags": [
+      "ALGEBRA",
+      "MATRIX_MULTIPLICATION",
+      "DEEP_LEARNING"
+    ]
+  },
+  {
+    "id": "py-064",
+    "title": "Fonction d'activation Softmax avec stabilisation numérique",
+    "category": "ml_metrics",
+    "difficulty": "intermediaire",
+    "description": "Calcule le vecteur de probabilités Softmax à partir d'un vecteur de logits. Utilise la soustraction du maximum pour éviter le débordement numérique (overflow).",
+    "starterCode": "import math\n\ndef softmax_stable(logits: list[float]) -> list[float]:\n    # Ton code ici\n    pass\n",
+    "testCode": "res = softmax_stable([1.0, 2.0, 3.0])\ncheck_assert(abs(sum(res) - 1.0) < 1e-6, 'Somme egale a 1.0')\n# Verification stabilisation avec logits tres grands\nres_large = softmax_stable([1000.0, 1001.0, 1002.0])\ncheck_assert(abs(sum(res_large) - 1.0) < 1e-6, 'Stabilisation overflow reussie')\n",
+    "hints": [
+      "Soustrait max(logits) avant d'appliquer math.exp(x - max_val)."
+    ],
+    "solutionCode": "import math\n\ndef softmax_stable(logits: list[float]) -> list[float]:\n    if not logits:\n        return []\n    max_logit = max(logits)\n    exp_shifted = [math.exp(x - max_logit) for x in logits]\n    total = sum(exp_shifted)\n    return [x / total for x in exp_shifted]\n",
+    "solutionExplanation": "La soustraction du maximum max(z) transforme l'exposant en valeurs négatives <= 0, éliminant tout risque d'erreur math range error (overflow).",
+    "tags": [
+      "SOFTMAX",
+      "DEEP_LEARNING",
+      "NUMERICAL_STABILITY"
+    ]
+  },
+  {
+    "id": "py-065",
+    "title": "Recherche des K plus proches voisins (KNN / Top-K Nearest Neighbors)",
+    "category": "ml_metrics",
+    "difficulty": "intermediaire",
+    "description": "Étant donné un vecteur de requête query et un dictionnaire d'embeddings {item_id: vector}, renvoie la liste des k item_id les plus proches selon la distance euclidienne.",
+    "starterCode": "import math\n\ndef find_top_k_neighbors(query: list[float], corpus: dict[str, list[float]], k: int) -> list[str]:\n    # Ton code ici\n    pass\n",
+    "testCode": "corp = {\n    'doc1': [1.0, 1.0],\n    'doc2': [10.0, 10.0],\n    'doc3': [1.2, 0.9],\n    'doc4': [5.0, 5.0]\n}\nq = [1.0, 1.0]\nres = find_top_k_neighbors(q, corp, 2)\ncheck_assert(res == ['doc1', 'doc3'], 'doc1 et doc3 sont les 2 plus proches')\n",
+    "hints": [
+      "Calcule la distance euclidienne math.sqrt(sum((a-b)**2)) et trie avec heapq.nsmallest."
+    ],
+    "solutionCode": "import math\nimport heapq\n\ndef find_top_k_neighbors(query: list[float], corpus: dict[str, list[float]], k: int) -> list[str]:\n    def dist(v1, v2):\n        return math.sqrt(sum((a - b) ** 2 for a, b in zip(v1, v2)))\n\n    scored = [(dist(query, vec), item_id) for item_id, vec in corpus.items()]\n    top = heapq.nsmallest(k, scored, key=lambda x: x[0])\n    return [item_id for _, item_id in top]\n",
+    "solutionExplanation": "Le calcul brut KNN (Flat L2 Index) sert de baseline exacte pour évaluer la qualité des index approchés ANN comme HNSW et IVF.",
+    "tags": [
+      "KNN",
+      "EMBEDDINGS",
+      "VECTOR_SEARCH"
+    ]
+  },
+  {
+    "id": "py-066",
+    "title": "Simulation d'endpoint FastAPI avec validation de payload Pydantic",
+    "category": "ml_metrics",
+    "difficulty": "intermediaire",
+    "description": "Écris un handler de route simulate_prediction_endpoint(payload: dict) simulant un service de serving IA : vérifie la présence de \"model_name\" et \"features\" (liste de float non vide). Renvoie {\"status\": 200, \"prediction\": float} ou {\"status\": 422, \"detail\": str}.",
+    "starterCode": "def simulate_prediction_endpoint(payload: dict) -> dict:\n    # Ton code ici\n    pass\n",
+    "testCode": "res_ok = simulate_prediction_endpoint({'model_name': 'churn_v1', 'features': [0.5, 1.2, -0.4]})\ncheck_assert(res_ok['status'] == 200, 'Succes 200')\nres_bad = simulate_prediction_endpoint({'features': []})\ncheck_assert(res_bad['status'] == 422, 'Erreur 422 sur payload invalide')\n",
+    "hints": [
+      "Valide les clés obligatoires et la non-vacuité de features."
+    ],
+    "solutionCode": "def simulate_prediction_endpoint(payload: dict) -> dict:\n    if 'model_name' not in payload or not isinstance(payload['model_name'], str):\n        return {'status': 422, 'detail': 'model_name obligatoire'}\n    if 'features' not in payload or not isinstance(payload['features'], list) or len(payload['features']) == 0:\n        return {'status': 422, 'detail': 'features doit etre une liste non vide'}\n    for f in payload['features']:\n        if not isinstance(f, (int, float)):\n            return {'status': 422, 'detail': 'features doit contenir des nombres'}\n    # Score calcule\n    score = sum(payload['features']) / len(payload['features'])\n    return {'status': 200, 'model': payload['model_name'], 'prediction': round(score, 4)}\n",
+    "solutionExplanation": "La validation précoce 422 Unprocessable Entity conforme aux standards FastAPI protège le modèle de ML des crashs au runtime.",
+    "tags": [
+      "FASTAPI",
+      "REST_API",
+      "MODEL_SERVING"
+    ]
+  },
+  {
+    "id": "py-067",
+    "title": "Interception et injection de Headers HTTP (Middleware Mock)",
+    "category": "ml_metrics",
+    "difficulty": "debutant",
+    "description": "Implémente un middleware mock add_request_id_middleware(handler) qui intercepte un dictionnaire de requête, génère un X-Request-ID s'il est absent, et le propage dans les en-têtes de réponse.",
+    "starterCode": "def add_request_id_middleware(handler):\n    # Ton code ici\n    pass\n",
+    "testCode": "def dummy_handler(request):\n    return {'status_code': 200, 'body': 'ok', 'headers': {}}\n\nwrapped = add_request_id_middleware(dummy_handler)\nresp = wrapped({'headers': {}})\ncheck_assert('X-Request-ID' in resp['headers'], 'Header X-Request-ID bien injecte')\n",
+    "hints": [
+      "Génère un identifiant avec f\"req-{time.time_ns()}\" si absent."
+    ],
+    "solutionCode": "import time\n\ndef add_request_id_middleware(handler):\n    def wrapper(request):\n        req_headers = request.get('headers', {})\n        req_id = req_headers.get('X-Request-ID', f\"req-{time.time_ns()}\")\n        response = handler(request)\n        if 'headers' not in response:\n            response['headers'] = {}\n        response['headers']['X-Request-ID'] = req_id\n        return response\n    return wrapper\n",
+    "solutionExplanation": "Les middlewares FastAPI / Starlette permettent d'appliquer des politiques transversales (sécurité, traçabilité, CORS, métriques) sans altérer le code des routes.",
+    "tags": [
+      "FASTAPI",
+      "MIDDLEWARE",
+      "HEADERS"
+    ]
+  },
+  {
+    "id": "py-068",
+    "title": "Simulateur d'Appels API avec Mock offline et gestion de quotas",
+    "category": "ml_metrics",
+    "difficulty": "intermediaire",
+    "description": "Crée une classe MockApiClient avec un dictionnaire interne d'URL et de quotas. get(url) renvoie les données ou lève HTTPError(\"429 Too Many Requests\") dès que le quota d'appels est dépassé.",
+    "starterCode": "class HTTPError(Exception):\n    pass\n\nclass MockApiClient:\n    def __init__(self, routes: dict[str, dict], max_calls: int = 5):\n        pass\n\n    def get(self, url: str) -> dict:\n        pass\n",
+    "testCode": "routes = {'/api/v1/status': {'status': 'healthy'}}\nclient = MockApiClient(routes, max_calls=2)\ncheck_assert(client.get('/api/v1/status')['status'] == 'healthy', 'Appel 1 ok')\ncheck_assert(client.get('/api/v1/status')['status'] == 'healthy', 'Appel 2 ok')\nfailed = False\ntry:\n    client.get('/api/v1/status')\nexcept HTTPError:\n    failed = True\ncheck_assert(failed, 'Quota 429 declenche au 3e appel')\n",
+    "hints": [
+      "Incrémente un compteur self.calls et vérifie if self.calls > self.max_calls."
+    ],
+    "solutionCode": "class HTTPError(Exception):\n    pass\n\nclass MockApiClient:\n    def __init__(self, routes: dict[str, dict], max_calls: int = 5):\n        self.routes = routes\n        self.max_calls = max_calls\n        self.calls = 0\n\n    def get(self, url: str) -> dict:\n        self.calls += 1\n        if self.calls > self.max_calls:\n            raise HTTPError(\"429 Too Many Requests : Quota d'appels depasse\")\n        if url not in self.routes:\n            raise HTTPError(\"404 Not Found\")\n        return self.routes[url]\n",
+    "solutionExplanation": "Le mock hors ligne est indispensable pour tester la robustesse des pipelines de données sans dépendre d'un réseau externe.",
+    "tags": [
+      "TESTING",
+      "MOCK",
+      "API",
+      "RESILIENCE"
+    ]
+  },
+  {
+    "id": "py-069",
+    "title": "Découpage sémantique de texte en Chunks avec chevauchement (RAG Chunking)",
+    "category": "data_processing",
+    "difficulty": "intermediaire",
+    "description": "Implémente un découpeur de document chunk_text(text: str, chunk_size: int, overlap: int) qui découpe un texte en liste de morceaux avec chevauchement pour l'indexation RAG.",
+    "starterCode": "def chunk_text(text: str, chunk_size: int = 100, overlap: int = 20) -> list[str]:\n    # Ton code ici (decoupage par mots)\n    pass\n",
+    "testCode": "mots = [f\"word_{i}\" for i in range(15)]\nphrase = \" \".join(mots)\nchunks = chunk_text(phrase, chunk_size=5, overlap=2)\ncheck_assert(len(chunks) > 1, 'Plusieurs chunks crees')\n# Verifie que le deuxieme chunk commence par les 2 derniers mots du premier chunk\nc1_words = chunks[0].split()\nc2_words = chunks[1].split()\ncheck_assert(c1_words[-2:] == c2_words[:2], 'Chevauchement overlap respecte')\n",
+    "hints": [
+      "Découpe par text.split() puis avance par pas de step = chunk_size - overlap."
+    ],
+    "solutionCode": "def chunk_text(text: str, chunk_size: int = 100, overlap: int = 20) -> list[str]:\n    words = text.split()\n    if not words:\n        return []\n    if len(words) <= chunk_size:\n        return [text]\n    chunks = []\n    step = max(1, chunk_size - overlap)\n    for i in range(0, len(words), step):\n        chunk_words = words[i:i + chunk_size]\n        chunks.append(\" \".join(chunk_words))\n        if i + chunk_size >= len(words):\n            break\n    return chunks\n",
+    "solutionExplanation": "Le chunking avec overlap préserve le contexte aux frontières des découpages, évitant la perte d'information lors de la recherche vectorielle RAG.",
+    "tags": [
+      "RAG",
+      "CHUNKING",
+      "NLP",
+      "EMBEDDINGS"
+    ]
+  },
+  {
+    "id": "py-070",
+    "title": "Détection d'incohérences de schéma entre lots de données (Schema Drift)",
+    "category": "data_quality",
+    "difficulty": "intermediaire",
+    "description": "Compare le schéma d'un lot entrant incoming_batch avec le schéma de référence expected_schema. Détecte les colonnes manquantes (\"missing\"), inattendues (\"extra\") et les types altérés (\"type_mismatch\").",
+    "starterCode": "def detect_schema_drift(expected_schema: dict[str, str], incoming_batch: list[dict]) -> dict:\n    # expected_schema: {'id': 'int', 'price': 'float'}\n    # Renvoie {'missing': list, 'extra': list, 'type_mismatch': list}\n    pass\n",
+    "testCode": "exp = {'id': 'int', 'price': 'float', 'name': 'str'}\nbatch = [\n    {'id': 1, 'price': 'cent', 'extra_col': 'val'}, # price est str au lieu de float\n    {'id': 2, 'price': 10.5, 'extra_col': 'val'}\n]\ndrift = detect_schema_drift(exp, batch)\ncheck_assert('name' in drift['missing'], 'name detecte manquant')\ncheck_assert('extra_col' in drift['extra'], 'extra_col detectee en trop')\ncheck_assert('price' in drift['type_mismatch'], 'type mismatch sur price')\n",
+    "hints": [
+      "Inspecte les clés présentes et compare types int, float, str."
+    ],
+    "solutionCode": "def detect_schema_drift(expected_schema: dict[str, str], incoming_batch: list[dict]) -> dict:\n    missing = set(expected_schema.keys())\n    extra = set()\n    type_mismatch = set()\n    type_map = {'int': int, 'float': float, 'str': str, 'bool': bool}\n\n    for row in incoming_batch:\n        for k in row.keys():\n            if k not in expected_schema:\n                extra.add(k)\n            else:\n                missing.discard(k)\n                exp_t_name = expected_schema[k]\n                exp_t = type_map.get(exp_t_name)\n                val = row[k]\n                if exp_t and not isinstance(val, exp_t):\n                    # Exception toleree float accepte int\n                    if not (exp_t is float and isinstance(val, (int, float))):\n                        type_mismatch.add(k)\n\n    return {\n        'missing': sorted(list(missing)),\n        'extra': sorted(list(extra)),\n        'type_mismatch': sorted(list(type_mismatch)),\n    }\n",
+    "solutionExplanation": "La détection de dérive de schéma (Schema Drift) est essentielle dans les architectures Big Data pour orienter automatiquement les lignes corrompues vers une table de rejet (Dead Letter Queue).",
+    "tags": [
+      "SCHEMA_DRIFT",
+      "DATA_QUALITY",
+      "DEAD_LETTER_QUEUE"
+    ]
+  }
+]

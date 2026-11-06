@@ -1,0 +1,1397 @@
+{
+ "meta": {
+  "usage": "Associer chaque chapitre de l'application à ces leçons. Affichage attendu : 'Cours <titre> - leçons N à M'. Ne jamais copier le contenu des cours.",
+  "domains_dea": {
+   "1": "Ingestion et transformation des données (34 %)",
+   "2": "Gestion des stockages de données (26 %)",
+   "3": "Opérations et support des données (22 %)",
+   "4": "Sécurité et gouvernance des données (18 %)"
+  },
+  "course_titles": {
+   "maarek": "AWS Certified Data Engineer Associate 2026 - Hands On!",
+   "nikolai": "Complete AWS Certified Data Engineer Associate - DEA-C01",
+   "merico": "AWS Certified Cloud Practitioner CLF-C02 2026 (en français)",
+   "toth": "The Complete dbt Bootcamp: Zero to Hero + Certification Prep",
+   "weigel": "The Complete dbt Certification Course"
+  }
+ },
+ "aws_topics": [
+  {
+   "id": "fondamentaux-data",
+   "label": "Fondamentaux data engineering (types de données, entrepôt vs lac, modélisation, lineage, qualité, SQL, Git)",
+   "dea_domain": "1",
+   "maarek": [
+    {
+     "first": 5,
+     "last": 21
+    }
+   ],
+   "nikolai": [],
+   "merico": [],
+   "skillbuilder_review": "Domain 1 Review (DEA-C01) : ingestion et transformation"
+  },
+  {
+   "id": "s3",
+   "label": "Amazon S3 : bases, sécurité, versioning, réplication, classes, cycle de vie, événements, performance",
+   "dea_domain": "2",
+   "maarek": [
+    {
+     "first": 25,
+     "last": 53
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 6,
+     "last": 8
+    },
+    {
+     "first": 56,
+     "last": 71
+    }
+   ],
+   "merico": [
+    {
+     "first": 93,
+     "last": 101
+    }
+   ],
+   "skillbuilder_review": "Domain 2 Review (DEA-C01) : gestion des stockages"
+  },
+  {
+   "id": "partitionnement-formats",
+   "label": "Partitionnement et formats de fichiers (Parquet, ORC, CSV, JSON)",
+   "dea_domain": "2",
+   "maarek": [
+    {
+     "first": 11,
+     "last": 11
+    },
+    {
+     "first": 153,
+     "last": 153
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 32,
+     "last": 32
+    },
+    {
+     "first": 54,
+     "last": 55
+    }
+   ],
+   "merico": [],
+   "skillbuilder_review": "Domain 2 Review (DEA-C01) : gestion des stockages"
+  },
+  {
+   "id": "apache-iceberg",
+   "label": "Apache Iceberg et Amazon S3 Tables (formats ouverts, transactions ACID, partitionnement caché, time travel, compaction Athena/Glue/EMR)",
+   "dea_domain": "2",
+   "maarek": [
+    {
+     "first": 154,
+     "last": 155
+    }
+   ],
+   "nikolai": [],
+   "merico": [],
+   "skillbuilder_review": "Domain 2 Review (DEA-C01) : gestion des stockages"
+  },
+  {
+   "id": "ebs-efs-backup",
+   "label": "EBS, EFS, AWS Backup",
+   "dea_domain": "2",
+   "maarek": [
+    {
+     "first": 54,
+     "last": 61
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 74,
+     "last": 79
+    }
+   ],
+   "merico": [
+    {
+     "first": 87,
+     "last": 91
+    },
+    {
+     "first": 102,
+     "last": 104
+    }
+   ],
+   "skillbuilder_review": "Domain 2 Review (DEA-C01) : gestion des stockages"
+  },
+  {
+   "id": "dynamodb",
+   "label": "DynamoDB",
+   "dea_domain": "2",
+   "maarek": [
+    {
+     "first": 63,
+     "last": 79
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 80,
+     "last": 98
+    }
+   ],
+   "merico": [
+    {
+     "first": 116,
+     "last": 116
+    }
+   ],
+   "skillbuilder_review": "Domain 2 Review (DEA-C01) : gestion des stockages"
+  },
+  {
+   "id": "rds-aurora-autres",
+   "label": "RDS, Aurora, DocumentDB, Neptune, Keyspaces, MemoryDB, Timestream",
+   "dea_domain": "2",
+   "maarek": [
+    {
+     "first": 80,
+     "last": 90
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 128,
+     "last": 135
+    }
+   ],
+   "merico": [
+    {
+     "first": 107,
+     "last": 113
+    },
+    {
+     "first": 117,
+     "last": 119
+    }
+   ],
+   "skillbuilder_review": "Domain 2 Review (DEA-C01) : gestion des stockages"
+  },
+  {
+   "id": "redshift",
+   "label": "Amazon Redshift",
+   "dea_domain": "2",
+   "maarek": [
+    {
+     "first": 91,
+     "last": 107
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 99,
+     "last": 127
+    }
+   ],
+   "merico": [
+    {
+     "first": 125,
+     "last": 125
+    }
+   ],
+   "skillbuilder_review": "Domain 2 Review (DEA-C01) : gestion des stockages"
+  },
+  {
+   "id": "glue",
+   "label": "AWS Glue : jobs, catalogue, crawlers, bookmarks, qualité, workflows, DataBrew",
+   "dea_domain": "1",
+   "maarek": [
+    {
+     "first": 137,
+     "last": 148
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 10,
+     "last": 11
+    },
+    {
+     "first": 18,
+     "last": 35
+    }
+   ],
+   "merico": [
+    {
+     "first": 123,
+     "last": 123
+    }
+   ],
+   "skillbuilder_review": "Domain 1 Review (DEA-C01) : ingestion et transformation"
+  },
+  {
+   "id": "glue-data-quality",
+   "label": "Glue Data Quality",
+   "dea_domain": "3",
+   "maarek": [
+    {
+     "first": 144,
+     "last": 144
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 27,
+     "last": 27
+    }
+   ],
+   "merico": [],
+   "skillbuilder_review": "Domain 3 Review (DEA-C01) : opérations et support"
+  },
+  {
+   "id": "lake-formation",
+   "label": "AWS Lake Formation",
+   "dea_domain": "4",
+   "maarek": [
+    {
+     "first": 149,
+     "last": 150
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 141,
+     "last": 142
+    }
+   ],
+   "merico": [],
+   "skillbuilder_review": "Domain 4 Review (DEA-C01) : sécurité et gouvernance"
+  },
+  {
+   "id": "athena",
+   "label": "Amazon Athena",
+   "dea_domain": "1",
+   "maarek": [
+    {
+     "first": 151,
+     "last": 156
+    },
+    {
+     "first": 158,
+     "last": 159
+    },
+    {
+     "first": 162,
+     "last": 162
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 12,
+     "last": 17
+    }
+   ],
+   "merico": [
+    {
+     "first": 121,
+     "last": 122
+    }
+   ],
+   "skillbuilder_review": "Domain 1 Review (DEA-C01) : ingestion et transformation"
+  },
+  {
+   "id": "spark-emr",
+   "label": "Apache Spark et Amazon EMR",
+   "dea_domain": "1",
+   "maarek": [
+    {
+     "first": 157,
+     "last": 157
+    },
+    {
+     "first": 160,
+     "last": 161
+    },
+    {
+     "first": 163,
+     "last": 166
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 143,
+     "last": 147
+    }
+   ],
+   "merico": [
+    {
+     "first": 124,
+     "last": 124
+    }
+   ],
+   "skillbuilder_review": "Domain 1 Review (DEA-C01) : ingestion et transformation"
+  },
+  {
+   "id": "kinesis",
+   "label": "Kinesis Data Streams, Firehose, Managed Flink",
+   "dea_domain": "1",
+   "maarek": [
+    {
+     "first": 167,
+     "last": 179
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 40,
+     "last": 51
+    }
+   ],
+   "merico": [
+    {
+     "first": 127,
+     "last": 127
+    }
+   ],
+   "skillbuilder_review": "Domain 1 Review (DEA-C01) : ingestion et transformation"
+  },
+  {
+   "id": "msk",
+   "label": "Amazon MSK (Kafka géré)",
+   "dea_domain": "1",
+   "maarek": [
+    {
+     "first": 180,
+     "last": 183
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 52,
+     "last": 53
+    }
+   ],
+   "merico": [
+    {
+     "first": 128,
+     "last": 128
+    }
+   ],
+   "skillbuilder_review": "Domain 1 Review (DEA-C01) : ingestion et transformation"
+  },
+  {
+   "id": "opensearch",
+   "label": "Amazon OpenSearch Service",
+   "dea_domain": "1",
+   "maarek": [
+    {
+     "first": 184,
+     "last": 188
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 149,
+     "last": 160
+    }
+   ],
+   "merico": [],
+   "skillbuilder_review": "Domain 1 Review (DEA-C01) : ingestion et transformation"
+  },
+  {
+   "id": "quicksight",
+   "label": "Amazon QuickSight",
+   "dea_domain": "3",
+   "maarek": [
+    {
+     "first": 189,
+     "last": 192
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 161,
+     "last": 163
+    }
+   ],
+   "merico": [
+    {
+     "first": 126,
+     "last": 126
+    }
+   ],
+   "skillbuilder_review": "Domain 3 Review (DEA-C01) : opérations et support"
+  },
+  {
+   "id": "lambda-batch",
+   "label": "Lambda, SAM, Batch",
+   "dea_domain": "1",
+   "maarek": [
+    {
+     "first": 120,
+     "last": 127
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 36,
+     "last": 38
+    },
+    {
+     "first": 138,
+     "last": 140
+    }
+   ],
+   "merico": [
+    {
+     "first": 57,
+     "last": 58
+    }
+   ],
+   "skillbuilder_review": "Domain 1 Review (DEA-C01) : ingestion et transformation"
+  },
+  {
+   "id": "conteneurs",
+   "label": "Docker, ECS, ECR, EKS",
+   "dea_domain": "1",
+   "maarek": [
+    {
+     "first": 128,
+     "last": 135
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 204,
+     "last": 209
+    }
+   ],
+   "merico": [
+    {
+     "first": 55,
+     "last": 55
+    }
+   ],
+   "skillbuilder_review": "Domain 1 Review (DEA-C01) : ingestion et transformation"
+  },
+  {
+   "id": "migration-transfert",
+   "label": "DMS, DataSync, Snow Family, Transfer Family, Data Exchange",
+   "dea_domain": "1",
+   "maarek": [
+    {
+     "first": 108,
+     "last": 116
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 210,
+     "last": 215
+    }
+   ],
+   "merico": [
+    {
+     "first": 114,
+     "last": 114
+    },
+    {
+     "first": 189,
+     "last": 194
+    }
+   ],
+   "skillbuilder_review": "Domain 1 Review (DEA-C01) : ingestion et transformation"
+  },
+  {
+   "id": "sqs-sns",
+   "label": "SQS et SNS",
+   "dea_domain": "1",
+   "maarek": [
+    {
+     "first": 194,
+     "last": 200
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 178,
+     "last": 179
+    }
+   ],
+   "merico": [
+    {
+     "first": 133,
+     "last": 136
+    }
+   ],
+   "skillbuilder_review": "Domain 1 Review (DEA-C01) : ingestion et transformation"
+  },
+  {
+   "id": "orchestration",
+   "label": "Step Functions, EventBridge, AppFlow, MWAA (Airflow)",
+   "dea_domain": "1",
+   "maarek": [
+    {
+     "first": 201,
+     "last": 206
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 168,
+     "last": 177
+    }
+   ],
+   "merico": [],
+   "skillbuilder_review": "Domain 1 Review (DEA-C01) : ingestion et transformation"
+  },
+  {
+   "id": "iam",
+   "label": "IAM : utilisateurs, groupes, politiques, rôles",
+   "dea_domain": "4",
+   "maarek": [
+    {
+     "first": 212,
+     "last": 220
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 198,
+     "last": 203
+    }
+   ],
+   "merico": [
+    {
+     "first": 138,
+     "last": 144
+    }
+   ],
+   "skillbuilder_review": "Domain 4 Review (DEA-C01) : sécurité et gouvernance"
+  },
+  {
+   "id": "kms-chiffrement",
+   "label": "KMS et chiffrement",
+   "dea_domain": "4",
+   "maarek": [
+    {
+     "first": 221,
+     "last": 223
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 221,
+     "last": 223
+    }
+   ],
+   "merico": [
+    {
+     "first": 153,
+     "last": 153
+    }
+   ],
+   "skillbuilder_review": "Domain 4 Review (DEA-C01) : sécurité et gouvernance"
+  },
+  {
+   "id": "macie-secrets-waf",
+   "label": "Macie, Secrets Manager, WAF, Shield",
+   "dea_domain": "4",
+   "maarek": [
+    {
+     "first": 224,
+     "last": 228
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 224,
+     "last": 227
+    }
+   ],
+   "merico": [
+    {
+     "first": 151,
+     "last": 152
+    },
+    {
+     "first": 154,
+     "last": 154
+    },
+    {
+     "first": 156,
+     "last": 156
+    }
+   ],
+   "skillbuilder_review": "Domain 4 Review (DEA-C01) : sécurité et gouvernance"
+  },
+  {
+   "id": "moindre-privilege-masquage",
+   "label": "Moindre privilège, masquage et anonymisation, salage de clés, restriction des régions",
+   "dea_domain": "4",
+   "maarek": [
+    {
+     "first": 208,
+     "last": 211
+    }
+   ],
+   "nikolai": [],
+   "merico": [
+    {
+     "first": 137,
+     "last": 137
+    }
+   ],
+   "skillbuilder_review": "Domain 4 Review (DEA-C01) : sécurité et gouvernance"
+  },
+  {
+   "id": "vpc-privatelink",
+   "label": "VPC, groupes de sécurité, NACL, PrivateLink",
+   "dea_domain": "4",
+   "maarek": [
+    {
+     "first": 233,
+     "last": 237
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 216,
+     "last": 220
+    }
+   ],
+   "merico": [
+    {
+     "first": 61,
+     "last": 72
+    }
+   ],
+   "skillbuilder_review": "Domain 4 Review (DEA-C01) : sécurité et gouvernance"
+  },
+  {
+   "id": "cloudwatch",
+   "label": "CloudWatch : métriques, journaux, alarmes",
+   "dea_domain": "3",
+   "maarek": [
+    {
+     "first": 247,
+     "last": 252
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 183,
+     "last": 191
+    }
+   ],
+   "merico": [
+    {
+     "first": 169,
+     "last": 172
+    }
+   ],
+   "skillbuilder_review": "Domain 3 Review (DEA-C01) : opérations et support"
+  },
+  {
+   "id": "cloudtrail-config",
+   "label": "CloudTrail et AWS Config",
+   "dea_domain": "3",
+   "maarek": [
+    {
+     "first": 253,
+     "last": 259
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 192,
+     "last": 195
+    }
+   ],
+   "merico": [
+    {
+     "first": 147,
+     "last": 147
+    },
+    {
+     "first": 173,
+     "last": 174
+    }
+   ],
+   "skillbuilder_review": "Domain 3 Review (DEA-C01) : opérations et support"
+  },
+  {
+   "id": "cloudformation-ssm-cdk",
+   "label": "CloudFormation, SSM Parameter Store, CDK",
+   "dea_domain": "3",
+   "maarek": [
+    {
+     "first": 260,
+     "last": 263
+    },
+    {
+     "first": 298,
+     "last": 299
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 181,
+     "last": 182
+    }
+   ],
+   "merico": [
+    {
+     "first": 165,
+     "last": 167
+    }
+   ],
+   "skillbuilder_review": "Domain 3 Review (DEA-C01) : opérations et support"
+  },
+  {
+   "id": "well-architected",
+   "label": "Well-Architected Framework",
+   "dea_domain": "3",
+   "maarek": [
+    {
+     "first": 264,
+     "last": 264
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 196,
+     "last": 197
+    }
+   ],
+   "merico": [
+    {
+     "first": 197,
+     "last": 198
+    }
+   ],
+   "skillbuilder_review": "Domain 3 Review (DEA-C01) : opérations et support"
+  },
+  {
+   "id": "sagemaker-ml",
+   "label": "Amazon SageMaker Catalog, Feature Store, Data Wrangler et ML Lineage (gouvernance unifiée data/ML, traçabilité)",
+   "dea_domain": "4",
+   "maarek": [
+    {
+     "first": 266,
+     "last": 273
+    }
+   ],
+   "nikolai": [
+    {
+     "first": 164,
+     "last": 167
+    }
+   ],
+   "merico": [
+    {
+     "first": 130,
+     "last": 130
+    }
+   ],
+   "skillbuilder_review": "Domain 4 Review (DEA-C01) : sécurité et gouvernance"
+  },
+  {
+   "id": "vectorisation-embeddings",
+   "label": "Vectorisation et stratégies de chunking (Amazon Titan Text Embeddings, segmentation sémantique, enrichissement Glue/Lambda)",
+   "dea_domain": "1",
+   "maarek": [
+    {
+     "first": 278,
+     "last": 279
+    },
+    {
+     "first": 283,
+     "last": 285
+    }
+   ],
+   "nikolai": [],
+   "merico": [],
+   "skillbuilder_review": "Domain 1 Review (DEA-C01) : ingestion et transformation"
+  },
+  {
+   "id": "index-vectoriels-hnsw-ivf",
+   "label": "Index vectoriels HNSW et IVF, recherche vectorielle k-NN (OpenSearch Service, OpenSearch Serverless, Aurora pgvector)",
+   "dea_domain": "2",
+   "maarek": [
+    {
+     "first": 285,
+     "last": 287
+    }
+   ],
+   "nikolai": [],
+   "merico": [],
+   "skillbuilder_review": "Domain 2 Review (DEA-C01) : gestion des stockages"
+  },
+  {
+   "id": "bedrock-rag",
+   "label": "Intégration LLM, Amazon Bedrock Knowledge Bases et pipelines GenAI (enrichissement data, RAG, API InvokeModel)",
+   "dea_domain": "1",
+   "maarek": [
+    {
+     "first": 274,
+     "last": 284
+    },
+    {
+     "first": 288,
+     "last": 289
+    }
+   ],
+   "nikolai": [],
+   "merico": [],
+   "skillbuilder_review": "Domain 1 Review (DEA-C01) : ingestion et transformation"
+  },
+  {
+   "id": "cloud-concepts-valeur",
+   "label": "Concepts du Cloud AWS (définition, CapEx vs OpEx, élasticité, agilité, économies d'échelle, TCO)",
+   "dea_domain": "1",
+   "maarek": [],
+   "nikolai": [],
+   "merico": [
+    {
+     "first": 1,
+     "last": 13
+    }
+   ],
+   "skillbuilder_review": "Exam Prep Overview: AWS Certified Cloud Practitioner (CLF-C02)"
+  },
+  {
+   "id": "modele-responsabilite-partagee",
+   "label": "Modèle de responsabilité partagée AWS (Shared Responsibility Model : client vs AWS selon IaaS, PaaS, SaaS)",
+   "dea_domain": "4",
+   "maarek": [],
+   "nikolai": [],
+   "merico": [
+    {
+     "first": 137,
+     "last": 140
+    }
+   ],
+   "skillbuilder_review": "Exam Prep Overview: AWS Certified Cloud Practitioner (CLF-C02)"
+  },
+  {
+   "id": "infrastructure-globale-cloud",
+   "label": "Infrastructure globale AWS (Régions, Zones de Disponibilité, Points de Présence Edge Locations, Local Zones, Outposts)",
+   "dea_domain": "2",
+   "maarek": [],
+   "nikolai": [],
+   "merico": [
+    {
+     "first": 15,
+     "last": 23
+    },
+    {
+     "first": 75,
+     "last": 86
+    }
+   ],
+   "skillbuilder_review": "Exam Prep Overview: AWS Certified Cloud Practitioner (CLF-C02)"
+  },
+  {
+   "id": "ec2-calcul-tarification",
+   "label": "Amazon EC2 et options d'achat (On-Demand, Savings Plans, Spot, Reserved Instances, Dedicated Hosts)",
+   "dea_domain": "1",
+   "maarek": [],
+   "nikolai": [],
+   "merico": [
+    {
+     "first": 24,
+     "last": 60
+    }
+   ],
+   "skillbuilder_review": "Exam Prep Overview: AWS Certified Cloud Practitioner (CLF-C02)"
+  },
+  {
+   "id": "facturation-couts-support",
+   "label": "Facturation, gestion des coûts et support AWS (AWS Budgets, Cost Explorer, Pricing Calculator, Trusted Advisor, plans de support)",
+   "dea_domain": "3",
+   "maarek": [],
+   "nikolai": [],
+   "merico": [
+    {
+     "first": 177,
+     "last": 188
+    }
+   ],
+   "skillbuilder_review": "Exam Prep Overview: AWS Certified Cloud Practitioner (CLF-C02)"
+  }
+ ],
+ "dbt_topics": [
+  {
+   "id": "modeles-materialisations",
+   "label": "Modèles et matérialisations",
+   "toth": [
+    {
+     "first": 16,
+     "last": 27
+    }
+   ],
+   "weigel": [
+    {
+     "first": 16,
+     "last": 28
+    }
+   ]
+  },
+  {
+   "id": "sources-fraicheur",
+   "label": "Sources, seeds et fraîcheur des sources",
+   "toth": [
+    {
+     "first": 28,
+     "last": 32
+    }
+   ],
+   "weigel": [
+    {
+     "first": 15,
+     "last": 15
+    },
+    {
+     "first": 43,
+     "last": 43
+    },
+    {
+     "first": 52,
+     "last": 52
+    },
+    {
+     "first": 115,
+     "last": 115
+    }
+   ]
+  },
+  {
+   "id": "snapshots",
+   "label": "Snapshots",
+   "toth": [
+    {
+     "first": 33,
+     "last": 36
+    }
+   ],
+   "weigel": [
+    {
+     "first": 122,
+     "last": 124
+    }
+   ]
+  },
+  {
+   "id": "tests",
+   "label": "Tests génériques, singuliers, personnalisés, sévérité",
+   "toth": [
+    {
+     "first": 37,
+     "last": 43
+    },
+    {
+     "first": 46,
+     "last": 48
+    }
+   ],
+   "weigel": [
+    {
+     "first": 104,
+     "last": 109
+    },
+    {
+     "first": 111,
+     "last": 112
+    },
+    {
+     "first": 116,
+     "last": 116
+    }
+   ]
+  },
+  {
+   "id": "tests-unitaires",
+   "label": "Tests unitaires",
+   "toth": [
+    {
+     "first": 44,
+     "last": 44
+    }
+   ],
+   "weigel": [
+    {
+     "first": 110,
+     "last": 110
+    }
+   ]
+  },
+  {
+   "id": "contrats-contraintes",
+   "label": "Contrats de modèle et contraintes",
+   "toth": [
+    {
+     "first": 45,
+     "last": 45
+    },
+    {
+     "first": 49,
+     "last": 49
+    }
+   ],
+   "weigel": [
+    {
+     "first": 68,
+     "last": 70
+    }
+   ]
+  },
+  {
+   "id": "jinja-macros",
+   "label": "Jinja et macros",
+   "toth": [
+    {
+     "first": 50,
+     "last": 56
+    }
+   ],
+   "weigel": [
+    {
+     "first": 33,
+     "last": 38
+    }
+   ]
+  },
+  {
+   "id": "packages",
+   "label": "Packages",
+   "toth": [
+    {
+     "first": 57,
+     "last": 57
+    }
+   ],
+   "weigel": [
+    {
+     "first": 53,
+     "last": 56
+    }
+   ]
+  },
+  {
+   "id": "documentation",
+   "label": "Documentation et lineage",
+   "toth": [
+    {
+     "first": 58,
+     "last": 62
+    }
+   ],
+   "weigel": [
+    {
+     "first": 42,
+     "last": 42
+    },
+    {
+     "first": 113,
+     "last": 113
+    }
+   ]
+  },
+  {
+   "id": "exposures",
+   "label": "Exposures",
+   "toth": [
+    {
+     "first": 71,
+     "last": 72
+    }
+   ],
+   "weigel": [
+    {
+     "first": 114,
+     "last": 114
+    }
+   ]
+  },
+  {
+   "id": "hooks-grants",
+   "label": "Hooks et grants",
+   "toth": [
+    {
+     "first": 65,
+     "last": 66
+    }
+   ],
+   "weigel": [
+    {
+     "first": 63,
+     "last": 65
+    }
+   ]
+  },
+  {
+   "id": "commandes-selecteurs",
+   "label": "Commandes et sélecteurs",
+   "toth": [
+    {
+     "first": 86,
+     "last": 92
+    }
+   ],
+   "weigel": [
+    {
+     "first": 40,
+     "last": 41
+    },
+    {
+     "first": 44,
+     "last": 44
+    },
+    {
+     "first": 117,
+     "last": 119
+    }
+   ]
+  },
+  {
+   "id": "empty-sample",
+   "label": "--empty et --sample",
+   "toth": [
+    {
+     "first": 88,
+     "last": 88
+    }
+   ],
+   "weigel": [
+    {
+     "first": 128,
+     "last": 128
+    }
+   ]
+  },
+  {
+   "id": "modeles-python",
+   "label": "Modèles Python",
+   "toth": [
+    {
+     "first": 93,
+     "last": 96
+    }
+   ],
+   "weigel": [
+    {
+     "first": 61,
+     "last": 62
+    }
+   ]
+  },
+  {
+   "id": "variables",
+   "label": "Variables",
+   "toth": [
+    {
+     "first": 97,
+     "last": 101
+    }
+   ],
+   "weigel": [
+    {
+     "first": 50,
+     "last": 50
+    }
+   ]
+  },
+  {
+   "id": "incremental-microbatch",
+   "label": "Modèles incrémentaux et microbatch",
+   "toth": [
+    {
+     "first": 25,
+     "last": 26
+    },
+    {
+     "first": 101,
+     "last": 103
+    }
+   ],
+   "weigel": [
+    {
+     "first": 25,
+     "last": 26
+    },
+    {
+     "first": 125,
+     "last": 127
+    }
+   ]
+  },
+  {
+   "id": "versions",
+   "label": "Versions de modèles et dépréciation",
+   "toth": [
+    {
+     "first": 104,
+     "last": 107
+    }
+   ],
+   "weigel": [
+    {
+     "first": 71,
+     "last": 72
+    }
+   ]
+  },
+  {
+   "id": "acces-modeles",
+   "label": "Accès aux modèles : groupes, privé, protégé",
+   "toth": [],
+   "weigel": [
+    {
+     "first": 73,
+     "last": 76
+    }
+   ]
+  },
+  {
+   "id": "environnements",
+   "label": "Environnements, cibles, variables d'environnement",
+   "toth": [
+    {
+     "first": 109,
+     "last": 113
+    }
+   ],
+   "weigel": [
+    {
+     "first": 66,
+     "last": 67
+    }
+   ]
+  },
+  {
+   "id": "etat-retry",
+   "label": "État, manifest, run_results, retry",
+   "toth": [
+    {
+     "first": 114,
+     "last": 115
+    }
+   ],
+   "weigel": [
+    {
+     "first": 85,
+     "last": 89
+    }
+   ]
+  },
+  {
+   "id": "ci-slim-ci",
+   "label": "CI/CD et Slim CI",
+   "toth": [
+    {
+     "first": 108,
+     "last": 108
+    },
+    {
+     "first": 118,
+     "last": 123
+    }
+   ],
+   "weigel": [
+    {
+     "first": 90,
+     "last": 94
+    },
+    {
+     "first": 98,
+     "last": 103
+    }
+   ]
+  },
+  {
+   "id": "defer-clone",
+   "label": "Defer et clone",
+   "toth": [
+    {
+     "first": 116,
+     "last": 116
+    }
+   ],
+   "weigel": [
+    {
+     "first": 95,
+     "last": 97
+    }
+   ]
+  },
+  {
+   "id": "debogage",
+   "label": "Débogage et dépannage",
+   "toth": [
+    {
+     "first": 82,
+     "last": 82
+    },
+    {
+     "first": 87,
+     "last": 87
+    }
+   ],
+   "weigel": [
+    {
+     "first": 77,
+     "last": 84
+    }
+   ]
+  },
+  {
+   "id": "dbt-show",
+   "label": "Commande dbt show",
+   "toth": [],
+   "weigel": [
+    {
+     "first": 121,
+     "last": 121
+    }
+   ]
+  },
+  {
+   "id": "nouveautes-examen-2026",
+   "label": "Nouveautés de l'examen 2026 et conseils",
+   "toth": [
+    {
+     "first": 164,
+     "last": 164
+    }
+   ],
+   "weigel": [
+    {
+     "first": 3,
+     "last": 3
+    },
+    {
+     "first": 120,
+     "last": 120
+    },
+    {
+     "first": 129,
+     "last": 130
+    }
+   ]
+  },
+  {
+   "id": "fusion",
+   "label": "dbt Fusion (hors examen dbt Core)",
+   "toth": [
+    {
+     "first": 124,
+     "last": 137
+    }
+   ],
+   "weigel": []
+  }
+ ]
+}

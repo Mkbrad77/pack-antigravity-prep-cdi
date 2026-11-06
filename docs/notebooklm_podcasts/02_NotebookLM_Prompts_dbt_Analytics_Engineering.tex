@@ -1,0 +1,777 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[margin=2cm]{geometry}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+
+% Macro pour afficher les flags CLI dbt sans ligature en-dash LaTeX
+\newcommand{\flag}[1]{\texttt{-{}-#1}}
+
+\definecolor{dbtorange}{RGB}{255, 105, 74}
+\definecolor{dbtdark}{RGB}{38, 42, 56}
+\definecolor{bgprompt}{RGB}{248, 250, 252}
+\definecolor{bgsource}{RGB}{255, 246, 243}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=dbtdark,
+    urlcolor=blue
+}
+
+\newtcolorbox{sourcebox}[1]{
+    colback=bgsource,
+    colframe=dbtorange!90!black,
+    fonttitle=\bfseries,
+    title={#1},
+    breakable,
+    enhanced
+}
+
+\newtcolorbox{promptbox}[1]{
+    colback=bgprompt,
+    colframe=dbtdark,
+    fonttitle=\bfseries,
+    title={#1},
+    breakable,
+    enhanced
+}
+
+\title{\textbf{Stratégie Audio \& Podcasts NotebookLM}\\
+\Large URGENCE N\textdegree 1 : dbt Analytics Engineering Certification (dbt Developer)\\
+\large Semaines 4 à 10 (Examen cible : 8 janvier 2027)}
+\author{Auren Moyo (Pack Préparation Intensive CDI Data \& AI)}
+\date{Novembre 2026}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Mode d'Emploi : Générer et Utiliser les 16 Audios dbt}
+
+\subsection{Pourquoi 16 Audios combinant Macro-Thèmes et Micro-Thèmes ?}
+L'examen \textbf{dbt Analytics Engineering Certification} (65 questions, 120 minutes, score requis 65 \%, questions de type DOMC et QCM) est réputé pour ses questions très pointues sur la syntaxe YAML, l'ordre de priorité des configurations, les modèles incrémentaux, les snapshots SCD Type 2, les sélecteurs de graphe (\texttt{+}, \texttt{@}, virgule vs espace) et le déploiement \textbf{Slim CI} (\texttt{state:modified+} et \flag{defer}).
+
+Pour que les podcasts NotebookLM ne restent jamais en surface, ce document découpe le programme en \textbf{16 épisodes} (\texttt{DBT-AUDIO-01} à \texttt{DBT-AUDIO-16}) :
+\begin{itemize}
+    \item Les premiers épisodes posent les \textbf{fondations évidentes} (DAG, \texttt{ref}, \texttt{source}, configurations).
+    \item Les épisodes suivants plongent chacun dans un \textbf{micro-thème ultra-précis} (ex: uniquement les stratégies incrémentales, ou uniquement les snapshots, ou uniquement la grammaire des sélecteurs CLI).
+\end{itemize}
+
+\subsection{Astuce Pro NotebookLM (Boîte Customize + Source Texte)}
+Dans Google NotebookLM :
+\begin{enumerate}[label=\textbf{Étape \arabic* :}]
+    \item Clique sur \textbf{Add source (Ajouter une source)} $\rightarrow$ \textbf{Discover sources (Rechercher sur le Web)} et colle les requêtes de recherche de l'encadré orange.
+    \item Ajoute aussi les chapitres locaux de ton projet (\texttt{content/certifications/dbt/chapters/...}).
+    \item \textbf{Astuce maximale pour aller dans le détail :} Si le champ \textit{Customize} du Studio Audio est limité en nombre de caractères, colle le \textbf{Prompt Détaillé (encadré bleu)} en tant que nouvelle source texte (\textbf{Add source} $\rightarrow$ \textbf{Copied text}, nommée \texttt{00\_DIRECTIVES\_DEBAT\_EXAMEN}), puis colle le \textbf{Prompt Court Studio} dans le bouton \textbf{Customize} de l'Audio Overview ! Les deux hôtes suivront alors 100 \% du plan technique point par point.
+    \item Télécharge l'audio généré, renomme-le exactement comme indiqué (\texttt{DBT-AUDIO-01.mp3} à \texttt{DBT-AUDIO-16.mp3}) et dépose-le dans :
+    \begin{center}
+        \texttt{public/audios/dbt/}
+    \end{center}
+\end{enumerate}
+
+\subsection{Tableau Récapitulatif et Planning d'Écoute Récursive (Semaines 4 à 10)}
+
+\begin{table}[h!]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{l l X l}
+\toprule
+\textbf{Code Audio} & \textbf{Type \& Niveau} & \textbf{Thème Principal} & \textbf{Semaines d'Écoute} \\
+\midrule
+\texttt{DBT-AUDIO-01} & Macro (Niv. 1) & Architecture projet dbt, DAG, \texttt{ref()} vs \texttt{source()} & S4 (Lun, Jeu, Dim) + S9 \\
+\texttt{DBT-AUDIO-02} & Micro (Niv. 1) & Hiérarchie des configurations, \texttt{dbt\_project.yml}, \texttt{+}, \texttt{grants} & S4 (Mar, Ven, Dim) + S9 \\
+\texttt{DBT-AUDIO-03} & Micro (Niv. 1) & Sources, \texttt{source freshness}, Seeds (\texttt{dbt seed}) \& Analyses & S4 (Mer, Sam) + S6 + S10 \\
+\texttt{DBT-AUDIO-04} & Macro (Niv. 2) & Les 5 Matérialisations : \texttt{view}, \texttt{table}, \texttt{ephemeral}, \texttt{incremental} & S5 (Lun, Jeu, Dim) + S9 \\
+\texttt{DBT-AUDIO-05} & Micro (Niv. 3) & Modèles Incrémentaux : stratégies, \texttt{unique\_key}, \texttt{on\_schema\_change} & S5 (Mar, Ven, Dim) + S10 \\
+\texttt{DBT-AUDIO-06} & Micro (Niv. 3) & Snapshots SCD Type 2 : \texttt{timestamp} vs \texttt{check}, \texttt{hard\_deletes} & S5 (Mer, Sam) + S8 + S10 \\
+\texttt{DBT-AUDIO-07} & Micro (Niv. 2) & Tests de données : génériques natifs, singuliers et custom generic & S6 (Lun, Jeu, Dim) + S9 \\
+\texttt{DBT-AUDIO-08} & Micro (Niv. 3) & Configs de tests (\texttt{warn\_if}, \texttt{store\_failures}) \& Unit Tests (dbt 1.8+) & S6 (Mar, Ven, Dim) + S10 \\
+\texttt{DBT-AUDIO-09} & Micro (Niv. 3) & Model Contracts, Constraints, Versions \& Access (\texttt{public/private}) & S6 (Mer, Sam) + S8 + S10 \\
+\texttt{DBT-AUDIO-10} & Micro (Niv. 3) & Jinja \& Macros : \texttt{var}, \texttt{env\_var}, \texttt{target}, \texttt{this}, \texttt{execute} + \texttt{run\_query} & S7 (Lun, Jeu, Dim) + S10 \\
+\texttt{DBT-AUDIO-11} & Micro (Niv. 2) & Packages (\texttt{dbt\_utils}), Hooks (\texttt{pre/post/on-run}) \& Operations & S7 (Mar, Ven, Dim) + S9 \\
+\texttt{DBT-AUDIO-12} & Micro (Niv. 3) & Sélecteurs CLI : \texttt{+}, \texttt{@}, virgule (ET) vs espace (OU), \texttt{result:} & S7 (Mer, Sam) + S9 + S10 \\
+\texttt{DBT-AUDIO-13} & Micro (Niv. 3) & \texttt{dbt build} vs \texttt{run/test}, \texttt{dbt retry}, \texttt{dbt clone}, \flag{empty} & S8 (Lun, Ven) + S10 \\
+\texttt{DBT-AUDIO-14} & Micro (Niv. 3) & Artefacts (\texttt{manifest.json}), \texttt{state:modified+}, \flag{defer} \& Slim CI & S8 (Mer, Sam) + S9 + S10 \\
+\texttt{DBT-AUDIO-15} & Micro (Niv. 2) & Documentation (\texttt{docs} blocks, \texttt{catalog.json}), Exposures \& dbt Mesh & S9 (Mar, Sam) + S10 \\
+\texttt{DBT-AUDIO-16} & Débat (Niv. 3) & Les 30 Pièges Mortels de l'examen dbt \& Débogage d'erreurs & S9 (Dim) + S10 (Lun, Mer, Jeu) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\newpage
+
+% ============================================================================
+\section{Partie 1 : Fondations du DAG, Configurations \& Sources (Niveau 1)}
+% ============================================================================
+
+\subsection{Épisode 01 : Architecture d'un Projet dbt, DAG, \texttt{ref()} et \texttt{source()}}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DBT-AUDIO-01.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DBT-AUDIO-01.mp3}\\
+\textbf{Type :} Macro-Thème (Niveau 1 : Fondations indispensables)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{docs.getdbt.com about dbt_project.yml profiles.yml target ref source function}
+    \item \texttt{dbt modular data modeling staging intermediate marts best practices}
+\end{itemize}
+\textbf{Fichiers locaux du projet à importer :}
+\texttt{content/certifications/dbt/chapters/chapitre_01_architecture_dbt_core_cloud.md} et \texttt{chapitre_02_structure_projet_modularite.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DBT-AUDIO-01}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français pour préparer la certification dbt Analytics Engineering. Décortiquez l'architecture d'un projet dbt (dbt\_project.yml vs profiles.yml), le fonctionnement exact des fonctions Jinja ref() et source() pour construire le DAG, la séparation des couches Staging, Intermediate et Marts, et les pièges d'examen sur les dépendances circulaires et l'objet target.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Organisez une discussion technique approfondie en français entre deux Analytics Engineers seniors préparant un candidat à la certification officielle dbt Analytics Engineering. Conservez les mots-clés YAML, CLI et Jinja en anglais.
+
+Décortiquez avec précision les points suivants et leurs pièges d'examen :
+1. Anatomie des fichiers de configuration principaux :
+- Ce qui va dans dbt\_project.yml (name, version, profile, model-paths, seed-paths, test-paths, macro-paths, snapshot-paths, clean-targets, configurations de modèles par dossier) vs ce qui va dans profiles.yml (identifiants de connexion à Snowflake, account, user, role, warehouse, database, schema par défaut, threads, et les différentes cibles target comme dev et prod).
+- Comment dbt relie dbt\_project.yml à profiles.yml via la clé profile:.
+2. Les fonctions fondamentales ref() et source() :
+- Pourquoi il est formellement interdit d'écrire des noms de tables en dur (comme raw.jaffle\_shop.orders) dans un modèle dbt.
+- Comment source('nom\_source', 'nom\_table') déclare la dépendance envers une table brute externe et comment ref('nom\_modele') construit automatiquement le graphe acyclique orienté (DAG) et résout le bon schéma cible (target.schema en dev vs prod).
+- Piège d'examen : que se passe-t-il si deux modèles portent le même nom de fichier .sql dans deux sous-dossiers différents d'un même projet dbt ? (Erreur de compilation d'unicité des noms de modèles, sauf utilisation du versionnage ou projets distincts en dbt Mesh).
+3. L'architecture modulaire recommandée par dbt Labs :
+- Couche Staging (stg\_) : relation 1-pour-1 avec les tables sources, seul endroit où l'on utilise source(), renommage des colonnes, cast des types, nettoyage léger, matérialisée en view.
+- Couche Intermediate (int\_) : transformations intermédiaires, jointures complexes, réutilisabilité, matérialisée en ephemeral ou view.
+- Couche Marts (fct\_, dim\_) : entités métier finales prêtes pour la BI, matérialisées en table ou incremental.
+\end{promptbox}
+
+\subsection{Épisode 02 : Hiérarchie des Configurations, \texttt{dbt\_project.yml}, \texttt{grants} et \texttt{persist\_docs}}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DBT-AUDIO-02.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DBT-AUDIO-02.mp3}\\
+\textbf{Type :} Micro-Thème (Niveau 1 à 2 : Priorité des configurations)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{docs.getdbt.com reference model-configs precedence hierarchy dbt_project.yml config block}
+    \item \texttt{dbt custom schemas generate_schema_name macro grants persist_docs tags meta}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dbt/chapters/chapitre_03_configurations_hierarchie_schemas.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DBT-AUDIO-02}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français pour la certification dbt. Expliquez la règle de priorité des configurations (bloc config() dans le .sql vs fichier properties .yml vs dbt\_project.yml), comment certaines configurations s'écrasent tandis que tags, meta, grants et hooks se cumulent ou fusionnent, et le piège de la concaténation des custom schemas (target.schema\_custom\_schema).
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Animez un débat ultra-précis en français sur un sujet qui tombe systématiquement à l'examen dbt Analytics Engineering : la hiérarchie des configurations et la gestion des schémas et permissions.
+
+Décortiquez chaque règle et chaque exception :
+1. L'ordre exact de priorité (du plus spécifique qui gagne au plus général) :
+- Priorité N°1 (la plus forte) : le bloc Jinja config() placé directement en haut du fichier .sql du modèle.
+- Priorité N°2 : la clé config: définie dans le fichier YAML de propriétés (ex: models/staging/\_schema.yml) sous le modèle concerné.
+- Priorité N°3 : la configuration définie par chemin de dossier dans dbt\_project.yml.
+2. Le piège majeur de l'examen : Écrasement (Override) vs Cumul/Fusion (Append/Merge) :
+- La plupart des configurations (materialized, schema, alias) s'écrasent selon la priorité ci-dessus.
+- EXCEPTION CRITIQUE : les tags, pre-hook et post-hook s'ajoutent (se cumulent) à travers tous les niveaux ! Les dictionnaires meta s'unissent (les clés de plus haute priorité écrasent les clés identiques).
+- Et pour grants (permissions SQL GRANT SELECT ON ... TO ROLE) : par défaut, un grant défini dans le bloc config() du modèle écrase celui de dbt\_project.yml, SAUF si on utilise le préfixe + devant le privilège (ex: +select: ['reporter']) pour additionner les rôles au lieu de les remplacer !
+3. Le comportement par défaut des Custom Schemas dans dbt :
+- Si mon target.schema dans profiles.yml est "dbt\_auren" et que je configure +schema: finance sur un modèle, quel sera le nom exact du schéma créé dans Snowflake ?
+- Réponse à expliquer : "dbt\_auren\_finance" ! Par défaut, la macro native generate\_schema\_name concatène target.schema et custom\_schema pour éviter les collisions entre développeurs en dev. Pour avoir uniquement "finance" en prod, il faut surcharger la macro generate\_schema\_name.
+4. La configuration persist\_docs (relation: true, columns: true) : comment pousser les descriptions YAML dans les commentaires natifs des tables et colonnes Snowflake.
+\end{promptbox}
+
+\subsection{Épisode 03 : Sources, \texttt{source freshness}, Seeds (\texttt{dbt seed}) et Analyses}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DBT-AUDIO-03.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DBT-AUDIO-03.mp3}\\
+\textbf{Type :} Micro-Thème (Niveau 1 à 2 : Sources, Fraîcheur, Seeds et Analyses)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{docs.getdbt.com docs build sources source freshness loaded_at_field filter}
+    \item \texttt{docs.getdbt.com docs build seeds analyses seed configurations column_types}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dbt/chapters/chapitre_04_sources_seeds_analyses.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DBT-AUDIO-03}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat en français pour la certification dbt sur les Sources, la commande dbt source freshness, les Seeds et les Analyses. Détaillez la syntaxe YAML de freshness (loaded\_at\_field, warn\_after, error\_after, filter), comment tester une source sans la matérialiser, les cas d'usage et anti-patterns des Seeds CSV, et le rôle du dossier analyses/.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Organisez un débat technique en français centré sur les Sources, les Seeds et les Analyses pour la certification dbt.
+
+Couvrez tous les détails suivants :
+1. Déclaration et configuration des Sources dans un fichier YAML :
+- Les propriétés database, schema, loader, description, tables, et identifier (quand le nom de la table physique dans Snowflake diffère du nom logique utilisé dans source()).
+- Peut-on appliquer des tests génériques (unique, not\_null, accepted\_values, relationships) directement sur une source dans le YAML ? Oui, et on les exécute avec dbt test --select source:nom\_source.
+2. Surveillance de la fraîcheur des données avec dbt source freshness :
+- Les paramètres obligatoires : loaded\_at\_field (colonne timestamp indiquant quand la ligne a été chargée, ouloaded\_at\_query personnalisé) et le bloc freshness: avec warn\_after et error\_after (count + period : minute, hour, day).
+- Piège d'examen n°1 : comment désactiver la vérification de fraîcheur pour une table spécifique au sein d'une source qui a une fraîcheur configurée par défaut ? En définissant freshness: null sur cette table !
+- Piège d'examen n°2 : la propriété filter: dans une source (ex: filter: \_etl\_loaded\_at >= dateadd(day, -3, current\_timestamp())) qui est indispensable sur les très grosses tables partitionnées dans Snowflake ou BigQuery pour réduire le coût du scan lors du dbt source freshness.
+- Quel artefact JSON est généré par dbt source freshness ? Le fichier target/sources.json.
+3. Les Seeds (fichiers CSV dans le dossier seeds/) :
+- Exécutés via dbt seed (ou inclus dans dbt build). Idéal pour les petites tables de référence statiques (codes pays ISO, mapping de départements, listes d'employés exclus).
+- Anti-pattern absolu à l'examen : ne jamais mettre de données brutes de production volumineuses ni de données personnelles (PII) dans un Seed car ils sont versionnés dans Git !
+- Comment forcer le type SQL d'une colonne d'un Seed (ex: conserver les zéros initiaux d'un code postal "01234" en varchar) ? Avec la configuration +column\_types: dans dbt\_project.yml ou le YAML, suivie de dbt seed --full-refresh si la table existe déjà.
+4. Les Analyses (dossier analyses/) :
+- Requêtes SQL utilisant Jinja et ref() qui sont compilées par dbt compile dans target/compiled/, mais qui ne sont JAMAIS exécutées ni matérialisées dans l'entrepôt par dbt run ou dbt build.
+\end{promptbox}
+
+\newpage
+
+% ============================================================================
+\section{Partie 2 : Matérialisations, Modèles Incrémentaux \& Snapshots (Niveau 2 à 3)}
+% ============================================================================
+
+\subsection{Épisode 04 : Comparatif des 5 Matérialisations dbt (et pièges des \texttt{ephemeral})}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DBT-AUDIO-04.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DBT-AUDIO-04.mp3}\\
+\textbf{Type :} Macro-Thème (Niveau 2 : Matérialisations et Arbitrages)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{docs.getdbt.com docs build materializations view table incremental ephemeral materialized view}
+    \item \texttt{dbt ephemeral model limitations pros cons CTE compilation exam questions}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dbt/chapters/chapitre_05_materialisations_fondamentales.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DBT-AUDIO-04}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français pour la certification dbt comparant les 5 matérialisations : view, table, ephemeral, incremental et materialized\_view. Insistez particulièrement sur le fonctionnement SQL sous-jacent, les compromis coût/latence sur Snowflake, et toutes les limites piégeuses de la matérialisation ephemeral à l'examen.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Organisez un débat comparatif en français sur les 5 matérialisations de dbt pour la certification Analytics Engineering.
+
+Analysez en détail :
+1. La matérialisation par défaut dans dbt :
+Si aucune matérialisation n'est spécifiée nulle part, dbt matérialise le modèle en tant que view (CREATE OR REPLACE VIEW).
+2. View vs Table :
+- View : rapide à construire lors du dbt run (ne stocke pas de données, uniquement la définition SQL), toujours à jour par rapport aux tables sous-jacentes, mais recalcule tout à chaque lecture par l'outil BI (lent si les transformations ou jointures sont lourdes).
+- Table : exécutée via CREATE OR REPLACE TABLE ... AS SELECT, plus lente et coûteuse lors du dbt run, mais ultra-rapide à interroger pour les outils BI (Tableau, Power BI, Looker) et les utilisateurs finaux.
+3. Tout savoir sur la matérialisation Ephemeral (sujet favori des examinateurs) :
+- Rien n'est créé dans Snowflake (ni table, ni vue) ! Lors de la compilation, dbt injecte le code du modèle ephemeral sous forme d'une Common Table Expression (CTE : WITH \_\_dbt\_\_cte\_\_nom AS (...)) directement en haut des modèles avals qui font ref() dessus.
+- Avantages : pas d'encombrement du schéma dans l'entrepôt, réutilisation de logique légère (1 ou 2 modèles avals).
+- Pièges et inconvénients majeurs à connaître pour l'examen :
+  * Un outil BI externe ne peut PAS interroger un modèle ephemeral puisqu'il n'existe pas dans la base de données.
+  * Si un modèle ephemeral est référencé par 10 modèles en aval, son calcul SQL est recompilé et réexécuté 10 fois !
+  * Les requêtes compilées deviennent très longues et difficiles à déboguer dans les logs.
+  * On ne peut pas appeler ref() vers un modèle ephemeral depuis une opération purement externe.
+4. Introduction comparative à Incremental (ajout/mise à jour des nouvelles lignes uniquement) et Materialized View (vue matérialisée gérée et rafraîchie nativement par la plateforme de données comme Snowflake Dynamic Tables / Materialized Views).
+\end{promptbox}
+
+\subsection{Épisode 05 : Anatomie Chirurgicale des Modèles \texttt{incremental} sur Snowflake}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DBT-AUDIO-05.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DBT-AUDIO-05.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Sujet à très fort coefficient à l'examen)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{docs.getdbt.com docs build incremental-models is_incremental unique_key}
+    \item \texttt{docs.getdbt.com docs build incremental-strategy merge delete+insert append insert_overwrite microbatch}
+    \item \texttt{dbt incremental on_schema_change ignore fail append_new_columns sync_all_columns}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dbt/chapters/chapitre_06_modeles_incrementaux_strategies.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DBT-AUDIO-05}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat chirurgical en français sur les modèles incrémentaux dbt : les 3 conditions pour que is\_incremental() retourne True, le rôle de unique\_key, les stratégies incremental\_strategy (merge, delete+insert, append, insert\_overwrite, microbatch), les 4 options de on\_schema\_change, la gestion des late-arriving facts (lookback window) et le flag -\hbox{}-full-refresh.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Consacrez l'intégralité de cet épisode en français à décortiquer dans les moindres détails les modèles incrémentaux dans dbt. C'est l'un des thèmes les plus difficiles et les plus présents à la certification dbt.
+
+Passez au crible les 6 points techniques suivants :
+1. Les 4 conditions simultanées pour que la macro is\_incremental() retourne True :
+- Le modèle doit être configuré avec materialized='incremental'.
+- La table cible doit DÉJÀ exister dans l'entrepôt de données (Snowflake).
+- La table cible existante en base doit être une table (et non une vue).
+- La commande ne doit PAS être lancée avec le flag --full-refresh.
+Si l'une de ces conditions est fausse (ex: premier run ou --full-refresh), is\_incremental() retourne False et dbt exécute un CREATE OR REPLACE TABLE complet.
+
+2. La référence {{ this }} dans le bloc {% if is\_incremental() %} :
+Expliquez pourquoi on écrit : WHERE event\_timestamp > (SELECT MAX(event\_timestamp) FROM {{ this }}) et le piège de performance si on met la sous-requête directement sans filtrer ou sans utiliser une fenêtre de recul (lookback window, ex: dateadd(day, -3, max(event\_timestamp))) pour capturer les données arrivées en retard (late-arriving facts).
+
+3. Le paramètre unique\_key et les stratégies incrémentales (incremental\_strategy) sur Snowflake :
+- Si unique\_key n'est pas défini (ou strategy='append') : dbt fait uniquement un INSERT des nouvelles lignes, ce qui crée des doublons si une ligne mise à jour ou dans la fenêtre de recul est relue !
+- strategy='merge' (défaut sur Snowflake quand unique\_key est défini) : exécute un MERGE INTO ... WHEN MATCHED THEN UPDATE WHEN NOT MATCHED THEN INSERT.
+- strategy='delete+insert' : supprime d'abord de la table cible les clés présentes dans le lot temporaire, puis insère les nouvelles lignes (souvent plus rapide sur de gros volumes que le MERGE complet si on combine avec incremental\_predicates).
+- strategy='insert\_overwrite' et la nouvelle stratégie 'microbatch' (traitement par lots temporels event\_time).
+
+4. Les 4 options de on\_schema\_change (que se passe-t-il si j'ajoute ou supprime une colonne dans le SELECT de mon modèle incrémental sans faire de --full-refresh ?) :
+- 'ignore' (valeur par défaut !) : la nouvelle colonne ajoutée dans le SQL est silencieusement ignorée et n'apparaît PAS dans la table cible, et si une colonne a été supprimée du SQL, la requête peut échouer ou insérer NULL.
+- 'fail' : fait échouer immédiatement le run si le schéma source et le schéma cible diffèrent.
+- 'append\_new\_columns' : ajoute les nouvelles colonnes à la table existante, mais ne supprime pas les colonnes retirées du SQL.
+- 'sync\_all\_columns' : ajoute les nouvelles colonnes, supprime les colonnes retirées du SQL, et met à jour le type de données des colonnes modifiées !
+\end{promptbox}
+
+\subsection{Épisode 06 : \texttt{Snapshots} dbt et Historisation SCD Type 2}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DBT-AUDIO-06.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DBT-AUDIO-06.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Snapshots et Slowly Changing Dimensions)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{docs.getdbt.com docs build snapshots timestamp strategy vs check strategy}
+    \item \texttt{dbt snapshot invalidate_hard_deletes dbt_valid_from dbt_valid_to dbt_scd_id}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dbt/chapters/chapitre_07_snapshots_scd_type2.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DBT-AUDIO-06}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français sur les Snapshots dbt (SCD Type 2). Comparez la stratégie timestamp (recommandée) et la stratégie check (check\_cols), expliquez les 4 colonnes méta générées (dbt\_scd\_id, dbt\_updated\_at, dbt\_valid\_from, dbt\_valid\_to), l'option invalidate\_hard\_deletes, et pourquoi --full-refresh n'affecte jamais un snapshot.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Organisez un débat approfondi en français exclusivement dédié aux Snapshots dans dbt et à l'historisation SCD Type 2 (Slowly Changing Dimensions de Type 2).
+
+Décortiquez tous les points testés à la certification :
+1. Le rôle d'un Snapshot dbt :
+Capturer l'historique des changements d'une table source mutable (qui écrase ses lignes en place via UPDATE) en conservant chaque version d'un enregistrement avec ses dates de début et de fin de validité.
+2. Les 4 colonnes de métadonnées ajoutées automatiquement par dbt dans la table de snapshot :
+- dbt\_scd\_id : clé unique générée (hash) pour chaque ligne historisée du snapshot.
+- dbt\_updated\_at : le timestamp de mise à jour de la ligne source au moment de la capture.
+- dbt\_valid\_from : le timestamp à partir duquel cette version de la ligne est devenue active.
+- dbt\_valid\_to : le timestamp auquel cette version a expiré. Quelle est la valeur de dbt\_valid\_to pour la ligne ACTUELLEMENT active (courante) ? Elle vaut NULL (sauf si dbt\_valid\_to\_current est configuré avec une date future fixe comme '9999-12-31').
+3. Comparaison des 2 stratégies de détection des changements :
+- strategy='timestamp' (fortement recommandée par dbt Labs) : utilise unique\_key et une colonne updated\_at fiable. Si updated\_at est plus récent que dans le snapshot, dbt ferme l'ancienne ligne (remplit dbt\_valid\_to) et insère la nouvelle version. Avantage majeur : si on ajoute ou supprime une colonne dans la table source, la stratégie timestamp s'adapte sans déclencher de faux positifs.
+- strategy='check' : à utiliser uniquement quand la source n'a PAS de colonne updated\_at fiable. Utilise check\_cols: 'all' ou une liste de colonnes (ex: ['status', 'address']). Compare les valeurs colonne par colonne.
+4. Les pièges d'examen sur les Snapshots :
+- Que se passe-t-il si une ligne est supprimée physiquement (DELETE) de la table source ? Par défaut, rien (la ligne reste avec dbt\_valid\_to = NULL dans le snapshot), SAUF si on active invalidate\_hard\_deletes=True (qui ferme alors la ligne supprimée en renseignant dbt\_valid\_to).
+- Que fait la commande dbt build --full-refresh sur un snapshot ? RIEN, le flag --full-refresh est ignoré sur les snapshots pour éviter de détruire accidentellement tout l'historique irremplaçable !
+- Bonne pratique de schéma : toujours stocker les snapshots dans un schéma dédié (target\_schema: 'snapshots') qui n'est jamais supprimé entre les environnements.
+\end{promptbox}
+
+\newpage
+
+% ============================================================================
+\section{Partie 3 : Tests, Unit Tests, Contrats \& Gouvernance (Niveau 2 à 3)}
+% ============================================================================
+
+\subsection{Épisode 07 : Tests de Données : Génériques, Singuliers et Custom Generic}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DBT-AUDIO-07.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DBT-AUDIO-07.mp3}\\
+\textbf{Type :} Micro-Thème (Niveau 2 : Architecture des Tests dbt)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{docs.getdbt.com docs build data-tests generic tests singular tests custom generic}
+    \item \texttt{dbt unique not_null accepted_values relationships test SQL compilation}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dbt/chapters/chapitre_08_tests_generiques_singuliers.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DBT-AUDIO-07}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français sur les tests de données (data\_tests) dans dbt : le principe fondamental (une requête SQL qui retourne les lignes en échec, donc 0 ligne = succès), les 4 tests génériques natifs, les tests singuliers dans tests/, et l'écriture d'un test générique personnalisé avec le bloc Jinja test.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Organisez une discussion détaillée en français sur la philosophie et l'implémentation des tests de données (data\_tests / tests) dans dbt.
+
+Décortiquez :
+1. Le principe fondamental d'un test dbt :
+Dans dbt, tout test de données est traduit en une requête SELECT qui cherche les contre-exemples (les lignes invalides). Si la requête retourne 0 ligne, le test PASSE (PASS). Si elle retourne 1 ou plusieurs lignes, le test ÉCHOUE (FAIL ou WARN).
+2. Les 4 tests génériques fournis nativement avec dbt Core (sans aucun package externe) :
+- unique : vérifie qu'il n'y a aucun doublon dans la colonne (ignore les NULLs).
+- not\_null : vérifie qu'aucune ligne n'a la valeur NULL dans la colonne.
+- accepted\_values : vérifie que toutes les valeurs appartiennent à une liste définie (values: ['placed', 'shipped', 'completed']) ; attention au paramètre quote: false si ce sont des entiers ou des booléens !
+- relationships : vérifie l'intégrité référentielle (clé étrangère) vers un autre modèle ou une source via to: ref('dim\_customers') et field: customer\_id.
+3. Les Tests Singuliers (Singular Tests) :
+- Fichiers .sql placés dans le dossier tests/ (ex: tests/assert\_total\_amount\_is\_positive.sql).
+- Contiennent une requête SELECT spécifique à un modèle utilisant ref() ou source(). Ne prennent pas d'arguments model ou column\_name.
+- Piège d'examen : il ne faut jamais mettre de point-virgule (;) à la fin d'une requête de test singulier ou d'un modèle dbt !
+4. Les Tests Génériques Personnalisés (Custom Generic Tests) :
+- Comment transformer un test singulier en test générique réutilisable dans les fichiers YAML sur n'importe quelle table ou colonne ?
+- Où les placer : dans macros/ ou dans tests/generic/.
+- La syntaxe exacte avec la signature {% test nom\_du\_test(model, column\_name, argument\_suppl) %} ... {% endtest %}.
+\end{promptbox}
+
+\subsection{Épisode 08 : Configurations Avancées de Tests \& Unit Tests (dbt 1.8+)}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DBT-AUDIO-08.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DBT-AUDIO-08.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Configurations de tests et Tests Unitaires)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{docs.getdbt.com reference resource-configs severity warn_if error_if store_failures where}
+    \item \texttt{docs.getdbt.com docs build unit-tests given expect input mock data dbt}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dbt/chapters/chapitre_09_configurations_tests_unit_tests.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DBT-AUDIO-08}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat en français pour la certification dbt sur les configurations avancées des tests (severity, warn\_if, error\_if, where, limit, store\_failures) et sur la différence fondamentale entre Data Tests et Unit Tests (unit\_tests avec entrées given et sorties attendues expect sans lire les vraies données de production).
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Animez un débat technique en français sur les configurations avancées des tests et les Unit Tests dans dbt.
+
+1. Les configurations avancées des tests de données (Data Tests) :
+- severity: 'error' (défaut, retourne un code de sortie non nul et bloque l'aval dans dbt build) vs severity: 'warn' (émet un avertissement sans bloquer le pipeline).
+- Seuils conditionnels avec warn\_if et error\_if :
+  Expliquez comment configurer un test qui est en succès à 0 échec, en avertissement (WARN) entre 1 et 10 lignes en échec, et en erreur bloquante (FAIL) au-delà de 10 lignes :
+  severity: error (par défaut), warn\_if: "> 0", error\_if: "> 10".
+  Piège d'examen : si on force severity: warn, alors error\_if est ignoré et le test ne pourra jamais échouer en erreur !
+- La configuration where: (ex: where: "order\_date >= '2025-01-01'") : remplace le modèle cible par une sous-requête filtrée avant d'exécuter le test (idéal pour ignorer d'anciennes données historiques corrompues ou réduire le coût du scan Snowflake).
+- La configuration store\_failures: true (ou le flag CLI --store-failures) et store\_failures\_as (table ou view) : sauvegarde les lignes en échec dans une table dédiée du schéma dbt\_test\_\_audit pour que le développeur puisse inspecter directement les lignes fautives dans Snowflake.
+
+2. La distinction cruciale entre Data Tests (data\_tests) et Unit Tests (unit\_tests) :
+- Data Tests : valident la qualité des VRAIES données en base APRÈS que le modèle a été matérialisé.
+- Unit Tests : valident la logique de transformation SQL/Jinja complexe (regex, case when, calculs financiers, macros) AVANT de matérialiser le modèle en production, en injectant de fausses lignes d'entrée statiques (mock inputs dans le bloc given: avec format dict, csv ou sql) et en comparant le résultat avec les lignes attendues (bloc expect:).
+- Commande CLI : dbt test exécute les deux ; dbt test --select test\_type:unit exécute uniquement les tests unitaires ; dbt test --select test\_type:data exécute uniquement les tests de données.
+\end{promptbox}
+
+\subsection{Épisode 09 : Model Contracts, Constraints, Versions et Modificateurs d'Accès}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DBT-AUDIO-09.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DBT-AUDIO-09.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Gouvernance des modèles et dbt Mesh)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{docs.getdbt.com docs mesh govern model-contracts model-versions model-access}
+    \item \texttt{dbt constraints vs data tests Snowflake primary_key not_null enforced contract}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dbt/chapters/chapitre_10_contrats_versions_gouvernance.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DBT-AUDIO-09}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français pour la certification dbt sur la gouvernance des modèles : Model Contracts (contract: enforced: true), différence entre Constraints DDL et Data Tests sur Snowflake, Model Versions (v1, v2, latest\_version, deprecation\_date), et Groups + Access modifiers (private, protected, public).
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Organisez un débat approfondi en français sur les fonctionnalités de gouvernance de données de dbt, indispensables pour la certification dbt Analytics Engineering :
+
+1. Model Contracts (contract: { enforced: true }) :
+- Qu'est-ce qu'un contrat de modèle dans dbt ? C'est une garantie stricte que le modèle produira exactement les colonnes, les noms et les data\_type déclarés dans le fichier YAML.
+- Que se passe-t-il lors du dbt run si une colonne retournée par le SELECT SQL n'est pas déclarée dans le YAML ou a un type différent ? Le modèle échoue à la construction AVANT d'écraser la table cible !
+- Piège d'examen : sur quelles matérialisations les Model Contracts sont-ils supportés ? Sur table, view et incremental (avec append ou merge), mais PAS sur les modèles ephemeral !
+
+2. Constraints (contraintes DDL base de données) vs Data Tests :
+- Une constraint (not\_null, primary\_key, foreign\_key, unique, check) est injectée dans l'instruction DDL CREATE TABLE de l'entrepôt.
+- Piège spécifique à Snowflake à connaître absolument : sur Snowflake, NOT NULL est réellement appliqué et bloquant (enforced) lors de l'insertion, tandis que PRIMARY KEY, FOREIGN KEY et UNIQUE sont purement informatifs (non appliqués par le moteur Snowflake, mais utiles pour l'optimiseur de requêtes et les outils BI). Pour garantir l'unicité réelle sur Snowflake, il faut donc toujours combiner un Data Test unique avec le contrat !
+
+3. Model Versions (versionnage de modèles pour gérer les breaking changes) :
+- Quand on doit supprimer ou renommer une colonne d'un modèle public utilisé par d'autres équipes, on crée une nouvelle version (ex: dim\_customers\_v1.sql et dim\_customers\_v2.sql), on déclare latest\_version: 1 (ou 2) et deprecation\_date dans le YAML.
+- Comment fonctionne ref('dim\_customers', v=2) vs ref('dim\_customers') sans argument v (qui pointe automatiquement vers latest\_version) ?
+
+4. Groups et Modificateurs d'Accès (access: private, protected, public) :
+- private : ne peut être référencé via ref() QUE par les modèles appartenant au MÊME group dans le même projet.
+- protected (valeur par défaut !) : peut être référencé par n'importe quel modèle du MÊME projet dbt, mais pas depuis un autre projet externe.
+- public : peut être référencé par n'importe quel groupe et depuis d'autres projets dbt externes (cross-project ref dans dbt Mesh).
+\end{promptbox}
+
+\newpage
+
+% ============================================================================
+\section{Partie 4 : Jinja, Macros, Packages \& Hooks (Niveau 3)}
+% ============================================================================
+
+\subsection{Épisode 10 : Jinja \& Macros Avancées : \texttt{var}, \texttt{env\_var}, \texttt{target}, \texttt{execute} et \texttt{run\_query}}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DBT-AUDIO-10.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DBT-AUDIO-10.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Programmation Jinja et Pièges de Compilation)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{docs.getdbt.com docs build jinja-macros dbt context variables target this var env_var}
+    \item \texttt{docs.getdbt.com reference dbt-jinja-functions execute run_query statement adapter.dispatch}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dbt/chapters/chapitre_11_jinja_macros_variables.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DBT-AUDIO-10}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français pour la certification dbt sur Jinja et les Macros : syntaxe et contrôle d'espaces (\{\%- -\%\}), différence entre var() et env\_var(), objets contextuels target et this, et surtout le piège des 2 phases de dbt (Parse vs Execute) nécessitant le bloc \{\% if execute \%\} autour de run\_query().
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Animez un débat technique de haut niveau en français sur Jinja et les Macros dans dbt. C'est un domaine où l'examen pose des questions de lecture de code très subtiles.
+
+Expliquez en détail :
+1. Les bases syntaxiques Jinja dans dbt :
+- Expressions {{ ... }} (évalue et affiche une valeur dans le SQL compilé), Instructions {% ... %} (boucles for, conditions if, définition de variables {% set ... %} et de macros {% macro ... %}), et Commentaires {# ... #} (qui n'apparaissent JAMAIS dans le SQL compilé envoyé à Snowflake, contrairement aux commentaires SQL -- ou /* */).
+- Le contrôle des espaces blancs (whitespace control) avec le tiret {%- et -%} pour éviter de générer des centaines de lignes vides dans le SQL compilé.
+
+2. Variables de projet var() vs Variables d'environnement env\_var() :
+- var('nom\_variable', 'valeur\_par\_defaut') : définie dans dbt\_project.yml (sous la clé vars:, globalement ou scopée à un package spécifique) ou passée en ligne de commande via --vars '{"ma\_var": "valeur"}' (la CLI a la priorité absolue !).
+- env\_var('DBT\_ENV\_SECRET\_...') : lit une variable d'environnement du système d'exploitation ou de dbt Cloud. Attention : utilisable dans profiles.yml, dbt\_project.yml et les modèles, mais les secrets préfixés par DBT\_ENV\_SECRET\_ sont masqués dans les logs et les artefacts.
+
+3. Les deux phases de fonctionnement de dbt et le piège mortel de {% if execute %} :
+- Phase 1 (Parsing / Analyse) : dbt lit tous les fichiers du projet pour découvrir les ref(), source() et config() afin de construire le DAG. Durant cette phase, la variable Jinja execute vaut False et AUCUNE requête ne doit être envoyée à la base de données (ou alors run\_query() retourne None / une table Agate vide !).
+- Phase 2 (Execution) : la variable execute vaut True.
+- Si votre modèle utilise run\_query("SELECT DISTINCT payment\_method FROM ...") puis boucle sur les résultats (ex: {% for pm in results.columns[0].values() %}), que se passe-t-il si vous oubliez {% if execute %} ? Le code plante pendant la phase de Parsing avec une erreur sur NoneType ! Montrez exactement comment structurer le bloc {% if execute %}.
+\end{promptbox}
+
+\subsection{Épisode 11 : Packages (\texttt{dbt\_utils}), Hooks (\texttt{pre/post/on-run}) et Operations}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DBT-AUDIO-11.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DBT-AUDIO-11.mp3}\\
+\textbf{Type :} Micro-Thème (Niveau 2 à 3 : Packages, Hooks et Run-Operation)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{docs.getdbt.com docs build packages dependencies.yml packages.yml dbt_utils}
+    \item \texttt{docs.getdbt.com docs build hooks-operations pre-hook post-hook on-run-start on-run-end results}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dbt/chapters/chapitre_12_packages_hooks_operations.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DBT-AUDIO-11}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français pour la certification dbt sur les Packages (packages.yml / dependencies.yml, dbt deps, macros dbt\_utils incontournables), et la différence exacte entre pre-hook, post-hook, on-run-start, on-run-end (avec la variable contextuelle results) et la commande dbt run-operation.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Organisez un débat structuré en français sur les Packages, les Hooks et les Operations dans dbt.
+
+1. Les Packages dans dbt (packages.yml ou dependencies.yml) :
+- Les 3 façons de déclarer un package : depuis le dbt Hub public (package: dbt-labs/dbt\_utils, version: ...), depuis un dépôt Git (git: "https://...", revision: ...) avec utilisation d'un token env\_var pour les dépôts privés, ou depuis un chemin local (local: ../mon\_package).
+- Pourquoi faut-il toujours épingler une plage de versions (ex: [">=1.1.0", "<2.0.0"]) ? Et quelle commande télécharge les packages dans le dossier dbt\_packages/ ? La commande dbt deps.
+- Les macros de dbt\_utils les plus demandées à l'examen :
+  * dbt\_utils.generate\_surrogate\_key(['col1', 'col2']) (et pourquoi elle remplace l'ancienne macro surrogate\_key en distinguant les valeurs NULL des chaînes vides '').
+  * dbt\_utils.star(from=ref('mon\_modele'), except=['col\_a\_exclure']).
+  * dbt\_utils.union\_relations(relations=[ref('m1'), ref('m2')]).
+  * dbt\_utils.date\_spine(...).
+
+2. Hooks vs Operations (comparatif et pièges d'examen) :
+- pre-hook et post-hook : instructions SQL exécutées immédiatement avant ou après la construction d'un modèle, d'un seed ou d'un snapshot spécifique.
+- on-run-start et on-run-end : instructions SQL exécutées au tout début ou à la toute fin d'une invocation globale de dbt build / dbt run / dbt test / dbt seed / dbt snapshot.
+- Piège d'examen sur on-run-end : quelle variable contextuelle exclusive est disponible uniquement dans on-run-end ? La variable results (liste d'objets contenant le statut success/error/skipped, le temps d'exécution et le nombre de lignes de chaque nœud exécuté pendant le run, idéale pour écrire une table d'audit de fin de run !).
+- Operations (dbt run-operation nom\_macro --args '{...}') : permet d'exécuter une macro autonome à la demande depuis la CLI (ex: nettoyer de vieux schémas de PR CI, créer un stage Snowflake, accorder des privilèges ponctuels) sans lancer de dbt run.
+\end{promptbox}
+
+\newpage
+
+% ============================================================================
+\section{Partie 5 : Sélecteurs CLI, \texttt{dbt build}, Artefacts \& Slim CI (Niveau 3)}
+% ============================================================================
+
+\subsection{Épisode 12 : Grammaire Complète des Sélecteurs de Graphe (\texttt{+}, \texttt{@}, Virgule vs Espace)}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DBT-AUDIO-12.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DBT-AUDIO-12.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Maîtrise absolue des commandes \flag{select} et \flag{exclude})\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{docs.getdbt.com reference node-selection syntax graph operators plus at operator}
+    \item \texttt{docs.getdbt.com reference node-selection set-operators union space intersection comma exclude}
+    \item \texttt{docs.getdbt.com reference node-selection yaml-selectors selectors.yml indirect_selection}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dbt/chapters/chapitre_13_commandes_cli_selecteurs_graphe.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DBT-AUDIO-12}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat chirurgical en français sur la syntaxe de sélection de nœuds dans dbt (--select / -s et --exclude). Décortiquez les opérateurs + (1+modele+2), l'opérateur @ (at operator), la différence cruciale entre l'espace (UNION / OU) et la virgule sans espace (INTERSECTION / ET), les méthodes tag:, source:, path:, config.materialized:, result:, et selectors.yml.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Consacrez cet épisode entier en français à la syntaxe de sélection du graphe dans dbt (--select ou -s, et --exclude). Vous aurez obligatoirement 5 à 8 questions sur ce sujet à l'examen dbt Analytics Engineering !
+
+Décortiquez chaque opérateur avec des exemples concrets :
+1. L'opérateur plus (+) :
+- +mon\_modele : sélectionne mon\_modele et TOUS ses ancêtres en amont (parents, grands-parents...).
+- mon\_modele+ : sélectionne mon\_modele et TOUS ses descendants en aval (enfants, petits-enfants...).
+- +mon\_modele+ : toute la lignée amont et aval.
+- Niveaux de profondeur avec un entier N : 1+mon\_modele (uniquement les parents directs de degré 1 et mon\_modele), mon\_modele+2 (mon\_modele, ses enfants de degré 1 et ses petits-enfants de degré 2).
+
+2. L'opérateur arobase (@mon\_modele) vs +mon\_modele+ (le piège classique de l'examen !) :
+- @mon\_modele sélectionne : mon\_modele, tous les descendants de mon\_modele, ET tous les ancêtres de ces descendants !
+- Pourquoi a-t-on inventé @mon\_modele pour les environnements CI ? Parce que si un enfant de mon\_modele fait une jointure avec un autre modèle cousin qui n'est pas un ancêtre de mon\_modele, +mon\_modele+ oublierait de construire ce cousin avant de construire l'enfant, tandis que @mon\_modele garantit que toutes les tables nécessaires pour construire les enfants sont présentes !
+
+3. Espace vs Virgule (Set Operators) :
+- Espace : dbt run --select tag:nightly path:models/finance -> UNION (OU logique : exécute ce qui a le tag nightly OU ce qui est dans models/finance).
+- Virgule (sans espace) : dbt run --select tag:nightly,path:models/finance -> INTERSECTION (ET logique : exécute UNIQUEMENT les modèles qui ont à la fois le tag nightly ET qui sont situés dans models/finance).
+- Exemple combiné : dbt test --select +fct\_orders,tag:pii -> exécute les tests sur les ancêtres de fct\_orders qui possèdent AUSSI le tag pii.
+
+4. Les préfixes de méthodes de sélection :
+- source:nom\_source+ (tout ce qui découle d'une source), tag:nom\_tag, path:models/staging, config.materialized:incremental, exposure:+nom\_dashboard, test\_type:generic / singular / unit, et result:error / result:fail.
+- Comment définir des sélecteurs réutilisables en YAML dans selectors.yml (avec union, intersection, exclude et default: true).
+\end{promptbox}
+
+\subsection{Épisode 13 : \texttt{dbt build} vs \texttt{dbt run}, \texttt{dbt retry}, \texttt{dbt clone} et Flags d'Exécution}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DBT-AUDIO-13.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DBT-AUDIO-13.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Orchestration DAG et Gestion des Échecs)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{docs.getdbt.com reference commands build run test retry clone compile parse}
+    \item \texttt{dbt build DAG execution order upstream test failure skipping downstream models}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dbt/chapters/chapitre_14_dbt_build_commandes_avancees.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DBT-AUDIO-13}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français pour la certification dbt comparant dbt build aux commandes individuelles (run, test, seed, snapshot). Expliquez comment dbt build entrelace la construction et les tests dans l'ordre du DAG et bloque les modèles avals si un test échoue en amont, ainsi que dbt retry, dbt clone, --empty, --sample et --fail-fast.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Organisez un débat technique en français sur le comportement exact de dbt build et des commandes avancées de la CLI dbt.
+
+1. Que fait exactement dbt build et dans quel ordre ?
+- dbt build regroupe en une seule exécution traversant le DAG : les Seeds, les Models, les Snapshots et les Tests (Unit Tests + Data Tests).
+- L'avantage déterminant de dbt build par rapport à faire "dbt run puis dbt test" :
+  Dans dbt build, pour chaque modèle (ex: stg\_orders) :
+  a) Si des Unit Tests existent sur stg\_orders, ils sont exécutés AVANT même de matérialiser stg\_orders ! Si un Unit Test échoue, stg\_orders n'est pas construit.
+  b) Ensuite, stg\_orders est matérialisé dans Snowflake.
+  c) Immédiatement après, les Data Tests attachés à stg\_orders sont exécutés.
+  d) Si un Data Test de sévérité 'error' échoue sur stg\_orders, que fait dbt build pour le modèle enfant fct\_orders ? Il le marque comme SKIPPED (ignoré) et refuse de le construire, empêchant ainsi la pollution des tables de production en aval avec des données corrompues !
+  (Exception : les modèles ephemeral ne sont pas matérialisés, leurs tests sont reportés ou exécutés sur les modèles matérialisés).
+
+2. Reprendre après une erreur : dbt retry vs result:error+ :
+- dbt retry : relance exactement la dernière commande échouée à partir du point d'échec en lisant le fichier run\_results.json local.
+- dbt build --select result:error+ --state path/to/artifacts : permet de relancer tous les nœuds en erreur (models en error ET tests en fail) ainsi que leurs descendants ignorés.
+- Attention au piège entre result:error (uniquement les erreurs d'exécution SQL) et result:fail (les tests qui ont échoué sur des lignes invalides).
+
+3. Autres commandes et flags indispensables à l'examen :
+- --fail-fast (ou -x) : arrête immédiatement toute l'exécution dbt dès que la toute première ressource échoue.
+- --empty : construit les modèles en injectant LIMIT 0 sur les sources et refs pour valider les schémas SQL sans scanner ni facturer de données !
+- dbt clone : crée instantanément des clones Zero-Copy sur Snowflake des tables de production dans le schéma de dev à partir d'un manifest.json d'état.
+\end{promptbox}
+
+\subsection{Épisode 14 : Artefacts (\texttt{manifest.json}), \texttt{state:modified+}, \flag{defer} et Slim CI}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DBT-AUDIO-14.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DBT-AUDIO-14.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Sujet Reine de la Certification dbt)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{docs.getdbt.com reference node-selection methods state modified body configs macros}
+    \item \texttt{docs.getdbt.com reference node-selection defer Slim CI dbt Cloud artifacts manifest.json}
+\end{itemize}
+\textbf{Fichiers locaux du projet à importer :}
+\texttt{content/certifications/dbt/chapters/chapitre_15_state_management_defer_slim_ci.md} et \texttt{chapitre_16_artefacts_manifest_run_results.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DBT-AUDIO-14}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat approfondi en français sur les 4 artefacts JSON de dbt (manifest.json, run\_results.json, catalog.json, sources.json), le sélecteur state:modified+ (et ses sous-critères body, configs, persisted\_descriptions, macros), le fonctionnement de --defer avec --state, et l'architecture complète d'un job Slim CI sur Pull Request.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Animez un débat ultra-détaillé en français sur le State Management, le Deferral et l'architecture Slim CI dans dbt. C'est le sujet avancé le plus important de la certification dbt Analytics Engineering.
+
+1. Les 4 Artefacts JSON générés dans le dossier target/ (savoir exactement quelle commande génère quel artefact !) :
+- manifest.json : représentation complète du projet dbt (tous les modèles, tests, macros, sources, configurations et code Jinja non compilé). Généré par presque toutes les commandes (parse, compile, run, test, build, docs generate, ls). C'est LE SEUL artefact requis pour utiliser state:modified et --defer !
+- run\_results.json : résultats d'une exécution (statut pass/fail/error, temps d'exécution, lignes affectées). Généré par run, test, build, seed, snapshot, docs generate. Requis pour le sélecteur result: et dbt retry.
+- catalog.json : métadonnées physiques extraites de l'entrepôt Snowflake (types de colonnes réels, nombre de lignes, taille en octets). Généré UNIQUEMENT par dbt docs generate !
+- sources.json : résultats des contrôles de fraîcheur. Généré UNIQUEMENT par dbt source freshness !
+
+2. Comment fonctionne le sélecteur state:modified :
+- En comparant le projet actuel avec le manifest.json de production (--state path/to/prod\_artifacts), state:modified identifie les ressources qui ont changé.
+- Les 5 sous-sélecteurs de state:modified (qui composent tous ensemble state:modified par défaut) :
+  * state:modified.body (le code SQL du modèle a changé).
+  * state:modified.configs (une configuration comme materialized ou unique\_key a changé).
+  * state:modified.persisted\_descriptions (une description YAML a changé ET persist\_docs est activé ! Piège d'examen : si persist\_docs n'est PAS activé, changer une description YAML ne déclenche PAS state:modified !).
+  * state:modified.relation (database, schema ou alias a changé).
+  * state:modified.macros (une macro appelée par le modèle a été modifiée).
+- Attention aux faux positifs : si un modèle utilise une fonction non déterministe au moment de la compilation ou une variable d'environnement changeante, il apparaîtra toujours comme modifié.
+
+3. Le fonctionnement magique de --defer (Deferral) et de la Slim CI :
+- Lors d'une Pull Request, on lance : dbt build --select state:modified+ --defer --state path/to/prod\_manifest.
+- Pourquoi a-t-on besoin de --defer si stg\_orders n'a pas été modifié mais que son enfant fct\_orders a été modifié ?
+  Sans --defer, dbt chercherait dbt\_pr\_schema.stg\_orders qui n'existe pas dans le schéma temporaire de la PR et planterait ! Avec --defer, pour tout modèle parent NON sélectionné dans le run actuel, dbt résout automatiquement ref('stg\_orders') vers la table de PRODUCTION prod\_schema.stg\_orders !
+- Expliquez aussi --favor-state.
+\end{promptbox}
+
+\newpage
+
+% ============================================================================
+\section{Partie 6 : Documentation, Exposures, dbt Mesh \& Pièges d'Examen (Niveau 3)}
+% ============================================================================
+
+\subsection{Épisode 15 : Documentation (\texttt{docs} blocks), Exposures et Architecture dbt Mesh}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DBT-AUDIO-15.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DBT-AUDIO-15.mp3}\\
+\textbf{Type :} Micro-Thème (Niveau 2 à 3 : Documentation, Exposures et Multi-Projets)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{docs.getdbt.com docs build documentation doc blocks dbt docs generate catalog.json}
+    \item \texttt{docs.getdbt.com docs build exposures dbt mesh cross-project ref}
+\end{itemize}
+\textbf{Fichiers locaux du projet à importer :}
+\texttt{content/certifications/dbt/chapters/chapitre_17_documentation_lineage_exposures.md} et \texttt{chapitre_18_dbt_mesh_gouvernance_multi_projets.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DBT-AUDIO-15}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat en français pour la certification dbt sur la Documentation (descriptions YAML, blocs \{\% docs \%\} en Markdown, dbt docs generate et l'union de manifest.json + catalog.json), les Exposures (types, propriétés obligatoires, sélection +exposure:), et le fonctionnement des références inter-projets dans dbt Mesh.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Organisez un débat structuré en français couvrant la Documentation, les Exposures et dbt Mesh pour la certification dbt.
+
+1. La Documentation dans dbt :
+- Comment documenter un modèle ou une colonne directement dans le YAML vs utiliser un bloc réutilisable en Markdown dans un fichier .md avec {% docs nom\_du\_bloc %} ... {% enddocs %} appelé dans le YAML via '{{ doc("nom\_du\_bloc") }}'.
+- Le piège du bloc docs special \_\_overview\_\_ : comment personnaliser la page d'accueil du site de documentation dbt Docs.
+- Que fait exactement dbt docs generate ? Il compile le manifest.json ET interroge l'INFORMATION\_SCHEMA de Snowflake pour générer catalog.json. Si une table n'a pas encore été matérialisée par dbt run dans Snowflake, apparaîtra-t-elle complète dans catalog.json ? Non, seules les ressources matérialisées en base figurent dans catalog.json.
+
+2. Les Exposures (Exposures dans les fichiers YAML) :
+- À quoi sert une Exposure ? À déclarer en aval du DAG les usages externes des données : dashboards BI (Tableau, Power BI, Looker), applications, notebooks Data Science, pipelines ML.
+- Les propriétés clés d'une Exposure : name, type (dashboard, notebook, analysis, ml, application), owner (name et email obligatoires !), depends\_on (liste de ref() et source()), maturity (high, medium, low), url.
+- Les commandes CLI ultra-pratiques avec une Exposure :
+  * dbt run --select +exposure:weekly\_kpis (reconstruit tous les modèles en amont alimentant ce tableau de bord !).
+  * dbt test --select +exposure:weekly\_kpis (teste toute la chaîne alimentant ce dashboard).
+
+3. Architecture multi-projets avec dbt Mesh :
+- Comment référencer un modèle public appartenant à un projet dbt amont ("finance\_core") depuis un projet aval ("marketing\_analytics") ?
+- Déclaration dans dependencies.yml (projects: - name: finance\_core) et syntaxe à deux arguments : {{ ref('finance\_core', 'fct\_revenues') }}.
+- Rappel : le modèle amont doit obligatoirement avoir access: public !
+\end{promptbox}
+
+\subsection{Épisode 16 : Grand Débat Final : Les 30 Pièges de la Certification dbt \& Débogage}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DBT-AUDIO-16.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DBT-AUDIO-16.mp3}\\
+\textbf{Type :} Grand Débat Final (Niveau 3 : Révision intensive et étude de cas d'examen)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{dbt Analytics Engineering Certification study guide debugging compilation runtime errors}
+    \item \texttt{docs.getdbt.com guides legacy-sql-to-dbt refactoring modular SQL CTEs}
+\end{itemize}
+\textbf{Fichiers locaux du projet à importer :}
+Tous les chapitres 19 à 26 dans \texttt{content/certifications/dbt/chapters/} et les 5 fiches express dans \texttt{content/certifications/dbt/fiches_express/}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DBT-AUDIO-16}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Grand débat récapitulatif en français pour la veille de l'examen dbt Analytics Engineering. Passez en revue la méthodologie de débogage d'erreurs (Compilation Error vs Database Error vs Dependency Error), le refactoring de SQL legacy monolithique en couches dbt modulaires, et les 20 pièges les plus fréquents de l'examen.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Animez un épisode final d'entraînement intensif en français pour la certification dbt Analytics Engineering.
+
+Challengez-vous mutuellement sur les scénarios d'examen suivants :
+1. Méthodologie de débogage d'erreurs dans dbt :
+- Compilation Error (erreur Jinja, ref() vers un modèle inexistant, boucle circulaire dans le DAG, erreur de syntaxe YAML) : comment l'identifier avant même d'interroger Snowflake, et comment inspecter le code SQL généré dans target/compiled/ vs le code enveloppé dans les DDL (CREATE TABLE / MERGE) dans target/run/.
+- Database Error (erreur retournée par Snowflake : colonne inexistante dans le SQL, division par zéro, permissions insuffisantes sur le rôle Snowflake) : comment lire les logs dans logs/dbt.log ou avec --debug.
+- Que faire quand un test relationships échoue entre fct\_orders et dim\_customers ? Comment récupérer et exécuter la requête compilée du test depuis target/compiled/ pour isoler les clés orphelines.
+
+2. Refactoring de requêtes SQL Legacy monolithiques vers dbt :
+- Les étapes officielles enseignées par dbt Labs :
+  1) Migrer d'abord le code SQL brut à l'identique (1-pour-1) en remplaçant les tables en dur par source().
+  2) Transformer toutes les sous-requêtes imbriquées (nested subqueries) en CTEs d'import en haut du fichier et CTEs logiques séquentielles.
+  3) Extraire les transformations de nettoyage en modèles Staging (stg\_) et les jointures partagées en modèles Intermediate (int\_).
+  4) Vérifier l'égalité parfaite entre la table legacy et le nouveau modèle dbt avec la macro audit\_helper (compare\_relations / compare\_column\_values).
+
+3. Rafale des 15 pièges éclairs de l'examen :
+- Point-virgule interdit dans les fichiers .sql de modèles et tests.
+- Oublier {% if execute %} autour de run\_query().
+- Confondre virgule (ET logique) et espace (OU logique) dans --select.
+- Croire que --full-refresh reconstruit un snapshot (faux !).
+- Croire que on\_schema\_change='append\_new\_columns' est la valeur par défaut (faux, c'est 'ignore' !).
+- Croire qu'un modèle ephemeral peut avoir un Model Contract (faux !).
+- Croire qu'une modification de description YAML déclenche state:modified sans persist\_docs activé (faux !).
+- Confondre catalog.json (dbt docs generate) et manifest.json ( requis pour --state).
+\end{promptbox}
+
+\end{document}

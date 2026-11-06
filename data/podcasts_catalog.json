@@ -1,0 +1,851 @@
+{
+  "metadata": {
+    "title": "Catalogue des 44 Podcasts & Débats Techniques NotebookLM (CLF-C02, dbt, DEA-C01)",
+    "updated_at": "2026-11-06",
+    "sp_repetition_rule": "Chaque épisode suit un cycle de 3 écoutes récursives : Écoute 1 (Découverte à 1.0x le jour du cours), Écoute 2 (Consolidation à 1.25x à J+3), Écoute 3 (Rappel rapide & Pièges à 1.25x/1.5x le week-end et avant l'examen)."
+  },
+  "episodes": [
+    {
+      "id": "CLF-AUDIO-01",
+      "cert_code": "CLF-C02",
+      "episode_number": 1,
+      "title": "Les fondations de l'architecture Cloud AWS, Infra Globale & 6 Piliers Well-Architected",
+      "original_filename": "Les_fondations_de_l_architecture_cloud_AWS.m4a",
+      "audio_path": "/audios/clf-c02/CLF-AUDIO-01.m4a",
+      "level": "Niveau 1 : Fondamental",
+      "kind": "Macro-Thème",
+      "est_min": 25,
+      "primary_week": 1,
+      "review_weeks": [1, 3],
+      "schedule_days": "Semaine 1 : Lundi (Écoute 1), Jeudi (Écoute 2), Dimanche (Écoute 3)",
+      "keywords": ["fondations", "architecture", "well-architected", "infrastructure", "globale", "avantages"],
+      "key_traps": [
+        "Ne pas confondre Haute Disponibilité (Multi-AZ), Tolérance aux pannes (zéro interruption), Scalabilité et Élasticité.",
+        "Les 4 critères officiels de choix d'une Région AWS : Conformité/Gouvernance, Latence utilisateur, Disponibilité des services, Coûts (jamais la langue parlée).",
+        "Associer chaque mot-clé d'énoncé au bon pilier parmi les 6 piliers du Well-Architected Framework."
+      ]
+    },
+    {
+      "id": "CLF-AUDIO-02",
+      "cert_code": "CLF-C02",
+      "episode_number": 2,
+      "title": "AWS Cloud Adoption Framework (CAF : les 6 perspectives) & les 7 R de Migration",
+      "original_filename": "Pourquoi_les_migrations_cloud_échouent.m4a",
+      "audio_path": "/audios/clf-c02/CLF-AUDIO-02.m4a",
+      "level": "Niveau 1 : Fondamental",
+      "kind": "Micro-Thème",
+      "est_min": 22,
+      "primary_week": 1,
+      "review_weeks": [1, 3],
+      "schedule_days": "Semaine 1 : Lundi soir (Écoute 1), Jeudi (Écoute 2), Dimanche (Écoute 3)",
+      "keywords": ["migrations", "caf", "adoption", "perspectives", "echouent"],
+      "key_traps": [
+        "Ne jamais confondre les 6 perspectives du CAF (Business, People, Governance, Platform, Security, Operations) avec les 6 piliers Well-Architected.",
+        "Distinguer Rehost (Lift & Shift vers EC2) vs Replatform (migrer vers RDS/Beanstalk sans changer le cœur applicatif) vs Refactor (réécrire en Serverless)."
+      ]
+    },
+    {
+      "id": "CLF-AUDIO-03",
+      "cert_code": "CLF-C02",
+      "episode_number": 3,
+      "title": "Le Modèle de Responsabilité Partagée AWS (IaaS EC2, Managed RDS, Serverless S3/Lambda)",
+      "original_filename": "Le_modèle_de_responsabilité_partagée_d_AWS.m4a",
+      "audio_path": "/audios/clf-c02/CLF-AUDIO-03.m4a",
+      "level": "Niveau 2 : Intermédiaire",
+      "kind": "Micro-Thème",
+      "est_min": 22,
+      "primary_week": 1,
+      "review_weeks": [1, 2, 3],
+      "schedule_days": "Semaine 1 : Mardi (Écoute 1), Vendredi (Écoute 2) + Semaine 3 (Rappel)",
+      "keywords": ["responsabilite", "partagee", "shared", "iaas", "paas"],
+      "key_traps": [
+        "Sur EC2 (IaaS), le patching de l'OS invité (Linux/Windows) et les Security Groups sont à 100 % à la charge du client.",
+        "Sur RDS (Managed), AWS patche l'OS et gère les sauvegardes automatiques, mais le client gère le schéma SQL, les accès IAM/DB et l'activation du chiffrement."
+      ]
+    },
+    {
+      "id": "CLF-AUDIO-04",
+      "cert_code": "CLF-C02",
+      "episode_number": 4,
+      "title": "Les Règles d'Or de l'IAM AWS, MFA, IAM Identity Center (SSO), Organizations & SCP",
+      "original_filename": "Les_règles_d_or_de_l_IAM_AWS.m4a",
+      "audio_path": "/audios/clf-c02/CLF-AUDIO-04.m4a",
+      "level": "Niveau 2 : Intermédiaire",
+      "kind": "Micro-Thème",
+      "est_min": 32,
+      "primary_week": 1,
+      "review_weeks": [1, 2, 3],
+      "schedule_days": "Semaine 1 : Mercredi (Écoute 1), Samedi (Écoute 2) + Semaine 3 (Rappel)",
+      "keywords": ["iam", "regles", "identity", "organizations", "scp", "mfa"],
+      "key_traps": [
+        "Un Deny explicite (Explicit Deny) dans une politique IAM ou une SCP l'emporte TOUJOURS sur n'importe quel Allow.",
+        "Une application sur EC2 ou Lambda ne doit jamais utiliser d'Access Keys en dur : elle doit assumer un IAM Role (jetons temporaires STS).",
+        "Un IAM Group ne contient que des IAM Users (jamais d'autres groupes ni d'instances EC2)."
+      ]
+    },
+    {
+      "id": "CLF-AUDIO-05",
+      "cert_code": "CLF-C02",
+      "episode_number": 5,
+      "title": "Comparatif des Services de Sécurité AWS (GuardDuty, Inspector, Macie, WAF, Shield, KMS, Artifact)",
+      "original_filename": "Comparatif_des_services_de_sécurité_AWS_CLF-C02.m4a",
+      "audio_path": "/audios/clf-c02/CLF-AUDIO-05.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 18,
+      "primary_week": 1,
+      "review_weeks": [1, 2, 3],
+      "schedule_days": "Semaine 1 : Jeudi (Écoute 1), Dimanche (Écoute 2) + Semaine 3 (Veille d'examen)",
+      "keywords": ["securite", "comparatif", "guardduty", "inspector", "macie", "waf", "shield"],
+      "key_traps": [
+        "GuardDuty = menaces ML sur logs (CloudTrail, VPC Flow, DNS) ; Inspector = vulnérabilités CVE sur EC2/ECR/Lambda ; Macie = données sensibles PII sur S3.",
+        "WAF = pare-feu applicatif couche 7 (SQLi, XSS) ; Shield = protection DDoS couches 3/4 (Standard gratuit vs Advanced payant avec SRT 24/7).",
+        "AWS Artifact = télécharger les rapports SOC/ISO d'AWS ; AWS Audit Manager = collecter automatiquement des preuves pour vos propres audits."
+      ]
+    },
+    {
+      "id": "CLF-AUDIO-06",
+      "cert_code": "CLF-C02",
+      "episode_number": 6,
+      "title": "Maîtriser les Services de Calcul (Compute) AWS : EC2, Auto Scaling, ELB, Lambda, ECS, EKS, Fargate",
+      "original_filename": "Maîtriser_les_services_de_calcul_AWS.m4a",
+      "audio_path": "/audios/clf-c02/CLF-AUDIO-06.m4a",
+      "level": "Niveau 2 : Intermédiaire",
+      "kind": "Macro-Thème",
+      "est_min": 20,
+      "primary_week": 1,
+      "review_weeks": [1, 2, 3],
+      "schedule_days": "Semaine 1 : Vendredi (Écoute 1), Dimanche (Écoute 2) + Semaine 3 (Rappel)",
+      "keywords": ["calcul", "compute", "ec2", "lambda", "fargate", "ecs", "eks"],
+      "key_traps": [
+        "AWS Fargate est le moteur serverless pour conteneurs (ECS et EKS) sans gestion d'instances EC2.",
+        "AWS Lambda est limité à 15 minutes d'exécution maximum par invocation.",
+        "Elastic Beanstalk est un PaaS (vous gérez le code, AWS provisionne EC2/ELB/RDS) tandis que Lightsail fournit des VPS simples à tarif mensuel fixe."
+      ]
+    },
+    {
+      "id": "CLF-AUDIO-07",
+      "cert_code": "CLF-C02",
+      "episode_number": 7,
+      "title": "Les 7 Options d'Achat Amazon EC2 (On-Demand, Spot, Savings Plans, Reserved, Dedicated Hosts vs Instances)",
+      "original_filename": "Les_7_options_d_achat_Amazon_EC2.m4a",
+      "audio_path": "/audios/clf-c02/CLF-AUDIO-07.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 20,
+      "primary_week": 2,
+      "review_weeks": [2, 3],
+      "schedule_days": "Semaine 2 : Lundi (Écoute 1), Jeudi (Écoute 2), Dimanche (Écoute 3)",
+      "keywords": ["options", "achat", "ec2", "spot", "savings", "reserved", "dedicated"],
+      "key_traps": [
+        "Compute Savings Plans s'applique à EC2, Fargate ET Lambda (jusqu'à 66 % de réduction), alors que EC2 Instance Savings Plans est lié à une famille dans une région (jusqu'à 72 %).",
+        "Dedicated Hosts donne la visibilité sur les sockets et cœurs physiques pour les licences BYOL liées au matériel, contrairement à Dedicated Instances.",
+        "Spot Instances offre jusqu'à 90 % de remise mais peut être interrompu avec un préavis de 2 minutes."
+      ]
+    },
+    {
+      "id": "CLF-AUDIO-08",
+      "cert_code": "CLF-C02",
+      "episode_number": 8,
+      "title": "Bien Choisir son Stockage sur AWS : Classes S3, Lifecycle, EBS vs EFS vs FSx vs Storage Gateway",
+      "original_filename": "Bien_choisir_son_stockage_sur_AWS.m4a",
+      "audio_path": "/audios/clf-c02/CLF-AUDIO-08.m4a",
+      "level": "Niveau 2 : Intermédiaire",
+      "kind": "Micro-Thème",
+      "est_min": 28,
+      "primary_week": 2,
+      "review_weeks": [2, 3],
+      "schedule_days": "Semaine 2 : Mardi (Écoute 1), Vendredi (Écoute 2), Dimanche (Écoute 3)",
+      "keywords": ["stockage", "s3", "glacier", "ebs", "efs", "fsx"],
+      "key_traps": [
+        "S3 One Zone-IA stocke les données dans une seule AZ (idéal pour des données facilement recréables comme des miniatures), tandis que S3 Standard-IA réplique sur au moins 3 AZ.",
+        "EBS est rattaché à une seule AZ, tandis qu'EFS est un système de fichiers NFS partagé entre des centaines d'instances EC2 à travers plusieurs AZ."
+      ]
+    },
+    {
+      "id": "CLF-AUDIO-09",
+      "cert_code": "CLF-C02",
+      "episode_number": 9,
+      "title": "Bases de Données et Analytique AWS (RDS Multi-AZ vs Read Replicas, Aurora, DynamoDB, Redshift, Athena, Glue)",
+      "original_filename": "Bases_de_données_et_analytique_AWS.m4a",
+      "audio_path": "/audios/clf-c02/CLF-AUDIO-09.m4a",
+      "level": "Niveau 2 : Intermédiaire",
+      "kind": "Micro-Thème",
+      "est_min": 20,
+      "primary_week": 2,
+      "review_weeks": [2, 3],
+      "schedule_days": "Semaine 2 : Mercredi (Écoute 1), Samedi (Écoute 2) + Semaine 3 (Rappel)",
+      "keywords": ["bases", "donnees", "analytique", "rds", "aurora", "dynamodb", "redshift", "athena"],
+      "key_traps": [
+        "RDS Multi-AZ assure la Haute Disponibilité (réplication synchrone vers une instance standby non lisible), tandis que RDS Read Replicas (réplication asynchrone) sert à scaler les lectures.",
+        "Aurora réplique automatiquement 6 copies des données sur 3 Availability Zones."
+      ]
+    },
+    {
+      "id": "CLF-AUDIO-10",
+      "cert_code": "CLF-C02",
+      "episode_number": 10,
+      "title": "Réseau VPC, Sécurité Réseau (SG vs NACL), Endpoints, Direct Connect & Distribution Mondiale",
+      "original_filename": "Réduire_la_facture_réseau_AWS.m4a",
+      "audio_path": "/audios/clf-c02/CLF-AUDIO-10.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 21,
+      "primary_week": 2,
+      "review_weeks": [2, 3],
+      "schedule_days": "Semaine 2 : Jeudi (Écoute 1), Dimanche (Écoute 2) + Semaine 3 (Rappel)",
+      "keywords": ["reseau", "vpc", "nacl", "cloudfront", "direct connect", "endpoints"],
+      "key_traps": [
+        "Security Group = niveau instance, Stateful, règles Allow uniquement. Network ACL = niveau Subnet, Stateless, règles Allow et Deny.",
+        "Gateway VPC Endpoints (gratuits) ne supportent que S3 et DynamoDB ; tous les autres services utilisent des Interface Endpoints (PrivateLink).",
+        "CloudFront met en cache dans les Edge Locations ; Global Accelerator fournit 2 IP statiques Anycast sans cache."
+      ]
+    },
+    {
+      "id": "CLF-AUDIO-11",
+      "cert_code": "CLF-C02",
+      "episode_number": 11,
+      "title": "Facturation, Outils de Coûts (Pricing Calculator, Cost Explorer, Budgets, CUR) & les 5 Plans de Support AWS",
+      "original_filename": "Éviter_les_factures_AWS_astronomiques.m4a",
+      "audio_path": "/audios/clf-c02/CLF-AUDIO-11.m4a",
+      "level": "Niveau 2 : Intermédiaire",
+      "kind": "Micro-Thème",
+      "est_min": 20,
+      "primary_week": 2,
+      "review_weeks": [2, 3],
+      "schedule_days": "Semaine 2 : Vendredi (Écoute 1), Dimanche (Écoute 2) + Semaine 3 (Rappel)",
+      "keywords": ["factures", "astronomiques", "facturation", "budgets", "cost explorer", "support"],
+      "key_traps": [
+        "Pricing Calculator = estimer avant déploiement ; Cost Explorer = analyser les 12 derniers mois et prévoir les 12 prochains ; AWS Budgets = alerter quand un seuil est franchi.",
+        "Business Support = minimum pour la production (24/7, tous les checks Trusted Advisor, < 1h). Enterprise On-Ramp = pool de TAM (< 30 min). Enterprise = TAM dédié (< 15 min)."
+      ]
+    },
+    {
+      "id": "CLF-AUDIO-12",
+      "cert_code": "CLF-C02",
+      "episode_number": 12,
+      "title": "Grand Débat Final : Les 25 Pièges Mortels et Services Homonymes de l'Examen AWS CLF-C02",
+      "original_filename": "Les_pièges_de_l_examen_AWS_CLF-C02.m4a",
+      "audio_path": "/audios/clf-c02/CLF-AUDIO-12.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Grand Débat Pièges",
+      "est_min": 15,
+      "primary_week": 3,
+      "review_weeks": [2, 3],
+      "schedule_days": "Semaine 2 Dimanche (Écoute 1) + Semaine 3 Mardi (Écoute 2) & Jeudi veille d'examen (Écoute 3)",
+      "keywords": ["pieges", "examen", "clf-c02", "cloudwatch", "cloudtrail", "config", "rekognition", "textract"],
+      "key_traps": [
+        "CloudWatch (métriques/logs de performance) vs CloudTrail (qui a appelé quelle API et quand) vs AWS Config (historique de configuration et conformité).",
+        "SQS (file d'attente Pull pour découpler) vs SNS (Pub/Sub Push vers plusieurs abonnés).",
+        "Bedrock (API Serverless Foundation Models GenAI) vs SageMaker (construire/entraîner ses propres modèles ML) vs Textract (OCR documents) vs Comprehend (NLP sentiments) vs Kendra (recherche d'entreprise)."
+      ]
+    },
+    {
+      "id": "DBT-AUDIO-01",
+      "cert_code": "DBT",
+      "episode_number": 1,
+      "title": "Architecture d'un Projet dbt (dbt_project.yml vs profiles.yml), DAG, ref() et source()",
+      "original_filename": "L_architecture_dbt_pour_la_certification.m4a",
+      "audio_path": "/audios/dbt/DBT-AUDIO-01.m4a",
+      "level": "Niveau 1 : Fondamental",
+      "kind": "Macro-Thème",
+      "est_min": 21,
+      "primary_week": 3,
+      "review_weeks": [3, 4, 9],
+      "schedule_days": "Semaine 3 Samedi (Écoute 1), Semaine 4 Mardi (Écoute 2), Semaine 9 (Rappel Examen)",
+      "keywords": ["architecture", "dbt_project", "profiles", "ref", "source", "dag"],
+      "key_traps": [
+        "Ne jamais coder de noms de tables en dur : utiliser source() uniquement dans la couche Staging (stg_) et ref() partout ailleurs.",
+        "Deux modèles .sql ne peuvent pas avoir le même nom de fichier dans un même projet dbt (sauf versionnage ou projets distincts en dbt Mesh)."
+      ]
+    },
+    {
+      "id": "DBT-AUDIO-02",
+      "cert_code": "DBT",
+      "episode_number": 2,
+      "title": "Hiérarchie des Configurations, Priorités (config block vs YAML vs dbt_project.yml), Grants & Custom Schemas",
+      "original_filename": "Les_pièges_de_la_compilation_dbt.m4a",
+      "audio_path": "/audios/dbt/DBT-AUDIO-02.m4a",
+      "level": "Niveau 2 : Intermédiaire",
+      "kind": "Micro-Thème",
+      "est_min": 22,
+      "primary_week": 4,
+      "review_weeks": [4, 8, 9],
+      "schedule_days": "Semaine 4 Lundi (Écoute 1), Jeudi (Écoute 2), Semaine 9 (Rappel Examen)",
+      "keywords": ["compilation", "hierarchie", "configurations", "grants", "schema", "persist_docs"],
+      "key_traps": [
+        "Ordre de priorité du plus fort au plus faible : 1) bloc {{ config() }} dans le .sql, 2) fichier .yml de propriétés, 3) dbt_project.yml.",
+        "Les tags, pre-hook et post-hook se cumulent (append), tandis que materialized ou schema s'écrasent. Pour cumuler des grants, il faut utiliser +select.",
+        "Par défaut, generate_schema_name concatène target.schema et custom_schema (ex: dbt_auren_finance)."
+      ]
+    },
+    {
+      "id": "DBT-AUDIO-03",
+      "cert_code": "DBT",
+      "episode_number": 3,
+      "title": "Sources, Fraîcheur (dbt source freshness : loaded_at_field, filter), Seeds (dbt seed) et Analyses",
+      "original_filename": "Les_pièges_de_la_certification_dbt.m4a",
+      "audio_path": "/audios/dbt/DBT-AUDIO-03.m4a",
+      "level": "Niveau 2 : Intermédiaire",
+      "kind": "Micro-Thème",
+      "est_min": 22,
+      "primary_week": 4,
+      "review_weeks": [4, 6, 9],
+      "schedule_days": "Semaine 4 Mardi (Écoute 1), Vendredi (Écoute 2), Semaine 9 (Rappel Examen)",
+      "keywords": ["sources", "freshness", "seeds", "analyses", "loaded_at_field"],
+      "key_traps": [
+        "Pour désactiver la fraîcheur sur une table spécifique d'une source, on configure freshness: null sur cette table.",
+        "dbt source freshness génère l'artefact target/sources.json et accepte la propriété filter: pour limiter le scan sur les tables partitionnées.",
+        "Pour changer le type d'une colonne d'un Seed existant (+column_types), il faut relancer dbt seed --full-refresh."
+      ]
+    },
+    {
+      "id": "DBT-AUDIO-04",
+      "cert_code": "DBT",
+      "episode_number": 4,
+      "title": "Maîtriser les 5 Matérialisations dbt (view, table, ephemeral, incremental, materialized_view)",
+      "original_filename": "Maîtriser_les_matérialisations_dbt.m4a",
+      "audio_path": "/audios/dbt/DBT-AUDIO-04.m4a",
+      "level": "Niveau 2 : Intermédiaire",
+      "kind": "Macro-Thème",
+      "est_min": 20,
+      "primary_week": 4,
+      "review_weeks": [4, 5, 9],
+      "schedule_days": "Semaine 4 Mercredi (Écoute 1), Dimanche (Écoute 2), Semaine 9 (Rappel Examen)",
+      "keywords": ["materialisations", "ephemeral", "view", "table", "incremental"],
+      "key_traps": [
+        "La matérialisation par défaut dans dbt est view.",
+        "Un modèle ephemeral n'existe pas dans Snowflake (compilé comme CTE) : il ne peut pas être interrogé par un outil BI, ne supporte pas les Model Contracts, et ralentit les requêtes s'il est référencé par trop de modèles avals."
+      ]
+    },
+    {
+      "id": "DBT-AUDIO-05",
+      "cert_code": "DBT",
+      "episode_number": 5,
+      "title": "Anatomie Chirurgicale des Modèles Incrémentaux dbt sur Snowflake (is_incremental, stratégies, on_schema_change)",
+      "original_filename": "Les_modèles_incrémentaux_dbt_sur_Snowflake.m4a",
+      "audio_path": "/audios/dbt/DBT-AUDIO-05.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 23,
+      "primary_week": 5,
+      "review_weeks": [5, 7, 9],
+      "schedule_days": "Semaine 5 Lundi (Écoute 1), Jeudi (Écoute 2), Dimanche (Écoute 3) + Semaine 9",
+      "keywords": ["incrementaux", "incremental", "snowflake", "on_schema_change", "unique_key", "merge"],
+      "key_traps": [
+        "Les 4 conditions pour que is_incremental() retourne True : materialized='incremental', la table existe déjà en base, c'est une table (pas une vue), et pas de flag --full-refresh.",
+        "La valeur par défaut de on_schema_change est 'ignore' (les nouvelles colonnes ajoutées au SQL sont silencieusement ignorées sans --full-refresh, sauf si on configure 'append_new_columns' ou 'sync_all_columns')."
+      ]
+    },
+    {
+      "id": "DBT-AUDIO-06",
+      "cert_code": "DBT",
+      "episode_number": 6,
+      "title": "L'Historisation SCD Type 2 avec les Snapshots dbt (timestamp vs check, invalidate_hard_deletes)",
+      "original_filename": "L_historisation_avec_les_Snapshots_dbt.m4a",
+      "audio_path": "/audios/dbt/DBT-AUDIO-06.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 20,
+      "primary_week": 5,
+      "review_weeks": [5, 8, 9],
+      "schedule_days": "Semaine 5 Mardi (Écoute 1), Vendredi (Écoute 2), Dimanche (Écoute 3) + Semaine 9",
+      "keywords": ["historisation", "snapshots", "scd", "timestamp", "check", "dbt_valid_to"],
+      "key_traps": [
+        "Pour les enregistrements actuellement actifs dans un snapshot, la colonne dbt_valid_to vaut NULL (sauf configuration dbt_valid_to_current).",
+        "La stratégie timestamp est toujours préférée à check car elle gère les ajouts/suppressions de colonnes sans faux positifs.",
+        "Le flag --full-refresh n'a AUCUN effet sur les snapshots afin de protéger l'historique SCD Type 2."
+      ]
+    },
+    {
+      "id": "DBT-AUDIO-07",
+      "cert_code": "DBT",
+      "episode_number": 7,
+      "title": "Garantir l'Intégrité des Données avec dbt : Tests Génériques, Singuliers et Custom Generic ({% test %})",
+      "original_filename": "Garantir_l_intégrité_des_données_avec_dbt.m4a",
+      "audio_path": "/audios/dbt/DBT-AUDIO-07.m4a",
+      "level": "Niveau 2 : Intermédiaire",
+      "kind": "Micro-Thème",
+      "est_min": 18,
+      "primary_week": 5,
+      "review_weeks": [5, 6, 9],
+      "schedule_days": "Semaine 5 Mercredi (Écoute 1), Samedi (Écoute 2) + Semaine 9 (Rappel Examen)",
+      "keywords": ["integrite", "tests", "generiques", "singuliers", "accepted_values", "relationships"],
+      "key_traps": [
+        "Un test dbt est une requête SELECT qui cherche les lignes invalides : 0 ligne retournée = PASS ; 1 ou plusieurs lignes = FAIL/WARN.",
+        "Il ne faut jamais mettre de point-virgule (;) à la fin d'un fichier .sql de test singulier ou de modèle.",
+        "Les 4 seuls tests génériques natifs de dbt Core sont : unique, not_null, accepted_values et relationships."
+      ]
+    },
+    {
+      "id": "DBT-AUDIO-08",
+      "cert_code": "DBT",
+      "episode_number": 8,
+      "title": "Configurations Avancées de Tests (warn_if, error_if, store_failures, where) & Unit Tests (dbt 1.8+)",
+      "original_filename": "DBT-AUDIO-08.m4a",
+      "audio_path": "/audios/dbt/DBT-AUDIO-08.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 20,
+      "primary_week": 5,
+      "review_weeks": [5, 6, 9],
+      "schedule_days": "Semaine 5 Jeudi (Écoute 1), Dimanche (Écoute 2) + Semaine 9 (Rappel Examen)",
+      "keywords": ["unit_tests", "warn_if", "error_if", "store_failures", "severity", "unitaires"],
+      "key_traps": [
+        "Les Unit Tests (unit_tests avec given / expect) testent la logique SQL/Jinja avec des données mockées statiques AVANT la matérialisation du modèle dans dbt build.",
+        "Pour avoir à la fois un seuil d'avertissement et d'erreur avec warn_if et error_if, severity doit rester sur 'error' (si severity: warn, le test n'échouera jamais en erreur)."
+      ]
+    },
+    {
+      "id": "DBT-AUDIO-09",
+      "cert_code": "DBT",
+      "episode_number": 9,
+      "title": "Model Contracts (enforced: true), Constraints DDL Snowflake, Model Versions & Access (private/protected/public)",
+      "original_filename": "DBT-AUDIO-09.m4a",
+      "audio_path": "/audios/dbt/DBT-AUDIO-09.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 22,
+      "primary_week": 6,
+      "review_weeks": [6, 8, 9],
+      "schedule_days": "Semaine 6 Lundi (Écoute 1), Jeudi (Écoute 2), Dimanche (Écoute 3) + Semaine 9",
+      "keywords": ["contracts", "contrats", "constraints", "versions", "access", "protected", "public", "private"],
+      "key_traps": [
+        "Sur Snowflake, la contrainte DDL NOT NULL d'un contrat est réellement appliquée (enforced), mais PRIMARY KEY et UNIQUE sont purement informatifs : il faut conserver un data_test unique !",
+        "Le niveau d'accès par défaut d'un modèle dans dbt est 'protected' (accessible dans tout le projet courant, mais pas depuis un projet externe sans passer à 'public')."
+      ]
+    },
+    {
+      "id": "DBT-AUDIO-10",
+      "cert_code": "DBT",
+      "episode_number": 10,
+      "title": "Jinja & Macros Avancées : var(), env_var(), target, this et le Piège de {% if execute %} avec run_query()",
+      "original_filename": "DBT-AUDIO-10.m4a",
+      "audio_path": "/audios/dbt/DBT-AUDIO-10.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 22,
+      "primary_week": 6,
+      "review_weeks": [6, 8, 9],
+      "schedule_days": "Semaine 6 Mardi (Écoute 1), Vendredi (Écoute 2), Dimanche (Écoute 3) + Semaine 9",
+      "keywords": ["jinja", "macros", "execute", "run_query", "env_var", "target"],
+      "key_traps": [
+        "Durant la phase de Parsing (construction du DAG), execute vaut False et run_query() retourne None : il faut toujours entourer l'itération sur les résultats de run_query() par {% if execute %}.",
+        "Une variable passée en CLI via --vars écrase toujours la valeur définie dans dbt_project.yml."
+      ]
+    },
+    {
+      "id": "DBT-AUDIO-11",
+      "cert_code": "DBT",
+      "episode_number": 11,
+      "title": "Packages (dbt_utils), Hooks (pre-hook, post-hook, on-run-start, on-run-end) & Operations (run-operation)",
+      "original_filename": "DBT-AUDIO-11.m4a",
+      "audio_path": "/audios/dbt/DBT-AUDIO-11.m4a",
+      "level": "Niveau 2 : Intermédiaire",
+      "kind": "Micro-Thème",
+      "est_min": 20,
+      "primary_week": 6,
+      "review_weeks": [6, 8, 9],
+      "schedule_days": "Semaine 6 Mercredi (Écoute 1), Samedi (Écoute 2) + Semaine 9 (Rappel Examen)",
+      "keywords": ["packages", "dbt_utils", "hooks", "on-run-end", "operations", "surrogate_key"],
+      "key_traps": [
+        "La variable contextuelle results (contenant les statuts et temps d'exécution de tous les nœuds) n'est disponible QUE dans on-run-end.",
+        "dbt_utils.generate_surrogate_key remplace l'ancienne macro surrogate_key car elle distingue correctement les valeurs NULL des chaînes vides."
+      ]
+    },
+    {
+      "id": "DBT-AUDIO-12",
+      "cert_code": "DBT",
+      "episode_number": 12,
+      "title": "Grammaire Complète des Sélecteurs CLI (--select : +, @, Virgule = ET logique vs Espace = OU logique)",
+      "original_filename": "DBT-AUDIO-12.m4a",
+      "audio_path": "/audios/dbt/DBT-AUDIO-12.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 22,
+      "primary_week": 6,
+      "review_weeks": [6, 7, 9],
+      "schedule_days": "Semaine 6 Jeudi (Écoute 1), Dimanche (Écoute 2) + Semaine 9 (Veille d'examen)",
+      "keywords": ["selecteurs", "select", "exclude", "graphe", "intersection", "union", "arobase"],
+      "key_traps": [
+        "Dans --select, une virgule sans espace (A,B) signifie une INTERSECTION (ET logique), tandis qu'un espace (A B) signifie une UNION (OU logique).",
+        "L'opérateur @modele sélectionne le modèle, tous ses descendants, ET tous les ancêtres nécessaires pour construire ces descendants (idéal en CI)."
+      ]
+    },
+    {
+      "id": "DBT-AUDIO-13",
+      "cert_code": "DBT",
+      "episode_number": 13,
+      "title": "Orchestration DAG : dbt build vs dbt run/test, Court-Circuit en cas d'Échec, dbt retry, dbt clone & --empty",
+      "original_filename": "DBT-AUDIO-13.m4a",
+      "audio_path": "/audios/dbt/DBT-AUDIO-13.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 20,
+      "primary_week": 7,
+      "review_weeks": [7, 9],
+      "schedule_days": "Semaine 7 Lundi (Écoute 1), Vendredi (Écoute 2) + Semaine 9 (Rappel Examen)",
+      "keywords": ["build", "retry", "clone", "empty", "fail-fast"],
+      "key_traps": [
+        "Dans dbt build, si un test de sévérité error échoue sur un modèle parent, tous les modèles enfants en aval sont immédiatement marqués SKIPPED et ne sont pas construits.",
+        "dbt retry relance la dernière commande à partir du point d'échec en lisant run_results.json."
+      ]
+    },
+    {
+      "id": "DBT-AUDIO-14",
+      "cert_code": "DBT",
+      "episode_number": 14,
+      "title": "Les 4 Artefacts JSON (manifest.json), state:modified+, --defer et Architecture Slim CI en Production",
+      "original_filename": "DBT-AUDIO-14.m4a",
+      "audio_path": "/audios/dbt/DBT-AUDIO-14.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 24,
+      "primary_week": 7,
+      "review_weeks": [7, 8, 9],
+      "schedule_days": "Semaine 7 Mercredi (Écoute 1), Samedi (Écoute 2) + Semaine 9 (Veille d'examen)",
+      "keywords": ["artefacts", "manifest", "defer", "slim ci", "state", "modified"],
+      "key_traps": [
+        "manifest.json est le SEUL artefact requis pour state:modified et --defer ; catalog.json est généré uniquement par dbt docs generate ; sources.json uniquement par dbt source freshness.",
+        "Modifier une description dans un fichier .yml ne déclenche state:modified.persisted_descriptions QUE si persist_docs est activé !"
+      ]
+    },
+    {
+      "id": "DBT-AUDIO-15",
+      "cert_code": "DBT",
+      "episode_number": 15,
+      "title": "Documentation ({% docs %}, catalog.json), Exposures (+exposure:) et Architecture Multi-Projets dbt Mesh",
+      "original_filename": "DBT-AUDIO-15.m4a",
+      "audio_path": "/audios/dbt/DBT-AUDIO-15.m4a",
+      "level": "Niveau 2 : Intermédiaire",
+      "kind": "Micro-Thème",
+      "est_min": 20,
+      "primary_week": 8,
+      "review_weeks": [8, 9],
+      "schedule_days": "Semaine 8 Mardi (Écoute 1), Samedi (Écoute 2) + Semaine 9 (Rappel Examen)",
+      "keywords": ["documentation", "exposures", "mesh", "catalog", "docs"],
+      "key_traps": [
+        "Dans une Exposure, les champs owner.name et owner.email sont obligatoires, et on sélectionne tous ses modèles amont avec dbt build --select +exposure:nom_exposure.",
+        "En dbt Mesh, référencer un modèle d'un autre projet s'écrit {{ ref('projet_amont', 'nom_modele') }} et exige que le modèle amont ait access: public."
+      ]
+    },
+    {
+      "id": "DBT-AUDIO-16",
+      "cert_code": "DBT",
+      "episode_number": 16,
+      "title": "Grand Débat Final : Les 30 Pièges de la Certification dbt, Débogage d'Erreurs & Refactoring SQL",
+      "original_filename": "DBT-AUDIO-16.m4a",
+      "audio_path": "/audios/dbt/DBT-AUDIO-16.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Grand Débat Pièges",
+      "est_min": 25,
+      "primary_week": 8,
+      "review_weeks": [8, 9],
+      "schedule_days": "Semaine 8 Dimanche (Écoute 1) + Semaine 9 Mardi (Écoute 2) & Jeudi veille d'examen (Écoute 3)",
+      "keywords": ["debogage", "refactoring", "pieges", "finaux", "examen dbt"],
+      "key_traps": [
+        "Distinguer une erreur de Compilation (Jinja, cycle DAG, ref introuvable : visible dans target/compiled/) d'une erreur d'Exécution Base de Données (SQL invalide ou droits Snowflake : visible dans target/run/ et logs/dbt.log).",
+        "Toujours valider un refactoring SQL legacy avec le package audit_helper (compare_relations)."
+      ]
+    },
+    {
+      "id": "DEA-AUDIO-01",
+      "cert_code": "DEA-C01",
+      "episode_number": 1,
+      "title": "Architecture Globale d'Ingestion AWS : Batch vs Micro-Batch vs Streaming, Garanties & Idempotence",
+      "original_filename": "DEA-AUDIO-01.m4a",
+      "audio_path": "/audios/dea-c01/DEA-AUDIO-01.m4a",
+      "level": "Niveau 1 : Fondamental",
+      "kind": "Macro-Thème",
+      "est_min": 22,
+      "primary_week": 10,
+      "review_weeks": [10, 17, 19],
+      "schedule_days": "Semaine 10 Lundi (Écoute 1), Jeudi (Écoute 2), Dimanche (Écoute 3)",
+      "keywords": ["ingestion", "batch", "streaming", "idempotence", "panorama"],
+      "key_traps": [
+        "Kinesis Data Streams = temps réel pur (< 200 ms) avec replay et multiples consommateurs ; Data Firehose = near real-time (buffer >= 60s) entièrement géré vers S3/Redshift/OpenSearch."
+      ]
+    },
+    {
+      "id": "DEA-AUDIO-02",
+      "cert_code": "DEA-C01",
+      "episode_number": 2,
+      "title": "Kinesis Data Streams (KDS) sous le capot : Quotas de Shards, Hot Shards, Enhanced Fan-Out & KPL/KCL",
+      "original_filename": "DEA-AUDIO-02.m4a",
+      "audio_path": "/audios/dea-c01/DEA-AUDIO-02.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 24,
+      "primary_week": 10,
+      "review_weeks": [10, 17, 19],
+      "schedule_days": "Semaine 10 Mardi (Écoute 1), Vendredi (Écoute 2), Dimanche (Écoute 3)",
+      "keywords": ["kinesis", "shards", "fan-out", "kpl", "kcl", "hot shard"],
+      "key_traps": [
+        "1 Shard = 1 Mo/s ou 1 000 records/s en écriture ; 2 Mo/s partagés en lecture standard vs 2 Mo/s dédiés par consommateur avec Enhanced Fan-Out.",
+        "Sur Lambda consommant Kinesis, activer bisect-batch-on-function-error et une DLQ pour éviter qu'un seul message corrompu ne bloque tout le shard."
+      ]
+    },
+    {
+      "id": "DEA-AUDIO-03",
+      "cert_code": "DEA-C01",
+      "episode_number": 3,
+      "title": "Amazon Data Firehose (Dynamic Partitioning, Conversion Parquet) vs Amazon MSK vs Managed Flink",
+      "original_filename": "DEA-AUDIO-03.m4a",
+      "audio_path": "/audios/dea-c01/DEA-AUDIO-03.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 22,
+      "primary_week": 11,
+      "review_weeks": [11, 17, 19],
+      "schedule_days": "Semaine 11 Lundi (Écoute 1), Jeudi (Écoute 2), Dimanche (Écoute 3)",
+      "keywords": ["firehose", "dynamic partitioning", "msk", "flink", "parquet"],
+      "key_traps": [
+        "Firehose peut convertir nativement du JSON en Parquet/ORC sans job Spark, à condition de lui fournir un schéma dans AWS Glue Data Catalog.",
+        "Pour éviter les petits fichiers S3 avec Firehose, augmenter le Buffer Size (jusqu'à 128 Mo) et le Buffer Interval (jusqu'à 900s)."
+      ]
+    },
+    {
+      "id": "DEA-AUDIO-04",
+      "cert_code": "DEA-C01",
+      "episode_number": 4,
+      "title": "Ingestion Base de Données, SaaS & Fichiers : AWS DMS (Full Load + CDC, SCT, LOBs), AppFlow, DataSync",
+      "original_filename": "DEA-AUDIO-04.m4a",
+      "audio_path": "/audios/dea-c01/DEA-AUDIO-04.m4a",
+      "level": "Niveau 2 : Intermédiaire",
+      "kind": "Micro-Thème",
+      "est_min": 20,
+      "primary_week": 11,
+      "review_weeks": [11, 17, 19],
+      "schedule_days": "Semaine 11 Mardi (Écoute 1), Vendredi (Écoute 2), Dimanche (Écoute 3)",
+      "keywords": ["dms", "cdc", "sct", "appflow", "datasync", "transfer"],
+      "key_traps": [
+        "Pour une migration hétérogène (ex: Oracle vers Aurora PostgreSQL ou Redshift), il faut utiliser AWS Schema Conversion Tool (SCT) avant AWS DMS.",
+        "AWS AppFlow est le service natif sans code pour ingérer des données SaaS (Salesforce, ServiceNow, SAP) vers S3 ou Redshift."
+      ]
+    },
+    {
+      "id": "DEA-AUDIO-05",
+      "cert_code": "DEA-C01",
+      "episode_number": 5,
+      "title": "AWS Glue sous le capot : Crawlers (S3 Events), DynamicFrame (ResolveChoice), Job Bookmarks & DPUs",
+      "original_filename": "DEA-AUDIO-05.m4a",
+      "audio_path": "/audios/dea-c01/DEA-AUDIO-05.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 25,
+      "primary_week": 11,
+      "review_weeks": [11, 17, 19],
+      "schedule_days": "Semaine 11 Mercredi (Écoute 1), Samedi (Écoute 2) + Semaine 19",
+      "keywords": ["glue", "crawlers", "dynamicframe", "bookmarks", "resolvechoice", "dpu"],
+      "key_traps": [
+        "Pour que les Glue Job Bookmarks fonctionnent en PySpark, il faut utiliser un DynamicFrame avec transformation_ctx et appeler job.init() + job.commit().",
+        "Pour accélérer et réduire le coût d'un Glue Crawler sur des millions de partitions S3, activer le mode CRAWL_EVENT_MODE via S3 Event Notifications (SQS)."
+      ]
+    },
+    {
+      "id": "DEA-AUDIO-06",
+      "cert_code": "DEA-C01",
+      "episode_number": 6,
+      "title": "Amazon EMR (EC2, EKS, Serverless), Spot sur Task Nodes & Dépannage Apache Spark (Data Skew, Salting)",
+      "original_filename": "DEA-AUDIO-06.m4a",
+      "audio_path": "/audios/dea-c01/DEA-AUDIO-06.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 23,
+      "primary_week": 12,
+      "review_weeks": [12, 17, 19],
+      "schedule_days": "Semaine 12 Lundi (Écoute 1), Jeudi (Écoute 2), Dimanche (Écoute 3)",
+      "keywords": ["emr", "spark", "task nodes", "spot", "skew", "salting", "coalesce"],
+      "key_traps": [
+        "Sur EMR, seuls les Task Nodes ne stockent aucune donnée HDFS : c'est sur eux qu'il faut mettre des Spot Instances sans risque de perte de données.",
+        "Pour réduire le nombre de fichiers écrits sur S3 sans provoquer de shuffle réseau complet dans Spark, utiliser coalesce(N) plutôt que repartition(N)."
+      ]
+    },
+    {
+      "id": "DEA-AUDIO-07",
+      "cert_code": "DEA-C01",
+      "episode_number": 7,
+      "title": "Amazon Athena : Partition Projection vs MSCK REPAIR TABLE, CTAS/UNLOAD, Workgroups & Federated Queries",
+      "original_filename": "DEA-AUDIO-07.m4a",
+      "audio_path": "/audios/dea-c01/DEA-AUDIO-07.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 22,
+      "primary_week": 13,
+      "review_weeks": [13, 17, 19],
+      "schedule_days": "Semaine 13 Lundi (Écoute 1), Jeudi (Écoute 2), Dimanche (Écoute 3)",
+      "keywords": ["athena", "partition projection", "msck", "ctas", "workgroups", "federated"],
+      "key_traps": [
+        "Sur les tables S3 très partitionnées, activer Athena Partition Projection élimine le besoin de lancer MSCK REPAIR TABLE et accélère drastiquement la planification des requêtes.",
+        "Les Athena Workgroups permettent de fixer des plafonds de données scannées par requête et par équipe pour éviter les dépassements de budget."
+      ]
+    },
+    {
+      "id": "DEA-AUDIO-08",
+      "cert_code": "DEA-C01",
+      "episode_number": 8,
+      "title": "Data Lake S3 : Parquet/ORC vs Avro, Small Files Problem & Apache Iceberg vs Hudi (CoW/MoR) vs Delta Lake",
+      "original_filename": "DEA-AUDIO-08.m4a",
+      "audio_path": "/audios/dea-c01/DEA-AUDIO-08.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 24,
+      "primary_week": 12,
+      "review_weeks": [12, 17, 19],
+      "schedule_days": "Semaine 12 Mardi (Écoute 1), Vendredi (Écoute 2), Dimanche (Écoute 3)",
+      "keywords": ["iceberg", "hudi", "delta", "small files", "compaction", "avro"],
+      "key_traps": [
+        "Dans Apache Hudi, Copy-on-Write (CoW) optimise les lectures analytiques, tandis que Merge-on-Read (MoR) optimise les écritures/upserts fréquents (CDC).",
+        "Dans AWS Glue ETL, activer groupFiles='inPartition' avec groupSize regroupe des milliers de petits fichiers S3 en mémoire pour éviter de saturer Spark."
+      ]
+    },
+    {
+      "id": "DEA-AUDIO-09",
+      "cert_code": "DEA-C01",
+      "episode_number": 9,
+      "title": "Amazon Redshift : Architecture RA3, Distribution Styles (KEY, ALL, EVEN, AUTO) & Sort Keys (Compound vs Interleaved)",
+      "original_filename": "DEA-AUDIO-09.m4a",
+      "audio_path": "/audios/dea-c01/DEA-AUDIO-09.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 25,
+      "primary_week": 13,
+      "review_weeks": [13, 18, 19],
+      "schedule_days": "Semaine 13 Mardi (Écoute 1), Vendredi (Écoute 2), Dimanche (Écoute 3)",
+      "keywords": ["redshift", "ra3", "diststyle", "sortkey", "compound", "interleaved", "vacuum"],
+      "key_traps": [
+        "DISTSTYLE ALL réplique une petite table de dimension sur chaque nœud ; DISTSTYLE KEY colocalise deux grandes tables jointes sur leur clé commune.",
+        "Toujours utiliser la commande COPY depuis S3 (avec plusieurs fichiers ou un manifest) plutôt que des INSERT unitaires dans Redshift."
+      ]
+    },
+    {
+      "id": "DEA-AUDIO-10",
+      "cert_code": "DEA-C01",
+      "episode_number": 10,
+      "title": "Redshift Spectrum, Redshift Serverless (RPUs), Data Sharing Multi-Comptes & Intégrations Zero-ETL",
+      "original_filename": "DEA-AUDIO-10.m4a",
+      "audio_path": "/audios/dea-c01/DEA-AUDIO-10.m4a",
+      "level": "Niveau 2 : Intermédiaire",
+      "kind": "Micro-Thème",
+      "est_min": 20,
+      "primary_week": 13,
+      "review_weeks": [13, 18, 19],
+      "schedule_days": "Semaine 13 Mercredi (Écoute 1), Samedi (Écoute 2) + Semaine 18",
+      "keywords": ["spectrum", "serverless", "data sharing", "zero-etl", "rpu"],
+      "key_traps": [
+        "Redshift Data Sharing (sur nœuds RA3 ou Serverless) permet de partager des données en direct sans copie, et le cluster consommateur paie son propre calcul sans impacter le producteur."
+      ]
+    },
+    {
+      "id": "DEA-AUDIO-11",
+      "cert_code": "DEA-C01",
+      "episode_number": 11,
+      "title": "DynamoDB pour le Data Engineer (GSI vs LSI, Streams, Export to S3 avec PITR zéro RCU), OpenSearch, Neptune & Timestream",
+      "original_filename": "DEA-AUDIO-11.m4a",
+      "audio_path": "/audios/dea-c01/DEA-AUDIO-11.m4a",
+      "level": "Niveau 2 : Intermédiaire",
+      "kind": "Micro-Thème",
+      "est_min": 21,
+      "primary_week": 14,
+      "review_weeks": [14, 18, 19],
+      "schedule_days": "Semaine 14 Lundi (Écoute 1), Jeudi (Écoute 2), Dimanche (Écoute 3)",
+      "keywords": ["dynamodb", "gsi", "lsi", "pitr", "export s3", "opensearch", "timestream"],
+      "key_traps": [
+        "Pour analyser une grande table DynamoDB dans Athena sans consommer 1 seul RCU de production, activer PITR et utiliser DynamoDB Export to S3."
+      ]
+    },
+    {
+      "id": "DEA-AUDIO-12",
+      "cert_code": "DEA-C01",
+      "episode_number": 12,
+      "title": "Le Grand Arbitrage d'Orchestration : AWS Step Functions (Distributed Map) vs Amazon MWAA (Airflow) vs Glue Workflows",
+      "original_filename": "DEA-AUDIO-12.m4a",
+      "audio_path": "/audios/dea-c01/DEA-AUDIO-12.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 22,
+      "primary_week": 14,
+      "review_weeks": [14, 18, 19],
+      "schedule_days": "Semaine 14 Mardi (Écoute 1), Vendredi (Écoute 2), Dimanche (Écoute 3)",
+      "keywords": ["orchestration", "step functions", "mwaa", "airflow", "glue workflows", "eventbridge"],
+      "key_traps": [
+        "Glue Workflows = uniquement pour orchestrer des Crawlers et Jobs Glue ; Step Functions = orchestration serverless multi-services AWS (avec Distributed Map pour S3) ; MWAA = DAGs Python Airflow existants ou multi-cloud."
+      ]
+    },
+    {
+      "id": "DEA-AUDIO-13",
+      "cert_code": "DEA-C01",
+      "episode_number": 13,
+      "title": "Qualité des Données & Schémas : AWS Glue Data Quality (DQDL, Quarantine) & Glue Schema Registry (BACKWARD/FORWARD/FULL)",
+      "original_filename": "DEA-AUDIO-13.m4a",
+      "audio_path": "/audios/dea-c01/DEA-AUDIO-13.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 21,
+      "primary_week": 15,
+      "review_weeks": [15, 18, 19],
+      "schedule_days": "Semaine 15 Lundi (Écoute 1), Jeudi (Écoute 2), Dimanche (Écoute 3)",
+      "keywords": ["data quality", "dqdl", "schema registry", "backward", "forward", "quarantine"],
+      "key_traps": [
+        "En compatibilité BACKWARD (défaut du Schema Registry), on peut supprimer un champ ou ajouter un champ optionnel avec valeur par défaut pour que les nouveaux consommateurs lisent les anciennes données."
+      ]
+    },
+    {
+      "id": "DEA-AUDIO-14",
+      "cert_code": "DEA-C01",
+      "episode_number": 14,
+      "title": "Observabilité, Dépannage (IteratorAgeMilliseconds, STL_LOAD_ERRORS / SYS_LOAD_ERROR_DETAIL) & S3 Storage Lens",
+      "original_filename": "DEA-AUDIO-14.m4a",
+      "audio_path": "/audios/dea-c01/DEA-AUDIO-14.m4a",
+      "level": "Niveau 2 : Intermédiaire",
+      "kind": "Micro-Thème",
+      "est_min": 20,
+      "primary_week": 16,
+      "review_weeks": [16, 18, 19],
+      "schedule_days": "Semaine 16 Lundi (Écoute 1), Jeudi (Écoute 2), Dimanche (Écoute 3)",
+      "keywords": ["observabilite", "iteratorage", "stl_load_errors", "storage lens", "monitoring"],
+      "key_traps": [
+        "Si GetRecords.IteratorAgeMilliseconds augmente sur Kinesis, le consommateur prend du retard : augmenter ParallelizationFactor sur Lambda (jusqu'à 10 par shard) ou scaler les workers.",
+        "Pour diagnostiquer une erreur de chargement COPY dans Redshift, interroger STL_LOAD_ERRORS ou SYS_LOAD_ERROR_DETAIL."
+      ]
+    },
+    {
+      "id": "DEA-AUDIO-15",
+      "cert_code": "DEA-C01",
+      "episode_number": 15,
+      "title": "AWS Lake Formation : Révocation IAMAllowedPrincipals, LF-Tags (TBAC), Data Cell Filters, AWS RAM & Amazon Macie",
+      "original_filename": "DEA-AUDIO-15.m4a",
+      "audio_path": "/audios/dea-c01/DEA-AUDIO-15.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Micro-Thème Critique",
+      "est_min": 24,
+      "primary_week": 15,
+      "review_weeks": [15, 18, 19],
+      "schedule_days": "Semaine 15 Mardi (Écoute 1), Vendredi (Écoute 2), Dimanche (Écoute 3)",
+      "keywords": ["lake formation", "lf-tags", "tbac", "cell-level", "iamallowedprincipals", "ram"],
+      "key_traps": [
+        "Si Lake Formation semble ignorer vos restrictions d'accès sur d'anciennes tables Glue, c'est que la permission Super pour IAMAllowedPrincipals n'a pas été révoquée.",
+        "Les Data Cell Filters de Lake Formation combinent le filtrage de colonnes et le filtrage de lignes SQL (Cell-level security)."
+      ]
+    },
+    {
+      "id": "DEA-AUDIO-16",
+      "cert_code": "DEA-C01",
+      "episode_number": 16,
+      "title": "Grand Débat Final : Chiffrement KMS (S3 Bucket Keys, Cross-Account CMK), Réseau VPC Glue & les 30 Pièges DEA-C01",
+      "original_filename": "DEA-AUDIO-16.m4a",
+      "audio_path": "/audios/dea-c01/DEA-AUDIO-16.m4a",
+      "level": "Niveau 3 : Avancé & Pièges",
+      "kind": "Grand Débat Pièges",
+      "est_min": 25,
+      "primary_week": 16,
+      "review_weeks": [16, 18, 19],
+      "schedule_days": "Semaine 16 Mardi (Écoute 1), Samedi (Écoute 2) + Semaine 19 (Veille d'examen)",
+      "keywords": ["kms", "bucket keys", "cross-account", "self-referencing", "vpc endpoint", "pieges dea"],
+      "key_traps": [
+        "Activer S3 Bucket Keys réduit de 99 % les appels API et les coûts AWS KMS sur les Data Lakes S3.",
+        "Pour qu'une connexion réseau AWS Glue fonctionne dans un VPC privé, son Security Group DOIT posséder une règle entrante auto-référencée (Self-Referencing Inbound Rule) autorisant tout le trafic TCP depuis lui-même, plus un S3 Gateway Endpoint."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,490 @@
+{
+  "generated_at": "2026-10-31T18:00:00.000Z",
+  "total_courses_count": 59,
+  "categories": {
+    "python": [
+      {
+        "id": "01_structures_donnees_big_o",
+        "num": "1.1-1.3",
+        "title": "Structures de données Python (List, Dict, Set, Tuple), mutabilité, hashabilité et compréhensions",
+        "durationMin": 20,
+        "level": "Fondamental",
+        "tags": ["PYTHON", "DICT_HASH", "MUTABILITY", "COMPREHENSIONS", "W01-I1"]
+      },
+      {
+        "id": "02_collections_deque_heapq",
+        "num": "1.4-1.6",
+        "title": "Collections spécialisées (Counter, deque, defaultdict), tri personnalisé (sorted, bisect, heapq) et Big O",
+        "durationMin": 20,
+        "level": "Intermédiaire",
+        "tags": ["COLLECTIONS", "DEQUE", "HEAPQ", "BIG_O", "W01-I2"]
+      },
+      {
+        "id": "03_generateurs_decorateurs_context_managers",
+        "num": "1.7-1.12",
+        "title": "Fonctions avancées (*args, **kwargs), Décorateurs (functools.wraps) et Context Managers (with)",
+        "durationMin": 20,
+        "level": "Intermédiaire",
+        "tags": ["DECORATORS", "CONTEXT_MANAGER", "CLOSURES", "W01-I3"]
+      },
+      {
+        "id": "12_algorithmique_fenetre_intervalles_dag",
+        "num": "1.15",
+        "title": "Algorithmique Data : Deux pointeurs, Fenêtre glissante, Fusion d'intervalles et Tri topologique (DAG)",
+        "durationMin": 25,
+        "level": "Avancé",
+        "tags": ["ALGORITHMS", "SLIDING_WINDOW", "INTERVALS", "DAG", "W07-I1"]
+      },
+      {
+        "id": "06_memoire_gc_slots_profilage",
+        "num": "1.16",
+        "title": "Générateurs (yield, itertools), Gestion mémoire, Garbage Collector et __slots__",
+        "durationMin": 25,
+        "level": "Avancé",
+        "tags": ["GENERATORS", "ITERTOOLS", "MEMORY_O1", "SLOTS", "W07-I2"]
+      },
+      {
+        "id": "11_serialisation_parquet_avro_arrow",
+        "num": "1.17",
+        "title": "Lecture/Écriture de gros fichiers par lots (Chunking CSV/JSONL) et Formats (Parquet, Avro, Arrow)",
+        "durationMin": 25,
+        "level": "Intermédiaire",
+        "tags": ["CHUNKING", "PARQUET", "PYARROW", "STREAMING_IO", "W07-I3"]
+      },
+      {
+        "id": "04_typage_pydantic_contrats",
+        "num": "1.19",
+        "title": "Typage statique (typing, TypeVar, Protocol), Dataclasses et Validation de contrats avec Pydantic v2",
+        "durationMin": 25,
+        "level": "Intermédiaire",
+        "tags": ["PYDANTIC", "TYPING", "DATA_CONTRACTS", "DEAD_LETTER", "W08-I1"]
+      },
+      {
+        "id": "09_packaging_clean_architecture_patterns",
+        "num": "1.20",
+        "title": "POO sobre pour les pipelines Data (Composition, ABC, Protocol, Strategy/Factory) et Clean Architecture",
+        "durationMin": 25,
+        "level": "Intermédiaire",
+        "tags": ["OOP", "PROTOCOL", "CLEAN_ARCH", "PACKAGING", "W08-I2"]
+      },
+      {
+        "id": "13_bilan_live_coding_python_data_ai",
+        "num": "1.21",
+        "title": "Gestion d'erreurs, Logging structuré JSON, Retries avec Exponential Backoff & Méthodologie Live Coding",
+        "durationMin": 25,
+        "level": "Intermédiaire",
+        "tags": ["RETRY_BACKOFF", "LOGGING", "RESILIENCE", "LIVE_CODING", "W09-I1"]
+      },
+      {
+        "id": "05_concurrence_gil_asyncio_multiprocessing",
+        "num": "1.22",
+        "title": "Concurrence en Python : GIL, ThreadPoolExecutor, ProcessPoolExecutor et asyncio (Semaphore)",
+        "durationMin": 25,
+        "level": "Avancé",
+        "tags": ["CONCURRENCY", "ASYNCIO", "GIL", "MULTIPROCESSING", "W09-I2"]
+      },
+      {
+        "id": "07_pandas_polars_vectorisation",
+        "num": "1.23",
+        "title": "Manipulation de données avec Pandas 2.0 & Polars : Vectorisation, Lazy API et anti-patterns",
+        "durationMin": 25,
+        "level": "Intermédiaire",
+        "tags": ["PANDAS", "POLARS", "VECTORIZATION", "LAZY_EVAL", "W10-I1"]
+      },
+      {
+        "id": "08_pytest_fixtures_mocking",
+        "num": "1.25",
+        "title": "Tests industriels avec pytest : Fixtures, Parametrize, Mocking (monkeypatch) et tests de DataFrames",
+        "durationMin": 25,
+        "level": "Intermédiaire",
+        "tags": ["PYTEST", "FIXTURES", "MOCKING", "UNIT_TESTS", "W10-I2"]
+      },
+      {
+        "id": "10_fastapi_production_serving",
+        "num": "1.24-1.27",
+        "title": "APIs REST Python en production (FastAPI, Pydantic, async def vs def, Lifespan) & Debugging",
+        "durationMin": 25,
+        "level": "Avancé",
+        "tags": ["FASTAPI", "REST_API", "ASYNC", "MODEL_SERVING", "W21-I2"]
+      }
+    ],
+    "sql": [
+      {
+        "id": "01_ordre_execution_jointures_null",
+        "num": "2.1-2.3",
+        "title": "Ordre d'exécution logique SQL, Agrégations (GROUP BY, HAVING) et pièges des Jointures & NULL",
+        "durationMin": 25,
+        "level": "Fondamental",
+        "tags": ["JOINS", "GROUP_BY", "NULL_LOGIC", "FAN_OUT", "W02-I1"]
+      },
+      {
+        "id": "08_ensembles_not_exists_vs_not_in",
+        "num": "2.4-2.5",
+        "title": "Opérateurs ensemblistes (UNION ALL, INTERSECT, EXCEPT) et Anti-Joins (NOT EXISTS vs NOT IN)",
+        "durationMin": 25,
+        "level": "Intermédiaire",
+        "tags": ["UNION_ALL", "NOT_EXISTS", "ANTI_JOIN", "SUBQUERIES", "W02-I2"]
+      },
+      {
+        "id": "05_cte_modulaires_vs_sous_requetes",
+        "num": "2.6",
+        "title": "CTE simples et chaînées : Lisibilité, inlining vs matérialisation et optimisation",
+        "durationMin": 20,
+        "level": "Intermédiaire",
+        "tags": ["CTE", "WITH", "OPTIMIZER", "MODULAR_SQL", "W04-I1"]
+      },
+      {
+        "id": "06_cte_recursives_graphes_series",
+        "num": "2.6-R",
+        "title": "CTE Récursives (WITH RECURSIVE) : Hiérarchies, Graphes et Génération de séries temporelles",
+        "durationMin": 20,
+        "level": "Avancé",
+        "tags": ["RECURSIVE_CTE", "HIERARCHY", "DATE_SPINE", "W04-I1"]
+      },
+      {
+        "id": "02_window_functions_frames",
+        "num": "2.7",
+        "title": "Fonctions de Fenêtrage : Anatomie (OVER, PARTITION BY, ORDER BY) et Clauses ROWS vs RANGE",
+        "durationMin": 25,
+        "level": "Intermédiaire",
+        "tags": ["WINDOW_FUNCTIONS", "ROWS_VS_RANGE", "ROLLING_AVG", "W04-I2"]
+      },
+      {
+        "id": "12_idempotence_merge_upsert_incremental",
+        "num": "2.8",
+        "title": "ROW_NUMBER, Déduplication idempotente (QUALIFY), MERGE (Upsert) et Chargement incrémental",
+        "durationMin": 25,
+        "level": "Avancé",
+        "tags": ["DEDUPLICATION", "ROW_NUMBER", "MERGE_UPSERT", "IDEMPOTENCE", "W04-I3"]
+      },
+      {
+        "id": "11_patterns_dedoublonnage_top_n_gaps_islands",
+        "num": "2.9",
+        "title": "RANK, DENSE_RANK, NTILE : Top-N par groupe, Centiles et Sessions utilisateurs",
+        "durationMin": 25,
+        "level": "Intermédiaire",
+        "tags": ["RANK", "DENSE_RANK", "TOP_N", "NTILE", "W05-I1"]
+      },
+      {
+        "id": "09_dates_intervalles_cohortes",
+        "num": "2.11",
+        "title": "LAG et LEAD : Comparaison ligne à ligne, Rétention de cohortes (M0, M1, M2) et Churn",
+        "durationMin": 25,
+        "level": "Intermédiaire",
+        "tags": ["LAG_LEAD", "COHORT_RETENTION", "CHURN", "TIME_SERIES", "W05-I2"]
+      },
+      {
+        "id": "07_grouping_sets_rollup_pivot_case_when",
+        "num": "2.12",
+        "title": "Agrégations conditionnelles : SUM(CASE WHEN), FILTER, Pivot manuel, GROUPING SETS et ROLLUP",
+        "durationMin": 20,
+        "level": "Intermédiaire",
+        "tags": ["CASE_WHEN", "PIVOT", "GROUPING_SETS", "ROLLUP", "W05-I3"]
+      },
+      {
+        "id": "10_json_semi_structure_flatten",
+        "num": "2.14",
+        "title": "Séries temporelles (Gaps & Islands) et Données semi-structurées JSON (UNNEST / LATERAL FLATTEN)",
+        "durationMin": 25,
+        "level": "Avancé",
+        "tags": ["GAPS_AND_ISLANDS", "JSON_SQL", "LATERAL_FLATTEN", "W05-I4"]
+      },
+      {
+        "id": "03_index_btree_covering_index",
+        "num": "2.16-2.17",
+        "title": "Fonctionnement des Index (B-Tree, Index composites, Covering Index) et Prédicats SARGables",
+        "durationMin": 25,
+        "level": "Intermédiaire",
+        "tags": ["BTREE_INDEX", "COVERING_INDEX", "SARGABLE", "W03-I1"]
+      },
+      {
+        "id": "13_transactions_acid_isolation_verrous",
+        "num": "2.16-ACID",
+        "title": "Transactions ACID, Niveaux d'isolation ANSI, MVCC et Verrouillage (FOR UPDATE SKIP LOCKED)",
+        "durationMin": 20,
+        "level": "Avancé",
+        "tags": ["ACID", "ISOLATION_LEVELS", "MVCC", "LOCKS", "W03-I1"]
+      },
+      {
+        "id": "14_data_quality_observabilite_star_schema",
+        "num": "2.18-2.20",
+        "title": "Modélisation 3NF vs Star Schema vs Snowflake Schema, SCD Type 2 et Contrôles Data Quality SQL",
+        "durationMin": 25,
+        "level": "Intermédiaire",
+        "tags": ["STAR_SCHEMA", "3NF", "SCD_TYPE_2", "DATA_QUALITY", "W03-I2"]
+      },
+      {
+        "id": "04_columnar_partitionnement_explain",
+        "num": "2.21-2.24",
+        "title": "Plans d'exécution (EXPLAIN, Hash/Broadcast Join), Stockage colonnaire, Partitionnement et Clustering",
+        "durationMin": 25,
+        "level": "Avancé",
+        "tags": ["EXPLAIN_PLAN", "PARTITIONING", "CLUSTERING", "PARQUET", "W06-I1", "W06-I2"]
+      }
+    ],
+    "de": [
+      {
+        "id": "3_1_etl_vs_elt",
+        "num": "3.1",
+        "title": "OLTP vs OLAP, lignes vs colonnes, ETL vs ELT : Critères de choix et compromis",
+        "durationMin": 30,
+        "level": "Intermédiaire",
+        "tags": ["OLTP_OLAP", "ETL_ELT", "WAREHOUSE", "W10-I3"]
+      },
+      {
+        "id": "3_2_modelisation_kimball_star_schema",
+        "num": "3.2",
+        "title": "Modélisation dimensionnelle (Kimball) : Faits, Dimensions, Grain, Schéma Étoile vs Flocon",
+        "durationMin": 30,
+        "level": "Intermédiaire",
+        "tags": ["KIMBALL", "STAR_SCHEMA", "FACT_GRAIN", "SURROGATE_KEY", "W11-I1"]
+      },
+      {
+        "id": "3_11_dbt_en_production",
+        "num": "3.3",
+        "title": "Dimensions à évolution lente (SCD Types 1, 2, 3) et dbt en production (Snapshots, Incremental, Slim CI)",
+        "durationMin": 30,
+        "level": "Avancé",
+        "tags": ["SCD_TYPE_2", "DBT_SNAPSHOTS", "INCREMENTAL", "SLIM_CI", "W11-I2"]
+      },
+      {
+        "id": "3_8_data_quality_circuit_breakers",
+        "num": "3.4",
+        "title": "Architecture Médaillon (Bronze, Silver, Gold), Contrats de données, Data Quality et Circuit Breakers",
+        "durationMin": 30,
+        "level": "Intermédiaire",
+        "tags": ["MEDALLION", "DATA_QUALITY", "CIRCUIT_BREAKER", "DBT_TESTS", "W11-I3"]
+      },
+      {
+        "id": "3_6_lakehouse_formats_ouverts",
+        "num": "3.5",
+        "title": "Formats de fichiers (Parquet, Avro, ORC) et Formats de Table Ouverts (Apache Iceberg, Delta Lake)",
+        "durationMin": 30,
+        "level": "Intermédiaire",
+        "tags": ["LAKEHOUSE", "APACHE_ICEBERG", "DELTA_LAKE", "PARQUET", "W11-I4"]
+      },
+      {
+        "id": "3_10_optimisation_spark",
+        "num": "3.6-3.7",
+        "title": "Apache Spark / PySpark : Architecture (Driver, Executors, DAG), Shuffles, Data Skew, Salting et AQE",
+        "durationMin": 40,
+        "level": "Avancé",
+        "tags": ["SPARK", "SHUFFLE", "DATA_SKEW", "BROADCAST", "W12-I1", "W12-I2"]
+      },
+      {
+        "id": "3_12_streaming_kafka",
+        "num": "3.8",
+        "title": "Streaming Kafka et Kinesis : Partitions, Consumer Groups, Offsets et Sémantiques Exactly-Once",
+        "durationMin": 40,
+        "level": "Avancé",
+        "tags": ["KAFKA", "KINESIS", "EXACTLY_ONCE", "OFFSETS", "W12-I3"]
+      },
+      {
+        "id": "3_2_batch_vs_streaming",
+        "num": "3.9",
+        "title": "Batch vs Streaming : Quand passer au temps réel et à quel coût ?",
+        "durationMin": 30,
+        "level": "Intermédiaire",
+        "tags": ["STREAMING", "BATCH", "LATENCY", "ARCHITECTURE"]
+      },
+      {
+        "id": "3_18_orchestration_reprise_panne",
+        "num": "3.10",
+        "title": "Conception d'orchestration : Gestion des dépendances, DAGs Airflow / Step Functions et reprise sur panne",
+        "durationMin": 40,
+        "level": "Intermédiaire",
+        "tags": ["AIRFLOW", "ORCHESTRATION", "DAG", "RETRY"]
+      },
+      {
+        "id": "3_17_idempotence_pipelines",
+        "num": "3.11",
+        "title": "Idempotence absolue, Backfill et Gestion des données en retard (Late-Arriving Data)",
+        "durationMin": 45,
+        "level": "Avancé",
+        "tags": ["IDEMPOTENCE", "BACKFILL", "LATE_DATA", "W13-I1"]
+      },
+      {
+        "id": "3_26_etude_cas_pipeline_10m",
+        "num": "3.13",
+        "title": "Cas d'architecture n°1 : Pipeline e-commerce temps réel + analytique (10M lignes/jour)",
+        "durationMin": 60,
+        "level": "Avancé",
+        "tags": ["SYSTEM_DESIGN", "CASE_STUDY", "SCALABILITY", "W13-I2"]
+      },
+      {
+        "id": "3_27_etude_cas_late_data",
+        "num": "3.14",
+        "title": "Cas d'architecture n°2 : Plateforme de logs à haut débit, Late Data, Watermarking et Anomalies",
+        "durationMin": 60,
+        "level": "Avancé",
+        "tags": ["LATE_DATA", "WATERMARKING", "STREAMING", "W14-I1"]
+      }
+    ],
+    "aie": [
+      {
+        "id": "4_3_architecture_transformers",
+        "num": "4.1",
+        "title": "Architecture Transformers, Tokenisation et Mécanisme d'Attention (Self-Attention)",
+        "durationMin": 40,
+        "level": "Intermédiaire",
+        "tags": ["TRANSFORMERS", "ATTENTION", "LLM", "DEEP_LEARNING"]
+      },
+      {
+        "id": "4_6_embeddings_modeles_encodage",
+        "num": "4.3",
+        "title": "Embeddings et Modèles d'Encodage : Dimension, Similarité Cosinus, Produit Scalaire et Distance L2",
+        "durationMin": 40,
+        "level": "Intermédiaire",
+        "tags": ["EMBEDDINGS", "VECTOR_SEARCH", "COSINE_SIMILARITY", "W15-I1"]
+      },
+      {
+        "id": "4_7_bases_vectorielles_hnsw_ivf",
+        "num": "4.6",
+        "title": "Bases Vectorielles : Index HNSW et IVF, Filtrage par métadonnées et Compromis Rappel / Latence",
+        "durationMin": 45,
+        "level": "Intermédiaire",
+        "tags": ["VECTOR_DB", "HNSW", "IVF", "PGVECTOR", "OPENSEARCH", "W15-I2"]
+      },
+      {
+        "id": "4_8_systeme_rag_complet",
+        "num": "4.7",
+        "title": "Architecture RAG de bout en bout : Ingestion, Nettoyage, Découpage, Indexation, Récupération, Génération",
+        "durationMin": 45,
+        "level": "Intermédiaire",
+        "tags": ["RAG", "ARCHITECTURE", "SYSTEM_DESIGN", "W16-I1"]
+      },
+      {
+        "id": "4_9_strategies_chunking",
+        "num": "4.8",
+        "title": "Stratégies de Découpage (Chunking) : Taille fixe, Récursif, Sémantique et Hiérarchique",
+        "durationMin": 40,
+        "level": "Intermédiaire",
+        "tags": ["CHUNKING", "PREPROCESSING", "RAG", "W16-I2"]
+      },
+      {
+        "id": "4_11_reranking_recherche_hybride",
+        "num": "4.9",
+        "title": "Recherche Hybride (BM25 + Vectorielle), Fusion de Rangs (RRF) et Re-ranking (Cross-Encoder)",
+        "durationMin": 40,
+        "level": "Avancé",
+        "tags": ["RERANKING", "HYBRID_SEARCH", "BM25", "RRF", "W16-I3"]
+      },
+      {
+        "id": "4_16_evaluation_rag_ragas",
+        "num": "4.11",
+        "title": "Évaluation d'un système RAG : Rappel@k, Précision@k, Fidélité (Faithfulness) et Pertinence (Ragas)",
+        "durationMin": 45,
+        "level": "Avancé",
+        "tags": ["EVALUATION", "RAGAS", "FAITHFULNESS", "METRICS", "W17-I1"]
+      },
+      {
+        "id": "4_2_inference_structured_outputs_tool_calling",
+        "num": "4.16",
+        "title": "Agents et Appels d'outils (Function Calling / Tool Use), Sorties structurées Pydantic et Paramètres d'inférence",
+        "durationMin": 40,
+        "level": "Avancé",
+        "tags": ["TOOL_CALLING", "STRUCTURED_OUTPUTS", "AGENTS", "PYDANTIC", "W17-I2"]
+      },
+      {
+        "id": "4_19_securite_hallucinations_guardrails",
+        "num": "4.19",
+        "title": "Mise en production : Latence (TTFT), Cache sémantique, Coûts, Sécurité et Guardrails",
+        "durationMin": 45,
+        "level": "Intermédiaire",
+        "tags": ["SECURITY", "GUARDRAILS", "LATENCY_TTFT", "COSTS", "W17-I3"]
+      },
+      {
+        "id": "4_24_etude_cas_assistant_entreprise",
+        "num": "4.24",
+        "title": "Cas d'architecture IA n°1 : Assistant documentaire d'entreprise avec contrôle d'accès RBAC et Cache",
+        "durationMin": 50,
+        "level": "Avancé",
+        "tags": ["CASE_STUDY", "SYSTEM_DESIGN", "RBAC", "SEMANTIC_CACHE", "W18-I1"]
+      }
+    ],
+    "fiches_ml": [
+      {
+        "id": "5_1_algorithmes_supervises",
+        "num": "5.1 (5.10)",
+        "title": "Fiche 5.1 : Algorithmes supervisés (GBDT, XGBoost, Random Forest, Régression) : Forces et hypothèses",
+        "durationMin": 20,
+        "level": "Fondamental",
+        "tags": ["ML", "XGBOOST", "RANDOM_FOREST", "W18-I2"]
+      },
+      {
+        "id": "5_2_metriques_evaluation",
+        "num": "5.2 (5.8)",
+        "title": "Fiche 5.2 : Métriques d'évaluation : Précision, Rappel, F1, ROC-AUC et PR-AUC",
+        "durationMin": 20,
+        "level": "Fondamental",
+        "tags": ["ML", "METRICS", "ROC_AUC", "PR_AUC", "W18-I2"]
+      },
+      {
+        "id": "5_3_surapprentissage_regularisation",
+        "num": "5.3 (5.5-5.7)",
+        "title": "Fiche 5.3 : Validation croisée, Data Leakage, Surapprentissage et Régularisation (L1/L2)",
+        "durationMin": 20,
+        "level": "Fondamental",
+        "tags": ["ML", "CROSS_VALIDATION", "DATA_LEAKAGE", "L1_L2", "W18-I2"]
+      },
+      {
+        "id": "5_4_donnees_desequilibrees",
+        "num": "5.4",
+        "title": "Fiche 5.4 : Gestion des données déséquilibrées (Imbalanced Data, SMOTE, Class Weights)",
+        "durationMin": 15,
+        "level": "Fondamental",
+        "tags": ["ML", "IMBALANCED_DATA", "SMOTE", "W18-I2"]
+      },
+      {
+        "id": "5_5_cycle_mlops_drift",
+        "num": "5.5 (5.14)",
+        "title": "Fiche 5.5 : Cycle de vie MLOps : Data Drift, Concept Drift et Suivi MLflow",
+        "durationMin": 15,
+        "level": "Fondamental",
+        "tags": ["MLOPS", "DRIFT", "MLFLOW", "W18-I2"]
+      }
+    ],
+    "fiches_software": [
+      {
+        "id": "6_1_dockerfile_robuste",
+        "num": "6.1 (6.4)",
+        "title": "Fiche 6.1 : Dockerfile robuste et optimisation de build (Multi-stage, Cache, Non-root)",
+        "durationMin": 20,
+        "level": "Fondamental",
+        "tags": ["DOCKER", "CONTAINER", "MULTI_STAGE", "W19-I1"]
+      },
+      {
+        "id": "6_2_cicd_data",
+        "num": "6.2 (6.1/6.5)",
+        "title": "Fiche 6.2 : Git Workflow, Principes de CI/CD pour la Data, Slim CI dbt et Terraform (IaC)",
+        "durationMin": 20,
+        "level": "Fondamental",
+        "tags": ["CICD", "GIT", "SLIM_CI", "TERRAFORM", "W19-I1"]
+      },
+      {
+        "id": "6_3_observabilite_logs_metriques",
+        "num": "6.3 (6.7)",
+        "title": "Fiche 6.3 : Observabilité Data, Commandes Linux/Bash essentielles, Logs JSON et Alerting",
+        "durationMin": 20,
+        "level": "Fondamental",
+        "tags": ["OBSERVABILITY", "LINUX_BASH", "LOGGING", "W19-I1"]
+      },
+      {
+        "id": "6_4_reseau_cloud_vpc",
+        "num": "6.4",
+        "title": "Fiche 6.4 : Fondamentaux réseau cloud : VPC, Subnets privés, NAT Gateway et Security Groups",
+        "durationMin": 15,
+        "level": "Fondamental",
+        "tags": ["NETWORKING", "AWS_VPC", "SECURITY_GROUPS", "W19-I1"]
+      },
+      {
+        "id": "6_5_clean_code_architecture_hexagonale",
+        "num": "6.5",
+        "title": "Fiche 6.5 : Principes de Clean Code, SOLID et Architecture Hexagonale en Data et IA",
+        "durationMin": 15,
+        "level": "Fondamental",
+        "tags": ["CLEAN_CODE", "HEXAGONAL", "SOLID", "W19-I1"]
+      }
+    ]
+  }
+}

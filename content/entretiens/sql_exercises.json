@@ -1,0 +1,2224 @@
+[
+  {
+    "id": "sql-001",
+    "title": "Clients actifs en France",
+    "category": "select_where",
+    "difficulty": "debutant",
+    "datasetId": "ecommerce",
+    "description": "L'equipe marketing souhaite cibler les clients actifs residant en France pour une nouvelle campagne.",
+    "instructions": [
+      "Selectionne customer_id, email, first_name et last_name de la table customers.",
+      "Filtre uniquement sur les clients actifs (is_active = 1).",
+      "Gere l'heterogeneite de la casse sur le pays : prends en compte 'France', 'FRANCE' et 'france'.",
+      "Trie le resultat par customer_id croissant."
+    ],
+    "expectedQuery": "SELECT customer_id, email, first_name, last_name FROM customers WHERE LOWER(country) = 'france' AND is_active = 1 ORDER BY customer_id ASC;",
+    "orderDependent": true,
+    "hints": [
+      "Utilise la fonction LOWER(country) pour normaliser la casse.",
+      "N'oublie pas la condition sur is_active."
+    ],
+    "solutionExplanation": "Dans les jeux de donnees reels, la casse des pays est souvent heterogene ('France', 'FRANCE'). L'utilisation de LOWER(country) = 'france' garantit un filtrage robuste. Le tri par customer_id assure un affichage deterministe.",
+    "tags": ["SELECT", "WHERE", "LOWER", "ORDER BY"]
+  },
+  {
+    "id": "sql-002",
+    "title": "Commandes superieures a 100 EUR validees",
+    "category": "select_where",
+    "difficulty": "debutant",
+    "datasetId": "ecommerce",
+    "description": "L'equipe finance audite les commandes a fort panier dont le statut est confirme.",
+    "instructions": [
+      "Selectionne order_id, customer_id, order_date et total_amount de la table orders.",
+      "Conserve uniquement les commandes avec un statut 'completed'.",
+      "Exclus les commandes dont le montant est inferieur ou egal a 100 EUR.",
+      "Exclus les montants negatifs (anomalies de saisie).",
+      "Trie par total_amount decroissant."
+    ],
+    "expectedQuery": "SELECT order_id, customer_id, order_date, total_amount FROM orders WHERE status = 'completed' AND total_amount > 100 ORDER BY total_amount DESC;",
+    "orderDependent": true,
+    "hints": [
+      "total_amount > 100 elimine a la fois les petits montants et les montants negatifs aberrants.",
+      "Filtre status = 'completed'."
+    ],
+    "solutionExplanation": "Le filtre total_amount > 100 est strict et elimine directement l'anomalie de commande a -50.00 EUR ainsi que les commandes en attente ou annulees.",
+    "tags": ["SELECT", "WHERE", "FILTER", "ANOMALY"]
+  },
+  {
+    "id": "sql-003",
+    "title": "Produits Accessoires ou Audio abordables",
+    "category": "select_where",
+    "difficulty": "debutant",
+    "datasetId": "ecommerce",
+    "description": "Trouve les produits appartenant aux categories 'Accessoires' ou 'Audio' dont le prix public est inferieur ou egal a 100 EUR.",
+    "instructions": [
+      "Selectionne product_id, name, category et list_price de la table products.",
+      "Filtre les categories 'Accessoires' et 'Audio' avec l'operateur IN.",
+      "Ajoute la contrainte list_price <= 100.",
+      "Trie par list_price croissant."
+    ],
+    "expectedQuery": "SELECT product_id, name, category, list_price FROM products WHERE category IN ('Accessoires', 'Audio') AND list_price <= 100 ORDER BY list_price ASC;",
+    "orderDependent": true,
+    "hints": [
+      "Utilise WHERE category IN ('Accessoires', 'Audio') ET list_price <= 100."
+    ],
+    "solutionExplanation": "L'operateur IN est plus concis et lisible qu'une succession de conditions OR.",
+    "tags": ["SELECT", "IN", "WHERE"]
+  },
+  {
+    "id": "sql-004",
+    "title": "Clients avec email manquant ou NULL",
+    "category": "select_where",
+    "difficulty": "debutant",
+    "datasetId": "ecommerce",
+    "description": "Pour la qualite des donnees (Data Quality), identifie les fiches clients depourvues d'adresse email valide.",
+    "instructions": [
+      "Selectionne customer_id, first_name, last_name et country de la table customers.",
+      "Filtre les lignes ou email est NULL ou constitue d'une chaine vide apres suppression des espaces.",
+      "Trie par customer_id."
+    ],
+    "expectedQuery": "SELECT customer_id, first_name, last_name, country FROM customers WHERE email IS NULL OR TRIM(email) = '' ORDER BY customer_id;",
+    "orderDependent": true,
+    "hints": [
+      "En SQL, une valeur NULL se teste avec IS NULL, jamais avec = NULL."
+    ],
+    "solutionExplanation": "Piege classique en entretien : tester email = NULL retourne toujours NULL (faux dans un WHERE). Il faut imperativement employer IS NULL.",
+    "tags": ["NULL", "DATA_QUALITY", "TRIM"]
+  },
+  {
+    "id": "sql-005",
+    "title": "Commandes avec statut invalide ou manquant",
+    "category": "select_where",
+    "difficulty": "debutant",
+    "datasetId": "ecommerce",
+    "description": "Detecte toutes les commandes dont le champ status est NULL ou ne fait pas partie des statuts officiels ('completed', 'pending', 'cancelled', 'refunded').",
+    "instructions": [
+      "Selectionne order_id, customer_id, order_date et total_amount de la table orders.",
+      "Condition : status IS NULL ou status non present dans la liste officielle.",
+      "Trie par order_id."
+    ],
+    "expectedQuery": "SELECT order_id, customer_id, order_date, total_amount FROM orders WHERE status IS NULL OR status NOT IN ('completed', 'pending', 'cancelled', 'refunded') ORDER BY order_id;",
+    "orderDependent": true,
+    "hints": [
+      "Attention : NOT IN avec des valeurs NULL demande une attention particuliere. Ici on teste explicitement status IS NULL OR status NOT IN (...)."
+    ],
+    "solutionExplanation": "Ce test d'integrite est un classique en pipeline de validation de donnees (Great Expectations ou tests dbt).",
+    "tags": ["DATA_QUALITY", "NULL", "NOT_IN"]
+  },
+  {
+    "id": "sql-006",
+    "title": "Employes actifs a haute remuneration",
+    "category": "select_where",
+    "difficulty": "debutant",
+    "datasetId": "hr_payroll",
+    "description": "Identifie les employes toujours en poste gagnant au moins 70 000 EUR par an.",
+    "instructions": [
+      "Selectionne employee_id, full_name, position_id et current_salary de la table employees.",
+      "Conserve uniquement les employes actifs (termination_date IS NULL).",
+      "Ajoute la contrainte current_salary >= 70000.",
+      "Trie par current_salary decroissant."
+    ],
+    "expectedQuery": "SELECT employee_id, full_name, position_id, current_salary FROM employees WHERE termination_date IS NULL AND current_salary >= 70000 ORDER BY current_salary DESC;",
+    "orderDependent": true,
+    "hints": [
+      "termination_date IS NULL permet d'exclure les anciens employes qui ont quitte l'entreprise."
+    ],
+    "solutionExplanation": "L'utilisation de termination_date IS NULL pour filtrer les employes actifs est un motif standard dans les modeles RH.",
+    "tags": ["HR", "FILTER", "NULL"]
+  },
+  {
+    "id": "sql-007",
+    "title": "Transactions suspectes ou signalees",
+    "category": "select_where",
+    "difficulty": "debutant",
+    "datasetId": "banking_fraud",
+    "description": "L'equipe de conformite bancaire souhaite isoler les transactions a risque.",
+    "instructions": [
+      "Selectionne tx_id, account_id, tx_timestamp, amount et merchant_name de la table transactions.",
+      "Conserve les transactions de montant >= 900 EUR OU marquees comme fraude (is_flagged_fraud = 1).",
+      "Trie par tx_id."
+    ],
+    "expectedQuery": "SELECT tx_id, account_id, tx_timestamp, amount, merchant_name FROM transactions WHERE amount >= 900 OR is_flagged_fraud = 1 ORDER BY tx_id;",
+    "orderDependent": true,
+    "hints": [
+      "Utilise l'operateur OR entre les deux criteres d'alerte."
+    ],
+    "solutionExplanation": "Requete de triage pour alertes anti-fraude combinant critere deterministe de regle metier et alerte ML.",
+    "tags": ["FRAUD", "WHERE", "OR"]
+  },
+  {
+    "id": "sql-008",
+    "title": "Sessions mobiles ou tablettes",
+    "category": "select_where",
+    "difficulty": "debutant",
+    "datasetId": "streaming_events",
+    "description": "Filtre les sessions issues d'appareils nomades (mobile ou tablet).",
+    "instructions": [
+      "Selectionne session_id, user_id, device et platform de user_sessions.",
+      "Garde uniquement device IN ('mobile', 'tablet').",
+      "Trie par session_id."
+    ],
+    "expectedQuery": "SELECT session_id, user_id, device, platform FROM user_sessions WHERE device IN ('mobile', 'tablet') ORDER BY session_id;",
+    "orderDependent": true,
+    "hints": [
+      "Utilise l'operateur IN ('mobile', 'tablet')."
+    ],
+    "solutionExplanation": "Simple et rapide pour isoler le trafic nomade dans un data warehouse.",
+    "tags": ["ANALYTICS", "FILTER"]
+  },
+  {
+    "id": "sql-009",
+    "title": "Comptes a decouvert ou suspendus",
+    "category": "select_where",
+    "difficulty": "debutant",
+    "datasetId": "banking_fraud",
+    "description": "Trouve les comptes bancaires presentant un solde strictement negatif ou un statut overdrawn / suspended.",
+    "instructions": [
+      "Selectionne account_id, customer_id, balance et status de bank_accounts.",
+      "Condition : balance < 0 OU status IN ('overdrawn', 'suspended').",
+      "Trie par account_id."
+    ],
+    "expectedQuery": "SELECT account_id, customer_id, balance, status FROM bank_accounts WHERE balance < 0 OR status IN ('overdrawn', 'suspended') ORDER BY account_id;",
+    "orderDependent": true,
+    "hints": [
+      "Combine balance < 0 avec status IN ('overdrawn', 'suspended')."
+    ],
+    "solutionExplanation": "Permet de surveiller les anomalies de solvabilite bancaire.",
+    "tags": ["FINTECH", "BANKING"]
+  },
+  {
+    "id": "sql-010",
+    "title": "Evenements de parcours de commande",
+    "category": "select_where",
+    "difficulty": "debutant",
+    "datasetId": "streaming_events",
+    "description": "Isole les evenements lies au tunnel d'achat ou au panier.",
+    "instructions": [
+      "Selectionne event_id, session_id, user_id, event_type et page_url de events_stream.",
+      "Garde les lignes ou event_type contient 'checkout' ou 'signup' (insensible a la casse).",
+      "Trie par event_id."
+    ],
+    "expectedQuery": "SELECT event_id, session_id, user_id, event_type, page_url FROM events_stream WHERE LOWER(event_type) LIKE '%checkout%' OR LOWER(event_type) LIKE '%signup%' ORDER BY event_id;",
+    "orderDependent": true,
+    "hints": [
+      "Utilise LOWER(event_type) LIKE '%...%' pour gerer la casse."
+    ],
+    "solutionExplanation": "L'utilisation de LIKE avec jokers % permet de capturer les variantes d'evenements comme 'checkout_success' ou 'signup_start'.",
+    "tags": ["LIKE", "STRING", "ANALYTICS"]
+  },
+  {
+    "id": "sql-011",
+    "title": "Nombre de clients par pays normalise",
+    "category": "group_by_having",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Calcule la repartition des clients par pays en eliminant les problemes de majuscules/minuscules et en ignorant les pays NULL.",
+    "instructions": [
+      "Normalise le nom du pays en minuscules (country_normalized).",
+      "Compte le nombre total de clients par pays.",
+      "Exclus les pays NULL.",
+      "Trie par nombre de clients decroissant, puis par pays alphabetique."
+    ],
+    "expectedQuery": "SELECT LOWER(country) AS country_normalized, COUNT(*) AS client_count FROM customers WHERE country IS NOT NULL GROUP BY LOWER(country) ORDER BY client_count DESC, country_normalized ASC;",
+    "orderDependent": true,
+    "hints": [
+      "GROUP BY LOWER(country).",
+      "country IS NOT NULL dans le WHERE."
+    ],
+    "solutionExplanation": "Sans normalisation, 'France' et 'FRANCE' forment deux groupes distincts. La normalisation prealable dans le GROUP BY est une bonne pratique data fondamentale.",
+    "tags": ["GROUP_BY", "AGGREGATION", "DATA_CLEANING"]
+  },
+  {
+    "id": "sql-012",
+    "title": "Chiffre d'affaires total par statut de commande",
+    "category": "group_by_having",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Evalue le montant total cumule et le nombre de commandes pour chaque statut.",
+    "instructions": [
+      "Selectionne le statut de la commande.",
+      "Compte le nombre de commandes (nb_commandes).",
+      "Calcule la somme de total_amount arrondie a 2 decimales (total_ca).",
+      "Considere uniquement les montants strictement positifs (total_amount > 0).",
+      "Groupe par status et trie par total_ca decroissant."
+    ],
+    "expectedQuery": "SELECT status, COUNT(*) AS nb_commandes, ROUND(SUM(total_amount), 2) AS total_ca FROM orders WHERE total_amount > 0 GROUP BY status ORDER BY total_ca DESC;",
+    "orderDependent": true,
+    "hints": [
+      "ROUND(SUM(total_amount), 2) pour l'arrondi monetaire.",
+      "Filtre total_amount > 0 dans le WHERE pour eviter de polluer le CA avec les anomalies negatives."
+    ],
+    "solutionExplanation": "Filtrer avant l'agregation (dans le WHERE) reduit le volume de lignes traitees et assainit le calcul du chiffre d'affaires.",
+    "tags": ["GROUP_BY", "SUM", "ROUND"]
+  },
+  {
+    "id": "sql-013",
+    "title": "Categories a prix moyen superieur a 50 EUR",
+    "category": "group_by_having",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Trouve les categories de produits dont le prix catalogue moyen depasse 50 EUR.",
+    "instructions": [
+      "Selectionne la categorie (category).",
+      "Compte le nombre de produits (nb_produits).",
+      "Calcule le prix moyen arrondi a 2 decimales (prix_moyen).",
+      "Filtre avec HAVING pour ne garder que les categories ou la moyenne depasse 50 EUR.",
+      "Trie par prix_moyen decroissant."
+    ],
+    "expectedQuery": "SELECT category, COUNT(*) AS nb_produits, ROUND(AVG(list_price), 2) AS prix_moyen FROM products GROUP BY category HAVING AVG(list_price) > 50 ORDER BY prix_moyen DESC;",
+    "orderDependent": true,
+    "hints": [
+      "Le filtre sur la moyenne calculee doit obligatoirement etre place dans le HAVING, pas dans le WHERE."
+    ],
+    "solutionExplanation": "Distinction cruciale en entretien : WHERE filtre les lignes individuelles avant l'agregation, HAVING filtre les groupes agreges apres le GROUP BY.",
+    "tags": ["HAVING", "AVG", "GROUP_BY"]
+  },
+  {
+    "id": "sql-014",
+    "title": "Clients recurrents (au moins 2 commandes)",
+    "category": "group_by_having",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Identifie les clients fideles ayant passe au moins 2 commandes valides.",
+    "instructions": [
+      "Selectionne customer_id.",
+      "Compte le nombre de commandes (nb_commandes).",
+      "Calcule la somme totale depensee arrondie a 2 decimales (total_depense).",
+      "Exclus les clients orphelins (customer_id = 999) et les montants negatifs.",
+      "Ne conserve que les clients avec au moins 2 commandes (COUNT(*) >= 2).",
+      "Trie par total_depense decroissant."
+    ],
+    "expectedQuery": "SELECT customer_id, COUNT(*) AS nb_commandes, ROUND(SUM(total_amount), 2) AS total_depense FROM orders WHERE customer_id != 999 AND total_amount > 0 GROUP BY customer_id HAVING COUNT(*) >= 2 ORDER BY total_depense DESC;",
+    "orderDependent": true,
+    "hints": [
+      "WHERE customer_id != 999 AND total_amount > 0 puis HAVING COUNT(*) >= 2."
+    ],
+    "solutionExplanation": "Combinaison classique WHERE + GROUP BY + HAVING + ORDER BY. Tres frequente en entretien technique de cadrage metier.",
+    "tags": ["GROUP_BY", "HAVING", "COUNT"]
+  },
+  {
+    "id": "sql-015",
+    "title": "Masse salariale par departement actif",
+    "category": "group_by_having",
+    "difficulty": "intermediaire",
+    "datasetId": "hr_payroll",
+    "description": "Calcule la masse salariale des employes actifs pour chaque departement comptant au moins 2 personnes.",
+    "instructions": [
+      "Selectionne department_id.",
+      "Compte le nombre d'employes actifs (nb_employes).",
+      "Calcule la masse salariale totale (masse_salariale) avec ROUND(SUM(...), 2).",
+      "Filtre les employes actifs avec salaire non NULL (termination_date IS NULL AND current_salary IS NOT NULL).",
+      "Conserve les departements ayant strictement plus de 1 employe actif.",
+      "Trie par masse_salariale decroissant."
+    ],
+    "expectedQuery": "SELECT department_id, COUNT(*) AS nb_employes, ROUND(SUM(current_salary), 2) AS masse_salariale FROM employees WHERE termination_date IS NULL AND current_salary IS NOT NULL GROUP BY department_id HAVING COUNT(*) > 1 ORDER BY masse_salariale DESC;",
+    "orderDependent": true,
+    "hints": [
+      "Ne pas oublier d'exclure les employes partis (termination_date IS NOT NULL)."
+    ],
+    "solutionExplanation": "Gestion propre des valeurs NULL et filtrage metier sur le statut actif de l'employe avant agregation.",
+    "tags": ["HR", "HAVING", "SUM"]
+  },
+  {
+    "id": "sql-016",
+    "title": "Volume et montant des transactions par categorie",
+    "category": "group_by_having",
+    "difficulty": "intermediaire",
+    "datasetId": "banking_fraud",
+    "description": "Analyse les transactions par categorie de marchand pour mesurer l'exposition bancaire.",
+    "instructions": [
+      "Selectionne merchant_category.",
+      "Compte le nombre de transactions (nb_tx).",
+      "Calcule la somme des montants (montant_total) arrondie a 2 decimales.",
+      "Exclus les remboursements a montant negatif (amount > 0).",
+      "Groupe par merchant_category et trie par montant_total decroissant."
+    ],
+    "expectedQuery": "SELECT merchant_category, COUNT(*) AS nb_tx, ROUND(SUM(amount), 2) AS montant_total FROM transactions WHERE amount > 0 GROUP BY merchant_category ORDER BY montant_total DESC;",
+    "orderDependent": true,
+    "hints": [
+      "Filtrer amount > 0 pour sommer uniquement les debits/achats reels."
+    ],
+    "solutionExplanation": "L'exclusion prealable des remboursements (montants negatifs) est requise pour ne pas fausser le volume brut marchand.",
+    "tags": ["BANKING", "AGGREGATION", "SUM"]
+  },
+  {
+    "id": "sql-017",
+    "title": "Comptes a haute frequence de transactions",
+    "category": "group_by_having",
+    "difficulty": "intermediaire",
+    "datasetId": "banking_fraud",
+    "description": "Repere les comptes bancaires ayant realise au moins 3 transactions dans la periode.",
+    "instructions": [
+      "Selectionne account_id.",
+      "Compte le nombre de transactions total (total_tx).",
+      "Filtre les comptes ayant au moins 3 transactions avec HAVING.",
+      "Trie par total_tx decroissant."
+    ],
+    "expectedQuery": "SELECT account_id, COUNT(*) AS total_tx FROM transactions GROUP BY account_id HAVING COUNT(*) >= 3 ORDER BY total_tx DESC;",
+    "orderDependent": true,
+    "hints": [
+      "GROUP BY account_id HAVING COUNT(*) >= 3."
+    ],
+    "solutionExplanation": "Indicateur typique de velocity check en detection de fraude : reperer les comptes presentant un pic d'activite.",
+    "tags": ["FRAUD", "VELOCITY", "HAVING"]
+  },
+  {
+    "id": "sql-018",
+    "title": "Frequence des types d'evenements normalises",
+    "category": "group_by_having",
+    "difficulty": "intermediaire",
+    "datasetId": "streaming_events",
+    "description": "Compte les occurrences de chaque type d'evenement en gerant la casse et en remplacant les types NULL par 'inconnu'.",
+    "instructions": [
+      "Utilise LOWER(COALESCE(event_type, 'inconnu')) comme type_evenement.",
+      "Compte le nombre total (total_events).",
+      "Groupe et trie par total_events decroissant."
+    ],
+    "expectedQuery": "SELECT LOWER(COALESCE(event_type, 'inconnu')) AS type_evenement, COUNT(*) AS total_events FROM events_stream GROUP BY LOWER(COALESCE(event_type, 'inconnu')) ORDER BY total_events DESC;",
+    "orderDependent": true,
+    "hints": [
+      "COALESCE(valeur, 'inconnu') remplace les NULL.",
+      "LOWER(...) harmonise 'PAGE_VIEW' et 'page_view'."
+    ],
+    "solutionExplanation": "Dans les logs d'evenements Kafka/Kinesis, les NULL et les variations de casse sont monnaie courante. COALESCE + LOWER assure une taxonomie propre.",
+    "tags": ["COALESCE", "LOWER", "ANALYTICS"]
+  },
+  {
+    "id": "sql-019",
+    "title": "Departements a haut salaire moyen",
+    "category": "group_by_having",
+    "difficulty": "intermediaire",
+    "datasetId": "hr_payroll",
+    "description": "Trouve les departements ou le salaire moyen annuel des employes en poste depasse 60 000 EUR.",
+    "instructions": [
+      "Selectionne department_id.",
+      "Calcule le salaire moyen arrondi a 2 decimales (salaire_moyen).",
+      "Filtre termination_date IS NULL et current_salary IS NOT NULL.",
+      "Condition HAVING : salaire moyen > 60000.",
+      "Trie par salaire_moyen decroissant."
+    ],
+    "expectedQuery": "SELECT department_id, ROUND(AVG(current_salary), 2) AS salaire_moyen FROM employees WHERE current_salary IS NOT NULL AND termination_date IS NULL GROUP BY department_id HAVING AVG(current_salary) > 60000 ORDER BY salaire_moyen DESC;",
+    "orderDependent": true,
+    "hints": [
+      "HAVING AVG(current_salary) > 60000."
+    ],
+    "solutionExplanation": "Permet aux recruteurs d'evaluer la comprehension de la sequence d'evaluation SQL (FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY).",
+    "tags": ["HAVING", "AVG", "HR"]
+  },
+  {
+    "id": "sql-020",
+    "title": "Pages les plus consultees et duree moyenne",
+    "category": "group_by_having",
+    "difficulty": "intermediaire",
+    "datasetId": "streaming_events",
+    "description": "Calcule le nombre de visites et le temps moyen passe sur chaque page URL.",
+    "instructions": [
+      "Selectionne page_url.",
+      "Compte le nombre de visites (total_visites).",
+      "Calcule la moyenne de duration_sec arrondie a 1 decimale (duree_moyenne_sec).",
+      "Filtre duration_sec IS NOT NULL.",
+      "Conserve les pages vues au moins 2 fois avec HAVING.",
+      "Trie par total_visites decroissant."
+    ],
+    "expectedQuery": "SELECT page_url, COUNT(*) AS total_visites, ROUND(AVG(duration_sec), 1) AS duree_moyenne_sec FROM events_stream WHERE duration_sec IS NOT NULL GROUP BY page_url HAVING COUNT(*) >= 2 ORDER BY total_visites DESC;",
+    "orderDependent": true,
+    "hints": [
+      "WHERE duration_sec IS NOT NULL puis HAVING COUNT(*) >= 2."
+    ],
+    "solutionExplanation": "Calcul standard de metriques d'engagement produit (Google Analytics / Amplitude).",
+    "tags": ["ANALYTICS", "HAVING", "AVG"]
+  },
+  {
+    "id": "sql-021",
+    "title": "Detail des commandes avec identite client (INNER JOIN)",
+    "category": "joins",
+    "difficulty": "debutant",
+    "datasetId": "ecommerce",
+    "description": "Reconstitue la liste des commandes avec le nom et le prenom du client associe.",
+    "instructions": [
+      "Joint la table orders (o) avec customers (c) sur customer_id.",
+      "Selectionne o.order_id, o.order_date, c.first_name, c.last_name et o.total_amount.",
+      "Conserve uniquement les commandes completed.",
+      "Trie par o.order_id."
+    ],
+    "expectedQuery": "SELECT o.order_id, o.order_date, c.first_name, c.last_name, o.total_amount FROM orders o INNER JOIN customers c ON o.customer_id = c.customer_id WHERE o.status = 'completed' ORDER BY o.order_id;",
+    "orderDependent": true,
+    "hints": [
+      "Utilise INNER JOIN sur o.customer_id = c.customer_id."
+    ],
+    "solutionExplanation": "L'INNER JOIN elimine automatiquement la commande 1006 qui a un client_id orphelin (999 n'existant pas dans customers).",
+    "tags": ["INNER_JOIN", "JOIN", "ORDERS"]
+  },
+  {
+    "id": "sql-022",
+    "title": "Clients sans aucune commande (Anti-Join)",
+    "category": "joins",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Trouve les clients inscrits qui n'ont encore jamais passe la moindre commande sur le site.",
+    "instructions": [
+      "Effectue un LEFT JOIN entre customers (c) et orders (o) sur customer_id.",
+      "Filtre pour ne garder que les clients sans commande (o.order_id IS NULL).",
+      "Selectionne c.customer_id, c.first_name, c.last_name et c.email.",
+      "Trie par c.customer_id."
+    ],
+    "expectedQuery": "SELECT c.customer_id, c.first_name, c.last_name, c.email FROM customers c LEFT JOIN orders o ON c.customer_id = o.customer_id WHERE o.order_id IS NULL ORDER BY c.customer_id;",
+    "orderDependent": true,
+    "hints": [
+      "Le motif LEFT JOIN ... WHERE right_table.key IS NULL est le moyen le plus universel d'ecrire un anti-join."
+    ],
+    "solutionExplanation": "Pattern fondamental en Data Engineering pour detecter les abandons d'onboarding ou verifier l'absence d'evenements avals.",
+    "tags": ["LEFT_JOIN", "ANTI_JOIN", "NULL"]
+  },
+  {
+    "id": "sql-023",
+    "title": "Lignes de commande avec nom et marge brute produit",
+    "category": "joins",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Associe chaque article commande a son produit pour calculer la marge unitaire.",
+    "instructions": [
+      "Joint order_items (oi) et products (p) sur product_id.",
+      "Selectionne oi.item_id, oi.order_id, p.name AS product_name, oi.unit_price, p.cost_price, ROUND(oi.unit_price - p.cost_price, 2) AS marge_unitaire.",
+      "Exclus les quantites negatives (oi.quantity > 0).",
+      "Trie par oi.item_id."
+    ],
+    "expectedQuery": "SELECT oi.item_id, oi.order_id, p.name AS product_name, oi.unit_price, p.cost_price, ROUND(oi.unit_price - p.cost_price, 2) AS marge_unitaire FROM order_items oi INNER JOIN products p ON oi.product_id = p.product_id WHERE oi.quantity > 0 ORDER BY oi.item_id;",
+    "orderDependent": true,
+    "hints": [
+      "INNER JOIN oi.product_id = p.product_id et WHERE oi.quantity > 0."
+    ],
+    "solutionExplanation": "Calcul de rentabilite unitaire direct a la ligne, indispensable pour alimenter les tables de faits ventes.",
+    "tags": ["JOIN", "MARGIN", "FINANCE"]
+  },
+  {
+    "id": "sql-024",
+    "title": "Employes avec intitule de poste et nom du departement",
+    "category": "joins",
+    "difficulty": "intermediaire",
+    "datasetId": "hr_payroll",
+    "description": "Genere l'annuaire complet de l'entreprise avec le departement et le titre du poste.",
+    "instructions": [
+      "Joint employees (e) avec departments (d) sur department_id (LEFT JOIN pour conserver les employes sans departement).",
+      "Joint avec job_positions (jp) sur position_id.",
+      "Selectionne e.employee_id, e.full_name, COALESCE(d.dept_name, 'Non affecte') AS departement, jp.title AS poste.",
+      "Conserve les employes actifs (e.termination_date IS NULL).",
+      "Trie par e.employee_id."
+    ],
+    "expectedQuery": "SELECT e.employee_id, e.full_name, COALESCE(d.dept_name, 'Non affecte') AS departement, jp.title AS poste FROM employees e LEFT JOIN departments d ON e.department_id = d.department_id INNER JOIN job_positions jp ON e.position_id = jp.position_id WHERE e.termination_date IS NULL ORDER BY e.employee_id;",
+    "orderDependent": true,
+    "hints": [
+      "LEFT JOIN sur departments pour ne pas perdre l'employe Jean Dupont qui a department_id NULL."
+    ],
+    "solutionExplanation": "Un INNER JOIN aurait fait disparaitre Jean Dupont. L'utilisation d'un LEFT JOIN combine a COALESCE preserve l'integrite de la liste des employes.",
+    "tags": ["LEFT_JOIN", "COALESCE", "HR"]
+  },
+  {
+    "id": "sql-025",
+    "title": "Hierarchie employes et managers (Self-Join)",
+    "category": "joins",
+    "difficulty": "avance",
+    "datasetId": "hr_payroll",
+    "description": "Affiche chaque employe avec le nom de son responsable direct en utilisant une auto-jointure.",
+    "instructions": [
+      "Joint la table employees (e) a elle-meme (m) sur e.manager_id = m.employee_id via un LEFT JOIN.",
+      "Selectionne e.employee_id, e.full_name AS employe, COALESCE(m.full_name, 'Direction Generale') AS manager.",
+      "Conserve les employes actifs (e.termination_date IS NULL).",
+      "Trie par e.employee_id."
+    ],
+    "expectedQuery": "SELECT e.employee_id, e.full_name AS employe, COALESCE(m.full_name, 'Direction Generale') AS manager FROM employees e LEFT JOIN employees m ON e.manager_id = m.employee_id WHERE e.termination_date IS NULL ORDER BY e.employee_id;",
+    "orderDependent": true,
+    "hints": [
+      "e.manager_id = m.employee_id.",
+      "LEFT JOIN necessaire car la CEO n'a pas de manager (manager_id IS NULL)."
+    ],
+    "solutionExplanation": "Le Self-Join est la question d'entretien la plus classique sur les modeles relationnels hierarchiques (Adjacency List Model).",
+    "tags": ["SELF_JOIN", "HIERARCHY", "HR"]
+  },
+  {
+    "id": "sql-026",
+    "title": "Transactions bancaires avec alerte de fraude confirmee",
+    "category": "joins",
+    "difficulty": "intermediaire",
+    "datasetId": "banking_fraud",
+    "description": "Recupere le detail des transactions ayant fait l'objet d'un rapport de fraude confirme.",
+    "instructions": [
+      "Joint transactions (t) avec fraud_reports (fr) sur tx_id.",
+      "Joint avec bank_accounts (ba) sur account_id.",
+      "Filtre confirmed_fraud = 1.",
+      "Selectionne t.tx_id, ba.account_id, t.merchant_name, t.amount, fr.resolution.",
+      "Trie par t.tx_id."
+    ],
+    "expectedQuery": "SELECT t.tx_id, ba.account_id, t.merchant_name, t.amount, fr.resolution FROM transactions t INNER JOIN fraud_reports fr ON t.tx_id = fr.tx_id INNER JOIN bank_accounts ba ON t.account_id = ba.account_id WHERE fr.confirmed_fraud = 1 ORDER BY t.tx_id;",
+    "orderDependent": true,
+    "hints": [
+      "Double INNER JOIN sur tx_id puis account_id, avec WHERE fr.confirmed_fraud = 1."
+    ],
+    "solutionExplanation": "Jointure a 3 tables permettant de rapprocher le compte client, le montant du litige et la resolution de l'incident.",
+    "tags": ["JOIN", "FRAUD", "FINTECH"]
+  },
+  {
+    "id": "sql-027",
+    "title": "Commandes avec client inconnu ou orphelin",
+    "category": "joins",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Detecte les ruptures d'integrite referentielle ou une commande pointe vers un client inexistant dans la table customers.",
+    "instructions": [
+      "Effectue un LEFT JOIN entre orders (o) et customers (c) sur o.customer_id = c.customer_id.",
+      "Filtre les commandes dont le client n'existe pas (c.customer_id IS NULL).",
+      "Selectionne o.order_id, o.customer_id, o.order_date, o.total_amount.",
+      "Trie par o.order_id."
+    ],
+    "expectedQuery": "SELECT o.order_id, o.customer_id, o.order_date, o.total_amount FROM orders o LEFT JOIN customers c ON o.customer_id = c.customer_id WHERE c.customer_id IS NULL ORDER BY o.order_id;",
+    "orderDependent": true,
+    "hints": [
+      "LEFT JOIN orders -> customers et test WHERE c.customer_id IS NULL."
+    ],
+    "solutionExplanation": "Dans les architectures Data Lake / ELT sans contraintes de cle etrangere enforcees au chargement, cette requete d'audit est indispensable.",
+    "tags": ["DATA_INTEGRITY", "ORPHAN", "LEFT_JOIN"]
+  },
+  {
+    "id": "sql-028",
+    "title": "Sessions et formule d'abonnement actif",
+    "category": "joins",
+    "difficulty": "intermediaire",
+    "datasetId": "streaming_events",
+    "description": "Associe chaque session utilisateur a son abonnement actif au moment de la consultation.",
+    "instructions": [
+      "Joint user_sessions (s) et subscriptions (sub) sur s.user_id = sub.user_id ET sub.is_active = 1.",
+      "Utilise un LEFT JOIN pour conserver les utilisateurs sans abonnement actif.",
+      "Selectionne s.session_id, s.user_id, s.device, COALESCE(sub.plan_name, 'Aucun') AS plan_actuel.",
+      "Trie par s.session_id."
+    ],
+    "expectedQuery": "SELECT s.session_id, s.user_id, s.device, COALESCE(sub.plan_name, 'Aucun') AS plan_actuel FROM user_sessions s LEFT JOIN subscriptions sub ON s.user_id = sub.user_id AND sub.is_active = 1 ORDER BY s.session_id;",
+    "orderDependent": true,
+    "hints": [
+      "Mets la condition sub.is_active = 1 directement dans le ON du LEFT JOIN."
+    ],
+    "solutionExplanation": "Placer la condition dans le ON plutot que dans le WHERE preserve les lignes de gauche lorsque l'utilisateur n'a pas d'abonnement actif.",
+    "tags": ["LEFT_JOIN", "SUBSCRIPTIONS", "PRODUCT"]
+  },
+  {
+    "id": "sql-029",
+    "title": "Produits jamais commandes",
+    "category": "joins",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Trouve les references du catalogue de produits qui n'ont jamais ete commandees.",
+    "instructions": [
+      "Effectue un LEFT JOIN entre products (p) et order_items (oi) sur p.product_id = oi.product_id.",
+      "Filtre oi.item_id IS NULL.",
+      "Selectionne p.product_id, p.name, p.category, p.list_price.",
+      "Trie par p.product_id."
+    ],
+    "expectedQuery": "SELECT p.product_id, p.name, p.category, p.list_price FROM products p LEFT JOIN order_items oi ON p.product_id = oi.product_id WHERE oi.item_id IS NULL ORDER BY p.product_id;",
+    "orderDependent": true,
+    "hints": [
+      "LEFT JOIN products -> order_items WHERE oi.item_id IS NULL."
+    ],
+    "solutionExplanation": "Permet d'identifier le stock dormant ou les references catalogue non converties.",
+    "tags": ["ANTI_JOIN", "INVENTORY"]
+  },
+  {
+    "id": "sql-030",
+    "title": "Matrice croisee departements et postes (CROSS JOIN)",
+    "category": "joins",
+    "difficulty": "intermediaire",
+    "datasetId": "hr_payroll",
+    "description": "Genere toutes les combinaisons possibles entre departements parisiens et postes d'ingenierie.",
+    "instructions": [
+      "Effectue un CROSS JOIN entre departments (d) et job_positions (jp).",
+      "Filtre d.location = 'Paris' et jp.title LIKE '%Engineer%'.",
+      "Selectionne d.dept_name, jp.title, jp.min_salary, jp.max_salary.",
+      "Trie par d.dept_name, jp.title."
+    ],
+    "expectedQuery": "SELECT d.dept_name, jp.title, jp.min_salary, jp.max_salary FROM departments d CROSS JOIN job_positions jp WHERE d.location = 'Paris' AND jp.title LIKE '%Engineer%' ORDER BY d.dept_name, jp.title;",
+    "orderDependent": true,
+    "hints": [
+      "CROSS JOIN produit le produit cartesien des deux ensembles filtres."
+    ],
+    "solutionExplanation": "Le CROSS JOIN est utile pour generer des grilles tarifaires, des calendriers ou des matrices d'evaluation de competences.",
+    "tags": ["CROSS_JOIN", "CARTESIAN"]
+  },
+  {
+    "id": "sql-031",
+    "title": "Top clients par chiffre d'affaires via CTE",
+    "category": "cte",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Structure le calcul du chiffre d'affaires par client a l'aide d'une expression de table commune (CTE) pour plus de lisibilite.",
+    "instructions": [
+      "Definis une CTE nommee customer_revenue calculant customer_id et total_depense pour les commandes completed.",
+      "Joint la CTE a la table customers pour recuperer first_name et last_name.",
+      "Conserve les clients ayant depense plus de 100 EUR.",
+      "Trie par total_depense decroissant."
+    ],
+    "expectedQuery": "WITH customer_revenue AS (SELECT customer_id, ROUND(SUM(total_amount), 2) AS total_depense FROM orders WHERE status = 'completed' AND total_amount > 0 GROUP BY customer_id) SELECT c.customer_id, c.first_name, c.last_name, cr.total_depense FROM customers c INNER JOIN customer_revenue cr ON c.customer_id = cr.customer_id WHERE cr.total_depense > 100 ORDER BY cr.total_depense DESC;",
+    "orderDependent": true,
+    "hints": [
+      "WITH customer_revenue AS (...) SELECT ... FROM customers c JOIN customer_revenue cr ..."
+    ],
+    "solutionExplanation": "Les CTE (WITH ...) rendent les requetes analytiques modulaires, testables et bien plus lisibles que les sous-requetes imbriquees.",
+    "tags": ["CTE", "MODULARITY", "REVENUE"]
+  },
+  {
+    "id": "sql-032",
+    "title": "Marge nette par commande via CTE chainees",
+    "category": "cte",
+    "difficulty": "avance",
+    "datasetId": "ecommerce",
+    "description": "Calcule la marge reelle de chaque commande en retranchant le cout de revient des articles vendus du total facture.",
+    "instructions": [
+      "CTE 1 (order_costs) : somme des (cost_price * quantity) par order_id.",
+      "Requete principale : joint orders (o) avec order_costs (oc).",
+      "Calcule marge_nette = ROUND(o.total_amount - oc.cout_total, 2).",
+      "Conserve uniquement les commandes completed.",
+      "Trie par marge_nette decroissant."
+    ],
+    "expectedQuery": "WITH order_costs AS (SELECT oi.order_id, ROUND(SUM(p.cost_price * oi.quantity), 2) AS cout_total FROM order_items oi INNER JOIN products p ON oi.product_id = p.product_id WHERE oi.quantity > 0 GROUP BY oi.order_id) SELECT o.order_id, o.order_date, o.total_amount, oc.cout_total, ROUND(o.total_amount - oc.cout_total, 2) AS marge_nette FROM orders o INNER JOIN order_costs oc ON o.order_id = oc.order_id WHERE o.status = 'completed' ORDER BY marge_nette DESC;",
+    "orderDependent": true,
+    "hints": [
+      "Calcul du cout des articles dans la CTE, puis calcul de la marge dans le SELECT principal."
+    ],
+    "solutionExplanation": "Exemple parfait de pipeline ELT en dbt : on prepare les couts par grain de commande avant de reconcilier avec l'entete de commande.",
+    "tags": ["CTE", "PROFITABILITY", "DATA_PIPELINE"]
+  },
+  {
+    "id": "sql-033",
+    "title": "Taux de fraude par compte via CTE",
+    "category": "cte",
+    "difficulty": "avance",
+    "datasetId": "banking_fraud",
+    "description": "Calcule pour chaque compte le nombre total de transactions et le ratio de transactions signalees comme suspectes.",
+    "instructions": [
+      "Cree une CTE calculant account_id, total_tx, et tx_fraude (somme des is_flagged_fraud).",
+      "Calcule le taux_fraude_pct = ROUND((tx_fraude * 100.0) / total_tx, 1).",
+      "Filtre les comptes ayant au moins 1 transaction frauduleuse.",
+      "Trie par taux_fraude_pct decroissant."
+    ],
+    "expectedQuery": "WITH account_stats AS (SELECT account_id, COUNT(*) AS total_tx, SUM(is_flagged_fraud) AS tx_fraude FROM transactions GROUP BY account_id) SELECT account_id, total_tx, tx_fraude, ROUND((tx_fraude * 100.0) / total_tx, 1) AS taux_fraude_pct FROM account_stats WHERE tx_fraude > 0 ORDER BY taux_fraude_pct DESC;",
+    "orderDependent": true,
+    "hints": [
+      "Attention a la division entiere : multiplier par 100.0 pour forcer le type flottant."
+    ],
+    "solutionExplanation": "Piege classique en SQL : `tx_fraude / total_tx` effectue une division entiere dans plusieurs dialectes (retourne 0). Multiplier par 100.0 garantit la precision flottante.",
+    "tags": ["CTE", "FRAUD", "FLOAT_MATH"]
+  },
+  {
+    "id": "sql-034",
+    "title": "Panier moyen et ecart individuel via CTE",
+    "category": "cte",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Calcule le panier moyen global du site, puis mesure pour chaque commande son ecart relatif au panier moyen.",
+    "instructions": [
+      "CTE global_avg : calcule panier_moyen_site = ROUND(AVG(total_amount), 2) sur les commandes completed valides (total_amount > 0).",
+      "Selectionne o.order_id, o.total_amount, g.panier_moyen_site, ROUND(o.total_amount - g.panier_moyen_site, 2) AS ecart_au_moyen.",
+      "Trie par o.total_amount decroissant."
+    ],
+    "expectedQuery": "WITH global_avg AS (SELECT ROUND(AVG(total_amount), 2) AS panier_moyen_site FROM orders WHERE status = 'completed' AND total_amount > 0) SELECT o.order_id, o.total_amount, g.panier_moyen_site, ROUND(o.total_amount - g.panier_moyen_site, 2) AS ecart_au_moyen FROM orders o CROSS JOIN global_avg g WHERE o.status = 'completed' AND o.total_amount > 0 ORDER BY o.total_amount DESC;",
+    "orderDependent": true,
+    "hints": [
+      "La CTE renvoie une seule ligne scalaire, que l'on peut associer via CROSS JOIN."
+    ],
+    "solutionExplanation": "Associer une metrique scalaire globale via CROSS JOIN est un pattern tres efficace pour eviter les sous-requetes repetees dans le SELECT.",
+    "tags": ["CTE", "CROSS_JOIN", "METRICS"]
+  },
+  {
+    "id": "sql-035",
+    "title": "Sessions a fort volume d'evenements via CTE",
+    "category": "cte",
+    "difficulty": "intermediaire",
+    "datasetId": "streaming_events",
+    "description": "Isole les sessions contenant strictement plus de 2 evenements d'interaction.",
+    "instructions": [
+      "CTE event_counts : compte les evenements par session_id.",
+      "Joint avec user_sessions (s) pour recuperer user_id, device et platform.",
+      "Conserve nb_events > 2.",
+      "Trie par nb_events decroissant."
+    ],
+    "expectedQuery": "WITH event_counts AS (SELECT session_id, COUNT(*) AS nb_events FROM events_stream GROUP BY session_id HAVING COUNT(*) > 2) SELECT s.session_id, s.user_id, s.device, s.platform, ec.nb_events FROM user_sessions s INNER JOIN event_counts ec ON s.session_id = ec.session_id ORDER BY ec.nb_events DESC;",
+    "orderDependent": true,
+    "hints": [
+      "CTE sur events_stream avec GROUP BY session_id HAVING COUNT(*) > 2."
+    ],
+    "solutionExplanation": "Permet de filtrer en amont sur le volume d'activite avant d'enrichir avec les dimensions de session.",
+    "tags": ["CTE", "ANALYTICS", "HAVING"]
+  },
+  {
+    "id": "sql-036",
+    "title": "Ecart de salaire a la moyenne du departement via CTE",
+    "category": "cte",
+    "difficulty": "avance",
+    "datasetId": "hr_payroll",
+    "description": "Compare le salaire de chaque employe a la moyenne de son propre departement.",
+    "instructions": [
+      "CTE dept_avg : calcule department_id et salaire_moyen_dept = ROUND(AVG(current_salary), 2) pour les employes actifs avec salaire non NULL.",
+      "Selectionne e.employee_id, e.full_name, e.department_id, e.current_salary, da.salaire_moyen_dept, ROUND(e.current_salary - da.salaire_moyen_dept, 2) AS ecart_au_dept.",
+      "Conserve les employes actifs avec salaire non NULL.",
+      "Trie par e.department_id, e.employee_id."
+    ],
+    "expectedQuery": "WITH dept_avg AS (SELECT department_id, ROUND(AVG(current_salary), 2) AS salaire_moyen_dept FROM employees WHERE current_salary IS NOT NULL AND termination_date IS NULL GROUP BY department_id) SELECT e.employee_id, e.full_name, e.department_id, e.current_salary, da.salaire_moyen_dept, ROUND(e.current_salary - da.salaire_moyen_dept, 2) AS ecart_au_dept FROM employees e INNER JOIN dept_avg da ON e.department_id = da.department_id WHERE e.current_salary IS NOT NULL AND e.termination_date IS NULL ORDER BY e.department_id, e.employee_id;",
+    "orderDependent": true,
+    "hints": [
+      "Jointure entre employees et la CTE dept_avg sur department_id."
+    ],
+    "solutionExplanation": "Alternative tres lisible aux fonctions de fenetrage AVG(...) OVER (PARTITION BY department_id) quand on souhaite isoler la sous-table d'agregation.",
+    "tags": ["CTE", "HR", "SALARY"]
+  },
+  {
+    "id": "sql-037",
+    "title": "Arbre hierarchique descendant via CTE recursive",
+    "category": "cte",
+    "difficulty": "avance",
+    "datasetId": "hr_payroll",
+    "description": "Construis la hierarchie de management complete en partant de la directrice (manager_id IS NULL) avec niveau hierarchique.",
+    "instructions": [
+      "Utilise WITH RECURSIVE org_chart(employee_id, full_name, manager_id, level).",
+      "Cas de base : employes dont manager_id IS NULL avec level = 1.",
+      "Recursion : joint employees e a org_chart o sur e.manager_id = o.employee_id avec level = o.level + 1.",
+      "Filtre termination_date IS NULL.",
+      "Selectionne employee_id, full_name, manager_id, level ordonne par level, employee_id."
+    ],
+    "expectedQuery": "WITH RECURSIVE org_chart AS (SELECT employee_id, full_name, manager_id, 1 AS level FROM employees WHERE manager_id IS NULL AND termination_date IS NULL UNION ALL SELECT e.employee_id, e.full_name, e.manager_id, o.level + 1 AS level FROM employees e INNER JOIN org_chart o ON e.manager_id = o.employee_id WHERE e.termination_date IS NULL) SELECT employee_id, full_name, manager_id, level FROM org_chart ORDER BY level, employee_id;",
+    "orderDependent": true,
+    "hints": [
+      "Structure classique : UNION ALL entre le cas d'ancrage (level = 1) et l'etape recursive (level + 1)."
+    ],
+    "solutionExplanation": "La CTE recursive est la question d'excellence en entretien SQL avance pour prouver sa maitrise des parcours de graphes et hierarchies relationnelles.",
+    "tags": ["RECURSIVE_CTE", "GRAPH", "HIERARCHY"]
+  },
+  {
+    "id": "sql-038",
+    "title": "Clients multi-commandes sur plusieurs mois",
+    "category": "cte",
+    "difficulty": "avance",
+    "datasetId": "ecommerce",
+    "description": "Trouve les clients ayant passe des commandes sur au moins 2 mois civils distincts.",
+    "instructions": [
+      "CTE monthly_orders : extrait customer_id et le mois de commande avec strftime('%Y-%m', order_date).",
+      "Groupe par customer_id et compte les mois distincts (COUNT(DISTINCT mois)).",
+      "Conserve les clients ayant au moins 2 mois distincts.",
+      "Trie par customer_id."
+    ],
+    "expectedQuery": "WITH customer_months AS (SELECT customer_id, strftime('%Y-%m', order_date) AS order_month FROM orders WHERE status = 'completed' AND customer_id != 999 GROUP BY customer_id, strftime('%Y-%m', order_date)) SELECT customer_id, COUNT(order_month) AS nb_mois_distincts FROM customer_months GROUP BY customer_id HAVING COUNT(order_month) >= 2 ORDER BY customer_id;",
+    "orderDependent": true,
+    "hints": [
+      "Utilise strftime('%Y-%m', order_date) en SQLite pour isoler le mois civil."
+    ],
+    "solutionExplanation": "Indicateur fondamental de retention et de cohortes d'utilisateurs (Cohort Retention Analysis).",
+    "tags": ["CTE", "RETENTION", "STRFTIME"]
+  },
+  {
+    "id": "sql-039",
+    "title": "Numerotation des commandes par client via ROW_NUMBER()",
+    "category": "window_functions",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Attribue un numero sequentiel a chaque commande passee par un meme client, de la plus ancienne a la plus recente.",
+    "instructions": [
+      "Utilise ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date ASC, order_id ASC) AS order_seq.",
+      "Selectionne customer_id, order_id, order_date, total_amount et order_seq.",
+      "Conserve les commandes completed valides.",
+      "Trie par customer_id, order_seq."
+    ],
+    "expectedQuery": "SELECT customer_id, order_id, order_date, total_amount, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date ASC, order_id ASC) AS order_seq FROM orders WHERE status = 'completed' AND total_amount > 0 ORDER BY customer_id, order_seq;",
+    "orderDependent": true,
+    "hints": [
+      "ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date, order_id)."
+    ],
+    "solutionExplanation": "ROW_NUMBER() permet d'identifier sans ambiguite la premiere commande (order_seq = 1) et les commandes de renouvellement.",
+    "tags": ["WINDOW_FUNCTION", "ROW_NUMBER", "PARTITION_BY"]
+  },
+  {
+    "id": "sql-040",
+    "title": "Classement des salaires par departement via DENSE_RANK()",
+    "category": "window_functions",
+    "difficulty": "intermediaire",
+    "datasetId": "hr_payroll",
+    "description": "Classe les employes par salaire au sein de leur departement, sans sauter de rang en cas d'ex-aequo.",
+    "instructions": [
+      "Utilise DENSE_RANK() OVER (PARTITION BY department_id ORDER BY current_salary DESC) AS salary_rank.",
+      "Selectionne department_id, employee_id, full_name, current_salary et salary_rank.",
+      "Filtre les employes actifs avec salaire non NULL et departement non NULL.",
+      "Trie par department_id, salary_rank, employee_id."
+    ],
+    "expectedQuery": "SELECT department_id, employee_id, full_name, current_salary, DENSE_RANK() OVER (PARTITION BY department_id ORDER BY current_salary DESC) AS salary_rank FROM employees WHERE current_salary IS NOT NULL AND termination_date IS NULL AND department_id IS NOT NULL ORDER BY department_id, salary_rank, employee_id;",
+    "orderDependent": true,
+    "hints": [
+      "DENSE_RANK() n'attribue pas de trou de rang apres une egalite (ex: 1, 2, 2, 3)."
+    ],
+    "solutionExplanation": "Question classique : RANK() saute des numeros apres une egalite (1, 2, 2, 4), tandis que DENSE_RANK() produit des rangs consecutifs sans trou (1, 2, 2, 3).",
+    "tags": ["DENSE_RANK", "WINDOW_FUNCTION", "RANK"]
+  },
+  {
+    "id": "sql-041",
+    "title": "Evolution salariale et augmentation via LAG()",
+    "category": "window_functions",
+    "difficulty": "avance",
+    "datasetId": "hr_payroll",
+    "description": "Mesure pour chaque revalorisation d'un employe le montant de l'augmentation par rapport au salaire precedent.",
+    "instructions": [
+      "Utilise LAG(salary) OVER (PARTITION BY employee_id ORDER BY effective_date ASC) AS previous_salary.",
+      "Calcule augmentation = ROUND(salary - LAG(salary) OVER (PARTITION BY employee_id ORDER BY effective_date ASC), 2).",
+      "Selectionne employee_id, effective_date, salary, previous_salary, augmentation, change_reason.",
+      "Trie par employee_id, effective_date."
+    ],
+    "expectedQuery": "SELECT employee_id, effective_date, salary, LAG(salary) OVER (PARTITION BY employee_id ORDER BY effective_date ASC) AS previous_salary, ROUND(salary - LAG(salary) OVER (PARTITION BY employee_id ORDER BY effective_date ASC), 2) AS augmentation, change_reason FROM salary_history ORDER BY employee_id, effective_date;",
+    "orderDependent": true,
+    "hints": [
+      "LAG(colonne) accede a la valeur de la ligne precedente dans la partition."
+    ],
+    "solutionExplanation": "La fonction LAG() est essentielle pour le suivi temporel, l'analyse d'evolution et le calcul de variations periode a periode.",
+    "tags": ["LAG", "WINDOW_FUNCTION", "TIME_SERIES"]
+  },
+  {
+    "id": "sql-042",
+    "title": "Intervalle de temps entre evenements consecutifs via LEAD()",
+    "category": "window_functions",
+    "difficulty": "avance",
+    "datasetId": "streaming_events",
+    "description": "Affiche chaque evenement avec l'horodatage de l'evenement suivant au sein de la meme session.",
+    "instructions": [
+      "Utilise LEAD(event_timestamp) OVER (PARTITION BY session_id ORDER BY event_timestamp ASC) AS next_timestamp.",
+      "Selectionne session_id, event_id, event_type, event_timestamp, next_timestamp.",
+      "Trie par session_id, event_timestamp."
+    ],
+    "expectedQuery": "SELECT session_id, event_id, event_type, event_timestamp, LEAD(event_timestamp) OVER (PARTITION BY session_id ORDER BY event_timestamp ASC) AS next_timestamp FROM events_stream ORDER BY session_id, event_timestamp;",
+    "orderDependent": true,
+    "hints": [
+      "LEAD(colonne) accede a la ligne suivante."
+    ],
+    "solutionExplanation": "LEAD() permet de reconstruire le parcours utilisateur (path analysis) et de detecter les fins de parcours ou les ruptures de tunnel.",
+    "tags": ["LEAD", "WINDOW_FUNCTION", "ANALYTICS"]
+  },
+  {
+    "id": "sql-043",
+    "title": "Solde cumule courant des transactions via SUM() OVER",
+    "category": "window_functions",
+    "difficulty": "avance",
+    "datasetId": "banking_fraud",
+    "description": "Calcule le total cumule des debits/achats pour chaque compte bancaire au fil du temps (Running Total).",
+    "instructions": [
+      "Utilise SUM(amount) OVER (PARTITION BY account_id ORDER BY tx_timestamp ASC, tx_id ASC) AS solde_cumule.",
+      "Selectionne account_id, tx_id, tx_timestamp, amount, solde_cumule.",
+      "Conserve amount > 0.",
+      "Trie par account_id, tx_timestamp, tx_id."
+    ],
+    "expectedQuery": "SELECT account_id, tx_id, tx_timestamp, amount, ROUND(SUM(amount) OVER (PARTITION BY account_id ORDER BY tx_timestamp ASC, tx_id ASC), 2) AS solde_cumule FROM transactions WHERE amount > 0 ORDER BY account_id, tx_timestamp, tx_id;",
+    "orderDependent": true,
+    "hints": [
+      "SUM(...) OVER (PARTITION BY ... ORDER BY ...) calcule le cumul au fur et a mesure (fenetre dynamique par defaut RANGE/ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)."
+    ],
+    "solutionExplanation": "Le cumul mobile (running total) est une epreuve standard en entretien bancaire et comptable.",
+    "tags": ["RUNNING_TOTAL", "SUM_OVER", "FINTECH"]
+  },
+  {
+    "id": "sql-044",
+    "title": "Moyenne mobile glissante sur 3 transactions",
+    "category": "window_functions",
+    "difficulty": "avance",
+    "datasetId": "banking_fraud",
+    "description": "Lisse les montants depenses en calculant une moyenne mobile glissante incluant la transaction courante et les 2 precedentes.",
+    "instructions": [
+      "Utilise AVG(amount) OVER (PARTITION BY account_id ORDER BY tx_timestamp ASC, tx_id ASC ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS moyenne_mobile_3tx.",
+      "Arrondis a 2 decimales.",
+      "Selectionne account_id, tx_id, amount, moyenne_mobile_3tx.",
+      "Trie par account_id, tx_id."
+    ],
+    "expectedQuery": "SELECT account_id, tx_id, amount, ROUND(AVG(amount) OVER (PARTITION BY account_id ORDER BY tx_timestamp ASC, tx_id ASC ROWS BETWEEN 2 PRECEDING AND CURRENT ROW), 2) AS moyenne_mobile_3tx FROM transactions WHERE amount > 0 ORDER BY account_id, tx_id;",
+    "orderDependent": true,
+    "hints": [
+      "ROWS BETWEEN 2 PRECEDING AND CURRENT ROW specifie le cadre physique de la fenetre."
+    ],
+    "solutionExplanation": "Demonstration de la maitrise du frame de fenetre (ROWS vs RANGE), point differenciant majeur pour un niveau Senior Data Engineer.",
+    "tags": ["MOVING_AVERAGE", "WINDOW_FRAME", "ROWS_BETWEEN"]
+  },
+  {
+    "id": "sql-045",
+    "title": "Employe le mieux remunere de chaque departement",
+    "category": "window_functions",
+    "difficulty": "avance",
+    "datasetId": "hr_payroll",
+    "description": "Identifie la personne ayant le salaire le plus eleve pour chaque departement a l'aide d'une sous-requete ou CTE de fenetrage.",
+    "instructions": [
+      "Attribue un rang par departement avec ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY current_salary DESC).",
+      "Filtre le rang = 1.",
+      "Selectionne department_id, employee_id, full_name, current_salary.",
+      "Exclus les departements NULL et les employes inactifs.",
+      "Trie par department_id."
+    ],
+    "expectedQuery": "WITH ranked_employees AS (SELECT department_id, employee_id, full_name, current_salary, ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY current_salary DESC) AS rn FROM employees WHERE current_salary IS NOT NULL AND termination_date IS NULL AND department_id IS NOT NULL) SELECT department_id, employee_id, full_name, current_salary FROM ranked_employees WHERE rn = 1 ORDER BY department_id;",
+    "orderDependent": true,
+    "hints": [
+      "On ne peut pas filtrer directement sur ROW_NUMBER() dans le WHERE de la requete principale, il faut encapsuler dans une CTE."
+    ],
+    "solutionExplanation": "Piege classique d'entretien : tenter de mettre WHERE ROW_NUMBER() = 1 produit une erreur de syntaxe car les fonctions de fenetre s'executent apres le WHERE. La CTE resout ce probleme.",
+    "tags": ["TOP_N", "ROW_NUMBER", "CTE"]
+  },
+  {
+    "id": "sql-046",
+    "title": "Premiere et derniere transaction d'un compte",
+    "category": "window_functions",
+    "difficulty": "avance",
+    "datasetId": "banking_fraud",
+    "description": "Affiche pour chaque transaction la date de la toute premiere transaction et de la derniere transaction connue du compte.",
+    "instructions": [
+      "Utilise FIRST_VALUE(tx_timestamp) OVER (PARTITION BY account_id ORDER BY tx_timestamp ASC, tx_id ASC) AS first_tx_date.",
+      "Selectionne account_id, tx_id, tx_timestamp, amount, first_tx_date.",
+      "Trie par account_id, tx_timestamp."
+    ],
+    "expectedQuery": "SELECT account_id, tx_id, tx_timestamp, amount, FIRST_VALUE(tx_timestamp) OVER (PARTITION BY account_id ORDER BY tx_timestamp ASC, tx_id ASC) AS first_tx_date FROM transactions ORDER BY account_id, tx_timestamp, tx_id;",
+    "orderDependent": true,
+    "hints": [
+      "FIRST_VALUE(champ) OVER (PARTITION BY ... ORDER BY ...)."
+    ],
+    "solutionExplanation": "FIRST_VALUE permet de contextualiser l'anciennete du client directement a chaque transaction sans jointure supplementaire.",
+    "tags": ["FIRST_VALUE", "WINDOW_FUNCTION"]
+  },
+  {
+    "id": "sql-047",
+    "title": "Detection de double-clics rapproches via LAG()",
+    "category": "window_functions",
+    "difficulty": "avance",
+    "datasetId": "streaming_events",
+    "description": "Repere les clics successifs effectues sur la meme URL dans la meme session avec les memes parametres.",
+    "instructions": [
+      "Utilise LAG(page_url) OVER (PARTITION BY session_id ORDER BY event_timestamp ASC, event_id ASC) AS prev_url.",
+      "Utilise LAG(event_type) OVER (PARTITION BY session_id ORDER BY event_timestamp ASC, event_id ASC) AS prev_type.",
+      "Encapsule dans une CTE et filtre les lignes ou page_url = prev_url ET event_type = prev_type ET event_type = 'click'.",
+      "Selectionne session_id, event_id, event_timestamp, page_url.",
+      "Trie par session_id, event_id."
+    ],
+    "expectedQuery": "WITH event_lags AS (SELECT session_id, event_id, event_timestamp, event_type, page_url, LAG(page_url) OVER (PARTITION BY session_id ORDER BY event_timestamp ASC, event_id ASC) AS prev_url, LAG(event_type) OVER (PARTITION BY session_id ORDER BY event_timestamp ASC, event_id ASC) AS prev_type FROM events_stream) SELECT session_id, event_id, event_timestamp, page_url FROM event_lags WHERE event_type = 'click' AND prev_type = 'click' AND page_url = prev_url ORDER BY session_id, event_id;",
+    "orderDependent": true,
+    "hints": [
+      "LAG() permet de comparer l'evenement avec le precedent immediat."
+    ],
+    "solutionExplanation": "Algorithme classique de debouncing et de dedoublonnage de flux d'evenements front-end en temps reel.",
+    "tags": ["LAG", "DEBOUNCE", "ANALYTICS"]
+  },
+  {
+    "id": "sql-048",
+    "title": "Part en pourcentage du CA par produit",
+    "category": "window_functions",
+    "difficulty": "avance",
+    "datasetId": "ecommerce",
+    "description": "Calcule la part en pourcentage de chaque produit dans le chiffre d'affaires global de l'entreprise.",
+    "instructions": [
+      "CTE product_sales : calcule product_id et ca_produit = SUM(quantity * unit_price) sur order_items ou quantity > 0.",
+      "Utilise SUM(ca_produit) OVER () pour obtenir le CA global total.",
+      "Calcule part_ca_pct = ROUND((ca_produit * 100.0) / SUM(ca_produit) OVER (), 2).",
+      "Joint avec products pour afficher product_name.",
+      "Trie par part_ca_pct decroissant."
+    ],
+    "expectedQuery": "WITH product_sales AS (SELECT oi.product_id, ROUND(SUM(oi.quantity * oi.unit_price), 2) AS ca_produit FROM order_items oi WHERE oi.quantity > 0 GROUP BY oi.product_id) SELECT p.product_id, p.name AS product_name, ps.ca_produit, ROUND((ps.ca_produit * 100.0) / SUM(ps.ca_produit) OVER (), 2) AS part_ca_pct FROM product_sales ps INNER JOIN products p ON ps.product_id = p.product_id ORDER BY part_ca_pct DESC;",
+    "orderDependent": true,
+    "hints": [
+      "SUM(ca_produit) OVER () sans PARTITION BY somme l'ensemble de la table pour le denominateur."
+    ],
+    "solutionExplanation": "L'absence de clause PARTITION BY dans `SUM(...) OVER ()` permet d'obtenir le total global dans chaque ligne sans faire de sous-requete supplementaire.",
+    "tags": ["WINDOW_FUNCTION", "PERCENTAGE", "REVENUE"]
+  },
+  {
+    "id": "sql-049",
+    "title": "Historique des offres d'abonnements par utilisateur",
+    "category": "window_functions",
+    "difficulty": "intermediaire",
+    "datasetId": "streaming_events",
+    "description": "Numerote les contrats d'abonnements successifs de chaque utilisateur.",
+    "instructions": [
+      "Utilise ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY start_date ASC, sub_id ASC) AS version_num.",
+      "Selectionne user_id, sub_id, plan_name, start_date, end_date, monthly_price, version_num.",
+      "Trie par user_id, version_num."
+    ],
+    "expectedQuery": "SELECT user_id, sub_id, plan_name, start_date, end_date, monthly_price, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY start_date ASC, sub_id ASC) AS version_num FROM subscriptions ORDER BY user_id, version_num;",
+    "orderDependent": true,
+    "hints": [
+      "ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY start_date, sub_id)."
+    ],
+    "solutionExplanation": "Indispensable pour modeliser les dimensions a changement lent (SCD Type 2).",
+    "tags": ["SCD2", "ROW_NUMBER", "VERSIONING"]
+  },
+  {
+    "id": "sql-050",
+    "title": "Quartiles de remuneration de l'entreprise via NTILE(4)",
+    "category": "window_functions",
+    "difficulty": "avance",
+    "datasetId": "hr_payroll",
+    "description": "Decoupe la masse salariale en 4 quartiles egaux a l'aide de la fonction NTILE.",
+    "instructions": [
+      "Utilise NTILE(4) OVER (ORDER BY current_salary ASC) AS quartile.",
+      "Selectionne employee_id, full_name, current_salary et quartile.",
+      "Filtre les employes actifs ayant un salaire renseigne.",
+      "Trie par quartile ASC, current_salary ASC."
+    ],
+    "expectedQuery": "SELECT employee_id, full_name, current_salary, NTILE(4) OVER (ORDER BY current_salary ASC) AS quartile FROM employees WHERE current_salary IS NOT NULL AND termination_date IS NULL ORDER BY quartile ASC, current_salary ASC;",
+    "orderDependent": true,
+    "hints": [
+      "NTILE(4) OVER (ORDER BY current_salary ASC)."
+    ],
+    "solutionExplanation": "NTILE repartit les lignes ordonnees en N groupes de taille sensiblement egale. Tres utilise pour les analyses de centiles et quartiles.",
+    "tags": ["NTILE", "STATISTICS", "HR"]
+  },
+  {
+    "id": "sql-051",
+    "title": "Segmentation des clients selon volume d'achat",
+    "category": "case_when",
+    "difficulty": "debutant",
+    "datasetId": "ecommerce",
+    "description": "Attribue a chaque commande un segment commercial ('VIP', 'Standard', 'Petit panier') selon le montant total.",
+    "instructions": [
+      "Utilise un CASE WHEN :",
+      "- total_amount >= 300 : 'VIP'",
+      "- total_amount >= 100 : 'Standard'",
+      "- Sinon : 'Petit panier'",
+      "Selectionne order_id, customer_id, total_amount et le segment nomme tier.",
+      "Conserve uniquement les commandes avec total_amount > 0.",
+      "Trie par total_amount decroissant."
+    ],
+    "expectedQuery": "SELECT order_id, customer_id, total_amount, CASE WHEN total_amount >= 300 THEN 'VIP' WHEN total_amount >= 100 THEN 'Standard' ELSE 'Petit panier' END AS tier FROM orders WHERE total_amount > 0 ORDER BY total_amount DESC;",
+    "orderDependent": true,
+    "hints": [
+      "Structure : CASE WHEN cond1 THEN val1 WHEN cond2 THEN val2 ELSE defaut END."
+    ],
+    "solutionExplanation": "Les regles de scoring et de segmentation par tranche s'expriment naturellement avec CASE WHEN.",
+    "tags": ["CASE_WHEN", "SEGMENTATION"]
+  },
+  {
+    "id": "sql-052",
+    "title": "Pivotage des statuts de commande en colonnes",
+    "category": "case_when",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Compte dans une seule ligne de synthese par client le nombre de commandes completed, pending et cancelled.",
+    "instructions": [
+      "Utilise SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) AS nb_completed.",
+      "Utilise SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS nb_pending.",
+      "Utilise SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) AS nb_cancelled.",
+      "Selectionne customer_id et ces 3 indicateurs.",
+      "Exclus customer_id = 999.",
+      "Groupe par customer_id et trie par customer_id."
+    ],
+    "expectedQuery": "SELECT customer_id, SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) AS nb_completed, SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS nb_pending, SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) AS nb_cancelled FROM orders WHERE customer_id != 999 GROUP BY customer_id ORDER BY customer_id;",
+    "orderDependent": true,
+    "hints": [
+      "SUM(CASE WHEN ... THEN 1 ELSE 0 END) est la technique universelle de pivotage en SQL."
+    ],
+    "solutionExplanation": "Cette technique de 'Conditional Aggregation' est fondamentale en Data Engineering et remplace avantageusement l'operateur PIVOT non standard.",
+    "tags": ["PIVOT", "CONDITIONAL_AGGREGATION", "CASE_WHEN"]
+  },
+  {
+    "id": "sql-053",
+    "title": "Normalisation geographique des pays",
+    "category": "case_when",
+    "difficulty": "debutant",
+    "datasetId": "ecommerce",
+    "description": "Harmonise les noms de pays en restituant un code standard a deux lettres ('FR', 'BE', 'CH', 'CA', 'AUTRE').",
+    "instructions": [
+      "Applique un CASE WHEN sur LOWER(COALESCE(country, '')) :",
+      "- 'france' -> 'FR'",
+      "- 'belgique' -> 'BE'",
+      "- 'suisse' -> 'CH'",
+      "- 'canada' -> 'CA'",
+      "- Sinon -> 'AUTRE'",
+      "Selectionne customer_id, country, code_pays.",
+      "Trie par customer_id."
+    ],
+    "expectedQuery": "SELECT customer_id, country, CASE WHEN LOWER(COALESCE(country, '')) = 'france' THEN 'FR' WHEN LOWER(COALESCE(country, '')) = 'belgique' THEN 'BE' WHEN LOWER(COALESCE(country, '')) = 'suisse' THEN 'CH' WHEN LOWER(COALESCE(country, '')) = 'canada' THEN 'CA' ELSE 'AUTRE' END AS code_pays FROM customers ORDER BY customer_id;",
+    "orderDependent": true,
+    "hints": [
+      "N'oublie pas le COALESCE pour gerer les valeurs NULL."
+    ],
+    "solutionExplanation": "Etape classique de nettoyage (staging layer) dans un projet dbt ou un pipeline ETL.",
+    "tags": ["DATA_CLEANING", "CASE_WHEN", "STAGING"]
+  },
+  {
+    "id": "sql-054",
+    "title": "Niveau de risque d'une transaction bancaire",
+    "category": "case_when",
+    "difficulty": "intermediaire",
+    "datasetId": "banking_fraud",
+    "description": "Attribue une note de risque ('CRITIQUE', 'ELEVE', 'MODERE', 'FAIBLE') selon les attributs de la transaction.",
+    "instructions": [
+      "CASE WHEN :",
+      "- is_flagged_fraud = 1 : 'CRITIQUE'",
+      "- amount >= 1000 : 'ELEVE'",
+      "- amount >= 500 : 'MODERE'",
+      "- Sinon : 'FAIBLE'",
+      "Selectionne tx_id, account_id, amount, is_flagged_fraud, risque_score.",
+      "Trie par tx_id."
+    ],
+    "expectedQuery": "SELECT tx_id, account_id, amount, is_flagged_fraud, CASE WHEN is_flagged_fraud = 1 THEN 'CRITIQUE' WHEN amount >= 1000 THEN 'ELEVE' WHEN amount >= 500 THEN 'MODERE' ELSE 'FAIBLE' END AS risque_score FROM transactions ORDER BY tx_id;",
+    "orderDependent": true,
+    "hints": [
+      "L'ordre des clauses WHEN est evalue sequentiellement, de haut en bas."
+    ],
+    "solutionExplanation": "En SQL, le premier WHEN vrai court-circuite les suivants. Placer les conditions les plus critiques en premier est obligatoire.",
+    "tags": ["FRAUD", "CASE_WHEN", "RISK"]
+  },
+  {
+    "id": "sql-055",
+    "title": "Classification d'anciennete des collaborateurs",
+    "category": "case_when",
+    "difficulty": "intermediaire",
+    "datasetId": "hr_payroll",
+    "description": "Classe les employes selon leur annee d'embauche ('Pionnier' avant 2022, 'Confirme' en 2022-2023, 'Recent' en 2024+).",
+    "instructions": [
+      "CASE WHEN :",
+      "- hire_date < '2022-01-01' : 'Pionnier'",
+      "- hire_date < '2024-01-01' : 'Confirme'",
+      "- Sinon : 'Recent'",
+      "Selectionne employee_id, full_name, hire_date, classe_anciennete.",
+      "Conserve les employes actifs.",
+      "Trie par hire_date ASC, employee_id ASC."
+    ],
+    "expectedQuery": "SELECT employee_id, full_name, hire_date, CASE WHEN hire_date < '2022-01-01' THEN 'Pionnier' WHEN hire_date < '2024-01-01' THEN 'Confirme' ELSE 'Recent' END AS classe_anciennete FROM employees WHERE termination_date IS NULL ORDER BY hire_date ASC, employee_id ASC;",
+    "orderDependent": true,
+    "hints": [
+      "Les dates au format ISO 'YYYY-MM-DD' se comparent directement comme des chaines de caracteres en SQL."
+    ],
+    "solutionExplanation": "L'avantage du format ISO-8601 est son tri lexicographique naturel identique au tri chronologique.",
+    "tags": ["DATES", "ISO8601", "CASE_WHEN"]
+  },
+  {
+    "id": "sql-056",
+    "title": "Regroupement des plateformes desktop vs mobile",
+    "category": "case_when",
+    "difficulty": "debutant",
+    "datasetId": "streaming_events",
+    "description": "Regroupe les systemes d'exploitation en deux grandes familles : 'Mobile' (iOS, Android) et 'Desktop' (Windows, macOS).",
+    "instructions": [
+      "CASE WHEN platform IN ('iOS', 'Android') THEN 'Mobile' WHEN platform IN ('Windows', 'macOS') THEN 'Desktop' ELSE 'Autre' END AS device_family.",
+      "Selectionne session_id, user_id, platform, device_family.",
+      "Trie par session_id."
+    ],
+    "expectedQuery": "SELECT session_id, user_id, platform, CASE WHEN platform IN ('iOS', 'Android') THEN 'Mobile' WHEN platform IN ('Windows', 'macOS') THEN 'Desktop' ELSE 'Autre' END AS device_family FROM user_sessions ORDER BY session_id;",
+    "orderDependent": true,
+    "hints": [
+      "Utilise IN ('iOS', 'Android') a l'interieur du CASE WHEN."
+    ],
+    "solutionExplanation": "Normalisation standard de tracking pour etablir des tableaux de bord cross-device.",
+    "tags": ["PRODUCT_ANALYTICS", "CASE_WHEN"]
+  },
+  {
+    "id": "sql-057",
+    "title": "Statut reel d'un abonnement avec correction des dates echues",
+    "category": "case_when",
+    "difficulty": "intermediaire",
+    "datasetId": "streaming_events",
+    "description": "Corrige le statut des abonnements : si end_date est renseignee et anterieure a '2025-10-31', le statut reel est 'Expire', sinon respecte is_active.",
+    "instructions": [
+      "CASE WHEN end_date IS NOT NULL AND end_date < '2025-10-31' THEN 'Expire' WHEN is_active = 1 THEN 'Actif' ELSE 'Inactif' END AS statut_reel.",
+      "Selectionne sub_id, user_id, plan_name, end_date, is_active, statut_reel.",
+      "Trie par sub_id."
+    ],
+    "expectedQuery": "SELECT sub_id, user_id, plan_name, end_date, is_active, CASE WHEN end_date IS NOT NULL AND end_date < '2025-10-31' THEN 'Expire' WHEN is_active = 1 THEN 'Actif' ELSE 'Inactif' END AS statut_reel FROM subscriptions ORDER BY sub_id;",
+    "orderDependent": true,
+    "hints": [
+      "Teste la date de fin avant de te fier au flag boolean is_active."
+    ],
+    "solutionExplanation": "Dans le dataset, l'abonnement 6 a is_active = 1 alors que sa end_date est depassee. Le CASE WHEN redresse cette incoherence metier.",
+    "tags": ["DATA_CORRECTION", "CASE_WHEN", "SCD"]
+  },
+  {
+    "id": "sql-058",
+    "title": "Ratio de remise appliquee sur les articles",
+    "category": "case_when",
+    "difficulty": "debutant",
+    "datasetId": "ecommerce",
+    "description": "Indique si une ligne de commande a beneficie d'une promotion ou a ete vendue plein tarif.",
+    "instructions": [
+      "CASE WHEN discount_pct > 0 THEN 'Promotion' ELSE 'Plein tarif' END AS statut_tarif.",
+      "Selectionne item_id, order_id, product_id, unit_price, discount_pct, statut_tarif.",
+      "Filtre quantity > 0.",
+      "Trie par item_id."
+    ],
+    "expectedQuery": "SELECT item_id, order_id, product_id, unit_price, discount_pct, CASE WHEN discount_pct > 0 THEN 'Promotion' ELSE 'Plein tarif' END AS statut_tarif FROM order_items WHERE quantity > 0 ORDER BY item_id;",
+    "orderDependent": true,
+    "hints": [
+      "discount_pct > 0."
+    ],
+    "solutionExplanation": "Indicateur simple d'analyse de remises pour le marketing et le merchandising.",
+    "tags": ["CASE_WHEN", "DISCOUNT"]
+  },
+  {
+    "id": "sql-059",
+    "title": "Extraction annee et mois des commandes",
+    "category": "dates",
+    "difficulty": "debutant",
+    "datasetId": "ecommerce",
+    "description": "Extrais l'annee et le mois de chaque commande pour faciliter l'agregation temporelle.",
+    "instructions": [
+      "Utilise strftime('%Y', order_date) AS order_year.",
+      "Utilise strftime('%m', order_date) AS order_month.",
+      "Selectionne order_id, order_date, order_year, order_month.",
+      "Exclus les commandes a dates futures aberrantes (annee > 2026).",
+      "Trie par order_id."
+    ],
+    "expectedQuery": "SELECT order_id, order_date, strftime('%Y', order_date) AS order_year, strftime('%m', order_date) AS order_month FROM orders WHERE order_date <= '2026-12-31' ORDER BY order_id;",
+    "orderDependent": true,
+    "hints": [
+      "strftime('%Y', date) pour l'annee sur 4 chiffres, strftime('%m', date) pour le mois sur 2 chiffres en SQLite."
+    ],
+    "solutionExplanation": "L'elimination des dates futures aberrantes (ex: 2028-12-31 dans le jeu de test) est indispensable dans tout pipeline de nettoyage temporel.",
+    "tags": ["DATES", "STRFTIME", "CLEANING"]
+  },
+  {
+    "id": "sql-060",
+    "title": "Duree de session en secondes et minutes",
+    "category": "dates",
+    "difficulty": "intermediaire",
+    "datasetId": "streaming_events",
+    "description": "Calcule la duree effective des sessions terminees.",
+    "instructions": [
+      "Calcule duree_sec = ROUND((julianday(end_time) - julianday(start_time)) * 86400).",
+      "Calcule duree_min = ROUND(((julianday(end_time) - julianday(start_time)) * 86400) / 60.0, 1).",
+      "Conserve uniquement les sessions ou end_time IS NOT NULL ET end_time >= start_time.",
+      "Selectionne session_id, user_id, start_time, end_time, duree_sec, duree_min.",
+      "Trie par session_id."
+    ],
+    "expectedQuery": "SELECT session_id, user_id, start_time, end_time, ROUND((julianday(end_time) - julianday(start_time)) * 86400) AS duree_sec, ROUND(((julianday(end_time) - julianday(start_time)) * 86400) / 60.0, 1) AS duree_min FROM user_sessions WHERE end_time IS NOT NULL AND end_time >= start_time ORDER BY session_id;",
+    "orderDependent": true,
+    "hints": [
+      "En SQLite, julianday(t2) - julianday(t1) donne la difference en jours. Multiplie par 86400 pour convertir en secondes."
+    ],
+    "solutionExplanation": "La soustraction julianday() est le standard de calcul d'intervalles en SQLite. Le filtre `end_time >= start_time` elimine l'anomalie de session 003 ou la fin precede le debut.",
+    "tags": ["JULIANDAY", "INTERVALS", "DATES"]
+  },
+  {
+    "id": "sql-061",
+    "title": "Detection d'incoherence temporelle (fin avant debut)",
+    "category": "dates",
+    "difficulty": "debutant",
+    "datasetId": "streaming_events",
+    "description": "Repere toutes les sessions ou l'horodatage de fin precede l'horodatage de debut (anomalie de synchronisation d'horloge NTP).",
+    "instructions": [
+      "Filtre end_time < start_time.",
+      "Selectionne session_id, user_id, start_time, end_time, device.",
+      "Trie par session_id."
+    ],
+    "expectedQuery": "SELECT session_id, user_id, start_time, end_time, device FROM user_sessions WHERE end_time IS NOT NULL AND end_time < start_time ORDER BY session_id;",
+    "orderDependent": true,
+    "hints": [
+      "WHERE end_time < start_time."
+    ],
+    "solutionExplanation": "Anomalie d'horodatage tres repandue dans les donnees d'objets connectes et smartphones lors des changements de fuseau horaire.",
+    "tags": ["DATA_QUALITY", "ANOMALY", "DATES"]
+  },
+  {
+    "id": "sql-062",
+    "title": "Commandes passees pendant le week-end",
+    "category": "dates",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Isole les commandes passees un samedi ou un dimanche.",
+    "instructions": [
+      "En SQLite, strftime('%w', order_date) retourne le jour de la semaine (0 pour Dimanche, 6 pour Samedi).",
+      "Filtre strftime('%w', order_date) IN ('0', '6').",
+      "Selectionne order_id, customer_id, order_date, total_amount.",
+      "Trie par order_id."
+    ],
+    "expectedQuery": "SELECT order_id, customer_id, order_date, total_amount FROM orders WHERE strftime('%w', order_date) IN ('0', '6') ORDER BY order_id;",
+    "orderDependent": true,
+    "hints": [
+      "strftime('%w', date) retourne une chaine : '0' pour dimanche, '6' pour samedi."
+    ],
+    "solutionExplanation": "Indispensable pour dissocier les comportements d'achat B2B (en semaine) et B2C (le week-end).",
+    "tags": ["WEEKEND", "STRFTIME", "CALENDAR"]
+  },
+  {
+    "id": "sql-063",
+    "title": "Anciennete en annees des employes",
+    "category": "dates",
+    "difficulty": "intermediaire",
+    "datasetId": "hr_payroll",
+    "description": "Calcule l'anciennete en annees entieres a la date de reference du '2026-11-01'.",
+    "instructions": [
+      "Calcule annees_anciennete = CAST((julianday('2026-11-01') - julianday(hire_date)) / 365.25 AS INTEGER).",
+      "Selectionne employee_id, full_name, hire_date, annees_anciennete.",
+      "Conserve les employes actifs.",
+      "Trie par annees_anciennete DESC, employee_id ASC."
+    ],
+    "expectedQuery": "SELECT employee_id, full_name, hire_date, CAST((julianday('2026-11-01') - julianday(hire_date)) / 365.25 AS INTEGER) AS annees_anciennete FROM employees WHERE termination_date IS NULL ORDER BY annees_anciennete DESC, employee_id ASC;",
+    "orderDependent": true,
+    "hints": [
+      "Diviser par 365.25 tient compte des annees bissextiles."
+    ],
+    "solutionExplanation": "Calcul deterministe de l'anciennete contractuelle avec prise en compte des annees bissextiles.",
+    "tags": ["HR", "SENIORITY", "DATES"]
+  },
+  {
+    "id": "sql-064",
+    "title": "Transactions realisees sur une plage horaire donnee",
+    "category": "dates",
+    "difficulty": "intermediaire",
+    "datasetId": "banking_fraud",
+    "description": "Trouve les transactions realisees pendant la pause dejeuner (entre 12:00:00 et 14:00:00 inclus).",
+    "instructions": [
+      "Utilise strftime('%H:%M:%S', tx_timestamp) BETWEEN '12:00:00' AND '14:00:00'.",
+      "Selectionne tx_id, account_id, tx_timestamp, amount, merchant_name.",
+      "Trie par tx_timestamp."
+    ],
+    "expectedQuery": "SELECT tx_id, account_id, tx_timestamp, amount, merchant_name FROM transactions WHERE strftime('%H:%M:%S', tx_timestamp) BETWEEN '12:00:00' AND '14:00:00' ORDER BY tx_timestamp;",
+    "orderDependent": true,
+    "hints": [
+      "strftime('%H:%M:%S', tx_timestamp) extrait l'heure."
+    ],
+    "solutionExplanation": "L'analyse temporelle intra-journaliere est tres utile pour identifier les habitudes de consommation ou les anomalies de paiement nocturnes.",
+    "tags": ["HOURLY", "BETWEEN", "STRFTIME"]
+  },
+  {
+    "id": "sql-065",
+    "title": "Detection des dates de commande futures",
+    "category": "dates",
+    "difficulty": "debutant",
+    "datasetId": "ecommerce",
+    "description": "Detecte toute commande dont la date est fixee apres 2026-11-01.",
+    "instructions": [
+      "Filtre order_date > '2026-11-01'.",
+      "Selectionne order_id, customer_id, order_date, total_amount.",
+      "Trie par order_id."
+    ],
+    "expectedQuery": "SELECT order_id, customer_id, order_date, total_amount FROM orders WHERE order_date > '2026-11-01' ORDER BY order_id;",
+    "orderDependent": true,
+    "hints": [
+      "WHERE order_date > '2026-11-01'."
+    ],
+    "solutionExplanation": "Test de fraicheur et de validite standard dans dbt (`dbt_expectations.expect_row_values_to_have_recent_data`).",
+    "tags": ["FRESHNESS", "ANOMALY", "DATES"]
+  },
+  {
+    "id": "sql-066",
+    "title": "Delai en jours entre deux promotions salariales",
+    "category": "dates",
+    "difficulty": "avance",
+    "datasetId": "hr_payroll",
+    "description": "Calcule le nombre de jours ecoules entre deux augmentations successives pour les employes ayant eu plusieurs evolutions.",
+    "instructions": [
+      "Utilise LAG(effective_date) OVER (PARTITION BY employee_id ORDER BY effective_date ASC) AS prev_date.",
+      "Calcule jours_depuis_derniere = CAST(julianday(effective_date) - julianday(LAG(effective_date) OVER (PARTITION BY employee_id ORDER BY effective_date ASC)) AS INTEGER).",
+      "Conserve les lignes ou prev_date IS NOT NULL.",
+      "Selectionne employee_id, effective_date, salary, jours_depuis_derniere.",
+      "Trie par employee_id, effective_date."
+    ],
+    "expectedQuery": "WITH history_with_lag AS (SELECT employee_id, effective_date, salary, LAG(effective_date) OVER (PARTITION BY employee_id ORDER BY effective_date ASC) AS prev_date FROM salary_history) SELECT employee_id, effective_date, salary, CAST(julianday(effective_date) - julianday(prev_date) AS INTEGER) AS jours_depuis_derniere FROM history_with_lag WHERE prev_date IS NOT NULL ORDER BY employee_id, effective_date;",
+    "orderDependent": true,
+    "hints": [
+      "Encapsule dans une CTE pour tester prev_date IS NOT NULL."
+    ],
+    "solutionExplanation": "Combinaison puissante de LAG() et de julianday() pour mesurer la frequence d'evenements ponctuels.",
+    "tags": ["LAG", "JULIANDAY", "HR"]
+  },
+  {
+    "id": "sql-067",
+    "title": "Dedoublonnage des clients par email (garder le plus ancien)",
+    "category": "deduplication",
+    "difficulty": "avance",
+    "datasetId": "ecommerce",
+    "description": "La table customers contient des doublons stricts sur l'adresse email. Conserve pour chaque email unique la fiche la plus ancienne (premier signup_date / customer_id).",
+    "instructions": [
+      "Attribue un rang par email : ROW_NUMBER() OVER (PARTITION BY LOWER(email) ORDER BY signup_date ASC, customer_id ASC) AS rn.",
+      "Filtre rn = 1.",
+      "Exclus les emails NULL.",
+      "Selectionne customer_id, email, first_name, last_name, signup_date.",
+      "Trie par customer_id."
+    ],
+    "expectedQuery": "WITH ranked_customers AS (SELECT customer_id, email, first_name, last_name, signup_date, ROW_NUMBER() OVER (PARTITION BY LOWER(email) ORDER BY signup_date ASC, customer_id ASC) AS rn FROM customers WHERE email IS NOT NULL) SELECT customer_id, email, first_name, last_name, signup_date FROM ranked_customers WHERE rn = 1 ORDER BY customer_id;",
+    "orderDependent": true,
+    "hints": [
+      "PARTITION BY LOWER(email) ORDER BY signup_date ASC, customer_id ASC."
+    ],
+    "solutionExplanation": "C'est LA requete reine des entretiens de Data Engineering : dedoublonnage deterministe par cle metier en conservant la premiere ou la derniere occurrence via ROW_NUMBER().",
+    "tags": ["DEDUPLICATION", "ROW_NUMBER", "DATA_QUALITY"]
+  },
+  {
+    "id": "sql-068",
+    "title": "Elimination des doublons de flux Kafka exacts",
+    "category": "deduplication",
+    "difficulty": "avance",
+    "datasetId": "streaming_events",
+    "description": "Le flux d'evenements contient des retries reseau produisant des evenements rigoureusement identiques (meme session, meme horodatage, meme type, meme URL).",
+    "instructions": [
+      "Numero d'occurrence : ROW_NUMBER() OVER (PARTITION BY session_id, event_timestamp, event_type, page_url ORDER BY event_id ASC) AS rn.",
+      "Conserve rn = 1.",
+      "Selectionne event_id, session_id, event_timestamp, event_type, page_url.",
+      "Trie par event_id."
+    ],
+    "expectedQuery": "WITH dedup_stream AS (SELECT event_id, session_id, event_timestamp, event_type, page_url, ROW_NUMBER() OVER (PARTITION BY session_id, event_timestamp, event_type, page_url ORDER BY event_id ASC) AS rn FROM events_stream) SELECT event_id, session_id, event_timestamp, event_type, page_url FROM dedup_stream WHERE rn = 1 ORDER BY event_id;",
+    "orderDependent": true,
+    "hints": [
+      "Partitionne sur le tuple metier complet definissant l'unicite de l'evenement."
+    ],
+    "solutionExplanation": "En streaming at-least-once, la deduplication a l'ingestion est obligatoire pour assurer une semantique exactly-once en aval.",
+    "tags": ["KAFKA", "DEDUPLICATION", "STREAMING"]
+  },
+  {
+    "id": "sql-069",
+    "title": "Detection des debits bancaires repetes a l'identique",
+    "category": "deduplication",
+    "difficulty": "avance",
+    "datasetId": "banking_fraud",
+    "description": "Trouve les transactions qui ont ete executees plus d'une fois avec le meme montant sur le meme compte au cours de la meme minute.",
+    "instructions": [
+      "Groupe par account_id, strftime('%Y-%m-%d %H:%M', tx_timestamp), amount.",
+      "Filtre HAVING COUNT(*) > 1.",
+      "Selectionne account_id, strftime('%Y-%m-%d %H:%M', tx_timestamp) AS tx_minute, amount, COUNT(*) AS nb_occurrences.",
+      "Trie par account_id, tx_minute."
+    ],
+    "expectedQuery": "SELECT account_id, strftime('%Y-%m-%d %H:%M', tx_timestamp) AS tx_minute, amount, COUNT(*) AS nb_occurrences FROM transactions GROUP BY account_id, strftime('%Y-%m-%d %H:%M', tx_timestamp), amount HAVING COUNT(*) > 1 ORDER BY account_id, tx_minute;",
+    "orderDependent": true,
+    "hints": [
+      "Tronque le timestamp a la minute avec strftime('%Y-%m-%d %H:%M', tx_timestamp)."
+    ],
+    "solutionExplanation": "Permet d'isoler les incidents d'idempotence ou un terminal de paiement retransmet deux fois la meme facture.",
+    "tags": ["IDEMPOTENCE", "FRAUD", "GROUP_BY"]
+  },
+  {
+    "id": "sql-070",
+    "title": "Identification des doublons homonymes par nom complet",
+    "category": "deduplication",
+    "difficulty": "intermediaire",
+    "datasetId": "hr_payroll",
+    "description": "Repere les noms d'employes presents plusieurs fois dans la base (homonymes ou fiches multiples).",
+    "instructions": [
+      "Groupe par LOWER(full_name).",
+      "Filtre HAVING COUNT(*) > 1.",
+      "Selectionne full_name, COUNT(*) AS occurrences.",
+      "Trie par occurrences DESC, full_name ASC."
+    ],
+    "expectedQuery": "SELECT full_name, COUNT(*) AS occurrences FROM employees GROUP BY LOWER(full_name) HAVING COUNT(*) > 1 ORDER BY occurrences DESC, full_name ASC;",
+    "orderDependent": true,
+    "hints": [
+      "GROUP BY LOWER(full_name) HAVING COUNT(*) > 1."
+    ],
+    "solutionExplanation": "Cas classique de Master Data Management (MDM) pour detecter les doublons de tiers.",
+    "tags": ["MDM", "DATA_QUALITY", "GROUP_BY"]
+  },
+  {
+    "id": "sql-071",
+    "title": "Dernier etat connu d'un abonnement utilisateur (Snapshot)",
+    "category": "deduplication",
+    "difficulty": "avance",
+    "datasetId": "streaming_events",
+    "description": "Pour chaque utilisateur ayant un historique d'abonnements, extrait la toute derniere offre souscrite.",
+    "instructions": [
+      "Utilise ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY start_date DESC, sub_id DESC) AS rn.",
+      "Conserve rn = 1.",
+      "Selectionne user_id, sub_id, plan_name, start_date, is_active.",
+      "Trie par user_id."
+    ],
+    "expectedQuery": "WITH latest_sub AS (SELECT user_id, sub_id, plan_name, start_date, is_active, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY start_date DESC, sub_id DESC) AS rn FROM subscriptions) SELECT user_id, sub_id, plan_name, start_date, is_active FROM latest_sub WHERE rn = 1 ORDER BY user_id;",
+    "orderDependent": true,
+    "hints": [
+      "ORDER BY start_date DESC pour positionner le plus recent en rang 1."
+    ],
+    "solutionExplanation": "Technique de 'Current State Snapshot' utilisee systematiquement dans les vues de reporting pour ne pas dupliquer les utilisateurs.",
+    "tags": ["SNAPSHOT", "LATEST_ROW", "ROW_NUMBER"]
+  },
+  {
+    "id": "sql-072",
+    "title": "Consolidation des adresses de livraison uniques",
+    "category": "deduplication",
+    "difficulty": "debutant",
+    "datasetId": "ecommerce",
+    "description": "Extrais la liste distincte des pays d'ou proviennent les commandes expediees.",
+    "instructions": [
+      "Joint orders (o) et customers (c) sur customer_id.",
+      "Selectionne DISTINCT UPPER(TRIM(c.country)) AS pays_unique.",
+      "Exclus les pays NULL.",
+      "Trie par pays_unique."
+    ],
+    "expectedQuery": "SELECT DISTINCT UPPER(TRIM(c.country)) AS pays_unique FROM orders o INNER JOIN customers c ON o.customer_id = c.customer_id WHERE c.country IS NOT NULL ORDER BY pays_unique;",
+    "orderDependent": true,
+    "hints": [
+      "DISTINCT avec UPPER et TRIM pour normaliser les doublons."
+    ],
+    "solutionExplanation": "L'utilisation conjointe de DISTINCT et de fonctions de normalisation evite les doublons artificiels.",
+    "tags": ["DISTINCT", "DEDUPLICATION"]
+  },
+  {
+    "id": "sql-073",
+    "title": "Purge des doublons avec preservation de l'enregistrement le plus complet",
+    "category": "deduplication",
+    "difficulty": "avance",
+    "datasetId": "ecommerce",
+    "description": "Si un email est present deux fois, conserve en priorite la fiche dont le pays est renseigne (non NULL).",
+    "instructions": [
+      "Score de completude : CASE WHEN country IS NOT NULL THEN 1 ELSE 0 END DESC, signup_date ASC, customer_id ASC.",
+      "ROW_NUMBER() partitionne par LOWER(email).",
+      "Conserve rn = 1.",
+      "Selectionne customer_id, email, first_name, last_name, country.",
+      "Filtre email IS NOT NULL.",
+      "Trie par customer_id."
+    ],
+    "expectedQuery": "WITH ranked_by_completeness AS (SELECT customer_id, email, first_name, last_name, country, ROW_NUMBER() OVER (PARTITION BY LOWER(email) ORDER BY CASE WHEN country IS NOT NULL THEN 1 ELSE 0 END DESC, signup_date ASC, customer_id ASC) AS rn FROM customers WHERE email IS NOT NULL) SELECT customer_id, email, first_name, last_name, country FROM ranked_by_completeness WHERE rn = 1 ORDER BY customer_id;",
+    "orderDependent": true,
+    "hints": [
+      "Tu peux combiner un CASE WHEN dans la clause ORDER BY de la fonction de fenetre !"
+    ],
+    "solutionExplanation": "Ordre multicritere dans le ROW_NUMBER() : technique de niveau Senior pour resoudre les fusions de comptes en conservant la fiche la plus riche.",
+    "tags": ["SURVIVORSHIP", "DEDUPLICATION", "WINDOW_FUNCTION"]
+  },
+  {
+    "id": "sql-074",
+    "title": "Verification de l'unicite des clics par seconde",
+    "category": "deduplication",
+    "difficulty": "intermediaire",
+    "datasetId": "streaming_events",
+    "description": "Compte combien de doublons exacts existent dans le flux events_stream.",
+    "instructions": [
+      "Cree une requete qui compte les lignes groupees par session_id, event_timestamp, event_type.",
+      "Conserve les groupes ayant plus d'une occurrence.",
+      "Selectionne session_id, event_timestamp, event_type, COUNT(*) AS doublon_count.",
+      "Trie par session_id."
+    ],
+    "expectedQuery": "SELECT session_id, event_timestamp, event_type, COUNT(*) AS doublon_count FROM events_stream GROUP BY session_id, event_timestamp, event_type HAVING COUNT(*) > 1 ORDER BY session_id;",
+    "orderDependent": true,
+    "hints": [
+      "GROUP BY session_id, event_timestamp, event_type HAVING COUNT(*) > 1."
+    ],
+    "solutionExplanation": "Permet de dimensionner le taux de perte ou de pollution reseau avant d'appliquer une deduplication automatique.",
+    "tags": ["DATA_AUDIT", "HAVING"]
+  },
+  {
+    "id": "sql-075",
+    "title": "Historique Slowly Changing Dimension (SCD Type 2)",
+    "category": "transactions",
+    "difficulty": "avance",
+    "datasetId": "hr_payroll",
+    "description": "Reconstitue les intervalles de validite [valid_from, valid_to] pour chaque ligne de salaire d'un employe a l'aide de LEAD().",
+    "instructions": [
+      "valid_from correspond a effective_date.",
+      "valid_to correspond a la date de la ligne suivante (LEAD(effective_date) OVER (PARTITION BY employee_id ORDER BY effective_date ASC)), ou NULL si c'est la version courante.",
+      "Indicateur is_current = CASE WHEN LEAD(...) IS NULL THEN 1 ELSE 0 END.",
+      "Selectionne employee_id, effective_date AS valid_from, LEAD(effective_date) OVER (PARTITION BY employee_id ORDER BY effective_date ASC) AS valid_to, salary, CASE WHEN LEAD(effective_date) OVER (PARTITION BY employee_id ORDER BY effective_date ASC) IS NULL THEN 1 ELSE 0 END AS is_current.",
+      "Trie par employee_id, valid_from."
+    ],
+    "expectedQuery": "SELECT employee_id, effective_date AS valid_from, LEAD(effective_date) OVER (PARTITION BY employee_id ORDER BY effective_date ASC) AS valid_to, salary, CASE WHEN LEAD(effective_date) OVER (PARTITION BY employee_id ORDER BY effective_date ASC) IS NULL THEN 1 ELSE 0 END AS is_current FROM salary_history ORDER BY employee_id, valid_from;",
+    "orderDependent": true,
+    "hints": [
+      "LEAD(effective_date) OVER (PARTITION BY employee_id ORDER BY effective_date ASC)."
+    ],
+    "solutionExplanation": "C'est l'implementation exacte des snapshots dbt et du modele dimensionnel Kimball SCD Type 2.",
+    "tags": ["SCD2", "KIMBALL", "LEAD"]
+  },
+  {
+    "id": "sql-076",
+    "title": "Detection des chevauchements d'abonnements",
+    "category": "transactions",
+    "difficulty": "avance",
+    "datasetId": "streaming_events",
+    "description": "Trouve les abonnements d'un meme utilisateur dont les plages de dates se chevauchent de maniere illicite.",
+    "instructions": [
+      "Joint subscriptions s1 et subscriptions s2 sur s1.user_id = s2.user_id ET s1.sub_id < s2.sub_id.",
+      "Condition de chevauchement : s1.start_date <= COALESCE(s2.end_date, '9999-12-31') ET s2.start_date <= COALESCE(s1.end_date, '9999-12-31').",
+      "Selectionne s1.user_id, s1.sub_id AS sub1_id, s1.plan_name AS plan1, s1.start_date AS start1, s1.end_date AS end1, s2.sub_id AS sub2_id, s2.plan_name AS plan2, s2.start_date AS start2.",
+      "Trie par s1.user_id, sub1_id."
+    ],
+    "expectedQuery": "SELECT s1.user_id, s1.sub_id AS sub1_id, s1.plan_name AS plan1, s1.start_date AS start1, s1.end_date AS end1, s2.sub_id AS sub2_id, s2.plan_name AS plan2, s2.start_date AS start2 FROM subscriptions s1 INNER JOIN subscriptions s2 ON s1.user_id = s2.user_id AND s1.sub_id < s2.sub_id WHERE s1.start_date <= COALESCE(s2.end_date, '9999-12-31') AND s2.start_date <= COALESCE(s1.end_date, '9999-12-31') ORDER BY s1.user_id, sub1_id;",
+    "orderDependent": true,
+    "hints": [
+      "Deux intervalles [A, B] et [C, D] se chevauchent si et seulement si A <= D et C <= B."
+    ],
+    "solutionExplanation": "Formule mathematique d'intersection d'intervalles temporels. Question d'entretien classique pour verifier la rigueur logique sur les dates.",
+    "tags": ["INTERVAL_OVERLAP", "TEMPORAL", "JOIN"]
+  },
+  {
+    "id": "sql-077",
+    "title": "Reconstitution du solde bancaire initial",
+    "category": "transactions",
+    "difficulty": "avance",
+    "datasetId": "banking_fraud",
+    "description": "A partir du solde actuel (balance dans bank_accounts) et de la somme des mouvements dans transactions, retrouve le solde initial d'ouverture du compte.",
+    "instructions": [
+      "CTE total_movements : calcule pour chaque account_id la somme de amount.",
+      "Joint avec bank_accounts (ba).",
+      "Calcule solde_initial = ROUND(ba.balance + COALESCE(tm.somme_debits, 0), 2) (en considerant que les transactions sont des depenses retirees du compte).",
+      "Selectionne ba.account_id, ba.customer_id, ba.balance AS solde_actuel, COALESCE(tm.somme_debits, 0) AS total_depense, ROUND(ba.balance + COALESCE(tm.somme_debits, 0), 2) AS solde_initial.",
+      "Trie par ba.account_id."
+    ],
+    "expectedQuery": "WITH total_movements AS (SELECT account_id, ROUND(SUM(amount), 2) AS somme_debits FROM transactions GROUP BY account_id) SELECT ba.account_id, ba.customer_id, ba.balance AS solde_actuel, COALESCE(tm.somme_debits, 0) AS total_depense, ROUND(ba.balance + COALESCE(tm.somme_debits, 0), 2) AS solde_initial FROM bank_accounts ba LEFT JOIN total_movements tm ON ba.account_id = tm.account_id ORDER BY ba.account_id;",
+    "orderDependent": true,
+    "hints": [
+      "LEFT JOIN avec total_movements car certains comptes peuvent n'avoir aucune transaction."
+    ],
+    "solutionExplanation": "Reconciliation comptable arriere : remonter a l'etat initial par inversion des flux de faits.",
+    "tags": ["RECONCILIATION", "BANKING", "ACCOUNTING"]
+  },
+  {
+    "id": "sql-078",
+    "title": "Equilibre global des ecritures financieres",
+    "category": "transactions",
+    "difficulty": "intermediaire",
+    "datasetId": "banking_fraud",
+    "description": "Verifie la somme algebrique de toutes les transactions par type d'operation.",
+    "instructions": [
+      "Groupe par tx_type.",
+      "Compte nb_tx, calcule total_amount = ROUND(SUM(amount), 2) et montant_moyen = ROUND(AVG(amount), 2).",
+      "Trie par total_amount decroissant."
+    ],
+    "expectedQuery": "SELECT tx_type, COUNT(*) AS nb_tx, ROUND(SUM(amount), 2) AS total_amount, ROUND(AVG(amount), 2) AS montant_moyen FROM transactions GROUP BY tx_type ORDER BY total_amount DESC;",
+    "orderDependent": true,
+    "hints": [
+      "GROUP BY tx_type."
+    ],
+    "solutionExplanation": "Tableau d'equilibre analytique standard pour la tresorerie.",
+    "tags": ["FINANCE", "GROUP_BY"]
+  },
+  {
+    "id": "sql-079",
+    "title": "Comptes dormants sans transaction recente",
+    "category": "transactions",
+    "difficulty": "intermediaire",
+    "datasetId": "banking_fraud",
+    "description": "Trouve les comptes bancaires actifs qui n'ont enregistre aucune transaction apres le '2025-10-16'.",
+    "instructions": [
+      "Utilise NOT EXISTS ou LEFT JOIN.",
+      "Selectionne ba.account_id, ba.customer_id, ba.account_type, ba.balance.",
+      "Filtre ba.status = 'active'.",
+      "Trie par ba.account_id."
+    ],
+    "expectedQuery": "SELECT ba.account_id, ba.customer_id, ba.account_type, ba.balance FROM bank_accounts ba WHERE ba.status = 'active' AND NOT EXISTS (SELECT 1 FROM transactions t WHERE t.account_id = ba.account_id AND t.tx_timestamp > '2025-10-16 23:59:59') ORDER BY ba.account_id;",
+    "orderDependent": true,
+    "hints": [
+      "NOT EXISTS (SELECT 1 FROM transactions t WHERE t.account_id = ba.account_id AND ...)."
+    ],
+    "solutionExplanation": "L'utilisation de NOT EXISTS est generalement plus performante que NOT IN des lors que la sous-requete peut comporter des valeurs NULL.",
+    "tags": ["NOT_EXISTS", "DORMANT", "OPTIMIZATION"]
+  },
+  {
+    "id": "sql-080",
+    "title": "Verification des virements suspects a montant identique",
+    "category": "transactions",
+    "difficulty": "intermediaire",
+    "datasetId": "banking_fraud",
+    "description": "Detecte les virements (tx_type = 'wire_transfer') executes a quelques minutes d'intervalle sur le meme compte pour le meme montant.",
+    "instructions": [
+      "Joint transactions t1 et transactions t2 sur account_id, amount, tx_type = 'wire_transfer' et t1.tx_id < t2.tx_id.",
+      "Selectionne t1.account_id, t1.tx_id AS premier_tx, t1.tx_timestamp AS date_premier, t2.tx_id AS second_tx, t2.tx_timestamp AS date_second, t1.amount.",
+      "Trie par t1.account_id, premier_tx."
+    ],
+    "expectedQuery": "SELECT t1.account_id, t1.tx_id AS premier_tx, t1.tx_timestamp AS date_premier, t2.tx_id AS second_tx, t2.tx_timestamp AS date_second, t1.amount FROM transactions t1 INNER JOIN transactions t2 ON t1.account_id = t2.account_id AND t1.amount = t2.amount AND t1.tx_type = 'wire_transfer' AND t2.tx_type = 'wire_transfer' AND t1.tx_id < t2.tx_id ORDER BY t1.account_id, premier_tx;",
+    "orderDependent": true,
+    "hints": [
+      "Auto-jointure avec condition t1.tx_id < t2.tx_id pour eviter les doublons symetriques."
+    ],
+    "solutionExplanation": "L'astuce `t1.id < t2.id` au lieu de `!=` evite de remonter la paire (A, B) puis la paire symetrique (B, A).",
+    "tags": ["SELF_JOIN", "FRAUD", "FINTECH"]
+  },
+  {
+    "id": "sql-081",
+    "title": "Chiffre d'affaires mensuel recurrent (MRR) actif",
+    "category": "transactions",
+    "difficulty": "intermediaire",
+    "datasetId": "streaming_events",
+    "description": "Calcule le MRR total genere par les abonnements actuellement actifs.",
+    "instructions": [
+      "Filtre is_active = 1.",
+      "Groupe par plan_name.",
+      "Compte le nombre d'abonnes (nb_abonnes) et somme monthly_price (total_mrr).",
+      "Trie par total_mrr decroissant."
+    ],
+    "expectedQuery": "SELECT plan_name, COUNT(*) AS nb_abonnes, ROUND(SUM(monthly_price), 2) AS total_mrr FROM subscriptions WHERE is_active = 1 GROUP BY plan_name ORDER BY total_mrr DESC;",
+    "orderDependent": true,
+    "hints": [
+      "GROUP BY plan_name avec WHERE is_active = 1."
+    ],
+    "solutionExplanation": "Calcul de la metrique SaaS phare (Monthly Recurring Revenue).",
+    "tags": ["SAAS", "MRR", "REVENUE"]
+  },
+  {
+    "id": "sql-082",
+    "title": "Analyse du plan d'execution (SCAN TABLE vs SEARCH TABLE)",
+    "category": "index_explain",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Comprends la difference entre un parcours complet de table (SCAN TABLE) et une recherche rapide par cle primaire (SEARCH TABLE).",
+    "instructions": [
+      "Selectionne la commande ayant order_id = 1005 (recherche par cle primaire).",
+      "Selectionne order_id, customer_id, total_amount.",
+      "Observe le plan d'execution EXPLAIN QUERY PLAN genere automatiquement par l'editeur."
+    ],
+    "expectedQuery": "SELECT order_id, customer_id, total_amount FROM orders WHERE order_id = 1005;",
+    "orderDependent": true,
+    "hints": [
+      "Recherche simple sur la colonne cle primaire order_id."
+    ],
+    "solutionExplanation": "Comme order_id est PRIMARY KEY, SQLite utilise `SEARCH TABLE orders USING INTEGER PRIMARY KEY (rowid=?)` avec une complexite en O(log N) plutot qu'un scan complet en O(N).",
+    "tags": ["EXPLAIN", "PRIMARY_KEY", "COMPLEXITY"]
+  },
+  {
+    "id": "sql-083",
+    "title": "Scan sequentiel sur colonne non indexee",
+    "category": "index_explain",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Observe le plan d'execution lorsque le predicat porte sur une colonne sans index.",
+    "instructions": [
+      "Selectionne les commandes dont le statut est 'completed'.",
+      "Selectionne order_id, customer_id, total_amount.",
+      "Trie par order_id."
+    ],
+    "expectedQuery": "SELECT order_id, customer_id, total_amount FROM orders WHERE status = 'completed' ORDER BY order_id;",
+    "orderDependent": true,
+    "hints": [
+      "WHERE status = 'completed'."
+    ],
+    "solutionExplanation": "Sans index sur la colonne status, le moteur SQL est oblige de parcourir l'integralite des pages de la table (`SCAN TABLE orders`), ce qui degrade les performances sur de grands volumes.",
+    "tags": ["FULL_SCAN", "EXPLAIN", "INDEX"]
+  },
+  {
+    "id": "sql-084",
+    "title": "Impact d'un LIKE avec wildcard en debut de chaine",
+    "category": "index_explain",
+    "difficulty": "avance",
+    "datasetId": "ecommerce",
+    "description": "Comprends pourquoi la syntaxe `LIKE '%terme'` empeche le moteur d'utiliser un index B-Tree classique.",
+    "instructions": [
+      "Selectionne customer_id, email, first_name, last_name de customers ou email termine par '@example.com'.",
+      "Utilise LIKE '%@example.com'.",
+      "Trie par customer_id."
+    ],
+    "expectedQuery": "SELECT customer_id, email, first_name, last_name FROM customers WHERE email LIKE '%@example.com' ORDER BY customer_id;",
+    "orderDependent": true,
+    "hints": [
+      "Le caractere % en debut de motif force un scan complet de la chaine."
+    ],
+    "solutionExplanation": "Un index B-Tree est trie par ordre lexicographique de gauche a droite. Un wildcard initial (%) rend le parcours d'index impossible et provoque un SCAN complet.",
+    "tags": ["INDEX", "BTREE", "LIKE", "PERFORMANCE"]
+  },
+  {
+    "id": "sql-085",
+    "title": "Plan de jointure par boucle imbriquee (Nested Loop)",
+    "category": "index_explain",
+    "difficulty": "avance",
+    "datasetId": "ecommerce",
+    "description": "Observe l'ordre d'acces aux tables et la boucle imbriquee lors d'une jointure.",
+    "instructions": [
+      "Joint orders o et customers c sur customer_id.",
+      "Filtre c.country = 'France'.",
+      "Selectionne o.order_id, c.customer_id, c.last_name, o.total_amount.",
+      "Trie par o.order_id."
+    ],
+    "expectedQuery": "SELECT o.order_id, c.customer_id, c.last_name, o.total_amount FROM orders o INNER JOIN customers c ON o.customer_id = c.customer_id WHERE c.country = 'France' ORDER BY o.order_id;",
+    "orderDependent": true,
+    "hints": [
+      "Le plan d'execution montre quelle table est utilisee comme table externe (driving table)."
+    ],
+    "solutionExplanation": "Le moteur SQL evalue la taille relative des tables pour choisir la 'driving table'. En l'absence d'index sur customer_id dans orders, il effectue un scan complet a chaque iteration.",
+    "tags": ["NESTED_LOOP", "JOIN_PLAN", "OPTIMIZATION"]
+  },
+  {
+    "id": "sql-086",
+    "title": "Plan d'agregation GROUP BY avec table temporaire (USE TEMP B-TREE)",
+    "category": "index_explain",
+    "difficulty": "avance",
+    "datasetId": "banking_fraud",
+    "description": "Comprends quand le moteur cree une structure temporaire en memoire pour realiser un GROUP BY ou un ORDER BY.",
+    "instructions": [
+      "Calcule le nombre de transactions par merchant_category.",
+      "Selectionne merchant_category, COUNT(*) AS nb_tx.",
+      "Trie par nb_tx decroissant."
+    ],
+    "expectedQuery": "SELECT merchant_category, COUNT(*) AS nb_tx FROM transactions GROUP BY merchant_category ORDER BY nb_tx DESC;",
+    "orderDependent": true,
+    "hints": [
+      "GROUP BY sur une colonne non indexee avec tri sur un aggregat."
+    ],
+    "solutionExplanation": "Le plan indique `USE TEMP B-TREE FOR GROUP BY` et `USE TEMP B-TREE FOR ORDER BY`. Cela signifie que des allocations memoire intermediaires sont necessaires pour consolider les groupes.",
+    "tags": ["TEMP_BTREE", "EXPLAIN", "MEMORY"]
+  },
+  {
+    "id": "sql-087",
+    "title": "Index couvrant (Covering Index concept)",
+    "category": "index_explain",
+    "difficulty": "avance",
+    "datasetId": "hr_payroll",
+    "description": "Interroge uniquement les colonnes presentes dans la cle primaire sans toucher aux autres attributs.",
+    "instructions": [
+      "Selectionne uniquement employee_id de employees ou employee_id > 5.",
+      "Trie par employee_id."
+    ],
+    "expectedQuery": "SELECT employee_id FROM employees WHERE employee_id > 5 ORDER BY employee_id;",
+    "orderDependent": true,
+    "hints": [
+      "Projection restreinte a la cle primaire."
+    ],
+    "solutionExplanation": "Puisque toutes les colonnes demandees font partie de l'index B-Tree de cle primaire, le moteur n'a meme pas besoin de lire les pages de donnees de la table. C'est le principe d'un covering index.",
+    "tags": ["COVERING_INDEX", "PERFORMANCE"]
+  },
+  {
+    "id": "sql-088",
+    "title": "Non-utilisation d'index due a une fonction sur colonne",
+    "category": "index_explain",
+    "difficulty": "avance",
+    "datasetId": "ecommerce",
+    "description": "Comprends pourquoi `LOWER(colonne) = 'valeur'` desactive l'index standard si aucun index fonctionnel n'existe.",
+    "instructions": [
+      "Selectionne customer_id, email de customers ou LOWER(email) = 'alex.martin@example.com'.",
+      "Trie par customer_id."
+    ],
+    "expectedQuery": "SELECT customer_id, email FROM customers WHERE LOWER(email) = 'alex.martin@example.com' ORDER BY customer_id;",
+    "orderDependent": true,
+    "hints": [
+      "L'application d'une fonction sur une colonne indexee empeche la recherche directe par dichotomie B-Tree."
+    ],
+    "solutionExplanation": "Pour beneficier d'un index avec une fonction, il faut creer un Functional Index (`CREATE INDEX idx_cust_lower_email ON customers(LOWER(email))`) ou stocker la donnee deja normalisee.",
+    "tags": ["FUNCTIONAL_INDEX", "PERFORMANCE"]
+  },
+  {
+    "id": "sql-089",
+    "title": "Remplacement d'une sous-requete correlee par une jointure",
+    "category": "optimisation",
+    "difficulty": "avance",
+    "datasetId": "hr_payroll",
+    "description": "Optimise la recuperation du nom du departement de chaque employe en utilisant un JOIN plutot qu'une sous-requete dans la clause SELECT.",
+    "instructions": [
+      "Joint employees (e) et departments (d) sur department_id via LEFT JOIN.",
+      "Selectionne e.employee_id, e.full_name, d.dept_name.",
+      "Trie par e.employee_id."
+    ],
+    "expectedQuery": "SELECT e.employee_id, e.full_name, d.dept_name FROM employees e LEFT JOIN departments d ON e.department_id = d.department_id ORDER BY e.employee_id;",
+    "orderDependent": true,
+    "hints": [
+      "Evite SELECT e.*, (SELECT dept_name FROM departments d WHERE d.department_id = e.department_id) FROM employees e."
+    ],
+    "solutionExplanation": "Une sous-requete correlee dans le SELECT est executee N fois (une fois par ligne d'employe). Le JOIN est evalue de maniere globale par le moteur, reduisant drastiquement le cout CPU.",
+    "tags": ["OPTIMIZATION", "CORRELATED_SUBQUERY", "JOIN"]
+  },
+  {
+    "id": "sql-090",
+    "title": "Securite de NOT EXISTS vs piege de NOT IN avec valeurs NULL",
+    "category": "optimisation",
+    "difficulty": "avance",
+    "datasetId": "ecommerce",
+    "description": "Trouve les clients n'ayant passe aucune commande en utilisant NOT EXISTS.",
+    "instructions": [
+      "Utilise WHERE NOT EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.customer_id).",
+      "Selectionne c.customer_id, c.first_name, c.last_name.",
+      "Trie par c.customer_id."
+    ],
+    "expectedQuery": "SELECT c.customer_id, c.first_name, c.last_name FROM customers c WHERE NOT EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.customer_id) ORDER BY c.customer_id;",
+    "orderDependent": true,
+    "hints": [
+      "WHERE NOT EXISTS (...)."
+    ],
+    "solutionExplanation": "Si la sous-requete d'un `NOT IN` retourne ne serait-ce qu'une seule valeur NULL, toute l'expression retourne NULL et le resultat est vide ! `NOT EXISTS` est 100% robuste face aux valeurs NULL.",
+    "tags": ["NOT_EXISTS", "NOT_IN", "THREE_VALUED_LOGIC"]
+  },
+  {
+    "id": "sql-091",
+    "title": "Elimination d'un DISTINCT inutile au profit d'un EXISTS",
+    "category": "optimisation",
+    "difficulty": "avance",
+    "datasetId": "ecommerce",
+    "description": "Trouve la liste des clients ayant achete sans utiliser de DISTINCT sur la table des commandes.",
+    "instructions": [
+      "Utilise EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.customer_id AND o.status = 'completed').",
+      "Selectionne c.customer_id, c.first_name, c.last_name.",
+      "Trie par c.customer_id."
+    ],
+    "expectedQuery": "SELECT c.customer_id, c.first_name, c.last_name FROM customers c WHERE EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.customer_id AND o.status = 'completed') ORDER BY c.customer_id;",
+    "orderDependent": true,
+    "hints": [
+      "EXISTS s'arrete des la premiere correspondance trouvee (semi-join)."
+    ],
+    "solutionExplanation": "Un `SELECT DISTINCT c.* FROM customers c JOIN orders o ...` genere toutes les lignes pour les trier et les dedoublonner ensuite. `EXISTS` effectue un Semi-Join et s'interrompt des le premier match.",
+    "tags": ["SEMI_JOIN", "EXISTS", "PERFORMANCE"]
+  },
+  {
+    "id": "sql-092",
+    "title": "Pushdown de predicat dans une sous-requete",
+    "category": "optimisation",
+    "difficulty": "avance",
+    "datasetId": "ecommerce",
+    "description": "Filtre les commandes des la jointure sur les lignes d'articles pour reduire le volume agrege.",
+    "instructions": [
+      "Joint order_items oi et orders o sur order_id avec o.status = 'completed'.",
+      "Calcule par product_id la quantite totale vendue (total_vendus).",
+      "Filtre oi.quantity > 0.",
+      "Selectionne oi.product_id, SUM(oi.quantity) AS total_vendus.",
+      "Groupe par oi.product_id et trie par total_vendus decroissant."
+    ],
+    "expectedQuery": "SELECT oi.product_id, SUM(oi.quantity) AS total_vendus FROM order_items oi INNER JOIN orders o ON oi.order_id = o.order_id WHERE o.status = 'completed' AND oi.quantity > 0 GROUP BY oi.product_id ORDER BY total_vendus DESC;",
+    "orderDependent": true,
+    "hints": [
+      "Filtrer des la jointure permet a l'optimiseur de reduire la taille de la table de faits."
+    ],
+    "solutionExplanation": "Le pushdown de predicat permet a l'optimiseur de requete de filtrer les blocs de donnees au plus pres du stockage physique.",
+    "tags": ["PUSHDOWN", "OPTIMIZATION"]
+  },
+  {
+    "id": "sql-093",
+    "title": "Projection stricte des colonnes requises",
+    "category": "optimisation",
+    "difficulty": "debutant",
+    "datasetId": "streaming_events",
+    "description": "En Data Warehouse columnar (Snowflake, BigQuery, Redshift), selectionner uniquement les colonnes indispensables reduit les scans disques et le cout financier.",
+    "instructions": [
+      "Ne projette que user_id et plan_name de la table subscriptions.",
+      "Filtre is_active = 1.",
+      "Trie par user_id."
+    ],
+    "expectedQuery": "SELECT user_id, plan_name FROM subscriptions WHERE is_active = 1 ORDER BY user_id;",
+    "orderDependent": true,
+    "hints": [
+      "Evite SELECT * a tout prix."
+    ],
+    "solutionExplanation": "Sur une base orientee colonnes comme Snowflake, un `SELECT *` lit l'ensemble des micro-partitions de toutes les colonnes, multipliant le temps et la facture.",
+    "tags": ["COLUMNAR", "SNOWFLAKE", "COST_OPTIMIZATION"]
+  },
+  {
+    "id": "sql-094",
+    "title": "Prevention d'un produit cartesien involontaire",
+    "category": "optimisation",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Rejoins orders et order_items de maniere rigoureuse sans oublier la condition de jointure.",
+    "instructions": [
+      "Selectionne o.order_id, oi.item_id, oi.product_id, oi.quantity.",
+      "Jointure explicite ON o.order_id = oi.order_id.",
+      "Filtre o.order_id = 1001.",
+      "Trie par oi.item_id."
+    ],
+    "expectedQuery": "SELECT o.order_id, oi.item_id, oi.product_id, oi.quantity FROM orders o INNER JOIN order_items oi ON o.order_id = oi.order_id WHERE o.order_id = 1001 ORDER BY oi.item_id;",
+    "orderDependent": true,
+    "hints": [
+      "Toujours specifier la clause ON."
+    ],
+    "solutionExplanation": "Oublier la clause ON ou utiliser une virgule sans WHERE genere un produit cartesien qui peut saturer la RAM d'un cluster Spark ou Snowflake.",
+    "tags": ["CARTESIAN", "JOIN_SYNTAX"]
+  },
+  {
+    "id": "sql-095",
+    "title": "Optimisation du calcul du Top 1 par groupe",
+    "category": "optimisation",
+    "difficulty": "avance",
+    "datasetId": "ecommerce",
+    "description": "Pour chaque client, trouve sa commande la plus chere sans faire de sous-requete corralee multiple.",
+    "instructions": [
+      "CTE ranked_orders : attribue un rang avec ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY total_amount DESC, order_id ASC).",
+      "Conserve rn = 1.",
+      "Exclus les clients orphelins (customer_id = 999).",
+      "Selectionne customer_id, order_id, total_amount.",
+      "Trie par customer_id."
+    ],
+    "expectedQuery": "WITH ranked_orders AS (SELECT customer_id, order_id, total_amount, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY total_amount DESC, order_id ASC) AS rn FROM orders WHERE customer_id != 999 AND total_amount > 0) SELECT customer_id, order_id, total_amount FROM ranked_orders WHERE rn = 1 ORDER BY customer_id;",
+    "orderDependent": true,
+    "hints": [
+      "ROW_NUMBER() avec CTE est beaucoup plus performant qu'une sous-requete MAX(total_amount)."
+    ],
+    "solutionExplanation": "L'approche classique `WHERE total_amount = (SELECT MAX(...) ...)` oblige a rescanner la table pour chaque ligne. ROW_NUMBER() realise le partitionnement en un seul passage trie.",
+    "tags": ["TOP_1", "PERFORMANCE", "ROW_NUMBER"]
+  },
+  {
+    "id": "sql-096",
+    "title": "Table de faits fact_orders conforme au modele en etoile",
+    "category": "modeling",
+    "difficulty": "avance",
+    "datasetId": "ecommerce",
+    "description": "Construis une projection analytique aplatie pret a l'emploi pour les outils de BI (Tableau, PowerBI).",
+    "instructions": [
+      "Joint orders o a customers c et order_items oi.",
+      "Joint oi a products p.",
+      "Selectionne o.order_id, o.order_date, c.customer_id, c.country AS customer_country, oi.product_id, p.category AS product_category, oi.quantity, oi.unit_price, ROUND(oi.quantity * oi.unit_price, 2) AS line_revenue.",
+      "Filtre o.status = 'completed' et oi.quantity > 0.",
+      "Trie par o.order_id, oi.product_id."
+    ],
+    "expectedQuery": "SELECT o.order_id, o.order_date, c.customer_id, c.country AS customer_country, oi.product_id, p.category AS product_category, oi.quantity, oi.unit_price, ROUND(oi.quantity * oi.unit_price, 2) AS line_revenue FROM orders o INNER JOIN customers c ON o.customer_id = c.customer_id INNER JOIN order_items oi ON o.order_id = oi.order_id INNER JOIN products p ON oi.product_id = p.product_id WHERE o.status = 'completed' AND oi.quantity > 0 ORDER BY o.order_id, oi.product_id;",
+    "orderDependent": true,
+    "hints": [
+      "Jointure en etoile entre la table centrale et ses dimensions."
+    ],
+    "solutionExplanation": "Architecture en etoile de Ralph Kimball : une table de faits fine (grain article de commande) reliee a ses dimensions (client, produit, temps).",
+    "tags": ["KIMBALL", "STAR_SCHEMA", "DATA_MART"]
+  },
+  {
+    "id": "sql-097",
+    "title": "Generation de cle de substitution (Surrogate Key) pour dim_customers",
+    "category": "modeling",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Cree une dimension client propre munie d'une cle synthetique (surrogate key) independante des identifiants operationnels.",
+    "instructions": [
+      "Attribue une cle synthetique : ROW_NUMBER() OVER (ORDER BY customer_id ASC) AS customer_sk.",
+      "Selectionne customer_sk, customer_id AS natural_key, first_name, last_name, LOWER(country) AS country_clean.",
+      "Exclus les clients sans email ou nom.",
+      "Trie par customer_sk."
+    ],
+    "expectedQuery": "SELECT ROW_NUMBER() OVER (ORDER BY customer_id ASC) AS customer_sk, customer_id AS natural_key, first_name, last_name, LOWER(country) AS country_clean FROM customers WHERE email IS NOT NULL ORDER BY customer_sk;",
+    "orderDependent": true,
+    "hints": [
+      "ROW_NUMBER() OVER (ORDER BY customer_id) simule l'auto-increment d'une cle artificielle."
+    ],
+    "solutionExplanation": "Les cles de substitution (Surrogate Keys) isolent l'entrepot de donnees des modifications ou reinitialisations de cles dans les systemes sources de production.",
+    "tags": ["SURROGATE_KEY", "DIMENSION", "KIMBALL"]
+  },
+  {
+    "id": "sql-098",
+    "title": "Dimension a variation lente Type 1 (SCD Type 1)",
+    "category": "modeling",
+    "difficulty": "intermediaire",
+    "datasetId": "ecommerce",
+    "description": "Dans un SCD Type 1, on ecrase l'historique pour ne conserver que la valeur courante normalisee.",
+    "instructions": [
+      "Selectionne customer_id, first_name, last_name, UPPER(COALESCE(country, 'INCONNU')) AS current_country.",
+      "Trie par customer_id."
+    ],
+    "expectedQuery": "SELECT customer_id, first_name, last_name, UPPER(COALESCE(country, 'INCONNU')) AS current_country FROM customers ORDER BY customer_id;",
+    "orderDependent": true,
+    "hints": [
+      "COALESCE + UPPER pour normaliser la valeur actuelle."
+    ],
+    "solutionExplanation": "SCD 1 ecrase la valeur precedente : simple mais ne permet pas de restituer l'etat historique passe.",
+    "tags": ["SCD1", "MODELING"]
+  },
+  {
+    "id": "sql-099",
+    "title": "Table de faits sans fait (Factless Fact Table) de presence aux sessions",
+    "category": "modeling",
+    "difficulty": "intermediaire",
+    "datasetId": "streaming_events",
+    "description": "Modelise un evenement d'interaction pur (connexion d'un utilisateur a une session) sans metrique numerique autre que l'occurrence.",
+    "instructions": [
+      "Selectionne session_id, user_id, strftime('%Y-%m-%d', start_time) AS session_date, 1 AS attended_flag.",
+      "Trie par session_id."
+    ],
+    "expectedQuery": "SELECT session_id, user_id, strftime('%Y-%m-%d', start_time) AS session_date, 1 AS attended_flag FROM user_sessions ORDER BY session_id;",
+    "orderDependent": true,
+    "hints": [
+      "Une factless fact table contient les cles dimensionnelles et un flag binaire 1."
+    ],
+    "solutionExplanation": "Concept Kimball : utilise pour tracer des participations a des cours, des passages de badge ou des connexions ou il n'y a pas de montant financier a sommer.",
+    "tags": ["FACTLESS_FACT", "KIMBALL"]
+  },
+  {
+    "id": "sql-100",
+    "title": "Gestion du membre par defaut (-1) pour les cles etrangeres manquantes",
+    "category": "modeling",
+    "difficulty": "intermediaire",
+    "datasetId": "hr_payroll",
+    "description": "En data warehouse, on evite les valeurs NULL dans les cles etrangeres en pointant vers une dimension inconnue (-1).",
+    "instructions": [
+      "Remplace department_id NULL par -1.",
+      "Selectionne employee_id, full_name, COALESCE(department_id, -1) AS dim_department_sk.",
+      "Trie par employee_id."
+    ],
+    "expectedQuery": "SELECT employee_id, full_name, COALESCE(department_id, -1) AS dim_department_sk FROM employees ORDER BY employee_id;",
+    "orderDependent": true,
+    "hints": [
+      "COALESCE(department_id, -1)."
+    ],
+    "solutionExplanation": "Regle d'or de Kimball : une table de faits ne doit jamais contenir de NULL dans ses cles de dimensions afin d'eviter les surprises lors des jointures INNER JOIN des outils BI.",
+    "tags": ["DEFAULT_MEMBER", "KIMBALL", "BEST_PRACTICE"]
+  },
+  {
+    "id": "sql-101",
+    "title": "Audit d'integrite referentielle (Cles orphelines)",
+    "category": "data_engineering",
+    "difficulty": "avance",
+    "datasetId": "streaming_events",
+    "description": "Detecte tous les evenements dans events_stream dont la session n'existe pas dans user_sessions.",
+    "instructions": [
+      "Joint events_stream (e) et user_sessions (s) via LEFT JOIN sur session_id.",
+      "Filtre s.session_id IS NULL.",
+      "Selectionne e.event_id, e.session_id, e.user_id, e.event_type, e.event_timestamp.",
+      "Trie par e.event_id."
+    ],
+    "expectedQuery": "SELECT e.event_id, e.session_id, e.user_id, e.event_type, e.event_timestamp FROM events_stream e LEFT JOIN user_sessions s ON e.session_id = s.session_id WHERE s.session_id IS NULL ORDER BY e.event_id;",
+    "orderDependent": true,
+    "hints": [
+      "Anti-join classique sur la table de faits pour detecter les late arrivals ou les sessions perdues."
+    ],
+    "solutionExplanation": "Test automatisable en dbt avec `relationships : to ref('user_sessions') field: session_id`.",
+    "tags": ["DATA_INTEGRITY", "DBT", "TESTING"]
+  },
+  {
+    "id": "sql-102",
+    "title": "Audit de completude (Taux de valeurs non NULL)",
+    "category": "data_engineering",
+    "difficulty": "avance",
+    "datasetId": "ecommerce",
+    "description": "Mesure pour chaque colonne critique de customers le taux de remplissage en pourcentage.",
+    "instructions": [
+      "Calcule :",
+      "- taux_email_pct = ROUND((COUNT(email) * 100.0) / COUNT(*), 1)",
+      "- taux_country_pct = ROUND((COUNT(country) * 100.0) / COUNT(*), 1)",
+      "Selectionne COUNT(*) AS total_lignes, taux_email_pct, taux_country_pct.",
+      "Une seule ligne en sortie."
+    ],
+    "expectedQuery": "SELECT COUNT(*) AS total_lignes, ROUND((COUNT(email) * 100.0) / COUNT(*), 1) AS taux_email_pct, ROUND((COUNT(country) * 100.0) / COUNT(*), 1) AS taux_country_pct FROM customers;",
+    "orderDependent": false,
+    "hints": [
+      "COUNT(colonne) ignore les NULL, tandis que COUNT(*) compte toutes les lignes."
+    ],
+    "solutionExplanation": "Indicateur cle de Data Observability (Monte Carlo, Soda, dbt-expectations) pour surveiller la degradation de la qualite en amont.",
+    "tags": ["OBSERVABILITY", "COMPLETENESS", "DATA_QUALITY"]
+  },
+  {
+    "id": "sql-103",
+    "title": "Reconciliation de montant (Quantite x Prix unitaire = Total)",
+    "category": "data_engineering",
+    "difficulty": "avance",
+    "datasetId": "ecommerce",
+    "description": "Verifie la coherence arithmetique des lignes de commande et detecte tout ecart superieur a 0.05 EUR.",
+    "instructions": [
+      "Calcule montant_calcule = ROUND(quantity * unit_price * (1.0 - discount_pct), 2).",
+      "Filtre les quantites negatives (quantity <= 0) comme anomalies directes.",
+      "Selectionne item_id, order_id, product_id, quantity, unit_price, discount_pct.",
+      "Trie par item_id."
+    ],
+    "expectedQuery": "SELECT item_id, order_id, product_id, quantity, unit_price, discount_pct FROM order_items WHERE quantity <= 0 ORDER BY item_id;",
+    "orderDependent": true,
+    "hints": [
+      "WHERE quantity <= 0."
+    ],
+    "solutionExplanation": "Ce type de test dbt (`dbt_expectations.expect_column_values_to_be_between`) stoppe le pipeline avant que l'anomalie ne corrompe les rapports financiers.",
+    "tags": ["ARITHMETIC_CHECK", "DATA_CONTRACTS"]
+  },
+  {
+    "id": "sql-104",
+    "title": "Calcul de fraicheur des donnees (Data Freshness / SLA)",
+    "category": "data_engineering",
+    "difficulty": "intermediaire",
+    "datasetId": "banking_fraud",
+    "description": "Calcule le delai en heures entre la transaction la plus recente et l'heure actuelle de controle ('2025-10-19 12:00:00').",
+    "instructions": [
+      "Trouve max_timestamp = MAX(tx_timestamp).",
+      "Calcule heures_ecoulees = ROUND((julianday('2025-10-19 12:00:00') - julianday(MAX(tx_timestamp))) * 24.0, 1).",
+      "Selectionne max_timestamp, heures_ecoulees."
+    ],
+    "expectedQuery": "SELECT MAX(tx_timestamp) AS max_timestamp, ROUND((julianday('2025-10-19 12:00:00') - julianday(MAX(tx_timestamp))) * 24.0, 1) AS heures_ecoulees FROM transactions;",
+    "orderDependent": false,
+    "hints": [
+      "Multiplier la difference de julianday par 24.0 pour obtenir les heures."
+    ],
+    "solutionExplanation": "Metrique vitale de monitoring des SLA d'ingestion (dbt source freshness). Permet de lever des alertes PagerDuty quand un pipeline tombe en panne.",
+    "tags": ["FRESHNESS", "SLA", "MONITORING"]
+  },
+  {
+    "id": "sql-105",
+    "title": "Pipeline ELT complet (Staging vers Mart analytique)",
+    "category": "data_engineering",
+    "difficulty": "avance",
+    "datasetId": "streaming_events",
+    "description": "Reconstitue en une seule requete le mart analytique agrege des utilisateurs actifs avec leur derniere offre et le nombre total d'evenements generes.",
+    "instructions": [
+      "CTE user_events : compte les evenements par user_id dans events_stream.",
+      "CTE active_subs : extrait pour chaque user_id son abonnement actif (is_active = 1).",
+      "Requete principale : joint user_sessions (s) regroupe par user_id avec ces deux CTE.",
+      "Selectionne s.user_id, COUNT(DISTINCT s.session_id) AS total_sessions, COALESCE(ue.nb_events, 0) AS total_events, COALESCE(asub.plan_name, 'Aucun') AS plan_actuel.",
+      "Groupe par s.user_id, ue.nb_events, asub.plan_name.",
+      "Trie par total_events DESC, s.user_id ASC."
+    ],
+    "expectedQuery": "WITH user_events AS (SELECT user_id, COUNT(*) AS nb_events FROM events_stream GROUP BY user_id), active_subs AS (SELECT user_id, plan_name FROM subscriptions WHERE is_active = 1) SELECT s.user_id, COUNT(DISTINCT s.session_id) AS total_sessions, COALESCE(ue.nb_events, 0) AS total_events, COALESCE(asub.plan_name, 'Aucun') AS plan_actuel FROM user_sessions s LEFT JOIN user_events ue ON s.user_id = ue.user_id LEFT JOIN active_subs asub ON s.user_id = asub.user_id GROUP BY s.user_id, ue.nb_events, asub.plan_name ORDER BY total_events DESC, s.user_id ASC;",
+    "orderDependent": true,
+    "hints": [
+      "Deux CTE de staging puis aggregation finale par user_id."
+    ],
+    "solutionExplanation": "C'est la structure typique d'un modele dbt Mart (dim_users ou mart_user_activity) aggregant plusieurs sources avec CTE modulaires.",
+    "tags": ["ELT", "DBT", "DATA_MART", "COMPLEX_PIPELINE"]
+  }
+]

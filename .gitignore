@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Local SQLite runtime lock files
+storage/*.sqlite-wal
+storage/*.sqlite-shm
+storage/backups/
+
+# Large local NotebookLM audio binaries (served locally via Wi-Fi, excluded from GitHub to avoid 100MB/repo limits)
+public/audios/**/*.m4a
+public/audios/**/*.mp3
+public/audios/**/*.wav
+!public/audios/**/.gitkeep
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+*.log

@@ -1,0 +1,773 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[margin=2cm]{geometry}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+
+\definecolor{deapurple}{RGB}{107, 33, 168}
+\definecolor{deadark}{RGB}{30, 41, 59}
+\definecolor{bgprompt}{RGB}{248, 250, 252}
+\definecolor{bgsource}{RGB}{250, 245, 255}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=deapurple,
+    urlcolor=blue
+}
+
+\newtcolorbox{sourcebox}[1]{
+    colback=bgsource,
+    colframe=deapurple!85!black,
+    fonttitle=\bfseries,
+    title={#1},
+    breakable,
+    enhanced
+}
+
+\newtcolorbox{promptbox}[1]{
+    colback=bgprompt,
+    colframe=deadark,
+    fonttitle=\bfseries,
+    title={#1},
+    breakable,
+    enhanced
+}
+
+\title{\textbf{Stratégie Audio \& Podcasts NotebookLM}\\
+\Large Certification N\textdegree 3 : AWS Certified Data Engineer Associate (DEA-C01)\\
+\large Semaines 11 à 20 (Examen cible : 19 mars 2027)}
+\author{Auren Moyo (Pack Préparation Intensive CDI Data \& AI)}
+\date{Novembre 2026}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Mode d'Emploi : Générer et Utiliser les 16 Audios DEA-C01}
+
+\subsection{Architecture de la Stratégie Audio DEA-C01}
+L'examen \textbf{AWS Certified Data Engineer Associate (DEA-C01)} (65 questions, 130 minutes, score requis 720/1000) teste des arbitrages d'architecture très fins sur les 4 domaines officiels :
+\begin{enumerate}[noitemsep]
+    \item \textbf{Domaine 1 : Data Ingestion and Transformation} (34 \% du score)
+    \item \textbf{Domaine 2 : Data Store Management} (26 \% du score)
+    \item \textbf{Domaine 3 : Data Operations and Support} (22 \% du score)
+    \item \textbf{Domaine 4 : Data Security and Governance} (18 \% du score)
+\end{enumerate}
+
+Pour maîtriser chaque service dans ses moindres détails (limites de débit, partitionnement, formats ouverts Iceberg/Hudi/Delta, clés de distribution Redshift, bookmarks Glue, permissions Lake Formation), ce document découpe le programme en \textbf{16 épisodes} (\texttt{DEA-AUDIO-01} à \texttt{DEA-AUDIO-16}), allant des vues d'ensemble aux micro-sujets les plus techniques.
+
+\subsection{Procédure dans Google NotebookLM}
+\begin{enumerate}[label=\textbf{Étape \arabic* :}]
+    \item Dans \url{https://notebooklm.google.com/}, clique sur \textbf{Add source} $\rightarrow$ \textbf{Discover sources (Rechercher sur le Web)} et colle les requêtes de l'encadré violet.
+    \item Ajoute également les chapitres Markdown correspondants de ton projet (\texttt{content/certifications/dea/chapters/...}).
+    \item Colle le \textbf{Prompt Court Studio (< 450 caractères)} dans le bouton \textbf{Customize} de l'\textbf{Audio Overview} (et ajoute le \textbf{Prompt Complet} en tant que source texte copiée \texttt{00\_DIRECTIVES\_DEBAT} pour que les deux hôtes traitent 100 \% des sous-points techniques).
+    \item Télécharge l'audio généré, renomme-le (\texttt{DEA-AUDIO-01.mp3} à \texttt{DEA-AUDIO-16.mp3}) et place-le dans le dossier :
+    \begin{center}
+        \texttt{public/audios/dea-c01/}
+    \end{center}
+\end{enumerate}
+
+\subsection{Tableau Récapitulatif et Planning d'Écoute Récursive (Semaines 11 à 20)}
+
+\begin{table}[h!]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{l l X l}
+\toprule
+\textbf{Code Audio} & \textbf{Type \& Niveau} & \textbf{Thème Principal} & \textbf{Semaines d'Écoute} \\
+\midrule
+\texttt{DEA-AUDIO-01} & Macro (Niv. 1) & Panorama de l'ingestion AWS : Batch vs Micro-Batch vs Streaming & S11 (Lun, Jeu, Dim) + S19 \\
+\texttt{DEA-AUDIO-02} & Micro (Niv. 3) & Kinesis Data Streams : Shards, Hot Shards, EFO, KPL/KCL, doublons & S11 (Mar, Ven, Dim) + S19 \\
+\texttt{DEA-AUDIO-03} & Micro (Niv. 3) & Data Firehose (Dynamic Partitioning, Parquet) vs MSK vs Managed Flink & S12 (Lun, Jeu, Dim) + S19 \\
+\texttt{DEA-AUDIO-04} & Micro (Niv. 2) & Ingestion BD \& Fichiers : AWS DMS (CDC, SCT), AppFlow, DataSync & S12 (Mar, Ven, Dim) + S19 \\
+\texttt{DEA-AUDIO-05} & Micro (Niv. 3) & AWS Glue sous le capot : Crawlers, DynamicFrame, Job Bookmarks, DPUs & S13 (Lun, Jeu, Dim) + S19 \\
+\texttt{DEA-AUDIO-06} & Micro (Niv. 3) & Amazon EMR (EC2/EKS/Serverless), Spot sur Task Nodes, Spark Skew & S13 (Mar, Ven, Dim) + S19 \\
+\texttt{DEA-AUDIO-07} & Micro (Niv. 3) & Amazon Athena : Partition Projection, CTAS, Workgroups, Federated & S14 (Lun, Jeu, Dim) + S19 \\
+\texttt{DEA-AUDIO-08} & Micro (Niv. 3) & Data Lake S3 : Parquet/ORC/Avro, Small Files \& Iceberg vs Hudi vs Delta & S14 (Mar, Ven, Dim) + S20 \\
+\texttt{DEA-AUDIO-09} & Micro (Niv. 3) & Amazon Redshift : Architecture RA3, Distribution Styles \& Sort Keys & S15 (Lun, Jeu, Dim) + S20 \\
+\texttt{DEA-AUDIO-10} & Micro (Niv. 2) & Redshift Spectrum, Serverless, Data Sharing \& Zero-ETL Integrations & S15 (Mar, Ven, Dim) + S20 \\
+\texttt{DEA-AUDIO-11} & Micro (Niv. 2) & DynamoDB (GSI/LSI, Streams, Export S3), OpenSearch, Neptune, Timestream & S16 (Lun, Jeu, Dim) + S20 \\
+\texttt{DEA-AUDIO-12} & Micro (Niv. 3) & Orchestration : Step Functions vs MWAA (Airflow) vs Glue Workflows & S16 (Mar, Ven, Dim) + S20 \\
+\texttt{DEA-AUDIO-13} & Micro (Niv. 3) & Qualité \& Schémas : Glue Data Quality (DQDL) \& Glue Schema Registry & S17 (Lun, Jeu, Dim) + S20 \\
+\texttt{DEA-AUDIO-14} & Micro (Niv. 2) & Observabilité Data : CloudWatch, IteratorAge, Tables Système Redshift & S17 (Mar, Ven, Dim) + S20 \\
+\texttt{DEA-AUDIO-15} & Micro (Niv. 3) & AWS Lake Formation : LF-Tags (TBAC), sécurité ligne/colonne/cellule, Macie & S18 (Lun, Jeu, Dim) + S20 \\
+\texttt{DEA-AUDIO-16} & Débat (Niv. 3) & Chiffrement KMS, Réseau VPC Data (Endpoints/ENI) \& 30 Pièges DEA-C01 & S18 (Mar, Ven) + S20 (Veille) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\newpage
+
+% ============================================================================
+\section{Partie 1 : Ingestion Temps Réel, Streaming \& Transfert (Domaine 1 : 34 \%)}
+% ============================================================================
+
+\subsection{Épisode 01 : Architecture Globale d'Ingestion : Batch, Micro-Batch \& Temps Réel}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DEA-AUDIO-01.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DEA-AUDIO-01.mp3}\\
+\textbf{Type :} Macro-Thème (Niveau 1 : Cadre de décision pour l'ingestion)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{AWS DEA-C01 Data Ingestion patterns batch micro-batch streaming latency throughput}
+    \item \texttt{AWS Kinesis vs Firehose vs MSK vs SQS vs EventBridge architecture comparison}
+\end{itemize}
+\textbf{Fichiers locaux du projet à importer :}
+\texttt{content/certifications/dea/chapters/chapitre_01_principes_ingestion_batch_streaming.md} et \texttt{chapitre_02_kinesis_data_streams_architecture.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DEA-AUDIO-01}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français pour la certification AWS Data Engineer Associate (DEA-C01). Comparez les architectures d'ingestion Batch, Micro-Batch et Temps Réel (Streaming), les garanties de livraison (At-least-once vs At-most-once vs Exactly-once), l'idempotence des pipelines, et la matrice de choix entre Kinesis, Firehose, MSK, DMS et DataSync.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Organisez une discussion approfondie en français entre deux Architectes Data AWS préparant un candidat à la certification DEA-C01.
+
+Décortiquez avec précision :
+1. Les 3 paradigmes d'ingestion et leurs critères de sélection dans un énoncé d'examen :
+- Temps réel pur (millisecondes à quelques secondes) : Amazon Kinesis Data Streams, Amazon MSK (Kafka), Managed Service for Apache Flink.
+- Near Real-Time / Micro-batch (60 secondes à quelques minutes) : Amazon Data Firehose, Spark Structured Streaming sur Glue ou EMR.
+- Batch planifié ou événementiel (heures ou quotidien) : AWS Glue ETL, AWS DMS Full Load, AWS DataSync, AWS AppFlow.
+
+2. Les sémantiques de livraison et l'idempotence (sujet très fréquent au DEA-C01) :
+- At-most-once (au plus une fois : risque de perte de messages, pas de doublons).
+- At-least-once (au moins une fois : aucune perte, mais risque de doublons en cas de retry réseau, c'est le comportement standard de Kinesis Data Streams et SQS Standard !).
+- Exactly-once (exactement une fois : comment l'obtenir de bout en bout grâce à l'idempotence des consommateurs, la déduplication dans Apache Flink / Spark avec watermarking, ou l'upsert MERGE dans Iceberg/Redshift/DynamoDB).
+
+3. Comment lire un énoncé DEA-C01 et éliminer immédiatement les mauvaises réponses :
+- "Moins d'opérations / Serverless / chargement direct dans S3, Redshift ou OpenSearch avec latence de 1 minute" -> Amazon Data Firehose.
+- "Besoin de rejouer les événements des 7 derniers jours (Replay), de multiples consommateurs indépendants en temps réel (< 200 ms) et d'un ordre strict par clé" -> Amazon Kinesis Data Streams.
+- "Migration d'un cluster Apache Kafka existant sur site sans réécrire le code des producteurs/consommateurs" -> Amazon MSK.
+\end{promptbox}
+
+\subsection{Épisode 02 : Kinesis Data Streams (KDS) sous le capot : Shards, Hot Shards, EFO \& KCL}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DEA-AUDIO-02.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DEA-AUDIO-02.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Calculs de capacité et dépannage KDS)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{Amazon Kinesis Data Streams shard limits 1MB 1000 records Enhanced Fan-Out}
+    \item \texttt{Kinesis ProvisionedThroughputExceededException Hot Shard resharding KPL KCL}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dea/chapters/chapitre_02_kinesis_data_streams_architecture.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DEA-AUDIO-02}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat chirurgical en français pour l'examen AWS DEA-C01 sur Amazon Kinesis Data Streams : quotas exacts d'un Shard (1 Mo/s ou 1000 records/s en écriture, 2 Mo/s partagés en lecture vs 2 Mo/s dédiés avec Enhanced Fan-Out), résolution de ProvisionedThroughputExceededException et des Hot Shards, KPL vs KCL, et On-Demand vs Provisioned.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Consacrez cet épisode entier en français à décortiquer Amazon Kinesis Data Streams (KDS) pour la certification DEA-C01. Chaque chiffre et chaque mécanisme ci-dessous tombe directement à l'examen :
+
+1. Les limites physiques d'un Shard (en mode Provisioned) et comment dimensionner un flux :
+- Capacité d'écriture (Ingestion) par Shard : 1 Mo par seconde OU 1 000 enregistrements par seconde (si on dépasse l'une des deux limites, KDS renvoie l'erreur ProvisionedThroughputExceededException !). Taille maximale d'un enregistrement (payload avant encodage Base64) : 1 Mo.
+- Capacité de lecture Standard (Shared Fan-Out / Pull) par Shard : 2 Mo par seconde PARTAGÉS entre tous les consommateurs, maximum 5 appels GetRecords par seconde par shard.
+- Capacité de lecture avec Enhanced Fan-Out (EFO : HTTP/2 Push) : chaque consommateur enregistré reçoit son propre tuyau dédié de 2 Mo par seconde par shard, avec une latence poussée à environ 70 ms ! Quand faut-il activer EFO à l'examen ? Dès qu'il y a plus de 2 ou 3 applications consommatrices simultanées qui se disputent la bande passante de lecture.
+
+2. Partition Keys, Hot Shards et Resharding :
+- Comment KDS choisit le shard cible : Hash MD5 de la PartitionKey. Toutes les données ayant la même PartitionKey vont dans le même shard dans l'ordre exact d'arrivée.
+- Piège du Hot Shard : si 80 \% des événements ont la même PartitionKey (ex: country\_code='FR'), un seul shard sature (ProvisionedThroughputExceededException) alors que les autres shards sont vides !
+- Solutions à l'examen :
+  * Ajouter un préfixe/suffixe aléatoire (Salting) ou choisir une clé à haute cardinalité (ex: device\_id) si l'ordre global par pays n'est pas requis.
+  * Faire un Shard Split (diviser le shard chaud en deux) et un Shard Merge (fusionner les shards froids). Attention : après un Split, il faut toujours consommer complètement le shard parent avant de lire les shards enfants pour respecter l'ordre !
+
+3. Producteurs et Consommateurs (KPL, PutRecords, KCL, Lambda) :
+- Kinesis Producer Library (KPL) : regroupe plusieurs petits messages en un seul enregistrement Kinesis (Aggregation / User Record batching) pour contourner la limite de 1 000 records/s et maximiser le 1 Mo/s. Attention au piège : si on réduit le Time-to-Live ou le buffer max (RecordMaxBufferedTime) dans KPL, que se passe-t-il si un retry KPL survient ? Risque de doublons !
+- Kinesis Client Library (KCL) : utilise obligatoirement une table Amazon DynamoDB pour suivre les checkpoints de chaque shard et coordonner l'attribution des shards aux workers (1 worker = au moins 1 thread par shard). Si KCL échoue avec des erreurs de checkpointing, que faut-il vérifier ? Que la table DynamoDB de coordination a suffisamment de capacité RCU/WCU !
+- Lambda consommant Kinesis : s'exécute par lot (BatchSize, BatchWindow). En cas d'erreur sur un seul message du lot, Lambda réessaie le lot entier et bloque le shard jusqu'à expiration de la rétention, SAUF si on configure bisect-batch-on-function-error (diviser le lot en deux), maximum-retry-attempts et une destination on-failure (SQS DLQ ou SNS) + ReportBatchItemFailures !
+\end{promptbox}
+
+\subsection{Épisode 03 : Amazon Data Firehose vs Amazon MSK vs Managed Apache Flink}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DEA-AUDIO-03.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DEA-AUDIO-03.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Livraison S3/Redshift, Dynamic Partitioning et Streaming avancé)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{Amazon Data Firehose Dynamic Partitioning Parquet conversion buffer size interval}
+    \item \texttt{Amazon MSK vs Kinesis vs Managed Service for Apache Flink DEA-C01}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dea/chapters/chapitre_03_firehose_msk_flink.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DEA-AUDIO-03}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français pour la certification DEA-C01 sur Amazon Data Firehose (buffer size vs buffer interval, transformation Lambda, conversion automatique JSON vers Parquet/ORC via Glue Data Catalog, et Dynamic Partitioning S3), comparé à Amazon MSK (Kafka géré) et Amazon Managed Service for Apache Flink.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Organisez un débat technique en français sur Amazon Data Firehose, Amazon MSK et Managed Service for Apache Flink pour la certification DEA-C01.
+
+Décortiquez tous les mécanismes d'examen :
+1. Amazon Data Firehose (anciennement Kinesis Data Firehose) :
+- Service entièrement géré et serverless qui livre des flux de données vers 4 destinations principales : Amazon S3, Amazon Redshift (en passant par un stage S3 intermédiaire suivi d'une commande COPY !), Amazon OpenSearch Service, et des endpoints HTTP tiers (Datadog, Splunk, New Relic, Snowflake).
+- Le mécanisme de Buffering (pourquoi Firehose est Near Real-Time et non Temps Réel pur) :
+  Firehose accumule les données selon 2 paramètres : Buffer Size (de 1 Mo à 128 Mo) et Buffer Interval (de 60 secondes à 900 secondes ; peut descendre jusqu'à 0 seconde sur certaines configurations récentes mais 60s est le repère standard). Dès que la PREMIÈRE des deux limites est atteinte, Firehose écrit le fichier dans S3 !
+- Comment résoudre le problème des milliers de trop petits fichiers dans S3 générés par Firehose ? En augmentant le Buffer Size (ex: 128 Mo) et le Buffer Interval (ex: 900 secondes) !
+- Les 3 super-pouvoirs natifs de Firehose vers S3 (sans écrire de job Spark) :
+  a) Transformation en ligne via une fonction AWS Lambda (pour nettoyer, enrichir ou filtrer les enregistrements ; attention au buffer Lambda de 6 Mo).
+  b) Conversion de format native (Record Format Conversion) : convertit automatiquement du JSON entrant en Apache Parquet ou Apache ORC avant de l'écrire sur S3 ! Condition obligatoire : fournir une table dans AWS Glue Data Catalog qui définit le schéma cible.
+  c) Dynamic Partitioning (Partitionnement Dynamique) : extrait des clés directement depuis le JSON (via des expressions JQ simples ou une fonction Lambda) pour écrire dans des préfixes S3 dynamiques (ex: s3://bucket/customer\_id=123/year=2026/). Attention : le Dynamic Partitioning impose un buffer minimum de 64 Mo par partition active ou un intervalle adapté.
+
+2. Amazon Managed Service for Apache Flink (anciennement Kinesis Data Analytics) :
+- Quand l'utiliser à la place de Firehose ? Lorsqu'on a besoin de calculs avec état (stateful processing) en temps réel sur des fenêtres glissantes ou basculantes (Sliding Windows, Tumbling Windows, Session Windows), de jointures entre deux flux en temps réel, ou de détection d'anomalies.
+
+3. Amazon MSK (Managed Streaming for Apache Kafka) :
+- MSK Provisioned (choix des courtiers Kafka, stockage EBS, MSK Tiered Storage pour réduire les coûts de rétention longue) vs MSK Serverless (capacité gérée automatiquement).
+- MSK Connect : exécution gérée de connecteurs Kafka Connect (Debezium pour le CDC base de données, sinks S3/OpenSearch) sans gérer de serveurs.
+\end{promptbox}
+
+\subsection{Épisode 04 : Ingestion Base de Données, SaaS \& Hybride (DMS, AppFlow, DataSync)}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DEA-AUDIO-04.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DEA-AUDIO-04.mp3}\\
+\textbf{Type :} Micro-Thème (Niveau 2 : Migration BD, CDC et transferts de fichiers)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{AWS DMS Full Load CDC Schema Conversion Tool SCT limitations LOBs}
+    \item \texttt{AWS DataSync vs Storage Gateway vs Transfer Family vs AppFlow DEA-C01}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dea/chapters/chapitre_04_dms_appflow_datasync_transfer.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DEA-AUDIO-04}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français pour la certification DEA-C01 sur l'ingestion depuis les bases de données et systèmes externes : AWS DMS (Full Load + CDC continu, AWS SCT pour migrations hétérogènes, gestion des colonnes LOB), AWS AppFlow (SaaS Salesforce/ServiceNow), AWS DataSync (NFS/SMB/HDFS), et AWS Transfer Family (SFTP).
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Organisez un débat comparatif en français sur les services d'ingestion de bases de données, de fichiers et d'applications SaaS pour l'examen DEA-C01.
+
+1. AWS Database Migration Service (AWS DMS) et AWS Schema Conversion Tool (SCT) :
+- Les 3 modes de réplication DMS : Full Load uniquement, Full Load + CDC (Change Data Capture : copie initiale puis réplication continue des transactions binlogs/redo logs sans interruption), ou CDC uniquement.
+- Migration homogène (Oracle vers RDS Oracle : pas besoin de SCT) vs Migration hétérogène (Oracle ou SQL Server vers Aurora PostgreSQL ou Amazon Redshift : il faut utiliser AWS SCT en amont pour convertir le schéma DDL et les procédures stockées !).
+- Pièges techniques de DMS qui tombent à l'examen :
+  * DMS vers Amazon S3 : peut écrire les données de la table et le flux CDC (avec une colonne Op = 'I', 'U', 'D' pour Insert, Update, Delete) directement en format Apache Parquet dans S3 !
+  * Le piège des colonnes LOB (Large Objects : BLOB, CLOB, JSON volumineux) qui ralentissent dramatiquement une réplication DMS : comment l'optimiser ? Utiliser Limited LOB mode (si la taille maximale est connue) ou Inline LOB mode (qui combine le meilleur de Limited et Full LOB).
+  * Que faire si l'instance de réplication DMS manque de mémoire ou swap sur disque pendant un gros CDC ? Augmenter la classe de l'instance de réplication ou séparer les tables très actives dans des tâches DMS distinctes.
+
+2. AWS AppFlow :
+- Service d'intégration bidirectionnel no-code entièrement géré pour ingérer des données depuis des applications SaaS (Salesforce, SAP, Zendesk, ServiceNow, Google Analytics, Marketo) vers Amazon S3 ou Amazon Redshift.
+- Peut être déclenché selon un calendrier (Schedule), à la demande, ou en réponse à un événement SaaS (Event-driven), avec filtrage, validation et masquage des champs sensibles en vol.
+
+3. Transfert de Fichiers : DataSync vs Storage Gateway vs Transfer Family vs Snowball :
+- AWS DataSync : transfert réseau accéléré et planifié de millions de fichiers (avec préservation des métadonnées POSIX/permissions et vérification d'intégrité par checksum) depuis un NAS sur site (NFS, SMB, HDFS) vers S3, EFS ou FSx.
+- AWS Transfer Family : serveur SFTP / FTPS / FTP entièrement géré directement adossé à Amazon S3 ou EFS (idéal quand des partenaires externes envoient des fichiers par SFTP).
+- Famille AWS Snowball Edge : transfert physique par boîtier matériel sécurisé lorsque la bande passante Internet est trop faible ou que le transfert réseau prendrait plus d'une à deux semaines.
+\end{promptbox}
+
+\newpage
+
+% ============================================================================
+\section{Partie 2 : Transformation Distribuée : Glue, EMR \& Athena (Domaines 1 \& 2)}
+% ============================================================================
+
+\subsection{Épisode 05 : AWS Glue en Profondeur : Crawlers, DynamicFrame, Bookmarks \& DPUs}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DEA-AUDIO-05.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DEA-AUDIO-05.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Le service le plus testé de tout l'examen DEA-C01)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{AWS Glue Data Catalog Crawlers DynamicFrame vs Spark DataFrame ResolveChoice}
+    \item \texttt{AWS Glue Job Bookmarks Flex Execution Worker Types G.1X G.2X Auto Scaling}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dea/chapters/chapitre_05_aws_glue_etl_catalog_bookmarks.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DEA-AUDIO-05}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat chirurgical en français sur AWS Glue pour la certification DEA-C01 : Glue Crawlers (optimisation des coûts avec RecrawlPolicy S3 events), DynamicFrame vs Spark DataFrame (ResolveChoice, Relationalize, DropNullFields), fonctionnement exact des Glue Job Bookmarks, moteurs d'exécution (Spark, Ray, Python Shell) et réduction des coûts (Auto Scaling, Flex Execution).
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Consacrez cet épisode entier en français à AWS Glue. C'est le service numéro 1 de l'examen AWS DEA-C01 : le candidat doit en connaître chaque rouage.
+
+Décortiquez avec précision :
+1. AWS Glue Data Catalog et Glue Crawlers :
+- Comment un Crawler découvre le schéma des fichiers dans S3 et crée ou met à jour les tables de métadonnées dans le Glue Data Catalog.
+- Piège de coût et de performance des Crawlers : sur un bucket S3 contenant des millions de partitions, un Crawler classique qui liste tout S3 devient lent et cher. Quelle est la solution officielle AWS ? Configurer le Crawler pour utiliser les notifications d'événements S3 (S3 Event Notifications via SQS/SNS) avec RecrawlPolicy réglé sur CRAWL\_EVENT\_MODE afin de ne scanner QUE les nouveaux dossiers créés depuis la dernière exécution !
+- Quand faut-il créer un Custom Classifier (Grok pattern, XML tag, CSV délimiteur spécial) ? Quand le format de fichier propriétaire n'est pas reconnu par les classifieurs intégrés.
+
+2. Glue DynamicFrame vs Apache Spark DataFrame :
+- Pourquoi AWS a créé le DynamicFrame au-dessus du DataFrame Spark ? Un DataFrame Spark exige un schéma fixe avant de lire les données, alors qu'un DynamicFrame infère le schéma à la volée et gère nativement les incohérences de types dans une même colonne (ex: une colonne JSON qui contient parfois un entier 100 et parfois une chaîne "100 USD") sans planter !
+- Les transformations natives de Glue sur DynamicFrame à connaître par cœur :
+  * ResolveChoice : résout les ambiguïtés de type dans une colonne (make\_cols : sépare en deux colonnes, cast : convertit vers un type unique, project : garde un seul type, make\_struct).
+  * Relationalize : aplatit (unnest) les structures JSON profondément imbriquées et les tableaux en tables relationnelles plates reliées par des clés générées.
+  * DropFields, DropNullFields, ApplyMapping, Filter, SplitFields.
+
+3. Les Glue Job Bookmarks (sujet incontournable à l'examen) :
+- À quoi servent les Job Bookmarks ? À mémoriser l'état des données déjà traitées lors des exécutions précédentes pour ne traiter QUE les nouvelles données incrémentales lors du run suivant !
+- Piège mortel n°1 : pour que les Job Bookmarks fonctionnent dans un script PySpark Glue, que faut-il obligatoirement inclure dans le code ? Il faut appeler job.init() au début, passer le paramètre transformation\_ctx="mon\_identifiant\_unique" dans la méthode de lecture create\_dynamic\_frame.from\_catalog() ou from\_options(), et appeler job.commit() à la toute fin du script ! Si vous lisez directement avec spark.read.parquet() sans DynamicFrame ou si vous oubliez transformation\_ctx ou job.commit(), le Bookmark ne sauvegarde RIEN et toutes les données sont retraitées en double !
+- Piège mortel n°2 : comment fonctionnent les Job Bookmarks sur une source relationnelle JDBC (RDS/Aurora) ? Uniquement si on fournit une colonne clé primaire ou timestamp strictement croissante (jobBookmarkKeys). Si une ligne ancienne est modifiée par un UPDATE sans changer la clé croissante, le Bookmark JDBC ne la verra pas (il faudrait alors utiliser DMS CDC).
+- Les 3 états d'un Bookmark : Enable (actif), Disable (ignoré, traite tout), Pause (ne lit que les nouvelles données depuis le dernier checkpoint, mais ne met PAS à jour le checkpoint à la fin du run : idéal pour le débogage ou le rattrapage partiel).
+
+4. Optimisation des coûts et du dimensionnement des jobs Glue :
+- Les moteurs : Glue for Spark (G.1X = 1 DPU avec 4 vCPU et 16 Go RAM ; G.2X = 2 DPU avec 8 vCPU et 32 Go RAM pour les jointures gourmandes en mémoire ; G.025X pour le streaming léger), Glue Python Shell (0.0625 ou 1 DPU pour les petits scripts Python/pandas sans Spark, beaucoup moins cher !), et Glue for Ray.
+- Glue Auto Scaling : ajuste dynamiquement le nombre de workers pendant l'exécution du job pour ne pas payer des workers inactifs.
+- Glue Flex Execution : utilise de la capacité de calcul de réserve (jusqu'à 34 \% moins cher) pour les jobs batch non urgents dont le SLA tolère quelques minutes de délai de démarrage.
+\end{promptbox}
+
+\subsection{Épisode 06 : Amazon EMR (EC2, EKS, Serverless) \& Optimisation Apache Spark}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DEA-AUDIO-06.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DEA-AUDIO-06.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Architecture EMR et dépannage Spark)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{Amazon EMR Primary Core Task nodes Spot Instances EMRFS S3 vs HDFS}
+    \item \texttt{Amazon EMR Serverless vs EMR on EC2 Spark OutOfMemory data skew broadcast join}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dea/chapters/chapitre_06_amazon_emr_spark_optimisation.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DEA-AUDIO-06}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français pour la certification DEA-C01 sur Amazon EMR et Apache Spark : rôle exact des nœuds Primary, Core et Task (et où placer les Spot Instances sans perdre de données HDFS), EMR on EC2 vs EMR Serverless vs EMR on EKS, et résolution des problèmes Spark (Data Skew, Salting, Broadcast Join, OutOfMemory).
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Organisez un débat approfondi en français sur Amazon EMR et l'optimisation des traitements Apache Spark pour l'examen DEA-C01.
+
+1. Les 3 types de nœuds d'un cluster Amazon EMR on EC2 et la stratégie d'achat (On-Demand / Reserved vs Spot) :
+- Primary Node (Master Node) : coordonne le cluster, gère YARN ResourceManager et HDFS NameNode. Doit toujours tourner en On-Demand ou Reserved Instance (et en mode multi-master pour la haute disponibilité).
+- Core Nodes : exécutent des tâches de calcul ET stockent des blocs de données dans le système de fichiers local HDFS (DataNodes). Si un Core Node est perdu brutalement, on risque de perdre des données HDFS ou des fichiers de shuffle ! Il faut donc utiliser des instances On-Demand ou Reserved (ou un minimum garanti).
+- Task Nodes : exécutent UNIQUEMENT des tâches de calcul (YARN NodeManager) et ne stockent AUCUNE donnée HDFS ! C'est donc l'endroit parfait pour utiliser massivement des Spot Instances (jusqu'à 90 \% d'économie) avec EMR Managed Scaling pour absorber les pics de charge sans risque de perte de données HDFS !
+- Pourquoi utilise-t-on EMRFS (stockage des données directement sur Amazon S3) plutôt que HDFS sur EMR ? Pour découpler le stockage du calcul, ce qui permet d'éteindre complètement les clusters EMR éphémères dès la fin du job batch tout en conservant les données durablement dans S3 !
+
+2. Comparatif : EMR on EC2 vs EMR Serverless vs EMR on EKS vs AWS Glue ETL :
+- Quand choisir EMR Serverless ? Lorsqu'on veut exécuter des applications Spark ou Hive avec des versions spécifiques sans dimensionner ni gérer de clusters ou d'instances EC2.
+- Quand choisir EMR on EKS ? Lorsque l'entreprise mutualise déjà ses charges applicatives sur des clusters Kubernetes Amazon EKS existants.
+- Quand choisir EMR on EC2 plutôt que Glue ? Lorsqu'on a besoin d'un contrôle bas niveau sur l'OS, de bibliothèques C++ spécifiques, de clusters persistants à très longue durée de vie ou de frameworks non supportés par Glue (Presto/Trino, HBase, Flink personnalisé).
+
+3. Diagnostic et résolution des problèmes de performance Apache Spark (sur EMR et Glue) :
+- Data Skew (déséquilibre de partition : 99 tâches Spark se terminent en 2 minutes, mais la 100e tâche reste bloquée pendant 2 heures ou plante en OutOfMemoryError) :
+  * Cause : une clé de jointure ou de GROUP BY contient une valeur surreprésentée (ex: user\_id = NULL ou un gros client).
+  * Solutions à l'examen : activer Adaptive Query Execution (AQE : spark.sql.adaptive.enabled=true et spark.sql.adaptive.skewJoin.enabled=true dans Spark 3+), utiliser un Broadcast Hash Join si l'une des deux tables est petite (tient en mémoire des exécuteurs), ou appliquer du Key Salting (ajouter un nombre aléatoire de 1 à N à la clé de jointure de la grande table et répliquer la petite table N fois).
+- Différence entre repartition(N) (fait un shuffle complet sur le réseau, permet d'augmenter ou diminuer le nombre de partitions de manière équilibrée) et coalesce(N) (réduit le nombre de partitions sans faire de shuffle complet : beaucoup plus rapide juste avant d'écrire les fichiers finaux dans S3 !).
+\end{promptbox}
+
+\subsection{Épisode 07 : Amazon Athena : Optimisation Coûts/Performances, CTAS \& Workgroups}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DEA-AUDIO-07.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DEA-AUDIO-07.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Requêtage Serverless sur S3)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{Amazon Athena performance tuning Partition Projection vs MSCK REPAIR TABLE CTAS}
+    \item \texttt{Amazon Athena Workgroups data usage controls Federated Queries DEA-C01}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dea/chapters/chapitre_07_amazon_athena_requetage_serverless.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DEA-AUDIO-07}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français sur Amazon Athena pour la certification DEA-C01 : comment diviser par 90 \% la facture et le temps d'exécution (compression, Parquet/ORC, partitionnement), la différence entre Partition Projection, ALTER TABLE ADD PARTITION et MSCK REPAIR TABLE, l'utilisation de CTAS/UNLOAD, les Athena Workgroups et les Federated Queries.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Organisez un débat technique en français centré sur Amazon Athena pour l'examen DEA-C01.
+
+1. Modèle de tarification d'Athena SQL et les 3 leviers d'optimisation (qui tombent à chaque examen) :
+- Athena facture 5 dollars par téraoctet (To) de données scannées sur S3 (les requêtes DDL comme CREATE TABLE ou ALTER TABLE et les requêtes annulées/échouées sur erreur de syntaxe ne sont pas facturées).
+- Levier 1 : Convertir les fichiers CSV/JSON en format colonnaire (Apache Parquet ou ORC) -> Athena ne lit que les colonnes demandées dans le SELECT (réduction de 70 à 90 \% des données lues).
+- Levier 2 : Compresser les fichiers avec un algorithme splittable (Snappy ou ZSTD pour Parquet, Zlib/Snappy pour ORC). Attention au piège : un gros fichier CSV compressé en GZIP n'est PAS splittable, un seul lecteur Athena doit décompresser tout le fichier !
+- Levier 3 : Partitionner les données dans S3 sur les colonnes utilisées dans les clauses WHERE (ex: date, région).
+
+2. La gestion des partitions dans Athena (comparatif crucial) :
+- MSCK REPAIR TABLE : scanne toute l'arborescence S3 pour découvrir les nouvelles partitions au format Hive (year=2026/month=11/). Très lent et sujet aux timeouts si le bucket S3 contient des dizaines de milliers de partitions !
+- ALTER TABLE ADD PARTITION : rapide et chirurgical si un événement Lambda ajoute explicitement la nouvelle partition dès qu'un fichier arrive.
+- Partition Projection (la réponse gagnante à l'examen pour les tables très partitionnées !) : on configure dans les propriétés de la table (TBLPROPERTIES) le modèle mathématique ou la plage de dates/énumérations des préfixes S3. Athena calcule alors lui-même en mémoire le chemin S3 exact à lire SANS même interroger les métadonnées de partitions du Glue Data Catalog ni faire de MSCK REPAIR TABLE !
+
+3. Fonctionnalités avancées d'Athena :
+- CTAS (CREATE TABLE AS SELECT) et UNLOAD : permettent de transformer en une seule requête SQL des données JSON brutes en tables Parquet partitionnées et compressées sur S3 (jusqu'à 100 nouvelles partitions par CTAS, contournable avec UNLOAD).
+- Athena Workgroups : isoler les équipes (ex: Data Scientists vs BI Finance), imposer un bucket S3 de résultats et une configuration de chiffrement KMS obligatoire, et surtout définir des limites de contrôle des coûts (Data Usage Controls : annuler automatiquement toute requête individuelle qui scanne plus de 100 Go, ou alerter via CloudWatch/SNS si le Workgroup dépasse 5 To sur la journée !).
+- Athena Federated Queries : interroger en SQL des sources autres que S3 (DynamoDB, RDS PostgreSQL, Redshift, OpenSearch, CloudWatch Logs) grâce à des connecteurs qui tournent sur AWS Lambda.
+\end{promptbox}
+
+\newpage
+
+% ============================================================================
+\section{Partie 3 : Data Lake S3, Formats Transactionnels \& Redshift (Domaine 2 : 26 \%)}
+% ============================================================================
+
+\subsection{Épisode 08 : Data Lake S3 : Parquet/ORC/Avro, Small Files \& Iceberg / Hudi / Delta}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DEA-AUDIO-08.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DEA-AUDIO-08.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Formats de fichiers et Tables Transactionnelles ACID sur S3)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{AWS Data Lake Parquet vs ORC vs Avro Small Files Compaction S3}
+    \item \texttt{Apache Iceberg vs Apache Hudi Copy-on-Write Merge-on-Read vs Delta Lake AWS}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dea/chapters/chapitre_08_datalake_s3_formats_iceberg_hudi.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DEA-AUDIO-08}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français pour la certification DEA-C01 sur l'architecture Data Lake Amazon S3 : comparaison entre Parquet/ORC (colonnaire analytique) et Avro (orienté ligne avec évolution de schéma pour le streaming), résolution du Small Files Problem (compaction), et arbitrages entre Apache Iceberg, Apache Hudi (Copy-on-Write vs Merge-on-Read) et Delta Lake.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Animez un débat d'architecture en français sur les formats de stockage et les tables transactionnelles ouvertes (Open Table Formats) sur Amazon S3 pour l'examen DEA-C01.
+
+1. Formats de fichiers : Parquet / ORC vs Avro vs JSON / CSV :
+- Apache Parquet et Apache ORC : formats binaires orientés colonnes (Columnar). Stockent les statistiques min/max par bloc (Predicate Pushdown), taux de compression exceptionnel, parfaits pour les lectures analytiques lourdes dans Athena, Redshift Spectrum et Spark.
+- Apache Avro : format binaire orienté lignes (Row-based) qui embarque son schéma JSON dans l'en-tête. Pourquoi le choisir à l'examen ? Pour l'ingestion streaming (Kafka / Kinesis / Schema Registry), l'écriture rapide de lignes complètes, et la gestion native de l'évolution de schéma (Schema Evolution).
+
+2. Le problème des petits fichiers (Small Files Problem) sur S3 :
+- Pourquoi avoir des millions de fichiers de 10 Ko dans S3 détruit les performances d'Athena, Glue et EMR ? À cause du temps passé à lister les objets S3 (appels API LIST/GET) et de l'overhead d'ouverture/fermeture de chaque fichier par les threads Spark.
+- Les 4 solutions à connaître pour l'examen :
+  * En amont dans Firehose : augmenter le Buffer Size (128 Mo) et le Buffer Interval (900s).
+  * Dans Glue ETL : activer le regroupement de fichiers à la lecture (groupFiles = 'inPartition', groupSize = '134217728' pour regrouper les petits fichiers en lots de 128 Mo par tâche Spark !).
+  * En écriture Spark : faire un coalesce(N) ou repartition() avant d'écrire.
+  * Avec les tables Apache Iceberg dans Glue Data Catalog : activer la compaction automatique gérée par AWS Glue !
+
+3. Les Formats de Tables Transactionnels Ouverts sur S3 (ACID, Upsert/Delete pour le RGPD, Time Travel) :
+- Pourquoi le Parquet classique ne suffit plus quand un client demande d'appliquer le droit à l'oubli RGPD (supprimer une ligne précise) ou d'ingérer un flux CDC (UPDATE/DELETE) dans S3 ? Parce que les objets S3 sont immuables !
+- Apache Iceberg, Apache Hudi et Delta Lake ajoutent une couche de métadonnées transactionnelles ACID au-dessus des fichiers Parquet sur S3, permettant les instructions SQL UPDATE, DELETE, MERGE INTO, l'évolution de schéma sans réécrire les données, le Partition Evolution et le Time Travel.
+- La nuance spécifique à Apache Hudi qui tombe à l'examen :
+  * Copy-on-Write (CoW) : réécrit le fichier Parquet à chaque mise à jour. Plus lent à l'écriture, mais très rapide à la lecture (idéal pour les charges à dominante lecture analytique avec peu de mises à jour).
+  * Merge-on-Read (MoR) : écrit rapidement les mises à jour dans des fichiers journaux delta (Avro) et les fusionne plus tard par compaction asynchrone. Idéal pour les charges d'ingestion CDC très fréquentes nécessitant une écriture ultra-rapide !
+\end{promptbox}
+
+\subsection{Épisode 09 : Amazon Redshift : Architecture RA3, Distribution Styles \& Sort Keys}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DEA-AUDIO-09.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DEA-AUDIO-09.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Optimisation physique des tables Redshift)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{Amazon Redshift RA3 architecture Distribution Styles KEY ALL EVEN AUTO}
+    \item \texttt{Amazon Redshift Compound vs Interleaved Sort Keys VACUUM ANALYZE WLM}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dea/chapters/chapitre_09_amazon_redshift_architecture_optimisation.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DEA-AUDIO-09}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat chirurgical en français sur Amazon Redshift pour la certification DEA-C01 : nœuds RA3 et Redshift Managed Storage, choix exact des 4 Distribution Styles (KEY, ALL, EVEN, AUTO) pour éliminer la redistribution réseau, comparaison entre Compound Sort Key et Interleaved Sort Key, Zone Maps, VACUUM, ANALYZE, WLM et Concurrency Scaling.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Consacrez cet épisode entier en français à l'architecture interne et à l'optimisation des performances d'Amazon Redshift pour la certification DEA-C01.
+
+Décortiquez tous les points testés à l'examen :
+1. Architecture MPP (Massively Parallel Processing) et instances RA3 :
+- Leader Node (reçoit les requêtes SQL, construit le plan d'exécution et agrège les résultats) vs Compute Nodes divisés en Slices.
+- Instances RA3 avec Redshift Managed Storage (RMS) : découplent le calcul et le stockage (les données chaudes sont mises en cache sur des SSD locaux ultra-rapides et la totalité des données est stockée durablement sur S3 en arrière-plan). C'est un prérequis obligatoire pour le Data Sharing !
+
+2. Les 4 Styles de Distribution (DISTSTYLE) : comment répartir les lignes sur les Slices pour éviter que les données ne voyagent sur le réseau lors des JOINs :
+- KEY : hache la valeur d'une colonne (DISTKEY) pour placer sur la même Slice les lignes ayant la même clé. Quand l'utiliser ? Sur deux grandes tables (ex: fct\_orders et fct\_order\_items) qui sont très souvent jointes ensemble sur order\_id (Collocated Join sans mouvement réseau DS\_DIST\_NONE !). Attention : la colonne choisie doit avoir une haute cardinalité pour éviter le Data Skew sur une seule Slice.
+- ALL : copie l'intégralité de la table sur la première Slice de CHAQUE nœud de calcul. Quand l'utiliser ? Pour les petites tables de dimensions (ex: dim\_country, dim\_status) qui changent rarement et sont jointes à de grandes tables de faits.
+- EVEN : répartit les lignes à tour de rôle (Round-Robin) de façon parfaitement uniforme sur toutes les Slices. Quand l'utiliser ? Quand la table ne participe pas à des jointures évidentes ou quand aucune clé ne se dégage.
+- AUTO (défaut) : Redshift commence en ALL pour une petite table, puis bascule automatiquement en EVEN ou KEY lorsque la table grandit.
+
+3. Les Clés de Tri (SORTKEY) et les Zone Maps :
+- Redshift stocke pour chaque bloc de 1 Mo sur disque la valeur minimale et maximale de chaque colonne (Zone Map), ce qui lui permet d'ignorer instantanément tous les blocs hors de la clause WHERE.
+- Compound Sort Key (clé de tri composée, le défaut recommandé dans 95 \% des cas) : trie les données dans l'ordre hiérarchique des colonnes (col1, puis col2). Très performant tant que les requêtes filtrent sur un préfixe incluant la première colonne col1, mais perd son efficacité si une requête filtre uniquement sur col2 ou col3 sans mentionner col1 !
+- Interleaved Sort Key (clé de tri entrelacée) : accorde un poids égal à chaque colonne de la clé de tri. Quand la choisir à l'examen ? Uniquement pour d'immenses tables où différentes requêtes filtrent tantôt uniquement sur la colonne A, tantôt uniquement sur la colonne B, tantôt uniquement sur la colonne C. Attention : le VACUUM REINDEX sur une Interleaved Sort Key est très coûteux.
+
+4. Chargement massif, Maintenance et Gestion de la charge (WLM) :
+- Pourquoi il ne faut JAMAIS insérer des milliers de lignes une par une avec INSERT INTO dans Redshift, mais toujours utiliser la commande COPY depuis Amazon S3 (avec plusieurs fichiers de taille égale ou un fichier manifest JSON pour paralléliser sur toutes les Slices) ?
+- VACUUM (trie les nouvelles lignes et récupère l'espace disque des lignes supprimées/mises à jour) et ANALYZE (met à jour les statistiques de l'optimiseur de requêtes).
+- Workload Management (WLM), Short Query Acceleration (SQA : fait passer les petites requêtes rapides devant les grosses requêtes longues) et Concurrency Scaling (ajoute automatiquement des clusters transitoires lors des pics d'utilisateurs BI simultanés, avec 1 heure gratuite acquise par tranche de 24h d'activité du cluster principal).
+\end{promptbox}
+
+\subsection{Épisode 10 : Redshift Spectrum, Serverless, Data Sharing \& Zero-ETL}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DEA-AUDIO-10.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DEA-AUDIO-10.mp3}\\
+\textbf{Type :} Micro-Thème (Niveau 2 à 3 : Fonctionnalités modernes de Redshift)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{Amazon Redshift Spectrum external tables vs Redshift Serverless RPU}
+    \item \texttt{Amazon Redshift Data Sharing RA3 Zero-ETL Aurora DynamoDB Materialized Views}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dea/chapters/chapitre_10_redshift_spectrum_serverless_datasharing.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DEA-AUDIO-10}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat en français pour la certification DEA-C01 sur l'écosystème avancé d'Amazon Redshift : Redshift Spectrum (jointure entre tables chaudes Redshift et données historiques froides dans S3 via un schéma externe), Redshift Serverless (RPUs), Redshift Data Sharing (partage multi-clusters/multi-comptes sans copie), et intégrations Zero-ETL depuis Aurora/RDS/DynamoDB.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Organisez un débat technique en français sur les fonctionnalités modernes d'Amazon Redshift fortement présentes à la certification DEA-C01.
+
+1. Amazon Redshift Spectrum :
+- Permet d'exécuter une requête SQL dans Redshift qui joint les tables locales chaudes (ex: les 12 derniers mois dans Redshift) avec des pétaoctets de données historiques froides stockées en Parquet dans Amazon S3, sans avoir à charger ces données dans Redshift !
+- Syntaxe et architecture : nécessite de créer un EXTERNAL SCHEMA pointant vers le AWS Glue Data Catalog (ou Hive Metastore) avec un rôle IAM attaché au cluster Redshift. Le calcul du scan S3 est effectué par une flotte de milliers de nœuds Spectrum gérés par AWS (facturé 5 \$ par To scanné, indépendamment des nœuds du cluster).
+
+2. Amazon Redshift Serverless :
+- Quand choisir Redshift Serverless plutôt qu'un cluster provisionné RA3 à l'examen ? Pour des charges de travail sporadiques, imprévisibles, des environnements de dev/test ou des pics périodiques sans vouloir gérer de nœuds.
+- Unité de mesure : RPU (Redshift Processing Unit). Facturation à la seconde uniquement lorsque des requêtes s'exécutent (avec un paramètre Base Capacity RPU et Max Capacity / Max RPU-hours pour plafonner le budget).
+- Namespace (objets de stockage : bases, tables, utilisateurs, KMS) vs Workgroup (ressources de calcul RPUs et paramètres réseau VPC).
+
+3. Redshift Data Sharing (Partage de données en direct sans copie ni ETL) :
+- Permet à un cluster Producteur (RA3 ou Serverless) de partager en lecture directe et transactionnellement cohérente des tables, vues ou schémas avec un ou plusieurs clusters Consommateurs (dans le même compte, un autre compte AWS via AWS RAM, ou même une autre région) sans dupliquer les données !
+- Qui paie le calcul lorsque le consommateur exécute une requête sur les données partagées ? C'est le cluster CONSOMMATEUR qui utilise et paie son propre calcul, ce qui isole totalement les performances du cluster producteur !
+
+4. Intégrations Zero-ETL (Aurora MySQL/PostgreSQL, RDS MySQL, DynamoDB vers Redshift) :
+- Réplique automatiquement et en quasi temps réel (quelques secondes) les données transactionnelles dans Redshift sans avoir à construire ni maintenir de pipeline AWS DMS ou Glue.
+\end{promptbox}
+
+\subsection{Épisode 11 : DynamoDB pour le Data Engineer (Streams, GSI/LSI, Export S3) \& Bases Spécialisées}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DEA-AUDIO-11.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DEA-AUDIO-11.mp3}\\
+\textbf{Type :} Micro-Thème (Niveau 2 : NoSQL, Streaming CDC et Bases spécialisées)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{Amazon DynamoDB Partition Key GSI vs LSI DynamoDB Streams vs Kinesis Data Streams}
+    \item \texttt{DynamoDB Export to S3 PITR zero RCU OpenSearch Neptune Timestream DEA-C01}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dea/chapters/chapitre_11_dynamodb_opensearch_bases_specialisees.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DEA-AUDIO-11}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français pour la certification DEA-C01 sur Amazon DynamoDB et les bases spécialisées : choix de la Partition Key (éviter le Hot Partition throttling), GSI vs LSI, DynamoDB Streams vs Kinesis Data Streams for DynamoDB, comment exporter toute une table DynamoDB vers S3 pour l'analyser dans Athena SANS consommer aucune unité RCU, et quand choisir OpenSearch, Neptune ou Timestream.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Organisez un débat en français centré sur les cas d'usage Data Engineering d'Amazon DynamoDB et des bases spécialisées pour l'examen DEA-C01.
+
+1. Modélisation et Performances dans Amazon DynamoDB :
+- Clé primaire simple (Partition Key uniquement) vs Clé primaire composite (Partition Key + Sort Key).
+- Local Secondary Index (LSI) : même Partition Key que la table mais Sort Key différente ; doit OBLIGATOIREMENT être créé au moment de la création de la table ; partage les RCU/WCU de la table et supporte les lectures fortement cohérentes (Strongly Consistent Reads).
+- Global Secondary Index (GSI) : Partition Key et Sort Key différentes de la table ; peut être créé ou supprimé à tout moment ; possède ses propres RCU/WCU dédiés (attention : si le GSI manque de WCU, il bloque aussi les écritures sur la table principale !) ; ne supporte QUE les lectures éventuellement cohérentes (Eventually Consistent Reads).
+
+2. Capturer les changements (CDC) sur DynamoDB : DynamoDB Streams vs Kinesis Data Streams :
+- DynamoDB Streams natif : rétention stricte de 24 heures, gratuit en écriture, idéal pour déclencher directement une fonction Lambda (avec les vues KEYS\_ONLY, NEW\_IMAGE, OLD\_IMAGE, ou NEW\_AND\_OLD\_IMAGES).
+- Kinesis Data Streams for DynamoDB : permet une rétention jusqu'à 365 jours, et surtout permet d'utiliser directement Amazon Data Firehose pour archiver en continu tous les changements DynamoDB dans Amazon S3 en Parquet !
+
+3. Le piège classique de l'examen : comment analyser une énorme table DynamoDB de production avec Athena ou Spark SANS impacter les performances de l'application ni consommer un seul RCU ?
+- Mauvaise réponse : faire un Scan DynamoDB depuis Glue ou Athena Federated Query (cela consomme tous les RCU et ralentit la production !).
+- Bonne réponse : activer Point-in-Time Recovery (PITR) sur la table et utiliser la fonctionnalité native "DynamoDB Export to S3" (exporte les données en JSON ou Amazon Ion directement dans S3 à partir des sauvegardes internes sans consommer 1 seul RCU sur la table active !).
+
+4. Les bases spécialisées : Amazon OpenSearch Service (recherche plein texte, analytique de logs en temps réel avec OpenSearch Ingestion), Amazon Neptune (graphes Gremlin/SPARQL), Amazon Timestream (séries temporelles IoT et télémétrie avec hiérarchie automatique stockage mémoire -> stockage magnétique).
+\end{promptbox}
+
+\newpage
+
+% ============================================================================
+\section{Partie 4 : Orchestration, Qualité des Données \& Opérations (Domaine 3 : 22 \%)}
+% ============================================================================
+
+\subsection{Épisode 12 : Orchestration : Step Functions vs MWAA (Airflow) vs Glue Workflows}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DEA-AUDIO-12.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DEA-AUDIO-12.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Arbitrage d'architecture d'orchestration)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{AWS Step Functions Standard vs Express Distributed Map vs Amazon MWAA vs Glue Workflows}
+    \item \texttt{Amazon EventBridge Rules Schedules Pipes data pipeline orchestration DEA-C01}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dea/chapters/chapitre_12_orchestration_step_functions_mwaa_eventbridge.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DEA-AUDIO-12}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat comparatif en français pour la certification DEA-C01 sur les 4 outils d'orchestration de pipelines de données : AWS Step Functions (Standard vs Express Workflows, Distributed Map pour traiter des millions d'objets S3 en parallèle), Amazon MWAA (Managed Apache Airflow en Python), AWS Glue Workflows et Amazon EventBridge.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Animez un débat d'arbitrage architectural en français sur l'orchestration des pipelines de données pour la certification DEA-C01. L'examen pose systématiquement des questions où ces 4 services sont proposés dans les choix A, B, C, D : comment choisir le bon à coup sûr ?
+
+1. AWS Glue Workflows :
+- Quand est-ce la meilleure réponse ? Lorsque le pipeline est composé EXCLUSIVEMENT de composants AWS Glue (Glue Crawlers et Glue ETL Jobs) avec des déclencheurs simples (On-Demand, Scheduled cron, ou Conditional basé sur la réussite du job précédent). Zéro coût supplémentaire d'orchestration et configuration ultra-simple.
+- Limite : ne peut pas orchestrer nativement des tâches externes comme des requêtes Redshift, des fonctions Lambda complexes ou des appels d'API tiers (il faut alors passer à Step Functions ou MWAA).
+
+2. AWS Step Functions :
+- Orchestrateur serverless par machines à états (JSON Amazon States Language) qui s'intègre directement avec plus de 220 services AWS (Lambda, Glue, Athena StartQueryExecution, EMR, Redshift Data API, ECS, SNS/SQS) avec gestion granulaire des erreurs (blocs Retry avec BackoffRate exponentiel et blocs Catch).
+- Standard Workflows (durée max 1 an, exécution Exactly-once, idéal pour les pipelines ETL longs et l'attente d'approbation humaine avec le pattern .waitForTaskToken) vs Express Workflows (durée max 5 minutes, exécution At-least-once à très haut débit et très bas coût pour le streaming IoT/microservices).
+- Distributed Map State : fonctionnalité majeure permettant à Step Functions d'itérer directement sur des millions d'objets dans un bucket S3 ou un fichier manifest CSV/JSON en lançant jusqu'à 10 000 exécutions parallèles !
+
+3. Amazon MWAA (Managed Workflows for Apache Airflow) :
+- Quand est-ce la meilleure réponse à l'examen ?
+  a) L'entreprise possède déjà des DAGs Apache Airflow écrits en Python sur site et souhaite les migrer dans AWS sans réécrire la logique d'orchestration.
+  b) Les ingénieurs de données veulent définir des pipelines complexes entièrement en code Python avec l'écosystème de plugins/opérateurs open-source Airflow, ou orchestrer des systèmes hybrides/multi-cloud (ex: Snowflake + dbt + AWS).
+- Piège opérationnel de MWAA : les DAGs Python, le fichier requirements.txt et plugins.zip doivent être déposés dans un bucket Amazon S3 (avec le Versioning S3 obligatoirement activé !).
+
+4. Amazon EventBridge (Bus d'événements, EventBridge Scheduler et EventBridge Pipes) :
+- Idéal pour déclencher un pipeline dès qu'un fichier arrive dans S3 (via S3 Event Notifications intégrées à EventBridge) ou sur une planification cron serverless avec EventBridge Scheduler.
+\end{promptbox}
+
+\subsection{Épisode 13 : Qualité des Données (Glue Data Quality DQDL) \& Glue Schema Registry}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DEA-AUDIO-13.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DEA-AUDIO-13.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Contrôle qualité automatisé et évolution de schémas)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{AWS Glue Data Quality DQDL rules Data Catalog vs ETL pipeline quarantine}
+    \item \texttt{AWS Glue Schema Registry compatibility modes BACKWARD FORWARD FULL Avro JSON Protobuf}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dea/chapters/chapitre_13_qualite_donnees_glue_dq_schema_registry.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DEA-AUDIO-13}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français pour la certification DEA-C01 sur AWS Glue Data Quality (langage DQDL, recommandation automatique de règles, évaluation au repos sur le Data Catalog vs en transit dans un job Glue ETL avec mise en quarantaine dans S3) et sur AWS Glue Schema Registry (modes de compatibilité BACKWARD, FORWARD, FULL, NONE).
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Organisez un débat approfondi en français sur deux sujets très récents et très présents dans l'examen DEA-C01 : AWS Glue Data Quality et AWS Glue Schema Registry.
+
+1. AWS Glue Data Quality (basé sur le moteur open-source Deequ) :
+- Utilise le langage déclaratif DQDL (Data Quality Definition Language), par exemple : Rules = [ IsComplete "customer\_id", IsUnique "order\_id", ColumnValues "amount" > 0, RowCount > 1000, Completeness "email" >= 0.95 ].
+- Comment démarrer sans écrire les règles à la main ? En lançant une tâche de recommandation automatique (Recommend Rules) qui profile les données existantes et propose un jeu de règles DQDL pertinent !
+- Les 2 endroits où exécuter Glue Data Quality :
+  a) Sur le Glue Data Catalog (données au repos dans S3) : audite périodiquement une table et publie un score de qualité dans CloudWatch.
+  b) Directement à l'intérieur d'un pipeline AWS Glue ETL (données en transit) : permet d'agir immédiatement avant d'écrire dans la table cible !
+- Le pattern de mise en quarantaine (Quarantine Pattern / Row-level filtering) : comment router automatiquement les lignes valides vers la table de production (Good Data) et isoler les lignes en échec dans un bucket S3 de quarantaine (Bad Data) tout en publiant une alerte EventBridge/SNS sans perdre les bonnes données !
+
+2. AWS Glue Schema Registry (pour Kinesis Data Streams, MSK Kafka et Lambda) :
+- Formats supportés : Apache Avro, JSON Schema et Protocol Buffers (Protobuf).
+- Les modes de compatibilité d'évolution de schéma (question classique d'examen !) :
+  * BACKWARD (Rétrocompatibilité, valeur par défaut) : les NOUVEAUX consommateurs utilisant le nouveau schéma peuvent lire les données écrites avec l'ANCIEN schéma. Qu'a-t-on le droit de faire sur le schéma ? Supprimer un champ ou ajouter un champ OPTIONNEL (avec une valeur par défaut). Si on ajoute un champ obligatoire sans valeur par défaut, la validation BACKWARD échoue !
+  * FORWARD (Compatibilité ascendante) : les ANCIENS consommateurs peuvent continuer à lire les données produites avec le NOUVEAU schéma (on peut ajouter des champs ou supprimer des champs optionnels).
+  * FULL : compatible à la fois dans les deux sens (BACKWARD + FORWARD).
+  * NONE : désactive la vérification de compatibilité.
+\end{promptbox}
+
+\subsection{Épisode 14 : Observabilité, Dépannage, Logs \& Optimisation des Coûts Data}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DEA-AUDIO-14.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DEA-AUDIO-14.mp3}\\
+\textbf{Type :} Micro-Thème (Niveau 2 à 3 : Métriques clés et diagnostic de pannes)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{AWS Data Pipeline monitoring CloudWatch IteratorAgeMilliseconds Glue Spark UI}
+    \item \texttt{Amazon Redshift system tables SYS_LOAD_ERROR_DETAIL STL_LOAD_ERRORS S3 Storage Lens}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dea/chapters/chapitre_14_monitoring_depannage_optimisation_couts.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DEA-AUDIO-14}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat technique en français pour la certification DEA-C01 sur le monitoring et le dépannage des pipelines de données : la métrique critique GetRecords.IteratorAgeMilliseconds sur Kinesis, l'analyse mémoire driver/executor dans Glue, les vues système Redshift (STL\_LOAD\_ERRORS, SYS\_LOAD\_ERROR\_DETAIL, SVL\_QUERY\_SUMMARY), et l'optimisation des coûts S3 (Storage Lens, Lifecycle).
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Animez un débat opérationnel en français sur la surveillance, le dépannage et l'optimisation des coûts des pipelines de données (Domaine 3 de l'examen DEA-C01).
+
+1. Les métriques Amazon CloudWatch indispensables à connaître par cœur :
+- Sur Kinesis Data Streams : GetRecords.IteratorAgeMilliseconds ! Que signifie une hausse continue de IteratorAgeMilliseconds ? Cela signifie que le consommateur (Lambda, KCL ou Flink) traite les messages trop lentement par rapport au rythme d'arrivée et prend du retard (risque de perte de données si l'âge atteint la période de rétention du flux !). Solutions : augmenter le parallélisme de Lambda (ParallelizationFactor jusqu'à 10 lots simultanés par shard !), optimiser le code consommateur, ou augmenter la mémoire/vCPU de Lambda.
+- Sur AWS Glue ETL : glue.driver.aggregate.numCompletedTasks, glue.ALL.jvm.heap.usage, et glue.driver.BlockManager.disk.diskSpaceUsed\_MB. Comment diagnostiquer pourquoi le Driver Spark plante en OutOfMemory ? Parce que le script fait un .collect() sur un immense DataFrame ou utilise trop de petits fichiers lus par le driver sans groupFiles !
+
+2. Dépannage dans Amazon Redshift (Tables et Vues Système) :
+- Une commande COPY depuis S3 échoue : quelle table ou vue système faut-il interroger dans Redshift ? STL\_LOAD\_ERRORS (ou SYS\_LOAD\_ERROR\_DETAIL sur Redshift Serverless et Provisioned récent) ! Et comment tester un chargement COPY sans rien insérer pour valider les fichiers ? Avec l'option COPY ... NOLOAD, ou ignorer jusqu'à N lignes corrompues avec MAXERROR N.
+- Diagnostiquer les requêtes lentes et les problèmes de disque : SVL\_QUERY\_SUMMARY / SYS\_QUERY\_DETAIL, STL\_ALERT\_EVENT\_LOG (signale les Nested Loop Joins, les statistiques manquantes ou les Broadcasts excessifs).
+
+3. Optimisation des coûts de stockage Amazon S3 à l'échelle d'une AWS Organization :
+- S3 Storage Lens : tableau de bord analytique à l'échelle de l'organisation pour repérer les buckets ayant des téraoctets d'uploads multipart incomplets (Incomplete Multipart Uploads) ou des versions non courantes oubliées.
+- Quelle règle S3 Lifecycle faut-il toujours ajouter pour stopper l'hémorragie financière des téléversements interrompus ? Une règle "AbortIncompleteMultipartUpload" après 7 jours !
+\end{promptbox}
+
+\newpage
+
+% ============================================================================
+\section{Partie 5 : Sécurité, Lake Formation, Gouvernance \& Pièges (Domaine 4 : 18 \%)}
+% ============================================================================
+
+\subsection{Épisode 15 : AWS Lake Formation : LF-Tags (TBAC), Sécurité Ligne/Colonne/Cellule \& Macie}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DEA-AUDIO-15.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DEA-AUDIO-15.mp3}\\
+\textbf{Type :} Micro-Thème Critique (Niveau 3 : Gouvernance Fine du Data Lake)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{AWS Lake Formation Tag-Based Access Control LF-Tags Data Filters cell-level security}
+    \item \texttt{Lake Formation cross-account sharing AWS RAM IAMAllowedPrincipals Amazon Macie}
+\end{itemize}
+\textbf{Fichier local du projet à importer :}
+\texttt{content/certifications/dea/chapters/chapitre_15_lake_formation_gouvernance_securite.md}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DEA-AUDIO-15}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Débat chirurgical en français pour la certification DEA-C01 sur AWS Lake Formation : désactivation de IAMAllowedPrincipals, contrôle d'accès basé sur les tags (LF-Tags / TBAC), filtrage par colonne, par ligne (Row-level) et par cellule (Cell-level Data Filters), partage Cross-Account via AWS RAM (Resource Links), et détection de PII avec Amazon Macie vs Glue.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Consacrez cet épisode entier en français à AWS Lake Formation et à la gouvernance des données sensibles (Domaine 4 de l'examen DEA-C01).
+
+1. Pourquoi AWS Lake Formation remplace la gestion manuelle des Bucket Policies S3 :
+- Sans Lake Formation, donner accès à seulement 3 colonnes d'une table Parquet sur S3 à une équipe via IAM/Bucket Policy est impossible (car S3 ne connaît que des fichiers entiers !).
+- Lake Formation se place au-dessus du Glue Data Catalog et d'Amazon S3 (en enregistrant l'emplacement S3 auprès de Lake Formation) et distribue des identifiants temporaires aux moteurs intégrés (Athena, Redshift Spectrum, Glue ETL, EMR) après avoir filtré les colonnes, les lignes et les cellules !
+- Piège d'examen n°1 : lors de la migration d'un Glue Data Catalog existant vers le modèle de permissions Lake Formation, pourquoi un utilisateur qui n'a reçu aucune permission dans Lake Formation arrive-t-il encore à lire toutes les tables ? Parce que par défaut, le groupe spécial "IAMAllowedPrincipals" (Use only IAM access control) est encore coché sur les bases et tables existantes ! Il faut révoquer "Super" à IAMAllowedPrincipals et désactiver les paramètres par défaut dans Data Catalog Settings.
+
+2. LF-Tags et Tag-Based Access Control (TBAC) vs Named Resource Method :
+- Quand une entreprise possède 500 tables et 50 équipes, attribuer des permissions table par table (Named Resource) devient ingérable.
+- Avec LF-Tags (ex: clé classification = ['public', 'confidential', 'pii'] ou department = ['finance', 'hr']), on attache les tags aux bases, tables ou colonnes (les tables héritent automatiquement des tags de la base, et les colonnes héritent des tags de la table sauf surcharge !), puis on accorde les permissions aux rôles IAM en une seule règle sur les LF-Tags.
+
+3. Sécurité au niveau Colonne, Ligne (Row-level) et Cellule (Cell-level) :
+- Comment implémenter une sécurité au niveau de la cellule (Cell-level security : ex. les analystes RH voient toutes les colonnes pour le pays 'FR', mais pour les autres pays la colonne 'salary' est masquée) ? En créant un "Data Cell Filter" (Data Filter) dans Lake Formation qui combine une liste d'inclusion/exclusion de colonnes ET une expression de filtre de lignes SQL (Row filter expression) !
+
+4. Partage de tables Cross-Account avec Lake Formation :
+- Utilise AWS Resource Access Manager (AWS RAM) en sous-main (sans aucune copie des fichiers S3).
+- Dans le compte consommateur, que doit créer l'administrateur Data Lake pour que les requêtes Athena ou Redshift Spectrum voient la table partagée dans leur base locale ? Un "Resource Link" (lien de ressource) vers la table ou la base partagée !
+
+5. Détection et masquage des données personnelles (PII) :
+- Amazon Macie (découverte automatisée par ML des PII au repos dans les buckets S3 et alertes EventBridge) vs AWS Glue Detect Sensitive Data (transformée visuelle/Spark qui détecte et masque/hache les PII en vol pendant l'exécution du job ETL avant même d'écrire les données dans le Data Lake !).
+\end{promptbox}
+
+\subsection{Épisode 16 : Chiffrement KMS, Réseau VPC Data \& Les 30 Pièges du DEA-C01}
+\begin{sourcebox}{Sources \& Mots-clés Web NotebookLM : \texttt{DEA-AUDIO-16.mp3}}
+\textbf{Nom du fichier à enregistrer :} \texttt{DEA-AUDIO-16.mp3}\\
+\textbf{Type :} Grand Débat Final (Niveau 3 : Sécurité KMS/VPC et Révision Intensive Veille d'Examen)\\
+\textbf{Mots-clés à taper dans la recherche Web NotebookLM (Discover Sources) :}
+\begin{itemize}[noitemsep]
+    \item \texttt{AWS S3 encryption SSE-S3 SSE-KMS Bucket Keys Cross-Account KMS Glue VPC Endpoint}
+    \item \texttt{AWS DEA-C01 exam study guide top architecture traps Redshift Glue Kinesis}
+\end{itemize}
+\textbf{Fichiers locaux du projet à importer :}
+Chapitres finaux de \texttt{content/certifications/dea/chapters/} et les 4 fiches express dans \texttt{content/certifications/dea/fiches_express/}
+\end{sourcebox}
+
+\begin{promptbox}{Prompt de personnalisation Audio NotebookLM : \texttt{DEA-AUDIO-16}}
+\textbf{Prompt Court Studio (< 450 caractères) :}\\
+Grand débat récapitulatif en français pour l'examen AWS DEA-C01 : chiffrement S3 (SSE-S3 vs SSE-KMS avec S3 Bucket Keys pour réduire les coûts KMS de 99 \%), accès Cross-Account à un bucket S3 chiffré en KMS, dépannage réseau des connexions AWS Glue vers RDS/Redshift dans un VPC privé (Self-Referencing Security Group et S3 Gateway Endpoint), et rafale des 25 pièges DEA-C01.
+
+\medskip\hrule\medskip
+\textbf{Prompt Complet / Directives détaillées du Débat :}\\
+Animez un grand épisode final de révision intensive en français pour l'examen AWS Certified Data Engineer Associate (DEA-C01).
+
+1. Chiffrement S3, KMS et Partage Cross-Account (sujet qui tombe à 100 \% à l'examen) :
+- SSE-S3 (AES-256 géré par S3, activé par défaut sur tous les buckets, gratuit) vs SSE-KMS (clés gérées dans AWS KMS : permet l'audit de chaque utilisation de clé dans CloudTrail, la rotation annuelle automatique ou à la demande, et le contrôle fin via la Key Policy).
+- Le piège de coût et de throttling KMS sur les Data Lakes S3 : si un job Spark sur Glue ou EMR lit des millions de fichiers chiffrés en SSE-KMS, il risque d'exploser la facture d'appels API KMS et de déclencher un throttling KMS (quota de requêtes KMS par seconde dépassé). Quelle est LA fonctionnalité à activer en 1 clic sur le bucket S3 ? "S3 Bucket Keys" (qui génère une clé de niveau bucket temporaire dans S3 et réduit le trafic et les coûts vers AWS KMS jusqu'à 99 \% !).
+- Le piège de l'accès Cross-Account à un bucket S3 chiffré :
+  Un rôle IAM du Compte B veut lire des objets dans un bucket S3 du Compte A.
+  * Pourquoi il est IMPOSSIBLE de partager des objets chiffrés avec SSE-S3 (dans certains cas d'isolation stricte KMS) ou surtout avec la clé managée par AWS (aws/s3) ? Parce que la politique de la clé par défaut aws/s3 ne peut PAS être modifiée pour autoriser un autre compte !
+  * Il faut obligatoirement chiffrer avec une KMS Customer Managed Key (CMK) et accorder les autorisations aux 3 endroits : 1) la politique IAM du rôle dans le Compte B, 2) la Bucket Policy S3 dans le Compte A, ET 3) la KMS Key Policy dans le Compte A (actions kms:Decrypt / kms:GenerateDataKey) !
+
+2. Le piège réseau VPC numéro 1 sur AWS Glue (comment connecter Glue à une base RDS ou un cluster Redshift dans un sous-réseau privé) :
+- Lorsqu'on crée une Glue Network Connection dans un sous-réseau privé, pourquoi le test de connexion échoue-t-il souvent alors que le port de la base de données (ex: 5432 ou 5439) est ouvert ?
+  Deux raisons obligatoires à l'examen :
+  a) Le Security Group attaché à la connexion AWS Glue DOIT posséder une règle d'entrée auto-référencée (Self-Referencing Inbound Rule) autorisant TOUT le trafic TCP depuis lui-même (car les workers Spark de Glue ont besoin de communiquer entre eux sur des ports dynamiques !).
+  b) Le sous-réseau privé doit avoir une route vers un S3 Gateway VPC Endpoint (ou une NAT Gateway) pour que Glue puisse télécharger ses scripts PySpark et écrire ses logs sur S3 !
+
+3. Rafale finale de 15 réflexes éclairs pour le jour de l'examen DEA-C01 :
+- "Réduire les coûts d'un Crawler sur un bucket S3 géant" -> S3 Event Notifications (CRAWL\_EVENT\_MODE).
+- "Éviter de retraiter les anciens fichiers S3 dans Glue" -> Job Bookmarks (avec transformation\_ctx et job.commit()).
+- "Partager des tables Redshift entre départements sans copier les données ni impacter le cluster producteur" -> Redshift Data Sharing sur instances RA3.
+- "Analyser une table DynamoDB dans Athena sans consommer de RCU" -> DynamoDB Export to S3 (nécessite PITR activé).
+- "Masquer certaines cellules d'une table Data Lake selon le pays et le rôle" -> AWS Lake Formation Data Cell Filters.
+- "Le consommateur Kinesis prend du retard (IteratorAgeMilliseconds augmente)" -> Augmenter ParallelizationFactor (pour Lambda) ou faire un Shard Split + scaler les workers KCL.
+- "Requêter un bucket S3 avec 100 000 partitions de dates dans Athena sans latence de métadonnées" -> Athena Partition Projection.
+\end{promptbox}
+
+\end{document}

@@ -1,0 +1,957 @@
+{
+  "meta": {
+    "generated": "2026-11-06",
+    "source": "docs/05_planning_entretiens_et_replanification.md",
+    "total_budget_min": 2350,
+    "weeks_count": 22,
+    "note": "Planning hebdomadaire d'entrainement aux entretiens aligne sur interview_budget_min de data/planning_hebdo.json (depart Lundi 9 novembre 2026)"
+  },
+  "weeks": [
+    {
+      "week": 1,
+      "start": "2026-11-09",
+      "end": "2026-11-15",
+      "interview_budget_min": 60,
+      "tasks": [
+        {
+          "id": "W01-I1",
+          "chapter": "1.1-1.3",
+          "module": "Module 1 : Python pour la Data et l'IA",
+          "title": "Structures de données Python (List, Dict, Set, Tuple), mutabilité, hashabilité et compréhensions",
+          "resource": "Programme Entretiens (Module 1 : Python)",
+          "lectures": "Chapitres 1.1 à 1.3",
+          "objective": "Maîtriser les structures internes Python, la complexité d'accès O(1) des dicts/sets et les compréhensions.",
+          "video_min": 0,
+          "est_min": 20,
+          "priority": "core",
+          "deliverable": "3 exercices Python structures de données résolus",
+          "topic_ids": ["glue"]
+        },
+        {
+          "id": "W01-I2",
+          "chapter": "1.4-1.6",
+          "title": "Manipulation de chaînes, tri personnalisé (sorted, key), recherche binaire (bisect) et complexité Big O",
+          "module": "Module 1 : Python pour la Data et l'IA",
+          "resource": "Programme Entretiens (Module 1 : Python)",
+          "lectures": "Chapitres 1.4 à 1.6",
+          "objective": "Analyser la complexité temps/espace (Big O) et résoudre des problèmes de tri et recherche.",
+          "video_min": 0,
+          "est_min": 20,
+          "priority": "core",
+          "deliverable": "3 exercices Python tri et complexité résolus",
+          "topic_ids": ["glue"]
+        },
+        {
+          "id": "W01-I3",
+          "chapter": "1.7-1.12",
+          "module": "Module 1 : Python pour la Data et l'IA",
+          "title": "Fonctions avancées (*args, **kwargs), Decorators et Context Managers (with)",
+          "resource": "Programme Entretiens (Module 1 : Python)",
+          "lectures": "Chapitres 1.7 à 1.12",
+          "objective": "Écrire des décorateurs propres (functools.wraps) et des gestionnaires de contexte pour les connexions data.",
+          "video_min": 0,
+          "est_min": 20,
+          "priority": "core",
+          "deliverable": "2 exercices Python décorateurs et context managers résolus",
+          "topic_ids": ["glue"]
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "start": "2026-11-16",
+      "end": "2026-11-22",
+      "interview_budget_min": 60,
+      "tasks": [
+        {
+          "id": "W02-I1",
+          "chapter": "2.1-2.3",
+          "module": "Module 2 : SQL avancé et optimisation",
+          "title": "Agrégations (GROUP BY, HAVING) et pièges des jointures (INNER, LEFT, FULL JOIN, gestion des NULL)",
+          "resource": "Programme Entretiens (Module 2 : SQL)",
+          "lectures": "Chapitres 2.1 à 2.3",
+          "objective": "Éviter les duplications de lignes sur les jointures 1-N et les filtrages implicites sur LEFT JOIN.",
+          "video_min": 0,
+          "est_min": 30,
+          "priority": "core",
+          "deliverable": "3 exercices SQL jointures et agrégations résolus",
+          "topic_ids": ["athena", "redshift"]
+        },
+        {
+          "id": "W02-I2",
+          "chapter": "2.4-2.5",
+          "module": "Module 2 : SQL avancé et optimisation",
+          "title": "Opérateurs ensemblistes (UNION vs UNION ALL, INTERSECT, EXCEPT) et sous-requêtes corrélées vs EXISTS",
+          "resource": "Programme Entretiens (Module 2 : SQL)",
+          "lectures": "Chapitres 2.4 et 2.5",
+          "objective": "Choisir entre sous-requête corrélée, EXISTS et jointure selon la volumétrie des tables.",
+          "video_min": 0,
+          "est_min": 30,
+          "priority": "core",
+          "deliverable": "3 exercices SQL sous-requêtes et opérateurs ensemblistes résolus",
+          "topic_ids": ["athena", "redshift"]
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "start": "2026-11-23",
+      "end": "2026-11-29",
+      "interview_budget_min": 60,
+      "tasks": [
+        {
+          "id": "W03-I1",
+          "chapter": "2.16-2.17",
+          "module": "Module 2 : SQL avancé et optimisation",
+          "title": "Transactions ACID, niveaux d'isolation et fonctionnement des Index (B-Tree, index composites)",
+          "resource": "Programme Entretiens (Module 2 : SQL)",
+          "lectures": "Chapitres 2.16 et 2.17",
+          "objective": "Comprendre les lectures fantômes (isolation) et l'impact des index B-Tree vs moteurs colonnaires OLAP.",
+          "video_min": 0,
+          "est_min": 30,
+          "priority": "core",
+          "deliverable": "2 exercices d'optimisation et quiz index/ACID validés",
+          "topic_ids": ["rds_aurora", "redshift"]
+        },
+        {
+          "id": "W03-I2",
+          "chapter": "2.18-2.20",
+          "module": "Module 2 : SQL avancé et optimisation",
+          "title": "Modélisation relationnelle vs analytique (Normalisation 3NF, Star Schema, Snowflake Schema) et vues matérialisées",
+          "resource": "Programme Entretiens (Module 2 : SQL)",
+          "lectures": "Chapitres 2.18 à 2.20",
+          "objective": "Justifier le passage d'un modèle OLTP 3NF à un schéma en étoile (faits/dimensions) pour le Data Warehouse.",
+          "video_min": 0,
+          "est_min": 30,
+          "priority": "core",
+          "deliverable": "Exercice de modélisation Star Schema et requêtes analytiques",
+          "topic_ids": ["redshift", "dbt_models"]
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "start": "2026-11-30",
+      "end": "2026-12-06",
+      "interview_budget_min": 100,
+      "tasks": [
+        {
+          "id": "W04-I1",
+          "chapter": "2.6",
+          "module": "Module 2 : SQL avancé et optimisation",
+          "title": "CTE simples et chaînées (lisibilité vs matérialisation)",
+          "resource": "Programme Entretiens (Module 2 : SQL)",
+          "lectures": "Chapitre 2.6",
+          "objective": "Structurer des requêtes analytiques modulaires et comprendre l'optimiseur sur les CTE.",
+          "video_min": 0,
+          "est_min": 30,
+          "priority": "core",
+          "deliverable": "2 exercices SQL résolus",
+          "topic_ids": ["athena", "redshift", "dbt_models"]
+        },
+        {
+          "id": "W04-I2",
+          "chapter": "2.7",
+          "module": "Module 2 : SQL avancé et optimisation",
+          "title": "Fonctions de fenêtrage : anatomie (OVER, PARTITION BY, ORDER BY, frame clauses)",
+          "resource": "Programme Entretiens (Module 2 : SQL)",
+          "lectures": "Chapitre 2.7",
+          "objective": "Maîtriser ROWS vs RANGE et les fenêtres glissantes sans erreur de syntaxe.",
+          "video_min": 0,
+          "est_min": 35,
+          "priority": "core",
+          "deliverable": "3 requêtes analytiques commentées",
+          "topic_ids": ["athena", "redshift"]
+        },
+        {
+          "id": "W04-I3",
+          "chapter": "2.8",
+          "module": "Module 2 : SQL avancé et optimisation",
+          "title": "ROW_NUMBER et le patron de déduplication (le classique absolu d'entretien)",
+          "resource": "Programme Entretiens (Module 2 : SQL)",
+          "lectures": "Chapitre 2.8",
+          "objective": "Écrire en moins de 5 minutes une déduplication idempotente avec gestion des ex-aequo (QUALIFY / CTE).",
+          "video_min": 0,
+          "est_min": 35,
+          "priority": "core",
+          "deliverable": "Script SQL de déduplication idempotent",
+          "topic_ids": ["athena", "redshift", "dbt_models"]
+        }
+      ]
+    },
+    {
+      "week": 5,
+      "start": "2026-12-07",
+      "end": "2026-12-13",
+      "interview_budget_min": 100,
+      "tasks": [
+        {
+          "id": "W05-I1",
+          "chapter": "2.9",
+          "module": "Module 2 : SQL avancé et optimisation",
+          "title": "RANK, DENSE_RANK, NTILE : top-N par groupe et centiles",
+          "resource": "Programme Entretiens (Module 2 : SQL)",
+          "lectures": "Chapitre 2.9",
+          "objective": "Distinguer ROW_NUMBER, RANK et DENSE_RANK sur des cas avec doublons.",
+          "video_min": 0,
+          "est_min": 25,
+          "priority": "core",
+          "deliverable": "2 exercices top-N par catégorie",
+          "topic_ids": ["athena", "redshift"]
+        },
+        {
+          "id": "W05-I2",
+          "chapter": "2.11",
+          "module": "Module 2 : SQL avancé et optimisation",
+          "title": "LAG et LEAD : comparaison ligne à ligne, calcul de rétention et de churn",
+          "resource": "Programme Entretiens (Module 2 : SQL)",
+          "lectures": "Chapitre 2.11",
+          "objective": "Calculer les écarts temporels entre événements et le taux de rétention mensuel.",
+          "video_min": 0,
+          "est_min": 25,
+          "priority": "core",
+          "deliverable": "Requête d'analyse de cohortes / churn",
+          "topic_ids": ["athena", "redshift"]
+        },
+        {
+          "id": "W05-I3",
+          "chapter": "2.12",
+          "module": "Module 2 : SQL avancé et optimisation",
+          "title": "Agrégations conditionnelles (CASE WHEN dans SUM/COUNT, pivot manuel)",
+          "resource": "Programme Entretiens (Module 2 : SQL)",
+          "lectures": "Chapitre 2.12",
+          "objective": "Transformer des lignes en colonnes proprement avec SUM(CASE WHEN ...) et FILTER.",
+          "video_min": 0,
+          "est_min": 25,
+          "priority": "core",
+          "deliverable": "Requête de pivot mensuel",
+          "topic_ids": ["athena", "redshift", "dbt_jinja_macros"]
+        },
+        {
+          "id": "W05-I4",
+          "chapter": "2.14",
+          "module": "Module 2 : SQL avancé et optimisation",
+          "title": "Séries temporelles et dates : intervalles, jours ouvrés, détection de trous (gaps and islands)",
+          "resource": "Programme Entretiens (Module 2 : SQL)",
+          "lectures": "Chapitre 2.14",
+          "objective": "Identifier des séquences continues (islands) et des ruptures de flux (gaps) par différence de rangs.",
+          "video_min": 0,
+          "est_min": 25,
+          "priority": "core",
+          "deliverable": "Résolution du problème Gaps & Islands",
+          "topic_ids": ["athena", "redshift"]
+        }
+      ]
+    },
+    {
+      "week": 6,
+      "start": "2026-12-14",
+      "end": "2026-12-20",
+      "interview_budget_min": 100,
+      "tasks": [
+        {
+          "id": "W06-I1",
+          "chapter": "2.21",
+          "module": "Module 2 : SQL avancé et optimisation",
+          "title": "Lecture d'un plan d'exécution (EXPLAIN, scan complet, hash join, broadcast join)",
+          "resource": "Programme Entretiens (Module 2 : SQL)",
+          "lectures": "Chapitre 2.21",
+          "objective": "Diagnostiquer un goulot d'étranglement dans un plan d'exécution distribué.",
+          "video_min": 0,
+          "est_min": 35,
+          "priority": "core",
+          "deliverable": "Analyse commentée de 2 plans d'exécution",
+          "topic_ids": ["redshift", "athena"]
+        },
+        {
+          "id": "W06-I2",
+          "chapter": "2.23",
+          "module": "Module 2 : SQL avancé et optimisation",
+          "title": "Partitionnement, clustering, formats colonnaires (Parquet, Iceberg) : impact sur les requêtes",
+          "resource": "Programme Entretiens (Module 2 : SQL)",
+          "lectures": "Chapitre 2.23",
+          "objective": "Justifier le choix des clés de partitionnement et de tri (pruning, micro-partitions Snowflake, S3 Iceberg).",
+          "video_min": 0,
+          "est_min": 35,
+          "priority": "core",
+          "deliverable": "Fiche comparative Parquet / Iceberg / Clustering",
+          "topic_ids": ["s3", "lakehouse_iceberg", "redshift"]
+        },
+        {
+          "id": "W06-I3",
+          "chapter": "2.24",
+          "module": "Module 2 : SQL avancé et optimisation",
+          "title": "Pièges d'entretien : NOT IN avec NULL, COUNT(*) vs COUNT(col), WHERE vs HAVING",
+          "resource": "Programme Entretiens (Module 2 : SQL)",
+          "lectures": "Chapitre 2.24",
+          "objective": "Éviter les bugs silencieux liés à la logique ternaire NULL en SQL.",
+          "video_min": 0,
+          "est_min": 30,
+          "priority": "core",
+          "deliverable": "Quiz d'auto-évaluation sans erreur",
+          "topic_ids": ["athena", "redshift"]
+        }
+      ]
+    },
+    {
+      "week": 7,
+      "start": "2026-12-21",
+      "end": "2026-12-27",
+      "interview_budget_min": 80,
+      "tasks": [
+        {
+          "id": "W07-I1",
+          "chapter": "1.15",
+          "module": "Module 1 : Python pour la Data et l'IA",
+          "title": "Algorithmique utile en entretien data : deux pointeurs, fenêtre glissante, tri + fusion d'intervalles",
+          "resource": "Programme Entretiens (Python Data)",
+          "lectures": "Chapitre 1.15",
+          "objective": "Résoudre les problèmes classiques de manipulation de listes et d'intervalles en O(n log n) ou O(n).",
+          "video_min": 0,
+          "est_min": 30,
+          "priority": "core",
+          "deliverable": "2 problèmes codés en Python pur",
+          "topic_ids": ["glue"]
+        },
+        {
+          "id": "W07-I2",
+          "chapter": "1.16",
+          "module": "Module 1 : Python pour la Data et l'IA",
+          "title": "Générateurs, yield, itertools : traiter des flux sans saturer la mémoire",
+          "resource": "Programme Entretiens (Python Data)",
+          "lectures": "Chapitre 1.16",
+          "objective": "Écrire un pipeline d'ingestion paresseux (lazy evaluation) en mémoire constante O(1).",
+          "video_min": 0,
+          "est_min": 25,
+          "priority": "core",
+          "deliverable": "Pipeline de lecture streaming par générateur",
+          "topic_ids": ["glue", "kinesis"]
+        },
+        {
+          "id": "W07-I3",
+          "chapter": "1.17",
+          "module": "Module 1 : Python pour la Data et l'IA",
+          "title": "Lecture/écriture de gros fichiers (CSV, JSONL, Parquet) par lots (chunking)",
+          "resource": "Programme Entretiens (Python Data)",
+          "lectures": "Chapitre 1.17",
+          "objective": "Traiter des fichiers multi-gigaoctets par lots sans erreur Out-Of-Memory.",
+          "video_min": 0,
+          "est_min": 25,
+          "priority": "core",
+          "deliverable": "Script de conversion CSV vers Parquet par chunks",
+          "topic_ids": ["s3", "glue"]
+        }
+      ]
+    },
+    {
+      "week": 8,
+      "start": "2026-12-28",
+      "end": "2027-01-03",
+      "interview_budget_min": 80,
+      "tasks": [
+        {
+          "id": "W08-I1",
+          "chapter": "1.19",
+          "module": "Module 1 : Python pour la Data et l'IA",
+          "title": "Typage (typing, dataclasses, Pydantic) et validation de schémas",
+          "resource": "Programme Entretiens (Python Data)",
+          "lectures": "Chapitre 1.19",
+          "objective": "Valider des payloads JSON entrants et isoler les enregistrements invalides (dead-letter).",
+          "video_min": 0,
+          "est_min": 40,
+          "priority": "core",
+          "deliverable": "Validateur de schéma d'événements avec Pydantic",
+          "topic_ids": ["glue", "genai_ml"]
+        },
+        {
+          "id": "W08-I2",
+          "chapter": "1.20",
+          "module": "Module 1 : Python pour la Data et l'IA",
+          "title": "Programmation orientée objet sobre pour les pipelines (classes, composition, dataclasses, ABC/Protocol)",
+          "resource": "Programme Entretiens (Python Data)",
+          "lectures": "Chapitre 1.20",
+          "objective": "Structurer des composants d'ingestion découplés et testables par injection de dépendances.",
+          "video_min": 0,
+          "est_min": 40,
+          "priority": "core",
+          "deliverable": "Connecteur générique orienté objet (Protocol)",
+          "topic_ids": ["glue"]
+        }
+      ]
+    },
+    {
+      "week": 9,
+      "start": "2027-01-04",
+      "end": "2027-01-10",
+      "interview_budget_min": 80,
+      "tasks": [
+        {
+          "id": "W09-I1",
+          "chapter": "1.21",
+          "module": "Module 1 : Python pour la Data et l'IA",
+          "title": "Gestion d'erreurs, journalisation (logging), retries avec backoff",
+          "resource": "Programme Entretiens (Python Data)",
+          "lectures": "Chapitre 1.21",
+          "objective": "Implémenter la résilience réseau face au throttling API (HTTP 429 / 503) avec jitter.",
+          "video_min": 0,
+          "est_min": 40,
+          "priority": "core",
+          "deliverable": "Décorateur de retry avec backoff exponentiel",
+          "topic_ids": ["monitoring", "orchestration"]
+        },
+        {
+          "id": "W09-I2",
+          "chapter": "1.22",
+          "module": "Module 1 : Python pour la Data et l'IA",
+          "title": "Concurrence : asyncio, ThreadPoolExecutor, ProcessPoolExecutor (quand utiliser quoi, GIL)",
+          "resource": "Programme Entretiens (Python Data)",
+          "lectures": "Chapitre 1.22",
+          "objective": "Expliquer clairement le GIL et choisir entre parallélisme I/O-bound et CPU-bound.",
+          "video_min": 0,
+          "est_min": 40,
+          "priority": "core",
+          "deliverable": "Script d'ingestion parallèle d'API paginée",
+          "topic_ids": ["glue"]
+        }
+      ]
+    },
+    {
+      "week": 10,
+      "start": "2027-01-11",
+      "end": "2027-01-17",
+      "interview_budget_min": 120,
+      "tasks": [
+        {
+          "id": "W10-I1",
+          "chapter": "1.23",
+          "module": "Module 1 : Python pour la Data et l'IA",
+          "title": "Manipulation de données avec Pandas / Polars : opérations fréquentes en test technique",
+          "resource": "Programme Entretiens (Python Data)",
+          "lectures": "Chapitre 1.23",
+          "objective": "Réaliser des agrégations vectorisées, jointures et nettoyages sans boucles for.",
+          "video_min": 0,
+          "est_min": 45,
+          "priority": "core",
+          "deliverable": "Exercice de nettoyage et jointure complexe",
+          "topic_ids": ["glue"]
+        },
+        {
+          "id": "W10-I2",
+          "chapter": "1.25",
+          "module": "Module 1 : Python pour la Data et l'IA",
+          "title": "Tests unitaires avec pytest (fixtures, parametrisation, mock d'appels externes)",
+          "resource": "Programme Entretiens (Python Data)",
+          "lectures": "Chapitre 1.25",
+          "objective": "Tester une transformation de données isolée sans dépendre d'S3 ou d'une API externe.",
+          "video_min": 0,
+          "est_min": 45,
+          "priority": "core",
+          "deliverable": "Suite de 5 tests unitaires avec mocks",
+          "topic_ids": ["dbt_tests"]
+        },
+        {
+          "id": "W10-I3",
+          "chapter": "3.1",
+          "module": "Module 3 : Ingénierie des données et System Design",
+          "title": "OLTP vs OLAP, lignes vs colonnes, quand choisir quoi",
+          "resource": "Programme Entretiens (Module 3 : System Design)",
+          "lectures": "Chapitre 3.1",
+          "objective": "Comparer PostgreSQL/Aurora, DynamoDB, Redshift/Snowflake et S3/Iceberg selon les patterns d'accès.",
+          "video_min": 0,
+          "est_min": 30,
+          "priority": "core",
+          "deliverable": "Arbre de décision stockage",
+          "topic_ids": ["rds_aurora", "redshift", "dynamodb"]
+        }
+      ]
+    },
+    {
+      "week": 11,
+      "start": "2027-01-18",
+      "end": "2027-01-24",
+      "interview_budget_min": 120,
+      "tasks": [
+        {
+          "id": "W11-I1",
+          "chapter": "3.2",
+          "module": "Module 3 : Ingénierie des données et System Design",
+          "title": "Modélisation dimensionnelle (Kimball) : faits, dimensions, grain, schéma étoile vs flocon",
+          "resource": "Programme Entretiens (Module 3 : System Design)",
+          "lectures": "Chapitre 3.2",
+          "objective": "Définir la granularité exacte d'une table de faits et concevoir ses dimensions conformes.",
+          "video_min": 0,
+          "est_min": 30,
+          "priority": "core",
+          "deliverable": "Schéma en étoile e-commerce",
+          "topic_ids": ["redshift", "dbt_models"]
+        },
+        {
+          "id": "W11-I2",
+          "chapter": "3.3",
+          "module": "Module 3 : Ingénierie des données et System Design",
+          "title": "Dimensions à évolution lente (SCD Types 1, 2, 3) et implémentation SQL / dbt snapshots",
+          "resource": "Programme Entretiens (Module 3 : System Design)",
+          "lectures": "Chapitre 3.3",
+          "objective": "Implémenter l'historisation SCD Type 2 avec valid_from, valid_to et is_current.",
+          "video_min": 0,
+          "est_min": 30,
+          "priority": "core",
+          "deliverable": "Implémentation SQL + snapshot dbt d'un SCD2",
+          "topic_ids": ["dbt_snapshots", "redshift"]
+        },
+        {
+          "id": "W11-I3",
+          "chapter": "3.4",
+          "module": "Module 3 : Ingénierie des données et System Design",
+          "title": "Architecture médaillon (Bronze, Silver, Gold) : contrats, qualité, rejouabilité",
+          "resource": "Programme Entretiens (Module 3 : System Design)",
+          "lectures": "Chapitre 3.4",
+          "objective": "Définir les responsabilités de chaque couche et la correspondance staging/intermediate/marts dbt.",
+          "video_min": 0,
+          "est_min": 30,
+          "priority": "core",
+          "deliverable": "Schéma d'architecture médaillon AWS/Snowflake",
+          "topic_ids": ["s3", "dbt_models", "lakehouse_iceberg"]
+        },
+        {
+          "id": "W11-I4",
+          "chapter": "3.5",
+          "module": "Module 3 : Ingénierie des données et System Design",
+          "title": "Formats de fichiers et formats de tables ouvertes : Parquet, Avro, ORC, Apache Iceberg / Delta",
+          "resource": "Programme Entretiens (Module 3 : System Design)",
+          "lectures": "Chapitre 3.5",
+          "objective": "Expliquer l'architecture des métadonnées Iceberg, le time travel et la compaction de petits fichiers.",
+          "video_min": 0,
+          "est_min": 30,
+          "priority": "core",
+          "deliverable": "Tableau comparatif de formats",
+          "topic_ids": ["lakehouse_iceberg", "s3"]
+        }
+      ]
+    },
+    {
+      "week": 12,
+      "start": "2027-01-25",
+      "end": "2027-01-31",
+      "interview_budget_min": 120,
+      "tasks": [
+        {
+          "id": "W12-I1",
+          "chapter": "3.6",
+          "module": "Module 3 : Ingénierie des données et System Design",
+          "title": "Apache Spark / PySpark : architecture (driver, executors, DAG, stages, tasks)",
+          "resource": "Programme Entretiens (Module 3 : System Design)",
+          "lectures": "Chapitre 3.6",
+          "objective": "Expliquer le cycle d'exécution d'un job PySpark et le dimensionnement mémoire des executors.",
+          "video_min": 0,
+          "est_min": 40,
+          "priority": "core",
+          "deliverable": "Diagramme d'exécution Spark annoté",
+          "topic_ids": ["glue", "emr"]
+        },
+        {
+          "id": "W12-I2",
+          "chapter": "3.7",
+          "module": "Module 3 : Ingénierie des données et System Design",
+          "title": "PySpark : transformations étroites vs larges, le coût du shuffle, le data skew (salting, AQE)",
+          "resource": "Programme Entretiens (Module 3 : System Design)",
+          "lectures": "Chapitre 3.7",
+          "objective": "Résoudre un problème d'asymétrie de données (data skew) par broadcast join, AQE ou key salting.",
+          "video_min": 0,
+          "est_min": 40,
+          "priority": "core",
+          "deliverable": "Résolution d'un cas de Data Skew en PySpark",
+          "topic_ids": ["glue", "emr"]
+        },
+        {
+          "id": "W12-I3",
+          "chapter": "3.8",
+          "module": "Module 3 : Ingénierie des données et System Design",
+          "title": "Streaming : Kafka / Kinesis (partitions, consumer groups, offsets, sémantiques at-least-once / exactly-once)",
+          "resource": "Programme Entretiens (Module 3 : System Design)",
+          "lectures": "Chapitre 3.8",
+          "objective": "Maîtriser le parallélisme par partition/shard et la gestion des doublons en aval.",
+          "video_min": 0,
+          "est_min": 40,
+          "priority": "core",
+          "deliverable": "Comparatif d'architecture Kafka vs Kinesis",
+          "topic_ids": ["kinesis", "msk"]
+        }
+      ]
+    },
+    {
+      "week": 13,
+      "start": "2027-02-01",
+      "end": "2027-02-07",
+      "interview_budget_min": 120,
+      "tasks": [
+        {
+          "id": "W13-I1",
+          "chapter": "3.11",
+          "module": "Module 3 : Ingénierie des données et System Design",
+          "title": "Idempotence, backfill, gestion des données en retard (late-arriving data)",
+          "resource": "Programme Entretiens (Module 3 : System Design)",
+          "lectures": "Chapitre 3.11",
+          "objective": "Concevoir des jobs rejouables sans effets de bord (MERGE/overwrite par partition) et gérer les watermarks.",
+          "video_min": 0,
+          "est_min": 60,
+          "priority": "core",
+          "deliverable": "Patron de pipeline idempotent avec watermark",
+          "topic_ids": ["orchestration", "dbt_models"]
+        },
+        {
+          "id": "W13-I2",
+          "chapter": "3.13",
+          "module": "Module 3 : Ingénierie des données et System Design",
+          "title": "Cas d'architecture n°1 : pipeline e-commerce temps réel + analytique",
+          "resource": "Programme Entretiens (Module 3 : System Design)",
+          "lectures": "Chapitre 3.13",
+          "objective": "Présenter une architecture complète d'ingestion d'événements et de réconciliation comptable.",
+          "video_min": 0,
+          "est_min": 60,
+          "priority": "core",
+          "deliverable": "Schéma System Design complet n°1",
+          "topic_ids": ["kinesis", "s3", "lakehouse_iceberg", "dbt_models"]
+        }
+      ]
+    },
+    {
+      "week": 14,
+      "start": "2027-02-08",
+      "end": "2027-02-14",
+      "interview_budget_min": 100,
+      "tasks": [
+        {
+          "id": "W14-I1",
+          "chapter": "3.14",
+          "module": "Module 3 : Ingénierie des données et System Design",
+          "title": "Cas d'architecture n°2 : plateforme de logs à haut débit et détection d'anomalies",
+          "resource": "Programme Entretiens (Module 3 : System Design)",
+          "lectures": "Chapitre 3.14",
+          "objective": "Concevoir un pipeline haute volumétrie (Firehose, S3 Parquet/Iceberg, OpenSearch, alertes).",
+          "video_min": 0,
+          "est_min": 100,
+          "priority": "core",
+          "deliverable": "Schéma System Design complet n°2",
+          "topic_ids": ["kinesis", "opensearch", "monitoring"]
+        }
+      ]
+    },
+    {
+      "week": 15,
+      "start": "2027-02-15",
+      "end": "2027-02-21",
+      "interview_budget_min": 120,
+      "tasks": [
+        {
+          "id": "W15-I1",
+          "chapter": "4.3",
+          "module": "Module 4 : Ingénierie IA, LLM et RAG en production",
+          "title": "Embeddings : principe, dimension, similarité cosinus / produit scalaire / distance L2",
+          "resource": "Programme Entretiens (Module 4 : AI Engineering)",
+          "lectures": "Chapitre 4.3",
+          "objective": "Expliquer la normalisation L2 et le choix de la métrique de distance selon le modèle d'embedding.",
+          "video_min": 0,
+          "est_min": 60,
+          "priority": "core",
+          "deliverable": "Calculateur de similarité vectorielle en Python",
+          "topic_ids": ["genai_ml"]
+        },
+        {
+          "id": "W15-I2",
+          "chapter": "4.6",
+          "module": "Module 4 : Ingénierie IA, LLM et RAG en production",
+          "title": "Bases vectorielles : index HNSW et IVF, filtrage par métadonnées, compromis rappel / latence / coût",
+          "resource": "Programme Entretiens (Module 4 : AI Engineering)",
+          "lectures": "Chapitre 4.6",
+          "objective": "Comparer HNSW et IVF-PQ ainsi que le pré-filtrage vs post-filtrage sur pgvector et OpenSearch.",
+          "video_min": 0,
+          "est_min": 60,
+          "priority": "core",
+          "deliverable": "Fiche d'architecture OpenSearch / pgvector",
+          "topic_ids": ["opensearch", "rds_aurora", "genai_ml"]
+        }
+      ]
+    },
+    {
+      "week": 16,
+      "start": "2027-02-22",
+      "end": "2027-02-28",
+      "interview_budget_min": 120,
+      "tasks": [
+        {
+          "id": "W16-I1",
+          "chapter": "4.7",
+          "module": "Module 4 : Ingénierie IA, LLM et RAG en production",
+          "title": "Architecture RAG de bout en bout : ingestion, nettoyage, découpage (chunking), indexation, récupération, génération",
+          "resource": "Programme Entretiens (Module 4 : AI Engineering)",
+          "lectures": "Chapitre 4.7",
+          "objective": "Maîtriser le pipeline d'indexation incrémentale et de mise à jour documentaire sans doublons.",
+          "video_min": 0,
+          "est_min": 40,
+          "priority": "core",
+          "deliverable": "Architecture RAG de production",
+          "topic_ids": ["genai_ml", "s3"]
+        },
+        {
+          "id": "W16-I2",
+          "chapter": "4.8",
+          "module": "Module 4 : Ingénierie IA, LLM et RAG en production",
+          "title": "Stratégies de découpage (chunking) : taille fixe, récursif, sémantique, par structure de document",
+          "resource": "Programme Entretiens (Module 4 : AI Engineering)",
+          "lectures": "Chapitre 4.8",
+          "objective": "Choisir la taille de chunk et l'overlap adaptés aux documents techniques et tableaux Markdown.",
+          "video_min": 0,
+          "est_min": 40,
+          "priority": "core",
+          "deliverable": "Implémentation Python de chunking récursif",
+          "topic_ids": ["genai_ml"]
+        },
+        {
+          "id": "W16-I3",
+          "chapter": "4.9",
+          "module": "Module 4 : Ingénierie IA, LLM et RAG en production",
+          "title": "Recherche hybride (BM25 + vectorielle), fusion de rangs (RRF), re-ranking (cross-encoder)",
+          "resource": "Programme Entretiens (Module 4 : AI Engineering)",
+          "lectures": "Chapitre 4.9",
+          "objective": "Combiner recherche lexicale exacte et recherche sémantique via Reciprocal Rank Fusion.",
+          "video_min": 0,
+          "est_min": 40,
+          "priority": "core",
+          "deliverable": "Algorithme RRF codé en Python",
+          "topic_ids": ["opensearch", "genai_ml"]
+        }
+      ]
+    },
+    {
+      "week": 17,
+      "start": "2027-03-01",
+      "end": "2027-03-07",
+      "interview_budget_min": 120,
+      "tasks": [
+        {
+          "id": "W17-I1",
+          "chapter": "4.11",
+          "module": "Module 4 : Ingénierie IA, LLM et RAG en production",
+          "title": "Évaluation d'un système RAG : rappel@k, précision@k, fidélité (faithfulness), pertinence",
+          "resource": "Programme Entretiens (Module 4 : AI Engineering)",
+          "lectures": "Chapitre 4.11",
+          "objective": "Séparer les métriques de récupération (Retrieval) des métriques de génération (Generation).",
+          "video_min": 0,
+          "est_min": 40,
+          "priority": "core",
+          "deliverable": "Protocole d'évaluation RAG chiffré",
+          "topic_ids": ["genai_ml"]
+        },
+        {
+          "id": "W17-I2",
+          "chapter": "4.16",
+          "module": "Module 4 : Ingénierie IA, LLM et RAG en production",
+          "title": "Agents et appels d'outils (function calling / tool use) : boucles, garde-fous, gestion d'erreurs",
+          "resource": "Programme Entretiens (Module 4 : AI Engineering)",
+          "lectures": "Chapitre 4.16",
+          "objective": "Implémenter une boucle d'appel d'outils déterministe avec limite d'itérations et validation stricte.",
+          "video_min": 0,
+          "est_min": 40,
+          "priority": "core",
+          "deliverable": "Boucle d'agent avec validation Pydantic",
+          "topic_ids": ["genai_ml"]
+        },
+        {
+          "id": "W17-I3",
+          "chapter": "4.19",
+          "module": "Module 4 : Ingénierie IA, LLM et RAG en production",
+          "title": "Mise en production : latence (TTFT, tokens/s), cache sémantique, batching, coûts, quotas, fallback",
+          "resource": "Programme Entretiens (Module 4 : AI Engineering)",
+          "lectures": "Chapitre 4.19",
+          "objective": "Dimensionner les coûts de tokens et l'architecture de repli (fallback/retry) en production.",
+          "video_min": 0,
+          "est_min": 40,
+          "priority": "core",
+          "deliverable": "Calculateur de coûts et latence LLM",
+          "topic_ids": ["genai_ml", "monitoring"]
+        }
+      ]
+    },
+    {
+      "week": 18,
+      "start": "2027-03-08",
+      "end": "2027-03-14",
+      "interview_budget_min": 100,
+      "tasks": [
+        {
+          "id": "W18-I1",
+          "chapter": "4.24",
+          "module": "Module 4 : Ingénierie IA, LLM et RAG en production",
+          "title": "Cas d'architecture IA n°1 : assistant documentaire d'entreprise avec contrôle d'accès par document",
+          "resource": "Programme Entretiens (Module 4 : AI Engineering)",
+          "lectures": "Chapitre 4.24",
+          "objective": "Concevoir un RAG multi-tenant avec filtrage ACL au niveau de l'index vectoriel et masquage PII.",
+          "video_min": 0,
+          "est_min": 50,
+          "priority": "core",
+          "deliverable": "Schéma System Design RAG sécurisé (RBAC)",
+          "topic_ids": ["security_gov", "genai_ml", "opensearch"]
+        },
+        {
+          "id": "W18-I2",
+          "chapter": "5.5-5.14",
+          "module": "Module 5 : Machine Learning classique (Fiches Mémos)",
+          "title": "Fiches Mémos ML (5.5 Validation croisée, 5.7 Data Leakage, 5.8 Métriques, 5.10 GBDT, 5.14 Drift)",
+          "resource": "Programme Entretiens (Module 5 : ML)",
+          "lectures": "Chapitres 5.5, 5.7, 5.8, 5.10, 5.14",
+          "objective": "Réviser les 5 fondamentaux ML exigés en entretien hybride Data/AI Engineer.",
+          "video_min": 0,
+          "est_min": 50,
+          "priority": "core",
+          "deliverable": "Révision active des 5 fiches ML",
+          "topic_ids": ["genai_ml"]
+        }
+      ]
+    },
+    {
+      "week": 19,
+      "start": "2027-03-15",
+      "end": "2027-03-21",
+      "interview_budget_min": 80,
+      "tasks": [
+        {
+          "id": "W19-I1",
+          "chapter": "6.1-6.11",
+          "module": "Module 6 : Génie logiciel et industrialisation (Fiches Mémos)",
+          "title": "Fiches Mémos Software Engineering (6.1 Git, 6.4 Docker, 6.5 CI/CD, 6.7 Linux/Bash, 6.11 Terraform)",
+          "resource": "Programme Entretiens (Module 6 : DevOps)",
+          "lectures": "Chapitres 6.1, 6.4, 6.5, 6.7, 6.11",
+          "objective": "Consolider les réflexes d'industrialisation Docker, GitHub Actions et Terraform.",
+          "video_min": 0,
+          "est_min": 40,
+          "priority": "core",
+          "deliverable": "Révision active des 5 fiches Software Engineering",
+          "topic_ids": ["dbt_deploy_ci", "containers"]
+        },
+        {
+          "id": "W19-I2",
+          "chapter": "SIM-1",
+          "module": "Simulations d'entretiens",
+          "title": "Simulation intégrale d'entretien n°1 : Live Coding SQL (25 min) + Python (15 min)",
+          "resource": "Simulateur Entretiens",
+          "lectures": "Simulation 1",
+          "objective": "Résoudre un exercice de fenêtrage SQL et un exercice d'itérateur Python en temps limité en expliquant à voix haute.",
+          "video_min": 0,
+          "est_min": 40,
+          "priority": "core",
+          "deliverable": "Score et grille d'auto-évaluation n°1",
+          "topic_ids": ["athena", "redshift", "glue"]
+        }
+      ]
+    },
+    {
+      "week": 20,
+      "start": "2027-03-22",
+      "end": "2027-03-28",
+      "interview_budget_min": 150,
+      "tasks": [
+        {
+          "id": "W20-I1",
+          "chapter": "SIM-2",
+          "module": "Simulations d'entretiens",
+          "title": "Simulation intégrale d'entretien n°2 : System Design Data Engineering (45 min) + Debriefing (15 min)",
+          "resource": "Simulateur Entretiens",
+          "lectures": "Simulation 2",
+          "objective": "Conduire un entretien d'architecture Data de bout en bout (clarification des besoins, chiffrage, composants, pannes).",
+          "video_min": 0,
+          "est_min": 75,
+          "priority": "core",
+          "deliverable": "Planche d'architecture chronométrée",
+          "topic_ids": ["s3", "kinesis", "lakehouse_iceberg", "dbt_models"]
+        },
+        {
+          "id": "W20-I2",
+          "chapter": "SIM-3",
+          "module": "Simulations d'entretiens",
+          "title": "Simulation intégrale d'entretien n°3 : System Design AI / RAG (45 min) + Architecture Agents & Évaluation LLM (15 min)",
+          "resource": "Simulateur Entretiens",
+          "lectures": "Simulation 3",
+          "objective": "Concevoir et défendre une architecture RAG industrielle de bout en bout (chunking, recherche hybride, reranking, guardrails et coûts).",
+          "video_min": 0,
+          "est_min": 75,
+          "priority": "core",
+          "deliverable": "Grille d'évaluation technique System Design AI / RAG",
+          "topic_ids": ["genai_ml", "opensearch", "security_gov"]
+        }
+      ]
+    },
+    {
+      "week": 21,
+      "start": "2027-03-29",
+      "end": "2027-04-04",
+      "interview_budget_min": 180,
+      "tasks": [
+        {
+          "id": "W21-I1",
+          "chapter": "RESERVE-1",
+          "module": "Sprint Final CDI",
+          "title": "Entraînement intensif Live Coding SQL & Python (sujets chronométrés de niveau entretien)",
+          "resource": "Programme Entretiens (Sprint Final)",
+          "lectures": "Sprint SQL & Python",
+          "objective": "Maintenir la vitesse d'exécution sur les requêtes analytiques et la manipulation de données Python.",
+          "video_min": 0,
+          "est_min": 90,
+          "priority": "core",
+          "deliverable": "4 exercices résolus sans aide",
+          "topic_ids": ["athena", "redshift", "glue"]
+        },
+        {
+          "id": "W21-I2",
+          "chapter": "1.24-1.27",
+          "module": "Sprint Final CDI",
+          "title": "APIs REST Python (FastAPI, Pydantic, async) & Debugging de pipelines Data/IA en temps limité",
+          "resource": "Programme Entretiens (Module 1 : Python)",
+          "lectures": "Chapitres 1.24, 1.26 et 1.27",
+          "objective": "Construire un endpoint FastAPI validé par Pydantic et diagnostiquer rapidement des bugs de pipelines.",
+          "video_min": 0,
+          "est_min": 90,
+          "priority": "core",
+          "deliverable": "Exercices FastAPI / Pydantic et debugging validés",
+          "topic_ids": ["glue", "genai_ml"]
+        }
+      ]
+    },
+    {
+      "week": 22,
+      "start": "2027-04-05",
+      "end": "2027-04-11",
+      "interview_budget_min": 180,
+      "tasks": [
+        {
+          "id": "W22-I1",
+          "chapter": "RESERVE-3",
+          "module": "Sprint Final CDI",
+          "title": "Répétition générale technique (System Design Data/AI + Questions pièges SQL/Python/dbt/AWS)",
+          "resource": "Programme Entretiens (Sprint Final)",
+          "lectures": "Répétition Générale Technique",
+          "objective": "Valider la maîtrise technique sur l'ensemble du programme avant la fin du contrat d'alternance.",
+          "video_min": 0,
+          "est_min": 90,
+          "priority": "core",
+          "deliverable": "Bilan de préparation technique finale",
+          "topic_ids": []
+        },
+        {
+          "id": "W22-I2",
+          "chapter": "RESERVE-4",
+          "module": "Sprint Final CDI",
+          "title": "Revue des dernières erreurs du journal (Spaced Repetition) et préparation des entretiens planifiés",
+          "resource": "Programme Entretiens (Sprint Final)",
+          "lectures": "Revue Finale",
+          "objective": "Purger les cartes de répétition espacée et les erreurs d'examens blancs restantes.",
+          "video_min": 0,
+          "est_min": 90,
+          "priority": "core",
+          "deliverable": "Feuille de route CDI",
+          "topic_ids": []
+        }
+      ]
+    }
+  ]
+}

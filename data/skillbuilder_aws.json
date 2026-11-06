@@ -1,0 +1,205 @@
+[
+ {
+  "exam": "CLF-C02",
+  "title": "Exam Prep Summary: AWS Certified Cloud Practitioner (CLF-C02 - English)",
+  "type": "Préparation à l'examen",
+  "minutes": 5,
+  "usage": "optionnel"
+ },
+ {
+  "exam": "CLF-C02",
+  "title": "Exam Prep Overview: AWS Certified Cloud Practitioner (CLF-C02 - English)",
+  "type": "Préparation à l'examen",
+  "minutes": 20,
+  "usage": "indispensable"
+ },
+ {
+  "exam": "CLF-C02",
+  "title": "Exam Prep Plan Overview: AWS Certified Cloud Practitioner (CLF-C02 - English)",
+  "type": "Préparation à l'examen",
+  "minutes": 15,
+  "usage": "optionnel"
+ },
+ {
+  "exam": "CLF-C02",
+  "title": "Domain 1 Review: AWS Certified Cloud Practitioner (CLF-C02 - English)",
+  "type": "Préparation à l'examen",
+  "minutes": 65,
+  "usage": "ciblé : seulement si le domaine est faible"
+ },
+ {
+  "exam": "CLF-C02",
+  "title": "Domain 2 Review: AWS Certified Cloud Practitioner (CLF-C02 - English)",
+  "type": "Préparation à l'examen",
+  "minutes": 65,
+  "usage": "ciblé : seulement si le domaine est faible"
+ },
+ {
+  "exam": "CLF-C02",
+  "title": "Domain 3 Review: AWS Certified Cloud Practitioner (CLF-C02 - English)",
+  "type": "Préparation à l'examen",
+  "minutes": 65,
+  "usage": "ciblé : seulement si le domaine est faible"
+ },
+ {
+  "exam": "CLF-C02",
+  "title": "Domain 4 Review: AWS Certified Cloud Practitioner (CLF-C02 - English)",
+  "type": "Préparation à l'examen",
+  "minutes": 65,
+  "usage": "ciblé : seulement si le domaine est faible"
+ },
+ {
+  "exam": "CLF-C02",
+  "title": "Official Practice Question Set: AWS Certified Cloud Practitioner (CLF-C02 - English)",
+  "type": "Préparation à l'examen",
+  "minutes": 30,
+  "usage": "indispensable"
+ },
+ {
+  "exam": "CLF-C02",
+  "title": "Exam Prep Plan: AWS Certified Cloud Practitioner (CLF-C02 - English) [plan d'apprentissage, 19 formations]",
+  "type": "Plan d'apprentissage",
+  "minutes": 1940,
+  "usage": "hors budget : redondant avec le cours Udemy"
+ },
+ {
+  "exam": "CLF-C02",
+  "title": "AWS Cloud Practitioner Essentials",
+  "type": "Cours numérique",
+  "minutes": 765,
+  "usage": "hors budget : redondant avec le cours Udemy"
+ },
+ {
+  "exam": "CLF-C02",
+  "title": "AWS Cloud Quest: Cloud Practitioner",
+  "type": "Jeu de rôle pratique",
+  "minutes": 720,
+  "usage": "hors budget : facultatif"
+ },
+ {
+  "exam": "CLF-C02",
+  "title": "Meeting Simulator: Cloud Practitioner [plan d'apprentissage, 7 formations]",
+  "type": "Plan d'apprentissage",
+  "minutes": 420,
+  "usage": "hors budget : facultatif"
+ },
+ {
+  "exam": "DEA-C01",
+  "title": "Exam Prep Overview: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
+  "type": "Préparation à l'examen",
+  "minutes": 15,
+  "usage": "indispensable"
+ },
+ {
+  "exam": "DEA-C01",
+  "title": "Exam Prep Plan Overview: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
+  "type": "Préparation à l'examen",
+  "minutes": 15,
+  "usage": "indispensable"
+ },
+ {
+  "exam": "DEA-C01",
+  "title": "Domain 1 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
+  "type": "Préparation à l'examen",
+  "minutes": 80,
+  "usage": "indispensable (ingestion et transformation, 34 %)"
+ },
+ {
+  "exam": "DEA-C01",
+  "title": "Domain 2 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
+  "type": "Préparation à l'examen",
+  "minutes": 80,
+  "usage": "indispensable (gestion des stockages, 26 %)"
+ },
+ {
+  "exam": "DEA-C01",
+  "title": "Domain 3 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
+  "type": "Préparation à l'examen",
+  "minutes": 80,
+  "usage": "indispensable (opérations et support, 22 %)"
+ },
+ {
+  "exam": "DEA-C01",
+  "title": "Domain 4 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
+  "type": "Préparation à l'examen",
+  "minutes": 80,
+  "usage": "indispensable (sécurité et gouvernance, 18 %)"
+ },
+ {
+  "exam": "DEA-C01",
+  "title": "Official Practice Question Set: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
+  "type": "Préparation à l'examen",
+  "minutes": 40,
+  "usage": "indispensable"
+ },
+ {
+  "exam": "DEA-C01",
+  "title": "Exam Prep Plan: AWS Certified Data Engineer - Associate (DEA-C01 - English) [plan d'apprentissage, 18 formations]",
+  "type": "Plan d'apprentissage",
+  "minutes": 1035,
+  "usage": "hors budget : recoupe les items listés séparément (composition exacte à vérifier dans Skill Builder)"
+ },
+ {
+  "exam": "DEA-C01",
+  "title": "AWS Data Streaming Demonstrated",
+  "type": "Microcertification",
+  "minutes": 140,
+  "usage": "bonus (semaine 6)"
+ },
+ {
+  "exam": "DEA-C01",
+  "title": "AWS Data Lakehouse Demonstrated",
+  "type": "Microcertification",
+  "minutes": 110,
+  "usage": "bonus (semaine 7)"
+ },
+ {
+  "exam": "DEA-C01",
+  "title": "AWS Data Visualization Demonstrated",
+  "type": "Microcertification",
+  "minutes": 120,
+  "usage": "facultatif"
+ },
+ {
+  "exam": "DEA-C01",
+  "title": "AWS Databases for Agentic AI Demonstrated",
+  "type": "Microcertification",
+  "minutes": 140,
+  "usage": "facultatif"
+ },
+ {
+  "exam": "DEA-C01",
+  "title": "Data Engineering on AWS Learning Plans (includes labs) [5 formations, laboratoires inclus]",
+  "type": "Plan d'apprentissage",
+  "minutes": 1220,
+  "usage": "facultatif : à utiliser seulement s'il reste du temps, après le 1er février"
+ },
+ {
+  "exam": "AIF-C01 (hors périmètre actuel)",
+  "title": "Exam Prep Plan: AWS Certified AI Practitioner (AIF-C01 - English) [19 formations]",
+  "type": "Plan d'apprentissage",
+  "minutes": 1370,
+  "usage": "hors périmètre : certification future possible"
+ },
+ {
+  "exam": "AIF-C01 (hors périmètre actuel)",
+  "title": "AWS Artificial Intelligence Practitioner Learning Plan [8 formations]",
+  "type": "Plan d'apprentissage",
+  "minutes": 480,
+  "usage": "hors périmètre"
+ },
+ {
+  "exam": "AIF-C01 (hors périmètre actuel)",
+  "title": "Official Practice Question Set: AWS Certified AI Practitioner (AIF-C01 - English)",
+  "type": "Préparation à l'examen",
+  "minutes": 90,
+  "usage": "hors périmètre"
+ },
+ {
+  "exam": "AIF-C01 (hors périmètre actuel)",
+  "title": "Domain 1 à 5 Reviews: AWS Certified AI Practitioner (AIF-C01 - English)",
+  "type": "Préparation à l'examen",
+  "minutes": 450,
+  "usage": "hors périmètre (5 revues de 1 h 30)"
+ }
+]
