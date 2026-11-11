@@ -18,19 +18,25 @@ describe('programme d\'écoute des podcasts', () => {
     expect(plan.map((p) => [p.week, p.day, p.listen])).toEqual([
       [1, 1, 1],
       [1, 4, 2],
-      [3, null, 3],
+      [5, null, 3],
     ]);
   });
 
   it('place la veille d\'examen le jeudi et marque les rappels au-delà de 3 comme bonus', () => {
     const p12 = parseScheduleDays(episodes.find((e) => e.id === 'CLF-AUDIO-12')!);
     expect(p12.map((p) => [p.week, p.day, p.listen])).toEqual([
-      [2, 6, 1],
-      [3, 1, 2],
-      [3, 3, 3],
+      [4, 6, 1],
+      [5, 1, 2],
+      [5, 3, 3],
     ]);
     const p05 = parseScheduleDays(episodes.find((e) => e.id === 'DBT-AUDIO-05')!);
-    expect(p05[3]).toMatchObject({ week: 9, day: null, listen: 4, bonus: true });
+    expect(p05.map((p) => [p.week, p.day, p.listen])).toEqual([
+      [6, 4, 1],
+      [7, 0, 2],
+      [11, null, 3],
+    ]);
+    const p16 = parseScheduleDays(episodes.find((e) => e.id === 'DEA-AUDIO-16')!);
+    expect(p16[3]).toMatchObject({ week: 20, day: 3, listen: 4, bonus: true });
   });
 
   it('chaque épisode du catalogue a au moins 3 écoutes prévues', () => {
@@ -60,5 +66,25 @@ describe('programme d\'écoute des podcasts', () => {
     expect(s.weekTotal).toBe(14);
     expect(s.goalTotal).toBe(18);
     expect(s.later.length).toBe(4);
+  });
+});
+
+describe('programme d\'écoute aligné sur le planning (D-25)', () => {
+  it('écoute 1 de chaque épisode dans la semaine de la tâche qui le cite', async () => {
+    const planning = (await import('../../data/planning_hebdo.json')).default as unknown as {
+      weeks: Array<{ week: number; tasks: Array<{ type: string; title: string }> }>;
+    };
+    const firstWeek = new Map<string, number>();
+    for (const w of planning.weeks) {
+      for (const t of w.tasks) {
+        if ((t.type === 'podcast' || t.type === 'dbt_learn') && t.title.includes('Podcasts')) {
+          for (const id of extractEpisodeIds(t.title)) if (!firstWeek.has(id)) firstWeek.set(id, w.week);
+        }
+      }
+    }
+    for (const ep of episodes) {
+      expect(firstWeek.get(ep.id), ep.id).toBe(ep.primary_week);
+      expect(parseScheduleDays(ep)[0].week, ep.id).toBe(ep.primary_week);
+    }
   });
 });

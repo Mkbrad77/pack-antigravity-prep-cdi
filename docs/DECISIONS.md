@@ -267,3 +267,17 @@
 - **2e essai standard 30 jours :** l'essai Cortex (S14) expire vers le 10 mars et l'essai 120 jours de Fred vers le 28 mars. Nouvelle tâche W20-C3 (15 min, samedi 27 mars) pour créer un 2e essai standard qui sert au Quickstart Agents IA de la S21. Charge S20 : 285 min.
 - **Page Snowflake :** semaines de 4 ressources du parcours dbt alignées sur le planning (DBT-LRN-07 en S6, 09 en S7, 11 en S8, 13 en S9).
 - **Remédiation dbt :** comportement de D-23 conservé (plus de séance de remédiation créée, report de l'examen d'une semaine inchangé).
+
+## 25. Décision D-25 : Planning recalé sur les vraies durées Udemy et nouvelles dates d'examen
+
+- **Date :** 11 novembre 2026, validé par Auren après l'audit des 5 cours Udemy.
+- **Constat de l'audit :** les plages de leçons du planning ne correspondaient ni aux vraies durées (Merico leçons 1 à 120 : 942 min de vidéo pour 316 prévues) ni à la vraie numérotation (Maarek 317 leçons et non 299, Nikolai 230 et non 266, Toth 180 et non 164). Les titres annonçaient d'autres sujets que les leçons (Maarek surtout). Les tâches mixtes Toth + Weigel ne cochaient que Toth.
+- **Dates retenues :** CLF-C02 le vendredi 11/12/2026 (S5), dbt le vendredi 22/01/2027 (S11), DEA-C01 le vendredi 26/03/2027 (S20). Le scénario intermédiaire (dbt au 15/01, DEA au 19/03) ne tenait pas : il manquait environ 8 h côté dbt une fois les leçons réparties semaine par semaine. Bornes et dates par défaut dans `src/domain/phases.ts`.
+- **Progression réelle :** Merico leçons 1 à 35 terminées (tâche W01-C1 et champ `done` du catalogue), tous les autres cours à 0 %.
+- **Durées :** vidéo x coefficient du cours / vitesse de lecture, plus 10 à 15 min par quiz et 20 à 30 min par exercice (`meta.playback_speed` du catalogue : 1,25x pour Merico, Toth et Weigel). La page Udemy applique la même vitesse, et les exercices « exo » du catalogue sont enfin comptés.
+- **Bonus :** blocs facultatifs ou hors examen de Toth, Weigel (bases déjà vues chez Toth), Maarek, et tout le cours Nikolai. Les examens blancs DEA viennent du cours séparé de tests d'entraînement (tests 1 à 4 en S18 et S19). Seuls 489 min de bonus trouvent une place (S4, S5, S10, S17 à S20) ; environ 53 h de bonus ne sont pas planifiées (Nikolai 37 h, Weigel bases 6 h, Toth 5 h 30, Maarek 4 h), ainsi que les labs Skill Builder DEA, le test d'entraînement 5, le Quickstart dbt Mesh et le simulateur CLF de S2.
+- **Podcasts :** l'écoute 1 de chaque épisode tombe la semaine de la tâche qui le cite ; les épisodes DEA suivent désormais l'ordre réel des blocs Maarek.
+- **Conséquence importante :** presque toutes les semaines de S1 à S20 sont pleines (11 h, 6 h à Noël). Une semaine ratée se reporte donc sur la réserve S21 et S22, après les examens.
+- **Données :** migration v9 (dates d'examen par défaut remplacées si elles n'avaient pas été modifiées, états de tâches remis à zéro sauf entretiens et W01-C4 à W01-C7, W01-C1 marquée faite, progression Udemy réinitialisée sur Merico 1 à 35).
+- **Moteur :** les scénarios (score blanc faible, échec, fatigue) calculent les semaines et dates à partir des tâches d'examen et des réglages, au lieu d'identifiants et de dates figés.
+- **Contrôle :** `tests/unit/realDurationsPlan.test.ts` (examens en S5, S11, S20 ; chaque leçon obligatoire couverte avant son examen ; leçons existantes uniquement ; minutes recalculées ; plafonds).

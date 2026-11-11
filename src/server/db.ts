@@ -18,6 +18,7 @@ import {
   TaskHistoryEntry,
   TaskStateRow,
 } from '../domain/types';
+import { DEFAULT_EXAM_DATES } from '../domain/phases';
 import { DEFAULT_READINESS_RULES } from '../domain/readiness';
 
 export interface StaticDatasetBundle {
@@ -108,11 +109,7 @@ export function getDefaultSettings(catalogue: CatalogueData): AppSettings {
     min_compressed_minutes: 15,
     max_compressed_minutes: 30,
     time_factors: { ...catalogue.meta.time_factors },
-    exam_dates: {
-      'CLF-C02': '2026-11-27',
-      DBT: '2027-01-08',
-      'DEA-C01': '2027-03-19',
-    },
+    exam_dates: { ...DEFAULT_EXAM_DATES },
     readiness_rules: { ...DEFAULT_READINESS_RULES },
     last_backup_at: null,
     active_week_override: null,
@@ -542,6 +539,72 @@ export class LocalSqliteStore {
         this.db
           .prepare('INSERT INTO schema_migrations (version, name, applied_at) VALUES (?, ?, ?)')
           .run(8, 'v8_real_calendar_date', new Date().toISOString());
+        this.db.exec('COMMIT;');
+      } catch (err) {
+        this.db.exec('ROLLBACK;');
+        throw err;
+      }
+    }
+
+    const v9Applied = this.db
+      .prepare('SELECT version FROM schema_migrations WHERE version = 9')
+      .get() as { version: number } | undefined;
+
+    if (!v9Applied) {
+      this.db.exec('BEGIN IMMEDIATE;');
+      try {
+        // D-25 : planning recalé sur les vraies durées Udemy et nouvelles dates d'examen.
+        // 1. Dates d'examen : on ne remplace que les anciennes valeurs par défaut, jamais un choix manuel.
+        const settingsRow = this.db
+          .prepare('SELECT value_json FROM settings WHERE key = ?')
+          .get('app_settings') as { value_json: string } | undefined;
+        if (settingsRow) {
+          try {
+            const parsed = JSON.parse(settingsRow.value_json) as AppSettings;
+            const old: Record<string, string> = { 'CLF-C02': '2026-11-27', DBT: '2027-01-08', 'DEA-C01': '2027-03-19' };
+            const next = { ...parsed.exam_dates };
+            for (const code of Object.keys(old) as Array<keyof typeof next>) {
+              if (!next[code] || next[code] === old[code]) next[code] = DEFAULT_EXAM_DATES[code];
+            }
+            parsed.exam_dates = next;
+            this.db
+              .prepare('UPDATE settings SET value_json = ?, updated_at = ? WHERE key = ?')
+              .run(JSON.stringify(parsed), new Date().toISOString(), 'app_settings');
+          } catch {
+            // ignore parse error
+          }
+        }
+
+        // 2. Les tâches ont changé de contenu ou de semaine : on ne garde que les états encore valides
+        //    (entretiens et tâches inchangées de la semaine 1).
+        this.db.exec(`
+          DELETE FROM task_states
+          WHERE task_id NOT LIKE '%-I%'
+            AND task_id NOT IN ('W01-C4', 'W01-C5', 'W01-C6', 'W01-C7');
+        `);
+
+        // 3. Progression réelle au 11/11/2026 : Merico leçons 1 à 35 terminées, rien ailleurs.
+        this.db.exec('DELETE FROM lesson_progress;');
+        const now = new Date().toISOString();
+        const seed = this.db.prepare(
+          'INSERT OR REPLACE INTO lesson_progress (course_key, item_index, done, updated_at) VALUES (?, ?, ?, ?)'
+        );
+        for (const course of this.staticData.catalogue.udemy_courses) {
+          for (const item of course.items) {
+            if (item.done) seed.run(course.key, item.i, 1, now);
+          }
+        }
+        this.db
+          .prepare(`
+            INSERT OR REPLACE INTO task_states
+            (task_id, status, target_week, custom_duration_min, completed_at, notes, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+          `)
+          .run('W01-C1', 'done', 1, null, now, 'Leçons Merico 1 à 35 déjà faites (D-25)', now);
+
+        this.db
+          .prepare('INSERT INTO schema_migrations (version, name, applied_at) VALUES (?, ?, ?)')
+          .run(9, 'v9_real_udemy_durations_new_exam_dates', now);
         this.db.exec('COMMIT;');
       } catch (err) {
         this.db.exec('ROLLBACK;');

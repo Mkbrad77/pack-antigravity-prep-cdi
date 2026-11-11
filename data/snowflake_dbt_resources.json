@@ -47,7 +47,7 @@
       "credits_usd": "Crédits d'essai standard Snowflake (sans carte bancaire)",
       "url": "https://signup.snowflake.com/",
       "recommended_week": 20,
-      "activation_advice": "À créer le samedi 27 mars 2027 (tâche W20-C3), juste avant l'expiration de l'essai 120 jours de Fred. Il sert au Quickstart Agents IA de la semaine 21. Si Snowflake refuse ta première adresse, utilise une autre adresse e-mail. Choisis AWS US West (Oregon) pour avoir accès à Cortex.",
+      "activation_advice": "À créer le samedi 27 mars 2027 (tâche W20-C3), juste avant l'expiration de l'essai 120 jours de Fred. Il sert aux Quickstarts de la semaine 21, après l'examen DEA-C01 du 26 mars. Si Snowflake refuse ta première adresse, utilise une autre adresse e-mail. Choisis AWS US West (Oregon) pour avoir accès à Cortex.",
       "priority": "core"
     }
   ],
@@ -171,7 +171,7 @@
       "title": "Refactoring SQL for Modularity",
       "url": "https://learn.getdbt.com/courses/refactoring-sql-for-modularity",
       "est_min": 75,
-      "recommended_week": 5,
+      "recommended_week": 8,
       "priority": "core",
       "description": "Transformation de requêtes SQL monolithiques héritées en architecture modulaire staging / intermediate / marts (sujet majeur à l'examen)."
     },
@@ -201,7 +201,7 @@
       "title": "Advanced Testing (Tests génériques custom, Unit Tests, store_failures)",
       "url": "https://learn.getdbt.com/courses/advanced-testing",
       "est_min": 90,
-      "recommended_week": 6,
+      "recommended_week": 9,
       "priority": "core",
       "description": "Sujet à très fort coefficient à l'examen : tests singuliers vs génériques, severity (warn/error), where, store_failures, tests unitaires YAML."
     },
@@ -221,7 +221,7 @@
       "title": "Advanced Deployment + Capsules State, Retry, Clone, Grants & Python Models",
       "url": "https://learn.getdbt.com/courses/advanced-deployment",
       "est_min": 90,
-      "recommended_week": 7,
+      "recommended_week": 9,
       "priority": "core",
       "description": "Slim CI (state:modified+, --defer), dbt retry, dbt clone, configuration des grants SQL et modèles Python Snowpark (.py)."
     },
@@ -241,7 +241,7 @@
       "title": "dbt Developer Exam Study Guide + Pro Tips for dbt Certifications",
       "url": "https://learn.getdbt.com/courses/analytics-engineering-exam-study-guide",
       "est_min": 60,
-      "recommended_week": 8,
+      "recommended_week": 11,
       "priority": "core",
       "description": "Guide officiel d'étude de l'examen dbt Analytics Engineering + méthodologie de réponse aux questions (QCM, DOMC, fill-in-the-blank)."
     },
@@ -261,7 +261,7 @@
       "title": "Qanalabs : dbt Developer Certification Practice Questions",
       "url": "https://www.qanalabs.com/courses/dbt-developer",
       "est_min": 90,
-      "recommended_week": 9,
+      "recommended_week": 11,
       "priority": "core",
       "description": "Questions d'entraînement complémentaires recommandées par la communauté dbt Devoteam avant le passage de l'examen."
     },
@@ -284,7 +284,7 @@
       "title": "Quickstart for dbt Cloud and Snowflake (Guide officiel dbt)",
       "url": "https://docs.getdbt.com/guides/snowflake?step=1",
       "est_min": 60,
-      "recommended_week": 4,
+      "recommended_week": 6,
       "priority": "core",
       "description": "Premier lab pratique obligatoire : connecte dbt à ton compte Snowflake Free Trial 120j, crée tes premiers modèles staging/marts, tests et documentation."
     },
@@ -295,7 +295,7 @@
       "title": "Accelerating Data Teams with Snowflake and dbt Cloud Hands-On Lab",
       "url": "https://quickstarts.snowflake.com/guide/accelerating_data_teams_with_snowflake_and_dbt_cloud_hands_on_lab/index.html?index=..%2F..index#0",
       "est_min": 60,
-      "recommended_week": 5,
+      "recommended_week": 7,
       "priority": "core",
       "description": "Lab officiel Snowflake + dbt : gestion des environnements dev/prod, warehousings dédiés Snowflake, macros, tests de qualité et déploiement."
     },
@@ -306,7 +306,7 @@
       "title": "Data Engineering with Snowpark Python and dbt",
       "url": "https://quickstarts.snowflake.com/guide/data_engineering_with_snowpark_python_and_dbt/index.html#0",
       "est_min": 60,
-      "recommended_week": 6,
+      "recommended_week": 8,
       "priority": "core",
       "description": "Combinaison de modèles SQL et de modèles Python Snowpark (.py) dans un même DAG dbt exécuté nativement dans Snowflake."
     },
@@ -339,7 +339,7 @@
       "title": "Leverage dbt Cloud to Generate ML-ready Pipelines using Snowpark Python",
       "url": "https://quickstarts.snowflake.com/guide/leverage_dbt_cloud_to_generate_ml_ready_pipelines_using_snowpark_python/index.html?index=..%2F..index#0",
       "est_min": 60,
-      "recommended_week": 20,
+      "recommended_week": 21,
       "priority": "core",
       "description": "Transition idéale après l'examen dbt : préparation de features ML avec dbt et entraînement Snowpark Python."
     }
@@ -363,7 +363,7 @@
       "title": "Getting Started with ML Development in Snowflake (Snowpark ML)",
       "url": "https://quickstarts.snowflake.com/guide/intro_to_machine_learning_with_snowpark_ml_for_python/",
       "est_min": 45,
-      "recommended_week": 7,
+      "recommended_week": 4,
       "priority": "core",
       "description": "Développement d'un modèle ML dans Snowflake Notebooks : prétraitement distribué, feature engineering et entraînement avec snowflake.ml.modeling."
     },
@@ -374,7 +374,7 @@
       "title": "Build an End-to-End ML Model in Snowflake",
       "url": "https://quickstarts.snowflake.com/guide/end-to-end-ml-workflow/index.html?index=..%2F..index#1",
       "est_min": 60,
-      "recommended_week": 8,
+      "recommended_week": 5,
       "priority": "core",
       "description": "Construction, déploiement et gestion d'un modèle XGBoost en production, avec introduction complète aux capacités MLOps de Snowflake."
     },
@@ -506,7 +506,7 @@
       "title": "Distributed Multi-Node and Multi-GPU Audio Transcription with Snowflake ML",
       "url": "https://quickstarts.snowflake.com/guide/getting_started_with_distributed_multi_node_multi_gpu_audio_transcription_with_snowflake_ml_container_runtime/index.html?index=..%2F..index#5",
       "est_min": 60,
-      "recommended_week": 20,
+      "recommended_week": 19,
       "priority": "core",
       "description": "Transcription audio distribuée multi-nœuds et multi-GPU sur Container Runtime avec le modèle Whisper large-v3 d'OpenAI depuis Hugging Face."
     },
@@ -517,7 +517,7 @@
       "title": "Getting Started : Data Engineering with Snowflake & Snowpark Python",
       "url": "https://quickstarts.snowflake.com/guide/data_engineering_with_snowpark_python_intro/index.html?index=..%2F..index#0",
       "est_min": 60,
-      "recommended_week": 19,
+      "recommended_week": 20,
       "priority": "core",
       "description": "Pipeline Data Engineering de bout en bout sur Snowflake avec Snowpark Python, Streams, Tasks et Dynamic Tables."
     },

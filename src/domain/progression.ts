@@ -26,6 +26,8 @@ export interface BlockProgressStats {
 
 export interface CourseProgressStats {
   courseKey: CourseKey;
+  /** Vitesse de lecture retenue (1 = normale). */
+  playbackSpeed: number;
   title: string;
   instructor: string;
   role: string;
@@ -64,16 +66,19 @@ export function computeItemEstimatedMinutes(
   courseKey: CourseKey,
   timeFactors: Record<CourseKey, number>,
   quizMinutes: Record<CourseKey, number>,
-  exerciseMinutes: Record<CourseKey, number>
+  exerciseMinutes: Record<CourseKey, number>,
+  playbackSpeed: number = 1
 ): number {
-  const factor = timeFactors[courseKey] ?? 1.2;
-  if (item.type === 'quiz') {
+  const factor = (timeFactors[courseKey] ?? 1.2) / (playbackSpeed > 0 ? playbackSpeed : 1);
+  const type = item.type as string;
+  if (type === 'quiz') {
     return quizMinutes[courseKey] ?? 15;
   }
-  if (item.type === 'ex') {
+  // Le catalogue note les exercices « exo » ; « ex » reste accepté.
+  if (type === 'ex' || type === 'exo') {
     return exerciseMinutes[courseKey] ?? 20;
   }
-  if (item.type === 'exam') {
+  if (type === 'exam') {
     return item.minutes > 0 ? Math.round(item.minutes * factor) : 60;
   }
   const baseMin = Math.max(0, item.minutes || 0);
@@ -88,7 +93,8 @@ export function computeCourseProgress(
   lessonDoneMap: Record<string, boolean>,
   timeFactors: Record<CourseKey, number>,
   quizMinutes: Record<CourseKey, number>,
-  exerciseMinutes: Record<CourseKey, number>
+  exerciseMinutes: Record<CourseKey, number>,
+  playbackSpeed: number = 1
 ): CourseProgressStats {
   const factor = timeFactors[course.key] ?? 1.2;
 
@@ -139,7 +145,8 @@ export function computeCourseProgress(
       course.key,
       timeFactors,
       quizMinutes,
-      exerciseMinutes
+      exerciseMinutes,
+      playbackSpeed
     );
 
     totalItems += 1;
@@ -225,6 +232,7 @@ export function computeCourseProgress(
     instructor: course.instructor,
     role: course.role,
     timeFactor: factor,
+    playbackSpeed,
     totalItems,
     doneItems,
     videoMinutesTotal: Math.round(videoMinutesTotal),
@@ -266,7 +274,8 @@ export function computeAllCertificationsProgress(
       lessonDoneMap,
       timeFactors,
       quizMinutes,
-      exerciseMinutes
+      exerciseMinutes,
+      catalogue.meta.playback_speed?.[c.key] ?? 1
     );
   }
 

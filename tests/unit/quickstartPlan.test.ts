@@ -45,11 +45,12 @@ describe('Quickstarts Snowflake et dbt en continu (D-23)', () => {
   });
 
   it('indique le bon compte Snowflake dans le guide selon la semaine', () => {
-    const step = (id: string) => getTaskActionGuide(tasks.find((t) => t.id === id)!).steps[1];
-    expect(step('W01-C6')).toContain('essai Snowflake standard 30 jours');
-    expect(step('W06-C3')).toContain('120 jours');
-    expect(step('W15-C3')).toContain('Cortex Code');
-    expect(step('W21-C1')).toContain('2e essai Snowflake standard');
+    const qs = (week: number) => tasks.find((t) => t.original_week === week && /quickstart/i.test(t.type) && t.url && !/signup/.test(t.url))!;
+    const step = (week: number) => getTaskActionGuide(qs(week)).steps[1];
+    expect(step(1)).toContain('essai Snowflake standard 30 jours');
+    expect(step(6)).toContain('120 jours');
+    expect(step(15)).toContain('Cortex Code');
+    expect(step(21)).toContain('2e essai Snowflake standard');
   });
 
   it('aligne les semaines de la page Snowflake sur le planning', () => {

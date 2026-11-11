@@ -86,7 +86,7 @@ describe('API en mode cloud (meme code metier, contenu embarque)', () => {
   const call = (method: string, url: string, body: Record<string, unknown> = {}) =>
     handleApiRequest(store, rt, method, url, async () => body);
 
-  it('GET /api/state : depart a 0 %, seuls les audios presents dans R2 sont disponibles', async () => {
+  it('GET /api/state : seule la tache W01-C1 (Merico 1 a 35) est faite, seuls les audios presents dans R2 sont disponibles', async () => {
     const res = await call('GET', '/api/state');
     expect(res.status).toBe(200);
     const state = res.payload as {
@@ -97,7 +97,7 @@ describe('API en mode cloud (meme code metier, contenu embarque)', () => {
     };
     expect(state.runtimeMode).toBe('cloud');
     expect(state.podcasts.filter((p) => p.file_exists).map((p) => p.id).sort()).toEqual(['CLF-AUDIO-01', 'DBT-AUDIO-03']);
-    expect(state.tasks.every((t) => t.status !== 'done')).toBe(true);
+    expect(state.tasks.filter((t) => t.status === 'done').map((t) => (t as unknown as { id: string }).id)).toEqual(['W01-C1']);
     expect(state.settings.simulated_today).toBe('');
     expect(state.settings.active_week_override).toBeNull();
   });

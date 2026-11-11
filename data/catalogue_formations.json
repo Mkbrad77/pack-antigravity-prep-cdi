@@ -5,7 +5,8 @@
   "notes": [
    "Les durées sont celles affichées par Udemy (minutes de vidéo). Le temps réel d'étude est estimé avec un coefficient par cours.",
    "L'en-tête Udemy peut afficher un nombre d'éléments différent de celui compté ici (ex. cours Toth : 55 sur 196 affiché, 56 sur 206 comptés). Les listes de leçons sont complètes (numérotation sans trou).",
-   "Les contenus des cours sont protégés : l'application ne doit pas les reproduire, seulement les référencer (cours, numéro de leçon, titre)."
+   "Les contenus des cours sont protégés : l'application ne doit pas les reproduire, seulement les référencer (cours, numéro de leçon, titre).",
+   "Progression réelle au 11/11/2026 : Merico leçons 1 à 35 terminées (champ done). Vitesse de lecture retenue : 1,25x pour Merico, Toth et Weigel (champ playback_speed), appliquée aux durées vidéo estimées."
   ],
   "time_factors": {
    "merico": 1.15,
@@ -27,6 +28,13 @@
    "nikolai": 20,
    "toth": 30,
    "weigel": 30
+  },
+  "playback_speed": {
+   "merico": 1.25,
+   "toth": 1.25,
+   "weigel": 1.25,
+   "maarek": 1.0,
+   "nikolai": 1.0
   }
  },
  "udemy_courses": [
@@ -3754,13 +3762,13 @@
    "instructor": "Amadou Merico",
    "lang": "fr",
    "role": "CLF-C02 : cours principal",
-   "header_progress": "0 sur 237 terminés",
+   "header_progress": "35 sur 210 terminés",
    "platform": "Udemy",
    "stats": {
     "items": 237,
-    "done_items": 0,
+    "done_items": 38,
     "minutes_total": 1512,
-    "minutes_remaining": 1512
+    "minutes_remaining": 1259
    },
    "blocks": [
     {
@@ -3771,7 +3779,7 @@
      "priority": "indispensable",
      "items": 26,
      "minutes_total": 144,
-     "minutes_remaining": 144
+     "minutes_remaining": 0
     },
     {
      "id": "M02",
@@ -3781,7 +3789,7 @@
      "priority": "indispensable",
      "items": 41,
      "minutes_total": 340,
-     "minutes_remaining": 340
+     "minutes_remaining": 231
     },
     {
      "id": "M03",
@@ -3931,7 +3939,7 @@
      "title": "1. A propos de la certification",
      "type": "lec",
      "minutes": 3,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -3941,7 +3949,7 @@
      "title": "2. A propos du cours",
      "type": "lec",
      "minutes": 1,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -3951,7 +3959,7 @@
      "title": "3. Les 3 règles pour réussir la certification",
      "type": "lec",
      "minutes": 3,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -3961,7 +3969,7 @@
      "title": "Quiz 1 : Quiz Avant de commencer",
      "type": "quiz",
      "minutes": 0,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -3971,7 +3979,7 @@
      "title": "4. [Facultatif] Slides du cours",
      "type": "lec",
      "minutes": 1,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -3981,7 +3989,7 @@
      "title": "5. Le Cloud Computing",
      "type": "lec",
      "minutes": 10,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -3991,7 +3999,7 @@
      "title": "6. Modèles et types de Cloud",
      "type": "lec",
      "minutes": 10,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -4001,7 +4009,7 @@
      "title": "7. Les avantages du Cloud",
      "type": "lec",
      "minutes": 8,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -4011,7 +4019,7 @@
      "title": "Quiz 2 : Quiz Le Cloud Computing",
      "type": "quiz",
      "minutes": 0,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -4021,7 +4029,7 @@
      "title": "8. Votre avis sur le cours est précieux !",
      "type": "lec",
      "minutes": 1,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -4031,7 +4039,7 @@
      "title": "9. Présentation d'AWS (Amazon Web Services)",
      "type": "lec",
      "minutes": 2,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -4041,7 +4049,7 @@
      "title": "10. L'infrastructure globale",
      "type": "lec",
      "minutes": 9,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -4051,7 +4059,7 @@
      "title": "11. Anatomie d'une région",
      "type": "lec",
      "minutes": 7,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -4061,7 +4069,7 @@
      "title": "12. Critères choix région",
      "type": "lec",
      "minutes": 7,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -4071,7 +4079,7 @@
      "title": "13. Créer son compte AWS",
      "type": "lec",
      "minutes": 3,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -4081,7 +4089,7 @@
      "title": "14. [Lab] Créer son compte AWS",
      "type": "lec",
      "minutes": 12,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": true
     },
@@ -4091,7 +4099,7 @@
      "title": "15. Accéder aux services AWS",
      "type": "lec",
      "minutes": 6,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -4101,7 +4109,7 @@
      "title": "16. [Lab] Console AWS",
      "type": "lec",
      "minutes": 9,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": true
     },
@@ -4111,7 +4119,7 @@
      "title": "17. [Lab] Activer le MFA (Multi-factor Authentication)",
      "type": "lec",
      "minutes": 9,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": true
     },
@@ -4121,7 +4129,7 @@
      "title": "18. [Lab] Créer 1er utilisateur IAM",
      "type": "lec",
      "minutes": 11,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": true
     },
@@ -4131,7 +4139,7 @@
      "title": "19. [Lab] AWS CLI - Partie 1 : Introduction",
      "type": "lec",
      "minutes": 4,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": true
     },
@@ -4141,7 +4149,7 @@
      "title": "20. [Lab] AWS CLI - Partie 2 : Créer un utilisateur IAM Admin",
      "type": "lec",
      "minutes": 7,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": true
     },
@@ -4151,7 +4159,7 @@
      "title": "21. [Lab] AWS CLI - Partie 3 : Télécharger et installer AWS CLI",
      "type": "lec",
      "minutes": 5,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": true
     },
@@ -4161,7 +4169,7 @@
      "title": "22. [Lab] AWS CLI - Partie 4 : Configurer AWS CLI avec des Access Key",
      "type": "lec",
      "minutes": 9,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": true
     },
@@ -4171,7 +4179,7 @@
      "title": "23. AWS Free Tiers (Offre gratuite d'AWS)",
      "type": "lec",
      "minutes": 7,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -4181,7 +4189,7 @@
      "title": "Quiz 3 : Quiz Introduction au Cloud AWS",
      "type": "quiz",
      "minutes": 0,
-     "done": false,
+     "done": true,
      "block": "M01",
      "hands_on": false
     },
@@ -4191,7 +4199,7 @@
      "title": "24. Démarrer avec Amazon EC2 (Elastic Compute Cloud)",
      "type": "lec",
      "minutes": 9,
-     "done": false,
+     "done": true,
      "block": "M02",
      "hands_on": false
     },
@@ -4201,7 +4209,7 @@
      "title": "25. Les caractéristiques d'une instance EC2",
      "type": "lec",
      "minutes": 4,
-     "done": false,
+     "done": true,
      "block": "M02",
      "hands_on": false
     },
@@ -4211,7 +4219,7 @@
      "title": "26. Lancer une instance EC2",
      "type": "lec",
      "minutes": 9,
-     "done": false,
+     "done": true,
      "block": "M02",
      "hands_on": false
     },
@@ -4221,7 +4229,7 @@
      "title": "27. [Lab] Lancer une instance EC2 Linux",
      "type": "lec",
      "minutes": 20,
-     "done": false,
+     "done": true,
      "block": "M02",
      "hands_on": true
     },
@@ -4231,7 +4239,7 @@
      "title": "28. [Lab] - Se connecter en SSH à une instance EC2 Linux",
      "type": "lec",
      "minutes": 8,
-     "done": false,
+     "done": true,
      "block": "M02",
      "hands_on": true
     },
@@ -4241,7 +4249,7 @@
      "title": "29. Tags",
      "type": "lec",
      "minutes": 5,
-     "done": false,
+     "done": true,
      "block": "M02",
      "hands_on": false
     },
@@ -4251,7 +4259,7 @@
      "title": "30. EC2 User Data",
      "type": "lec",
      "minutes": 3,
-     "done": false,
+     "done": true,
      "block": "M02",
      "hands_on": false
     },
@@ -4261,7 +4269,7 @@
      "title": "31. Amazon Machine Image (AMI)",
      "type": "lec",
      "minutes": 11,
-     "done": false,
+     "done": true,
      "block": "M02",
      "hands_on": false
     },
@@ -4271,7 +4279,7 @@
      "title": "32. AMI Personnalisée",
      "type": "lec",
      "minutes": 7,
-     "done": false,
+     "done": true,
      "block": "M02",
      "hands_on": false
     },
@@ -4281,7 +4289,7 @@
      "title": "33. [Lab] AMI Personnalisée",
      "type": "lec",
      "minutes": 13,
-     "done": false,
+     "done": true,
      "block": "M02",
      "hands_on": true
     },
@@ -4291,7 +4299,7 @@
      "title": "34. Keypair",
      "type": "lec",
      "minutes": 7,
-     "done": false,
+     "done": true,
      "block": "M02",
      "hands_on": false
     },
@@ -4301,7 +4309,7 @@
      "title": "35. Adressage IP",
      "type": "lec",
      "minutes": 13,
-     "done": false,
+     "done": true,
      "block": "M02",
      "hands_on": false
     },
@@ -12631,7 +12639,7 @@
    "title": "Exam Prep Summary: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
    "type": "Préparation à l'examen",
    "minutes": 5,
-   "usage": "planifié en S3"
+   "usage": "planifié en S4"
   },
   {
    "exam": "CLF-C02",
@@ -12659,28 +12667,28 @@
    "title": "Domain 2 Review: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
    "type": "Préparation à l'examen",
    "minutes": 65,
-   "usage": "planifié en S2"
+   "usage": "planifié en S4"
   },
   {
    "exam": "CLF-C02",
    "title": "Domain 3 Review: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
    "type": "Préparation à l'examen",
    "minutes": 65,
-   "usage": "planifié en S2"
+   "usage": "planifié en S3"
   },
   {
    "exam": "CLF-C02",
    "title": "Domain 4 Review: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
    "type": "Préparation à l'examen",
    "minutes": 65,
-   "usage": "planifié en S3"
+   "usage": "planifié en S4"
   },
   {
    "exam": "CLF-C02",
    "title": "Official Practice Question Set: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
    "type": "Préparation à l'examen",
    "minutes": 30,
-   "usage": "planifié en S3"
+   "usage": "planifié en S5"
   },
   {
    "exam": "CLF-C02",
@@ -12715,21 +12723,21 @@
    "title": "Exam Prep Overview: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
    "type": "Préparation à l'examen",
    "minutes": 15,
-   "usage": "planifié en S10"
+   "usage": "planifié en S12"
   },
   {
    "exam": "DEA-C01",
    "title": "Exam Prep Plan Overview: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
    "type": "Préparation à l'examen",
    "minutes": 15,
-   "usage": "planifié en S10"
+   "usage": "planifié en S12"
   },
   {
    "exam": "DEA-C01",
    "title": "Domain 1 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
    "type": "Préparation à l'examen",
    "minutes": 80,
-   "usage": "planifié en S13"
+   "usage": "planifié en S15"
   },
   {
    "exam": "DEA-C01",
@@ -12743,7 +12751,7 @@
    "title": "Domain 3 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
    "type": "Préparation à l'examen",
    "minutes": 80,
-   "usage": "planifié en S15"
+   "usage": "planifié en S17"
   },
   {
    "exam": "DEA-C01",
@@ -12757,7 +12765,7 @@
    "title": "Official Practice Question Set: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
    "type": "Préparation à l'examen",
    "minutes": 40,
-   "usage": "planifié en S17"
+   "usage": "planifié en S18"
   },
   {
    "exam": "DEA-C01",
@@ -12799,7 +12807,7 @@
    "title": "Data Engineering on AWS Learning Plans (includes labs) [5 formations, laboratoires inclus]",
    "type": "Plan d'apprentissage",
    "minutes": 1220,
-   "usage": "bonus : 6 séances de S12 à S17 (2 h max par semaine)"
+   "usage": "bonus non planifié : les semaines DEA sont pleines (à faire si tu prends de l'avance)"
   },
   {
    "exam": "AIF-C01 (hors périmètre actuel)",

@@ -83,6 +83,8 @@ export interface CatalogueData {
     time_factors: Record<CourseKey, number>;
     quiz_minutes: Record<CourseKey, number>;
     exercise_minutes: Record<CourseKey, number>;
+    /** Vitesse de lecture retenue par cours (1,25 = vidéos en 1,25x). Absente = 1. */
+    playback_speed?: Partial<Record<CourseKey, number>>;
   };
   udemy_courses: UdemyCourse[];
   aws_skill_builder: SkillBuilderResource[];

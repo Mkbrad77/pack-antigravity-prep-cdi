@@ -2,6 +2,7 @@ import React from 'react';
 import { AppStateResponse } from '../apiClient';
 import { CertCode } from '../domain/types';
 import { TaskNavigationTarget } from '../domain/taskNavigation';
+import { CERT_PHASES } from '../domain/phases';
 import { certColor, CoursSection } from '../ui/navigation';
 import { CertificationsView } from './CertificationsView';
 import { CoursesView } from './CoursesView';
@@ -16,9 +17,9 @@ interface CoursHubViewProps {
 }
 
 const SECTIONS: Array<{ id: CoursSection; label: string; hint: string }> = [
-  { id: 'CLF-C02', label: 'AWS CLF-C02', hint: 'S1 à S3' },
-  { id: 'DBT', label: 'dbt', hint: 'S4 à S9' },
-  { id: 'DEA-C01', label: 'AWS DEA-C01', hint: 'S10 à S19' },
+  { id: 'CLF-C02', label: 'AWS CLF-C02', hint: CERT_PHASES['CLF-C02'].label },
+  { id: 'DBT', label: 'dbt', hint: CERT_PHASES.DBT.label },
+  { id: 'DEA-C01', label: 'AWS DEA-C01', hint: CERT_PHASES['DEA-C01'].label },
   { id: 'SNOWFLAKE', label: 'Snowflake', hint: 'Quickstarts' },
   { id: 'UDEMY', label: 'Udemy', hint: '5 cours' },
 ];

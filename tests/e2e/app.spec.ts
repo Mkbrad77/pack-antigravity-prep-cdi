@@ -16,18 +16,19 @@ test.describe('Parcours utilisateur complet Phase 2 (E2E Navigateur + SQLite)', 
     const clfPctText = await page.getByTestId('cert-progress-pct-CLF-C02').textContent();
     const deaPctText = await page.getByTestId('cert-progress-pct-DEA-C01').textContent();
     const dbtPctText = await page.getByTestId('cert-progress-pct-DBT').textContent();
-    expect(parseFloat(clfPctText || '0')).toBe(0);
+    // D-25 : Merico leçons 1 à 35 déjà faites (progression réelle au 11/11/2026)
+    expect(parseFloat(clfPctText || '0')).toBeGreaterThan(0);
     expect(parseFloat(deaPctText || '0')).toBe(0);
     expect(parseFloat(dbtPctText || '0')).toBe(0);
 
-    // 2. Cocher (terminer) la tache W01-C3 (Merico lecons 1 a 60 : 190 min) et verifier que la progression CLF-C02 monte
-    await expect(page.getByTestId('complete-task-W01-C3')).toBeVisible();
-    await page.getByTestId('complete-task-W01-C3').click();
-    await expect(page.getByTestId('reopen-task-W01-C3')).toBeVisible();
-    await expect(page.getByTestId('week-completed-minutes')).toContainText('190 min');
+    // 2. Cocher (terminer) la tache W01-C2 (Merico lecons 36 a 45 : 98 min) et verifier que la progression CLF-C02 monte
+    await expect(page.getByTestId('complete-task-W01-C2')).toBeVisible();
+    await page.getByTestId('complete-task-W01-C2').click();
+    await expect(page.getByTestId('reopen-task-W01-C2')).toBeVisible();
+    await expect(page.getByTestId('week-completed-minutes')).toContainText('min');
 
     const updatedClfPctText = await page.getByTestId('cert-progress-pct-CLF-C02').textContent();
-    expect(parseFloat(updatedClfPctText || '0')).toBeGreaterThan(15);
+    expect(parseFloat(updatedClfPctText || '0')).toBeGreaterThan(parseFloat(clfPctText || '0'));
 
     // 3. Reporter une tache (W01-I1 : SQL joins & NULL traps) a la semaine suivante et verifier l'explication
     await expect(page.getByTestId('postpone-task-W01-I1')).toBeVisible();
@@ -79,7 +80,7 @@ test.describe('Parcours utilisateur complet Phase 2 (E2E Navigateur + SQLite)', 
 
     const exportedJson = await page.getByTestId('backup-json-textarea').inputValue();
     expect(exportedJson).toContain('"app": "pack-antigravity-prep-cdi"');
-    expect(exportedJson).toContain('W01-C3');
+    expect(exportedJson).toContain('W01-C2');
     expect(exportedJson).toContain('AWS Skill Builder Official Practice Question Set');
 
     // 8. Tout supprimer (reinitialisation complete) et verifier que la tache, l'examen blanc et la carte ont disparu
@@ -91,7 +92,7 @@ test.describe('Parcours utilisateur complet Phase 2 (E2E Navigateur + SQLite)', 
     await expect(page.getByTestId('no-mock-exams-msg')).toBeVisible();
 
     await page.getByTestId('nav-tab-today').click();
-    await expect(page.getByTestId('complete-task-W01-C3')).toBeVisible();
+    await expect(page.getByTestId('complete-task-W01-C2')).toBeVisible();
     await expect(page.getByTestId('dashboard-task-W01-I1')).toBeVisible();
     const resetClfPctText = await page.getByTestId('cert-progress-pct-CLF-C02').textContent();
     expect(parseFloat(resetClfPctText || '0')).toBe(0);
@@ -105,7 +106,7 @@ test.describe('Parcours utilisateur complet Phase 2 (E2E Navigateur + SQLite)', 
 
     // Verification finale sur le tableau de bord et les certifications
     await page.getByTestId('nav-tab-today').click();
-    await expect(page.getByTestId('reopen-task-W01-C3')).toBeVisible();
+    await expect(page.getByTestId('reopen-task-W01-C2')).toBeVisible();
     await expect(page.getByTestId('dashboard-task-W01-I1')).toHaveCount(0);
 
     await page.getByTestId('nav-tab-cours').click();

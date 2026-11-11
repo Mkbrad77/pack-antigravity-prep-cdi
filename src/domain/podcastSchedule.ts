@@ -10,7 +10,7 @@ export const LISTEN_GOAL = 3;
 export const DAY_NAMES = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 export const DAY_SHORT = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
-/** Jour de la veille de l'examen (examens le vendredi : CLF S3, dbt S9, DEA S19). */
+/** Jour de la veille de l'examen (examens le vendredi : CLF S5, dbt S11, DEA S20). */
 const EXAM_EVE_DAY = 3; // jeudi
 
 export interface ScheduledListen {

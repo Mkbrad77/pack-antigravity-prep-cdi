@@ -5,6 +5,7 @@ import { PodcastEpisode, UnifiedTask } from '../domain/types';
 import { RescheduleTrigger } from '../domain/rescheduler';
 import { TaskNavigationTarget } from '../domain/taskNavigation';
 import { certColor } from '../ui/navigation';
+import { CERT_PHASES, RESERVE_PHASE, certForWeek } from '../domain/phases';
 import { TaskCard } from './TaskCard';
 
 interface PlanningViewProps {
@@ -28,16 +29,16 @@ type PriorityFilter = 'ALL' | 'core' | 'bonus';
 
 const PERIODS: Array<{ id: PeriodFilter; label: string; from: number; to: number; color?: string }> = [
   { id: 'ALL', label: 'Toutes', from: 1, to: 99 },
-  { id: 'CLF', label: 'CLF-C02 (S1 à S3)', from: 1, to: 3, color: 'CLF-C02' },
-  { id: 'DBT', label: 'dbt (S4 à S9)', from: 4, to: 9, color: 'DBT' },
-  { id: 'DEA', label: 'DEA-C01 (S10 à S19)', from: 10, to: 19, color: 'DEA-C01' },
-  { id: 'RESERVE', label: 'Réserve (S20 à S22)', from: 20, to: 99 },
+  { id: 'CLF', label: `CLF-C02 (${CERT_PHASES['CLF-C02'].label})`, from: 1, to: CERT_PHASES['CLF-C02'].examWeek, color: 'CLF-C02' },
+  { id: 'DBT', label: `dbt (${CERT_PHASES.DBT.label})`, from: CERT_PHASES.DBT.fromWeek, to: CERT_PHASES.DBT.examWeek, color: 'DBT' },
+  { id: 'DEA', label: `DEA-C01 (${CERT_PHASES['DEA-C01'].label})`, from: CERT_PHASES['DEA-C01'].fromWeek, to: CERT_PHASES['DEA-C01'].examWeek, color: 'DEA-C01' },
+  { id: 'RESERVE', label: `Réserve (${RESERVE_PHASE.label})`, from: RESERVE_PHASE.fromWeek, to: 99 },
 ];
 
+const DBT_EXAM_WEEK = CERT_PHASES.DBT.examWeek;
+
 function weekColor(week: number): string {
-  if (week <= 3) return certColor('CLF-C02');
-  if (week <= 9) return certColor('DBT');
-  if (week <= 19) return certColor('DEA-C01');
+  if (week <= CERT_PHASES['DEA-C01'].examWeek) return certColor(certForWeek(week));
   return 'var(--text-muted)';
 }
 
@@ -280,7 +281,7 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
         <div className="disclosure-body stack">
           <p className="text-secondary small" style={{ margin: 0 }}>
             Règles appliquées : plafond de 11 h par semaine (660 min), 6 h (360 min) en semaine allégée, les tâches bonus
-            sont sacrifiées en premier, l'examen le plus proche est protégé (CLF-C02 en S3, dbt en S9, DEA-C01 en S19) et
+            sont sacrifiées en premier, l'examen le plus proche est protégé (CLF-C02 en S5, dbt en S11, DEA-C01 en S20) et
             les tâches peuvent être comprimées à 50 %. Aucun effet domino sur les 22 semaines.
           </p>
           <div className="grid-2">
@@ -311,15 +312,15 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
               </div>
             </div>
             <div className="card card-sm">
-              <h3 style={{ margin: '0 0 0.5rem', fontSize: '0.98rem' }}>Scénarios d'examen dbt (S9) et fatigue</h3>
+              <h3 style={{ margin: '0 0 0.5rem', fontSize: '0.98rem' }}>Scénarios d'examen dbt (S{DBT_EXAM_WEEK}) et fatigue</h3>
               <div className="cluster">
                 <button
                   type="button"
                   data-testid="btn-postpone-clf-exam"
                   className="btn btn-secondary btn-sm"
-                  onClick={() => onTriggerReschedule({ type: 'low_mock_score', week: 9, certCode: 'DBT', scorePct: 72 })}
+                  onClick={() => onTriggerReschedule({ type: 'low_mock_score', week: DBT_EXAM_WEEK - 1, certCode: 'DBT', scorePct: 72 })}
                 >
-                  Blanc dbt sous 80 % : examen décalé au 15 janv.
+                  Blanc dbt sous 80 % : examen décalé d'une semaine
                 </button>
                 <button
                   type="button"
@@ -328,10 +329,10 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                   onClick={() =>
                     onTriggerReschedule({
                       type: 'exam_failure',
-                      week: 10,
+                      week: DBT_EXAM_WEEK,
                       certCode: 'DBT',
                       rawScore: 62,
-                      failedDateIso: '2027-01-08',
+                      failedDateIso: state.settings.exam_dates.DBT,
                     })
                   }
                 >
@@ -341,9 +342,9 @@ export const PlanningView: React.FC<PlanningViewProps> = ({
                   type="button"
                   data-testid="btn-exam-fatigue"
                   className="btn btn-warning btn-sm"
-                  onClick={() => onTriggerReschedule({ type: 'exam_week_fatigue', week: 9 })}
+                  onClick={() => onTriggerReschedule({ type: 'exam_week_fatigue', week: DBT_EXAM_WEEK })}
                 >
-                  Fatigue en semaine d'examen dbt (S9)
+                  Fatigue en semaine d'examen dbt (S{DBT_EXAM_WEEK})
                 </button>
                 <button
                   type="button"

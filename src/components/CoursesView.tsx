@@ -25,6 +25,7 @@ import {
   requestPersistentStorage,
 } from '../pwa/offlineAudio';
 import { certColor } from '../ui/navigation';
+import { CERT_PHASES } from '../domain/phases';
 
 export type CoursesViewMode = 'podcasts' | 'snowflake' | 'udemy';
 
@@ -51,9 +52,9 @@ const COURSE_CERT: Record<CourseKey, string> = {
 };
 
 const PODCAST_CERTS: Array<{ code: CertCode; label: string; weeks: string; exam: string; total: number }> = [
-  { code: 'CLF-C02', label: 'AWS CLF-C02', weeks: 'S1 à S3', exam: '27 nov. 2026', total: 12 },
-  { code: 'DBT', label: 'dbt', weeks: 'S3 à S9', exam: '8 janv. 2027', total: 16 },
-  { code: 'DEA-C01', label: 'AWS DEA-C01', weeks: 'S10 à S19', exam: '19 mars 2027', total: 16 },
+  { code: 'CLF-C02', label: 'AWS CLF-C02', weeks: CERT_PHASES['CLF-C02'].label, exam: '11 déc. 2026', total: 12 },
+  { code: 'DBT', label: 'dbt', weeks: CERT_PHASES.DBT.label, exam: '22 janv. 2027', total: 16 },
+  { code: 'DEA-C01', label: 'AWS DEA-C01', weeks: CERT_PHASES['DEA-C01'].label, exam: '26 mars 2027', total: 16 },
 ];
 
 function formatRanges(ranges?: LectureRangeRef[]): string {
@@ -533,7 +534,7 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
               <div>
                 <h2 className="card-title">Parcours officiel dbt Analytics Engineering</h2>
                 <p className="muted small" style={{ margin: '0.2rem 0 0' }}>
-                  Semaines 4 à 9, examen le 8 janvier 2027 : modules learn.getdbt.com, guide d'étude, retours Devoteam et examens blancs.
+                  Semaines 5 à 11, examen le 22 janvier 2027 : modules learn.getdbt.com, guide d'étude, retours Devoteam et examens blancs.
                 </p>
               </div>
               <span className="badge badge-warning">Urgence n°1</span>
@@ -722,6 +723,11 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
               <h2 style={{ margin: 0, fontSize: '1.15rem' }}>{courseStats.title}</h2>
               <div className="muted small" style={{ marginTop: '0.25rem' }}>
                 {courseStats.instructor}, {courseStats.role}, facteur temps <span className="mono">x{courseStats.timeFactor}</span>
+                {courseStats.playbackSpeed !== 1 && (
+                  <>
+                    , vidéos en <span className="mono">{String(courseStats.playbackSpeed).replace('.', ',')}x</span>
+                  </>
+                )}
               </div>
             </div>
             <div className="cluster" style={{ gap: '0.75rem', flexWrap: 'nowrap' }}>

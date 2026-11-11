@@ -7,6 +7,13 @@ import {
   TaskStateRow,
   UnifiedTask,
 } from './types';
+import { addDaysIso, CERT_PHASES, certForWeek, formatLongFrDate, RESERVE_PHASE } from './phases';
+
+const CERT_NAMES: Record<CertCode, string> = { 'CLF-C02': 'CLF-C02', DBT: 'dbt Analytics Engineering', 'DEA-C01': 'DEA-C01' };
+
+function findExamTask(tasks: UnifiedTask[], certCode: CertCode): UnifiedTask | undefined {
+  return tasks.find((t) => t.category === 'certification' && t.cert_code === certCode && t.type === 'certification');
+}
 
 export type RescheduleTrigger =
   | {
@@ -93,9 +100,7 @@ export function inferCertCodeFromWeekAndTask(
     return 'DBT';
   }
   if (resUpper.includes('DEA') || resUpper.includes('MAAREK') || resUpper.includes('NIKOLAI')) return 'DEA-C01';
-  if (week <= 3) return 'CLF-C02';
-  if (week <= 9) return 'DBT';
-  return 'DEA-C01';
+  return certForWeek(week);
 }
 
 /**
@@ -285,22 +290,22 @@ export function computeProportionalCompressedDuration(
 
 /**
  * Ordre de priorite stricte pour l'application du Principe 2 (Priorite a l'examen le plus proche).
- * Ordre officiel (départ Lundi 9 nov. 2026) :
- * 1. S1-S3 : AWS CLF-C02 (examen 27 nov. 2026) + démarrage anticipé DBT fin S3
- * 2. S4-S9 : dbt Analytics Engineering (Priorité Urgente N°1, examen 8 janv. 2027)
- * 3. S10-S19 : AWS DEA-C01 + Quickstarts Snowflake ML (examen 19 mars 2027)
+ * Ordre officiel (D-25, voir src/domain/phases.ts) :
+ * 1. S1-S5 : AWS CLF-C02 (examen 11 déc. 2026), démarrage dbt le week-end de S5
+ * 2. S5-S11 : dbt Analytics Engineering (examen 22 janv. 2027)
+ * 3. S11-S20 : AWS DEA-C01 + Quickstarts Snowflake ML (examen 26 mars 2027)
  */
 export function getTaskExamPriorityRank(task: UnifiedTask, currentWeek: number): number {
   if (task.priority === 'bonus') return 100;
 
-  if (currentWeek <= 3) {
+  if (currentWeek <= CERT_PHASES['CLF-C02'].examWeek) {
     if (task.category === 'certification' && task.cert_code === 'CLF-C02') return 1;
     if (task.category === 'certification' && task.cert_code === 'DBT') return 2;
     if (task.category === 'interview') return 3;
     return 4;
   }
 
-  if (currentWeek <= 9) {
+  if (currentWeek <= CERT_PHASES.DBT.examWeek) {
     if (task.category === 'certification' && task.cert_code === 'DBT') return 1;
     if (task.category === 'interview') return 2;
     if (task.category === 'certification' && task.cert_code === 'DEA-C01') return 3;
@@ -616,228 +621,174 @@ export function reschedulePlanning(
     );
   } else if (trigger.type === 'low_mock_score') {
     const { certCode, scorePct, week } = trigger;
-    if (certCode === 'DBT') {
-      updatedExamDates['DBT'] = '2027-01-15';
-      updatedExamDates['DEA-C01'] = '2027-03-26';
+    if (certCode === 'DBT' || certCode === 'DEA-C01') {
+      const examTask = findExamTask(tasks, certCode);
+      const examWeek = examTask?.target_week ?? CERT_PHASES[certCode].examWeek;
+      const newDate = addDaysIso(settings.exam_dates[certCode], 7);
+      updatedExamDates[certCode] = newDate;
 
-      const dbtExamTask = tasks.find(
-        (t) => t.id === 'W09-C3' || t.id === 'W10-C3' || (t.cert_code === 'DBT' && t.type === 'certification')
+      // Séance de remédiation : premier bonus restant de la certification avant l'examen (D-23, D-25).
+      const remediation = tasks.find(
+        (t) =>
+          t.category === 'certification' &&
+          t.cert_code === certCode &&
+          t.priority === 'bonus' &&
+          t.status !== 'done' &&
+          t.target_week >= week &&
+          t.target_week <= examWeek
       );
-      // Session de remédiation : premier bonus dbt restant entre la semaine du score et la semaine 10 (D-23).
-      const dbtReserveBonus = tasks.find(
-        (t) => t.cert_code === 'DBT' && t.priority === 'bonus' && t.target_week >= week && t.target_week <= 10
-      );
-      const deaStartTask = tasks.find((t) => t.id === 'W10-C1' || t.id === 'W11-C1');
-
-      if (dbtReserveBonus) {
-        const bonusWeek = dbtReserveBonus.target_week;
-        dbtReserveBonus.priority = 'core';
-        dbtReserveBonus.status = 'todo';
+      if (remediation) {
+        const bWeek = remediation.target_week;
+        remediation.priority = 'core';
+        remediation.status = 'todo';
         changes.push({
-          taskId: dbtReserveBonus.id,
-          taskTitle: dbtReserveBonus.title,
-          action: 'promote',
-          fromWeek: bonusWeek,
-          toWeek: bonusWeek,
-          oldDurationMin: dbtReserveBonus.effective_est_min,
-          newDurationMin: dbtReserveBonus.effective_est_min,
-          reason: `Score blanc dbt de ${scorePct} % (< 80 %) : session de remédiation dbt promue en tâche Core en Semaine ${bonusWeek}.`,
-        });
-      }
-
-      if (dbtExamTask) {
-        const oldWeek = dbtExamTask.target_week;
-        const newWeek = oldWeek + 1;
-        dbtExamTask.target_week = newWeek;
-        dbtExamTask.status = 'postponed';
-        changes.push({
-          taskId: dbtExamTask.id,
-          taskTitle: dbtExamTask.title,
-          action: 'postpone',
-          fromWeek: oldWeek,
-          toWeek: newWeek,
-          oldDurationMin: dbtExamTask.effective_est_min,
-          newDurationMin: dbtExamTask.effective_est_min,
-          reason: `Report de sécurité de +7 jours de l'examen dbt Analytics Engineering (nouvelle date : 15 janvier 2027, Semaine ${newWeek}).`,
-        });
-      }
-
-      if (deaStartTask) {
-        const oldDeaWeek = deaStartTask.target_week;
-        deaStartTask.target_week = 20;
-        deaStartTask.status = 'postponed';
-        changes.push({
-          taskId: deaStartTask.id,
-          taskTitle: deaStartTask.title,
-          action: 'postpone',
-          fromWeek: oldDeaWeek,
-          toWeek: 20,
-          oldDurationMin: deaStartTask.effective_est_min,
-          newDurationMin: deaStartTask.effective_est_min,
-          reason: `Utilisation de la Semaine 20 de réserve pour absorber le décalage d'une semaine du bloc DEA-C01.`,
-        });
-      }
-
-      explanationFr.push(
-        `Alerte de préparation en Semaine ${week} : score blanc dbt à ${scorePct} % (inférieur au seuil de sécurité de 80 %).`,
-        `L'examen dbt Analytics Engineering est décalé d'une semaine au vendredi 15 janvier 2027 (Semaine 10).`,
-        `La Semaine 9 est consacrée au renforcement intensif dbt, et la Semaine 20 de réserve absorbe le décalage d'une semaine sur DEA-C01.`
-      );
-    } else if (certCode === 'DEA-C01') {
-      updatedExamDates['DEA-C01'] = '2027-03-26';
-
-      const examTask = tasks.find(
-        (t) => t.id === 'W19-C3' || t.id === 'W20-C3' || (t.cert_code === 'DEA-C01' && t.type === 'certification')
-      );
-      const mockBonusTask = tasks.find((t) => t.id === 'W19-B1' || t.id === 'W20-B1');
-
-      if (mockBonusTask) {
-        const bWeek = mockBonusTask.target_week;
-        mockBonusTask.priority = 'core';
-        mockBonusTask.status = 'todo';
-        changes.push({
-          taskId: mockBonusTask.id,
-          taskTitle: mockBonusTask.title,
+          taskId: remediation.id,
+          taskTitle: remediation.title,
           action: 'promote',
           fromWeek: bWeek,
           toWeek: bWeek,
-          oldDurationMin: mockBonusTask.effective_est_min,
-          newDurationMin: mockBonusTask.effective_est_min,
-          reason: `Score blanc DEA-C01 de ${scorePct} % (< 80 %) : examen blanc de réserve promu en tâche Core de remédiation en Semaine ${bWeek}.`,
+          oldDurationMin: remediation.effective_est_min,
+          newDurationMin: remediation.effective_est_min,
+          reason: `Score blanc ${CERT_NAMES[certCode]} de ${scorePct} % (< 80 %) : séance bonus promue en tâche Core de remédiation en Semaine ${bWeek}.`,
         });
       }
 
       if (examTask) {
         const oldWeek = examTask.target_week;
-        examTask.target_week = 20;
+        examTask.target_week = oldWeek + 1;
         examTask.status = 'postponed';
         changes.push({
           taskId: examTask.id,
           taskTitle: examTask.title,
           action: 'postpone',
           fromWeek: oldWeek,
-          toWeek: 20,
+          toWeek: oldWeek + 1,
           oldDurationMin: examTask.effective_est_min,
           newDurationMin: examTask.effective_est_min,
-          reason: `Report de sécurité de +7 jours de l'examen DEA-C01 en Semaine 20 de réserve (nouvelle date : 26 mars 2027).`,
+          reason: `Report de sécurité de +7 jours de l'examen ${CERT_NAMES[certCode]} (nouvelle date : ${formatLongFrDate(newDate)}, Semaine ${oldWeek + 1}).`,
         });
       }
 
       explanationFr.push(
-        `Alerte de préparation en Semaine ${week} : score blanc DEA-C01 à ${scorePct} % (inférieur au seuil de sécurité de 80 %).`,
-        `L'examen DEA-C01 est décalé d'une semaine au vendredi 26 mars 2027 (Semaine 20 de réserve).`
+        `Alerte de préparation en Semaine ${week} : score blanc ${CERT_NAMES[certCode]} à ${scorePct} % (inférieur au seuil de sécurité de 80 %).`,
+        `L'examen ${CERT_NAMES[certCode]} est décalé d'une semaine au vendredi ${formatLongFrDate(newDate)} (Semaine ${examWeek + 1}).`
       );
+
+      if (certCode === 'DBT') {
+        // Effet domino : le bloc DEA-C01 recule d'une semaine grâce à la réserve.
+        const deaDate = addDaysIso(settings.exam_dates['DEA-C01'], 7);
+        updatedExamDates['DEA-C01'] = deaDate;
+        const deaStartTask = tasks
+          .filter((t) => t.category === 'certification' && t.cert_code === 'DEA-C01' && t.priority === 'core' && t.type === 'udemy')
+          .sort((x, y) => x.target_week - y.target_week)[0];
+        if (deaStartTask) {
+          const oldDeaWeek = deaStartTask.target_week;
+          deaStartTask.target_week = RESERVE_PHASE.fromWeek;
+          deaStartTask.status = 'postponed';
+          changes.push({
+            taskId: deaStartTask.id,
+            taskTitle: deaStartTask.title,
+            action: 'postpone',
+            fromWeek: oldDeaWeek,
+            toWeek: RESERVE_PHASE.fromWeek,
+            oldDurationMin: deaStartTask.effective_est_min,
+            newDurationMin: deaStartTask.effective_est_min,
+            reason: `Utilisation de la Semaine ${RESERVE_PHASE.fromWeek} de réserve pour absorber le décalage d'une semaine du bloc DEA-C01.`,
+          });
+        }
+        explanationFr.push(
+          `La Semaine ${RESERVE_PHASE.fromWeek} de réserve absorbe le décalage : examen DEA-C01 reporté au vendredi ${formatLongFrDate(deaDate)}.`
+        );
+      }
     }
   } else if (trigger.type === 'exam_failure') {
     const { certCode, rawScore, failedDateIso } = trigger;
-    const [y, m, d] = failedDateIso.split('-').map(Number);
-    const retakeDate = new Date(Date.UTC(y, (m || 1) - 1, (d || 1) + 14)).toISOString().slice(0, 10);
+    const retakeDate = addDaysIso(failedDateIso, 14);
 
-    if (certCode === 'DBT') {
-      updatedExamDates['DBT'] = retakeDate;
-      updatedExamDates['DEA-C01'] = '2027-03-26';
+    if (certCode === 'DBT' || certCode === 'DEA-C01') {
+      updatedExamDates[certCode] = retakeDate;
+      const examTask = findExamTask(tasks, certCode);
+      const examWeek = examTask?.target_week ?? CERT_PHASES[certCode].examWeek;
+      const retakeWeek = examWeek + 2;
 
-      const w10DeaTasks = tasks.filter(
-        (t) => t.target_week === 10 && t.category === 'certification' && t.cert_code === 'DEA-C01'
-      );
-      for (const t of w10DeaTasks) {
-        if (t.priority === 'bonus') {
-          t.status = 'skipped';
+      if (certCode === 'DBT') {
+        const deaDate = addDaysIso(settings.exam_dates['DEA-C01'], 7);
+        updatedExamDates['DEA-C01'] = deaDate;
+        const nextWeek = examWeek + 1;
+        const nextWeekDeaTasks = tasks.filter(
+          (t) => t.target_week === nextWeek && t.category === 'certification' && t.cert_code === 'DEA-C01'
+        );
+        for (const t of nextWeekDeaTasks) {
+          if (t.priority === 'bonus') {
+            t.status = 'skipped';
+            changes.push({
+              taskId: t.id,
+              taskTitle: t.title,
+              action: 'skip',
+              fromWeek: nextWeek,
+              toWeek: nextWeek,
+              oldDurationMin: t.effective_est_min,
+              newDurationMin: 0,
+              reason: `Sacrifice du bonus S${nextWeek} pour libérer le plan de remédiation dbt.`,
+            });
+          } else {
+            t.target_week = RESERVE_PHASE.fromWeek;
+            t.status = 'postponed';
+            changes.push({
+              taskId: t.id,
+              taskTitle: t.title,
+              action: 'postpone',
+              fromWeek: nextWeek,
+              toWeek: RESERVE_PHASE.fromWeek,
+              oldDurationMin: t.effective_est_min,
+              newDurationMin: t.effective_est_min,
+              reason: `Plan de repassage dbt (délai 14 jours) : bascule vers la Semaine ${RESERVE_PHASE.fromWeek} de réserve.`,
+            });
+          }
+        }
+        const deaExamTask = findExamTask(tasks, 'DEA-C01');
+        if (deaExamTask) {
+          const oldDeaWeek = deaExamTask.target_week;
+          deaExamTask.target_week = oldDeaWeek + 1;
+          deaExamTask.status = 'postponed';
           changes.push({
-            taskId: t.id,
-            taskTitle: t.title,
-            action: 'skip',
-            fromWeek: 10,
-            toWeek: 10,
-            oldDurationMin: t.effective_est_min,
-            newDurationMin: 0,
-            reason: `Sacrifice du bonus S10 pour libérer le plan de remédiation dbt.`,
-          });
-        } else {
-          t.target_week = 20;
-          t.status = 'postponed';
-          changes.push({
-            taskId: t.id,
-            taskTitle: t.title,
+            taskId: deaExamTask.id,
+            taskTitle: deaExamTask.title,
             action: 'postpone',
-            fromWeek: 10,
-            toWeek: 20,
-            oldDurationMin: t.effective_est_min,
-            newDurationMin: t.effective_est_min,
-            reason: `Plan de repassage dbt (délai 14 jours) : bascule vers la Semaine 20 de réserve.`,
+            fromWeek: oldDeaWeek,
+            toWeek: oldDeaWeek + 1,
+            oldDurationMin: deaExamTask.effective_est_min,
+            newDurationMin: deaExamTask.effective_est_min,
+            reason: `Report de l'examen DEA-C01 au ${formatLongFrDate(deaDate)} (Semaine ${oldDeaWeek + 1}), fin du contrat le 2 avril 2027.`,
           });
         }
+        explanationFr.push(
+          `Échec dbt enregistré le ${failedDateIso} (score ${rawScore}%). Nouvelle date de passage fixée au ${retakeDate} (Semaine ${retakeWeek}).`,
+          `La Semaine ${nextWeek} est réallouée à la remédiation ciblée dbt (Jinja, YAML, tests et architectures Snowflake).`,
+          `Le bloc DEA-C01 utilise la Semaine ${RESERVE_PHASE.fromWeek} de réserve (examen DEA-C01 décalé au ${formatLongFrDate(deaDate)}).`
+        );
+      } else {
+        explanationFr.push(
+          `Échec DEA-C01 enregistré le ${failedDateIso} (${rawScore}/1000 < 720). Application du délai AWS de 14 jours : nouvelle date de passage fixée au ${retakeDate} (Semaine ${retakeWeek}).`,
+          `Les semaines de réserve sont consacrées à la remédiation ciblée DEA-C01 (attention : fin du contrat le 2 avril 2027).`
+        );
       }
 
-      const dbtExamTask = tasks.find(
-        (t) => t.id === 'W09-C3' || t.id === 'W10-C3' || (t.cert_code === 'DBT' && t.type === 'certification')
-      );
-      if (dbtExamTask) {
-        const oldWeek = dbtExamTask.target_week;
-        dbtExamTask.target_week = 11;
-        dbtExamTask.status = 'postponed';
+      if (examTask) {
+        const oldWeek = examTask.target_week;
+        examTask.target_week = retakeWeek;
+        examTask.status = 'postponed';
         changes.push({
-          taskId: dbtExamTask.id,
-          taskTitle: dbtExamTask.title,
+          taskId: examTask.id,
+          taskTitle: examTask.title,
           action: 'postpone',
           fromWeek: oldWeek,
-          toWeek: 11,
-          oldDurationMin: dbtExamTask.effective_est_min,
-          newDurationMin: dbtExamTask.effective_est_min,
-          reason: `Repassage dbt planifié au ${retakeDate} (Semaine 11).`,
+          toWeek: retakeWeek,
+          oldDurationMin: examTask.effective_est_min,
+          newDurationMin: examTask.effective_est_min,
+          reason: `Repassage ${CERT_NAMES[certCode]} planifié au ${retakeDate} (Semaine ${retakeWeek}).`,
         });
       }
-
-      const deaExamTask = tasks.find(
-        (t) => t.id === 'W19-C3' || t.id === 'W20-C3' || (t.cert_code === 'DEA-C01' && t.type === 'certification')
-      );
-      if (deaExamTask) {
-        const oldDeaWeek = deaExamTask.target_week;
-        deaExamTask.target_week = 20;
-        deaExamTask.status = 'postponed';
-        changes.push({
-          taskId: deaExamTask.id,
-          taskTitle: deaExamTask.title,
-          action: 'postpone',
-          fromWeek: oldDeaWeek,
-          toWeek: 20,
-          oldDurationMin: deaExamTask.effective_est_min,
-          newDurationMin: deaExamTask.effective_est_min,
-          reason: `Report de l'examen DEA-C01 au 26 mars 2027 (Semaine 20) avant la fin du contrat (2 avril 2027).`,
-        });
-      }
-
-      explanationFr.push(
-        `Échec dbt enregistré le ${failedDateIso} (score ${rawScore}%). Nouvelle date de passage fixée au ${retakeDate} (Semaine 11).`,
-        `La Semaine 10 est réallouée à la remédiation ciblée dbt (Jinja, YAML, tests et architectures Snowflake).`,
-        `Le bloc DEA-C01 utilise la Semaine 20 de réserve (examen DEA-C01 décalé au 26 mars 2027).`
-      );
-    } else if (certCode === 'DEA-C01') {
-      updatedExamDates['DEA-C01'] = retakeDate;
-
-      const deaExamTask = tasks.find(
-        (t) => t.id === 'W19-C3' || t.id === 'W20-C3' || (t.cert_code === 'DEA-C01' && t.type === 'certification')
-      );
-      if (deaExamTask) {
-        const oldDeaWeek = deaExamTask.target_week;
-        deaExamTask.target_week = 21;
-        deaExamTask.status = 'postponed';
-        changes.push({
-          taskId: deaExamTask.id,
-          taskTitle: deaExamTask.title,
-          action: 'postpone',
-          fromWeek: oldDeaWeek,
-          toWeek: 21,
-          oldDurationMin: deaExamTask.effective_est_min,
-          newDurationMin: deaExamTask.effective_est_min,
-          reason: `Repassage DEA-C01 planifié au ${retakeDate} (Semaine 21) après le délai réglementaire AWS de 14 jours.`,
-        });
-      }
-
-      explanationFr.push(
-        `Échec DEA-C01 enregistré le ${failedDateIso} (${rawScore}/1000 < 720). Application du délai légal AWS de 14 jours : nouvelle date de passage fixée au ${retakeDate} (Semaine 21).`,
-        `Les Semaines 20 et 21 de réserve sont consacrées à la remédiation ciblée DEA-C01 avant la fin du contrat (2 avril 2027).`
-      );
     }
   }
 

@@ -18,6 +18,7 @@ import { certColor, CERT_SHORT_LABEL } from '../ui/navigation';
 import { TaskCard } from './TaskCard';
 import { TodayListeningCard } from './ListeningPlan';
 import { weekdayIndex } from '../domain/podcastSchedule';
+import { CERT_PHASES } from '../domain/phases';
 
 interface DashboardViewProps {
   state: AppStateResponse;
@@ -41,9 +42,9 @@ interface DashboardViewProps {
 const WEEKDAYS_FR = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
 const CERT_ORDER: CertCode[] = ['CLF-C02', 'DBT', 'DEA-C01'];
 const CERT_WEEKS: Record<CertCode, string> = {
-  'CLF-C02': 'S1 à S3',
-  DBT: 'S4 à S9',
-  'DEA-C01': 'S10 à S19',
+  'CLF-C02': CERT_PHASES['CLF-C02'].label,
+  DBT: CERT_PHASES.DBT.label,
+  'DEA-C01': CERT_PHASES['DEA-C01'].label,
 };
 
 function daysBetween(fromIso: string, toIso: string): number {

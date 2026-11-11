@@ -5,10 +5,10 @@
     "total_weeks": 22,
     "weekly_budget_hours": "8-11h (standard 600 min, autorisé jusqu'à 660 min / 11h pour compenser le décalage initial) ; 6h max (360 min, 290 min Core) en semaines des fêtes de décembre (S7 Noël et S8 Nouvel An)",
     "priority_order": [
-      "1. AWS Certified Cloud Practitioner (CLF-C02) : Semaines 1 à 3 (départ 9 nov. 2026, examen vendredi 27 novembre 2026) + 12 Podcasts NotebookLM CLF",
-      "2. URGENCE N°1 : dbt Analytics Engineering Certification (dbt Developer) : Fin Semaine 3 à Semaine 9 (examen vendredi 8 janvier 2027) avec cours Udemy (Toth + Weigel à 0 %), learn.getdbt.com, 16 Podcasts NotebookLM dbt et Quickstarts dbt + Snowflake",
-      "3. AWS Certified Data Engineer Associate (DEA-C01) + Pratique régulière des 15 Quickstarts Snowflake ML + 16 Podcasts NotebookLM DEA : Semaines 10 à 19 (examen vendredi 19 mars 2027)",
-      "4. Semaines 20 à 22 : Réserve, Quickstart Snowflake ML #15 (Multi-GPU Whisper), Agents IA Cortex et Sprint final CDI Data & AI"
+      "1. AWS Certified Cloud Practitioner (CLF-C02) : Semaines 1 à 5 (examen vendredi 11 décembre 2026) + 12 Podcasts NotebookLM CLF",
+      "2. dbt Analytics Engineering Certification : Semaines 5 à 11 (examen vendredi 22 janvier 2027) avec Toth et Weigel, learn.getdbt.com, 16 Podcasts NotebookLM dbt et Quickstarts dbt + Snowflake",
+      "3. AWS Certified Data Engineer Associate (DEA-C01) : Semaines 11 à 20 (examen vendredi 26 mars 2027) + Quickstarts Snowflake ML + 16 Podcasts NotebookLM DEA",
+      "4. Semaines 21 et 22 : Quickstarts finaux, Agents IA Snowflake et Sprint final CDI Data & AI"
     ],
     "time_factors": {
       "merico": 1.15,
@@ -18,9 +18,18 @@
       "nikolai": 1.3
     },
     "rules": {
-      "zero_start_rule": "Départ strictement à 0 % (leçon 1) sur les 5 cours Udemy (Merico, Toth, Weigel, Maarek, Nikolai) et les 3 certifications.",
+      "zero_start_rule": "Progression réelle au 11/11/2026 : Merico leçons 1 à 35 terminées, tous les autres cours Udemy à 0 %.",
       "overload_first_cut": "En cas de surcharge ou d'imprévu, couper d'abord les tâches marquées priority='bonus'.",
-      "missed_week_policy": "Ne jamais reporter un bloc brut sur une semaine déjà pleine : purger les bonus et compresser les révisions d'entretiens."
+      "missed_week_policy": "Ne jamais reporter un bloc brut sur une semaine déjà pleine : purger les bonus et compresser les révisions d'entretiens.",
+      "playback_speed_rule": "Durées calculées avec les vraies minutes Udemy du catalogue : vidéo x coefficient du cours / vitesse de lecture (1,25x pour Merico, Toth et Weigel), plus 10 à 15 min par quiz et 20 à 30 min par exercice.",
+      "optional_blocks_rule": "Blocs facultatifs ou hors examen du catalogue en bonus : Toth (dbt-expectations, Fusion, Dagster, capstone, Power User), Weigel (installation, sources, macros de base, modèles Python, déjà vus chez Toth), Maarek (conteneurs, OpenSearch/QuickSight, réseau, SageMaker, Bedrock, outils développeur, divers) et tout le cours Nikolai. Ils ne sont planifiés que là où la semaine reste sous son plafond."
+    },
+    "playback_speed": {
+      "merico": 1.25,
+      "toth": 1.25,
+      "weigel": 1.25,
+      "maarek": 1.0,
+      "nikolai": 1.0
     }
   },
   "weeks": [
@@ -28,56 +37,43 @@
       "week": 1,
       "start": "2026-11-09",
       "end": "2026-11-15",
-      "phase": "CLF-C02 : Fondamentaux AWS & Audios NotebookLM 01 à 06 (Départ Lundi 09/11 - Leçon 1)",
-      "theme": "Introduction au Cloud AWS, IAM, EC2, S3, RDS, VPC (Merico leçons 1 à 120) + Écoute récursive Audios CLF 01 à 06 + 2 premiers Quickstarts Snowflake",
+      "phase": "CLF-C02 : préparation (semaine 1/5)",
+      "theme": "Merico leçons 1 à 45 + Skill Builder Exam Prep Overview, Exam Prep Plan Overview, Domain 1 Review + Podcasts CLF-AUDIO-01, 02, 03, 04, 05, 06 + Quickstart Snowflake",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 600,
+      "cert_budget_min": 596,
       "interview_budget_min": 60,
-      "total_planned_min": 660,
-      "checkpoint": "Leçons 1 à 120 du cours Merico validées + Audios CLF-AUDIO-01 à 06 écoutés (cycle récursif) + Essai Snowflake 30 jours créé et 2 premiers Quickstarts faits",
+      "total_planned_min": 656,
+      "checkpoint": "Merico leçons 1 à 45 cochées ; revues Skill Builder terminées",
       "tasks": [
         {
           "id": "W01-C1",
           "course": "merico",
           "priority": "core",
           "type": "udemy",
-          "title": "Merico CLF-C02 : Introduction au Cloud AWS, Infrastructure Globale et IAM (Départ Leçons 1 à 35)",
+          "title": "Merico CLF-C02 : Cloud computing, infrastructure globale, compte AWS, IAM CLI ; EC2, AMI, sécurité, ELB, Auto Scaling, tarification (leçons 1 à 35)",
           "resource": "Udemy - Amadou Merico (CLF-C02)",
           "lectures": "leçons 1 à 35",
           "first": 1,
           "last": 35,
-          "video_min": 100,
-          "est_min": 115,
-          "deliverable": "Leçons 1 à 35 cochées et maîtrise du modèle de responsabilité partagée et IAM"
+          "video_min": 253,
+          "est_min": 263,
+          "deliverable": "Leçons 1 à 35 du cours Merico déjà terminées (progression réelle au 11/11/2026)"
         },
         {
           "id": "W01-C2",
           "course": "merico",
           "priority": "core",
           "type": "udemy",
-          "title": "Merico CLF-C02 : Calcul AWS (EC2, Options d'achat, Auto Scaling, ELB, Lambda) et Stockage S3 (Leçons 36 à 75)",
+          "title": "Merico CLF-C02 : EC2, AMI, sécurité, ELB, Auto Scaling, tarification (leçons 36 à 45)",
           "resource": "Udemy - Amadou Merico (CLF-C02)",
-          "lectures": "leçons 36 à 75",
+          "lectures": "leçons 36 à 45",
           "first": 36,
-          "last": 75,
-          "video_min": 108,
-          "est_min": 125,
-          "deliverable": "Leçons 36 à 75 cochées et comparatif des options d'achat EC2 et classes S3"
-        },
-        {
-          "id": "W01-C3",
-          "course": "merico",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Merico CLF-C02 : EBS, EFS, Bases de données (RDS, Aurora, DynamoDB), Réseau VPC, CloudFront et Conteneurs (Leçons 76 à 120)",
-          "resource": "Udemy - Amadou Merico (CLF-C02)",
-          "lectures": "leçons 76 à 120",
-          "first": 76,
-          "last": 120,
-          "video_min": 108,
-          "est_min": 125,
-          "deliverable": "Leçons 76 à 120 cochées (120/203 leçons Merico terminées dès la Semaine 1)"
+          "last": 45,
+          "video_min": 107,
+          "est_min": 98,
+          "deliverable": "Leçons 36 à 45 du cours Merico cochées",
+          "recommended_day": "Jeudi (soir)"
         },
         {
           "id": "W01-C4",
@@ -88,7 +84,8 @@
           "lectures": "CLF-AUDIO-01 à CLF-AUDIO-06 (Écoute 1 Découverte + Écoute 2 J+3)",
           "video_min": 0,
           "est_min": 90,
-          "deliverable": "Épisodes CLF-AUDIO-01 à 06 écoutés au moins 2 fois chacun sur mobile"
+          "deliverable": "Épisodes CLF-AUDIO-01 à 06 écoutés au moins 2 fois chacun sur mobile",
+          "recommended_day": "Chaque jour (trajets)"
         },
         {
           "id": "W01-C5",
@@ -157,97 +154,62 @@
       "week": 2,
       "start": "2026-11-16",
       "end": "2026-11-22",
-      "phase": "CLF-C02 : Fin du cours Merico (Leçons 121 à 199) & Audios NotebookLM 07 à 11",
-      "theme": "Sécurité, Gouvernance, Facturation, CAF, Well-Architected + Écoute récursive Audios CLF 07 à 11 + Quickstart Data Engineering Notebooks",
+      "phase": "CLF-C02 : préparation (semaine 2/5)",
+      "theme": "Merico leçons 46 à 93 + Podcasts CLF-AUDIO-07, 08, 09, 10, 11 + Quickstart Snowflake",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 595,
+      "cert_budget_min": 596,
       "interview_budget_min": 60,
-      "total_planned_min": 655,
-      "checkpoint": "Cours Merico quasi achevé (199/203), Audios CLF 07 à 11 assimilés et premier examen blanc >= 75 %",
+      "total_planned_min": 656,
+      "checkpoint": "Merico leçons 46 à 93 cochées",
       "tasks": [
         {
           "id": "W02-C1",
           "course": "merico",
           "priority": "core",
           "type": "udemy",
-          "title": "Merico CLF-C02 : Sécurité, Conformité, KMS, Shield, WAF, GuardDuty et Inspector (Leçons 121 à 155)",
+          "title": "Merico CLF-C02 : EC2, AMI, sécurité, ELB, Auto Scaling, tarification (leçons 46 à 60)",
           "resource": "Udemy - Amadou Merico (CLF-C02)",
-          "lectures": "leçons 121 à 155",
-          "first": 121,
-          "last": 155,
-          "video_min": 100,
-          "est_min": 115,
-          "deliverable": "Fiche mémo des services de sécurité AWS"
+          "lectures": "leçons 46 à 60",
+          "first": 46,
+          "last": 60,
+          "video_min": 124,
+          "est_min": 154,
+          "deliverable": "Leçons 46 à 60 du cours Merico cochées",
+          "recommended_day": "Lundi (soir)"
         },
         {
           "id": "W02-C2",
           "course": "merico",
           "priority": "core",
           "type": "udemy",
-          "title": "Merico CLF-C02 : Surveillance (CloudWatch, CloudTrail, Config), Facturation, Plans de Support, CAF et Well-Architected (Leçons 156 à 199)",
+          "title": "Merico CLF-C02 : VPC et connectivité hybride ; Route 53, CloudFront, Local Zone, Outposts, Wavelength (leçons 61 à 79)",
           "resource": "Udemy - Amadou Merico (CLF-C02)",
-          "lectures": "leçons 156 à 199",
-          "first": 156,
-          "last": 199,
-          "video_min": 115,
-          "est_min": 135,
-          "deliverable": "Synthèse des 6 piliers Well-Architected, des 6 perspectives CAF et des 5 plans de support AWS"
+          "lectures": "leçons 61 à 79",
+          "first": 61,
+          "last": 79,
+          "video_min": 145,
+          "est_min": 143,
+          "deliverable": "Leçons 61 à 79 du cours Merico cochées",
+          "recommended_day": "Mardi (soir)"
         },
         {
           "id": "W02-C3",
+          "course": "merico",
           "priority": "core",
-          "type": "skill_builder",
-          "title": "AWS Skill Builder (CLF-C02, français) : Domain 2 Review (Sécurité et conformité) et Domain 3 Review (Technologies et services cloud)",
-          "resource": "AWS Skill Builder (gratuit)",
-          "lectures": "2 revues officielles de domaine (2 x 1 h 05)",
-          "video_min": 130,
-          "est_min": 130,
-          "url": "https://skillbuilder.aws/",
-          "deliverable": "Domaines 2 (30 %) et 3 (34 %) relus avec les revues officielles, après les leçons Merico sur la sécurité",
-          "recommended_day": "Jeudi (soir) et samedi",
-          "skillbuilder": {
-            "exam_page": "AWS Certified Cloud Practitioner (CLF-C02)",
-            "language": "Français",
-            "access": "Gratuit",
-            "items": [
-              {
-                "name": "Domain 2 Review: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
-                "minutes": 65,
-                "kind": "Préparation à l'examen de certification"
-              },
-              {
-                "name": "Domain 3 Review: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
-                "minutes": 65,
-                "kind": "Préparation à l'examen de certification"
-              }
-            ]
-          }
+          "type": "udemy",
+          "title": "Merico CLF-C02 : Route 53, CloudFront, Local Zone, Outposts, Wavelength ; Stockage : EBS, S3, EFS, FSx (leçons 80 à 93)",
+          "resource": "Udemy - Amadou Merico (CLF-C02)",
+          "lectures": "leçons 80 à 93",
+          "first": 80,
+          "last": 93,
+          "video_min": 146,
+          "est_min": 144,
+          "deliverable": "Leçons 80 à 93 du cours Merico cochées",
+          "recommended_day": "Mercredi (soir)"
         },
         {
           "id": "W02-C4",
-          "priority": "core",
-          "type": "podcast",
-          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : CLF-AUDIO-07 à CLF-AUDIO-11 (Achats EC2, Stockage S3/EBS/EFS, BD & Analytics, Réseau VPC, Facturation & Support)",
-          "resource": "Studio Audio Mobile intégré (public/audios/clf-c02/)",
-          "lectures": "CLF-AUDIO-07 à CLF-AUDIO-11 (Écoute 1 + Écoute 2 J+3)",
-          "video_min": 0,
-          "est_min": 90,
-          "deliverable": "Épisodes CLF-AUDIO-07 à 11 maîtrisés"
-        },
-        {
-          "id": "W02-B1",
-          "priority": "bonus",
-          "type": "exam_blanc",
-          "title": "Simulateur interne : Premier examen blanc complet CLF-C02 + correction commentée",
-          "resource": "Simulateur d'examen intégré (Banque CLF-C02)",
-          "lectures": "65 questions chronométrées",
-          "video_min": 0,
-          "est_min": 60,
-          "deliverable": "Score enregistré dans le suivi des examens blancs et erreurs ajoutées aux flashcards SM-2"
-        },
-        {
-          "id": "W02-C5",
           "priority": "core",
           "type": "quickstart",
           "title": "Quickstart Snowflake Data Engineering : Getting Started with Data Engineering using Snowflake Notebooks",
@@ -258,6 +220,18 @@
           "url": "https://quickstarts.snowflake.com/guide/data_engineering_with_notebooks/index.html?index=..%2F..index#0",
           "deliverable": "Pipeline d'ingestion et transformation exécuté dans Snowflake Notebooks",
           "recommended_day": "Samedi (après-midi)"
+        },
+        {
+          "id": "W02-C5",
+          "priority": "core",
+          "type": "podcast",
+          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : CLF-AUDIO-07 à CLF-AUDIO-11 (Achats EC2, Stockage S3/EBS/EFS, BD & Analytics, Réseau VPC, Facturation & Support)",
+          "resource": "Studio Audio Mobile intégré (public/audios/clf-c02/)",
+          "lectures": "CLF-AUDIO-07 à CLF-AUDIO-11 (Écoute 1 + Écoute 2 J+3)",
+          "video_min": 0,
+          "est_min": 90,
+          "deliverable": "Épisodes CLF-AUDIO-07 à 11 maîtrisés",
+          "recommended_day": "Chaque jour (trajets)"
         }
       ]
     },
@@ -265,43 +239,198 @@
       "week": 3,
       "start": "2026-11-23",
       "end": "2026-11-29",
-      "phase": "EXAMEN N°1 : AWS Cloud Practitioner (Vendredi 27/11) + Lancement Anticipé Urgence N°1 dbt (Samedi-Dimanche)",
-      "theme": "Passage officiel CLF-C02 (27/11/2026) + Compensation du décalage initial : Activation Snowflake 120j, Quickstart Container Runtime & Début Zoltan Toth (leçons 1 à 25)",
+      "phase": "CLF-C02 : préparation (semaine 3/5)",
+      "theme": "Merico leçons 94 à 157 + Skill Builder Domain 3 Review + Quickstart Snowflake",
       "light_week": false,
-      "exam": "AWS Certified Cloud Practitioner (CLF-C02) - Vendredi 27/11/2026",
-      "cert_budget_min": 550,
+      "exam": null,
+      "cert_budget_min": 594,
       "interview_budget_min": 60,
-      "total_planned_min": 610,
-      "checkpoint": "CERTIFICATION N°1 (CLF-C02) VALIDÉE + Compte Snowflake 120j actif + Toth leçons 1 à 25 & DBT-AUDIO-01 terminés dès fin novembre !",
+      "total_planned_min": 654,
+      "checkpoint": "Merico leçons 94 à 157 cochées ; revues Skill Builder terminées",
       "tasks": [
         {
           "id": "W03-C1",
           "course": "merico",
           "priority": "core",
-          "type": "exam_blanc",
-          "title": "Merico CLF-C02 : Examen blanc final commenté (Leçons 200 à 203) + Official Practice Question Set + Podcast CLF-AUDIO-12 (Les 25 pièges CLF-C02)",
-          "resource": "Udemy Merico + AWS Skill Builder + Studio Audio",
-          "lectures": "leçons 200 à 203 + CLF-AUDIO-12",
-          "first": 200,
-          "last": 203,
-          "video_min": 45,
-          "est_min": 135,
-          "deliverable": "Cours Merico 100 % complété (203/203), CLF-AUDIO-12 écouté et score blanc >= 82 %",
+          "type": "udemy",
+          "title": "Merico CLF-C02 : Stockage : EBS, S3, EFS, FSx (leçons 94 à 106)",
+          "resource": "Udemy - Amadou Merico (CLF-C02)",
+          "lectures": "leçons 94 à 106",
+          "first": 94,
+          "last": 106,
+          "video_min": 83,
+          "est_min": 86,
+          "deliverable": "Leçons 94 à 106 du cours Merico cochées",
+          "recommended_day": "Lundi (soir)"
+        },
+        {
+          "id": "W03-C2",
+          "course": "merico",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Merico CLF-C02 : Bases de données : RDS, DynamoDB, DMS, ElastiCache (leçons 107 à 119)",
+          "resource": "Udemy - Amadou Merico (CLF-C02)",
+          "lectures": "leçons 107 à 119",
+          "first": 107,
+          "last": 119,
+          "video_min": 83,
+          "est_min": 86,
+          "deliverable": "Leçons 107 à 119 du cours Merico cochées",
+          "recommended_day": "Mardi (soir)"
+        },
+        {
+          "id": "W03-C3",
+          "priority": "core",
+          "type": "skill_builder",
+          "title": "AWS Skill Builder (CLF-C02, français) : Domain 3 Review (Technologies et services cloud)",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "2 revues officielles de domaine (2 x 1 h 05)",
+          "video_min": 65,
+          "est_min": 65,
+          "url": "https://skillbuilder.aws/",
+          "deliverable": "Domaine 3 (34 %) relu avec la revue officielle, après les leçons Merico sur le calcul, le réseau, le stockage et les bases de données",
           "skillbuilder": {
             "exam_page": "AWS Certified Cloud Practitioner (CLF-C02)",
             "language": "Français",
             "access": "Gratuit",
             "items": [
               {
-                "name": "Official Practice Question Set: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
-                "minutes": 30,
+                "name": "Domain 3 Review: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
+                "minutes": 65,
                 "kind": "Préparation à l'examen de certification"
               }
             ]
-          }
+          },
+          "recommended_day": "Mercredi (soir)"
         },
         {
           "id": "W03-C4",
+          "course": "merico",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Merico CLF-C02 : Analytique et IA/ML : Athena, Glue, EMR, Redshift, Kinesis, MSK, QuickSight ; Intégration d'applications : SQS, SNS (leçons 120 à 136)",
+          "resource": "Udemy - Amadou Merico (CLF-C02)",
+          "lectures": "leçons 120 à 136",
+          "first": 120,
+          "last": 136,
+          "video_min": 120,
+          "est_min": 140,
+          "deliverable": "Leçons 120 à 136 du cours Merico cochées",
+          "recommended_day": "Jeudi (soir)"
+        },
+        {
+          "id": "W03-C5",
+          "course": "merico",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Merico CLF-C02 : Sécurité : responsabilité partagée, IAM, Organizations, KMS, Macie, GuardDuty, etc. (leçons 137 à 157)",
+          "resource": "Udemy - Amadou Merico (CLF-C02)",
+          "lectures": "leçons 137 à 157",
+          "first": 137,
+          "last": 157,
+          "video_min": 160,
+          "est_min": 157,
+          "deliverable": "Leçons 137 à 157 du cours Merico cochées",
+          "recommended_day": "Vendredi (soir)"
+        },
+        {
+          "id": "W03-C6",
+          "priority": "core",
+          "type": "quickstart",
+          "title": "Quickstart Snowflake ML #1 (Beginner) : Getting Started with Snowflake Notebooks on Container Runtime",
+          "resource": "Snowflake ML Quickstarts (essai Snowflake standard 30 jours ou essai 120 jours de Fred)",
+          "lectures": "Model development example #1",
+          "video_min": 0,
+          "est_min": 45,
+          "url": "https://www.snowflake.com/en/developers/solutions-center/getting-started-with-snowflake-notebook-container-runtime/",
+          "deliverable": "Exécution de ton 1er Notebook ML sur Container Runtime dans Snowflake",
+          "recommended_day": "Samedi 28 novembre (après l'examen)"
+        },
+        {
+          "id": "W03-C7",
+          "priority": "core",
+          "type": "devoteam",
+          "title": "Activer l'essai Snowflake 120 jours de Fred (400 $, AWS us-west-2), relais de l'essai standard 30 jours",
+          "resource": "Snowflake (lien partagé par Fred - Devoteam)",
+          "lectures": "Activation du compte",
+          "video_min": 0,
+          "est_min": 15,
+          "deliverable": "Compte Snowflake 120 jours actif, prêt pour les labs dbt et les Quickstarts jusqu'à fin mars 2027",
+          "url": "https://signup.snowflake.com/?trial=student&cloud=aws&region=us-west-2&utm_source=coursera&utm_campaign=devdaybootcamp2025",
+          "recommended_day": "Samedi 28 novembre"
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "start": "2026-11-30",
+      "end": "2026-12-06",
+      "phase": "CLF-C02 : préparation (semaine 4/5)",
+      "theme": "Merico leçons 158 à 198 + Skill Builder Domain 2 Review + Skill Builder Domain 4 Review, Exam Prep Summary + Podcasts CLF-AUDIO-01, 02, 03, 04, 05, 06, 12 + Quickstart Snowflake",
+      "light_week": false,
+      "exam": null,
+      "cert_budget_min": 532,
+      "interview_budget_min": 100,
+      "total_planned_min": 632,
+      "checkpoint": "Merico leçons 158 à 198 cochées ; revues Skill Builder terminées",
+      "tasks": [
+        {
+          "id": "W04-C1",
+          "priority": "core",
+          "type": "skill_builder",
+          "title": "AWS Skill Builder (CLF-C02, français) : Domain 2 Review (Sécurité et conformité)",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "2 revues officielles de domaine (2 x 1 h 05)",
+          "video_min": 65,
+          "est_min": 65,
+          "url": "https://skillbuilder.aws/",
+          "deliverable": "Domaine 2 (30 %) relu avec la revue officielle, après les leçons Merico sur la sécurité",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Cloud Practitioner (CLF-C02)",
+            "language": "Français",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Domain 2 Review: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
+                "minutes": 65,
+                "kind": "Préparation à l'examen de certification"
+              }
+            ]
+          },
+          "recommended_day": "Lundi (soir)"
+        },
+        {
+          "id": "W04-C2",
+          "course": "merico",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Merico CLF-C02 : Développer et déployer : CodeCommit, CloudFormation, CDK ; Monitoring : CloudWatch, CloudTrail, Trusted Advisor (leçons 158 à 172)",
+          "resource": "Udemy - Amadou Merico (CLF-C02)",
+          "lectures": "leçons 158 à 172",
+          "first": 158,
+          "last": 172,
+          "video_min": 82,
+          "est_min": 105,
+          "deliverable": "Leçons 158 à 172 du cours Merico cochées",
+          "recommended_day": "Mardi (soir)"
+        },
+        {
+          "id": "W04-C3",
+          "course": "merico",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Merico CLF-C02 : Monitoring : CloudWatch, CloudTrail, Trusted Advisor ; Facturation, tarification, support (leçons 173 à 188)",
+          "resource": "Udemy - Amadou Merico (CLF-C02)",
+          "lectures": "leçons 173 à 188",
+          "first": 173,
+          "last": 188,
+          "video_min": 91,
+          "est_min": 104,
+          "deliverable": "Leçons 173 à 188 du cours Merico cochées",
+          "recommended_day": "Mercredi (soir)"
+        },
+        {
+          "id": "W04-C4",
           "priority": "core",
           "type": "skill_builder",
           "title": "AWS Skill Builder (CLF-C02, français) : Domain 4 Review (Facturation, tarification et support) et Exam Prep Summary",
@@ -310,7 +439,6 @@
           "video_min": 70,
           "est_min": 70,
           "url": "https://skillbuilder.aws/",
-          "recommended_day": "Mardi (soir), avant l'examen du vendredi",
           "deliverable": "Domaine 4 (12 %) relu et synthèse officielle consultée avant l'examen",
           "skillbuilder": {
             "exam_page": "AWS Certified Cloud Practitioner (CLF-C02)",
@@ -328,110 +456,48 @@
                 "kind": "Préparation à l'examen de certification"
               }
             ]
-          }
+          },
+          "recommended_day": "Jeudi (soir)"
         },
         {
-          "id": "W03-C2",
-          "priority": "core",
-          "type": "certification",
-          "title": "PASSAGE DE L'EXAMEN OFFICIEL : AWS Certified Cloud Practitioner (CLF-C02 - Vendredi 27 novembre 2026)",
-          "resource": "Pearson VUE (En ligne ou Centre d'examen)",
-          "lectures": "Examen officiel CLF-C02 (90 min)",
-          "video_min": 0,
-          "est_min": 120,
-          "deliverable": "Certification AWS CLF-C02 obtenue (score >= 700/1000) avant fin novembre !"
-        },
-        {
-          "id": "W03-C3",
-          "course": "toth",
+          "id": "W04-C5",
+          "course": "merico",
           "priority": "core",
           "type": "udemy",
-          "title": "Compensation Semaine 1 (Week-end 28-29/11) : Activation Free Trial Snowflake 120j (400$ Fred) + Zoltan Toth (dbt Bootcamp : Départ Leçons 1 à 25) + Podcast DBT-AUDIO-01",
-          "resource": "Snowflake Trial 120j + Udemy Zoltan Toth + Studio Audio",
-          "lectures": "leçons 1 à 25 + DBT-AUDIO-01",
-          "first": 1,
-          "last": 25,
-          "video_min": 80,
-          "est_min": 140,
-          "url": "https://devoteamlearning.udemy.com/course/complete-dbt-data-build-tool-bootcamp-zero-to-hero-learn-dbt/learn/lecture/53307751?learning_path_id=11058579#overview",
-          "deliverable": "Départ à la leçon 1 sur Zoltan Toth : environnement dbt connecté au Trial Snowflake 120j, leçons 1 à 25 validées et DBT-AUDIO-01 écouté"
+          "title": "Merico CLF-C02 : Migration, Snow, Transfer, Disaster Recovery ; Well-Architected, bonnes pratiques, CAF (leçons 189 à 198)",
+          "resource": "Udemy - Amadou Merico (CLF-C02)",
+          "lectures": "leçons 189 à 198",
+          "first": 189,
+          "last": 198,
+          "video_min": 63,
+          "est_min": 68,
+          "deliverable": "Leçons 189 à 198 du cours Merico cochées",
+          "recommended_day": "Vendredi (soir)"
         },
         {
-          "id": "W03-B1",
-          "priority": "bonus",
-          "type": "revision",
-          "title": "Relecture des 4 Fiches Express CLF-C02 et réécoute accélérée (1.5x) de CLF-AUDIO-05, 07 et 10",
-          "resource": "Fiches Express CLF-C02 + Studio Audio",
-          "lectures": "Domaines 1 à 4",
-          "video_min": 0,
-          "est_min": 40,
-          "deliverable": "Verrouillage des points de sécurité, d'achats EC2 et de réseau VPC avant l'épreuve"
-        },
-        {
-          "id": "W03-C5",
+          "id": "W04-C6",
           "priority": "core",
           "type": "quickstart",
-          "title": "Quickstart Snowflake ML #1 (Beginner) : Getting Started with Snowflake Notebooks on Container Runtime",
-          "resource": "Snowflake ML Quickstarts (essai Snowflake standard 30 jours ou essai 120 jours de Fred)",
-          "lectures": "Model development example #1",
+          "title": "Quickstart Snowflake ML #2 (Beginner) : Getting Started with ML Development in Snowflake (Snowpark ML)",
+          "resource": "Snowflake ML Quickstarts",
+          "lectures": "Model development example #2",
           "video_min": 0,
           "est_min": 45,
-          "url": "https://www.snowflake.com/en/developers/solutions-center/getting-started-with-snowflake-notebook-container-runtime/",
-          "deliverable": "Exécution de ton 1er Notebook ML sur Container Runtime dans Snowflake",
-          "recommended_day": "Samedi 28 novembre (après l'examen)"
-        }
-      ]
-    },
-    {
-      "week": 4,
-      "start": "2026-11-30",
-      "end": "2026-12-06",
-      "phase": "URGENCE N°1 : dbt Analytics Engineering - Semaine Intensive 1 (Modèles, Sources, Snapshots, Tests & Audios DBT 02 à 04)",
-      "theme": "Zoltan Toth leçons 26 à 57 + Quickstart #1 dbt Cloud & Snowflake + Onboarding et feedback Devoteam + Audios DBT 02 à 04",
-      "light_week": false,
-      "exam": null,
-      "cert_budget_min": 370,
-      "interview_budget_min": 120,
-      "total_planned_min": 490,
-      "checkpoint": "Toth leçons 26 à 57 validées + 1er Quickstart dbt Cloud & Snowflake terminé + Audios DBT 01 à 04 maîtrisés",
-      "tasks": [
-        {
-          "id": "W04-C1",
-          "course": "toth",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Zoltan Toth (dbt Bootcamp) : Matérialisations, Seeds, Sources, Snapshots SCD2, Tests et Jinja/Macros (Leçons 26 à 57)",
-          "resource": "Udemy - Zoltan C. Toth (dbt Bootcamp)",
-          "lectures": "leçons 26 à 57",
-          "first": 26,
-          "last": 57,
-          "video_min": 110,
-          "est_min": 150,
-          "url": "https://devoteamlearning.udemy.com/course/complete-dbt-data-build-tool-bootcamp-zero-to-hero-learn-dbt/learn/lecture/53307751?learning_path_id=11058579#overview",
-          "deliverable": "Leçons 26 à 57 validées : couches stg/int/fct, snapshots, tests et macros Jinja en place sur Snowflake"
+          "url": "https://quickstarts.snowflake.com/guide/intro_to_machine_learning_with_snowpark_ml_for_python/",
+          "deliverable": "Prétraitement et entraînement avec snowflake.ml.modeling (version courte, semaine des fêtes)",
+          "recommended_day": "Samedi (matin)"
         },
         {
-          "id": "W04-C2",
-          "priority": "core",
-          "type": "quickstart",
-          "title": "Quickstart #1 : Quickstart for dbt Cloud and Snowflake + Feedback Interne Devoteam (Google Doc retours d'examen dbt) + dbt Learn Fundamentals",
-          "resource": "docs.getdbt.com + Google Doc Devoteam + learn.getdbt.com",
-          "lectures": "Quickstart officiel + Doc Feedback + Quiz Fundamentals",
-          "video_min": 45,
-          "est_min": 115,
-          "url": "https://docs.getdbt.com/guides/snowflake?step=1",
-          "deliverable": "Projet Quickstart dbt Cloud + Snowflake déployé et synthèse des pièges d'examen Devoteam"
-        },
-        {
-          "id": "W04-C3",
+          "id": "W04-C7",
           "priority": "core",
           "type": "podcast",
-          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DBT-AUDIO-02, DBT-AUDIO-03 et DBT-AUDIO-04 (Hiérarchie Configs, Sources/Freshness/Seeds, 5 Matérialisations)",
-          "resource": "Studio Audio Mobile intégré (public/audios/dbt/)",
-          "lectures": "DBT-AUDIO-02 à DBT-AUDIO-04 (Écoute 1 + Écoute 2 J+3)",
+          "title": "Podcasts NotebookLM : CLF-AUDIO-12 (Les 25 pièges CLF-C02) et rappels de CLF-AUDIO-01 à CLF-AUDIO-06",
+          "resource": "Studio Audio Mobile intégré (public/audios/clf-c02/)",
+          "lectures": "CLF-AUDIO-12 (Écoute 1) + rappels",
           "video_min": 0,
-          "est_min": 75,
-          "deliverable": "Épisodes DBT-AUDIO-02, 03 et 04 écoutés et maîtrisés"
+          "est_min": 45,
+          "deliverable": "CLF-AUDIO-12 écouté et pièges notés dans les flashcards",
+          "recommended_day": "Chaque jour (trajets)"
         },
         {
           "id": "W04-B1",
@@ -451,242 +517,68 @@
       "week": 5,
       "start": "2026-12-07",
       "end": "2026-12-13",
-      "phase": "URGENCE N°1 : dbt Analytics Engineering - Semaine Intensive 2 (Incrémental, Snapshots, Hooks, Packages & Audios DBT 05 à 08)",
-      "theme": "Zoltan Toth leçons 58 à 107 + dbt Learn (Jinja, Refactoring SQL, Incremental, Snapshots) + Quickstart #2 + Audios DBT 05 à 08",
+      "phase": "EXAMEN N°1 : AWS Cloud Practitioner (vendredi 11/12) puis démarrage dbt le week-end",
+      "theme": "Toth leçons 1 à 20 + examens blancs + examen officiel + Quickstart Snowflake",
       "light_week": false,
-      "exam": null,
-      "cert_budget_min": 425,
-      "interview_budget_min": 120,
-      "total_planned_min": 545,
-      "checkpoint": "Maîtrise complète de is_incremental(), Snapshots SCD2, Hooks, Grants, Sélecteurs et Audios DBT 05 à 08",
+      "exam": "AWS Certified Cloud Practitioner (CLF-C02) - Vendredi 11/12/2026",
+      "cert_budget_min": 558,
+      "interview_budget_min": 100,
+      "total_planned_min": 658,
+      "checkpoint": "Toth leçons 1 à 20 cochées ; examens blancs faits et erreurs ajoutées aux flashcards ; AWS Certified Cloud Practitioner (CLF-C02) obtenue",
       "tasks": [
         {
           "id": "W05-C1",
-          "course": "toth",
           "priority": "core",
-          "type": "udemy",
-          "title": "Zoltan Toth (dbt Bootcamp) : Documentation, Analyses, Hooks, Grants, Exposures, dbt-expectations et Sélecteurs CLI (Leçons 58 à 107)",
-          "resource": "Udemy - Zoltan C. Toth (dbt Bootcamp)",
-          "lectures": "leçons 58 à 107",
-          "first": 58,
-          "last": 107,
-          "video_min": 125,
-          "est_min": 165,
-          "url": "https://devoteamlearning.udemy.com/course/complete-dbt-data-build-tool-bootcamp-zero-to-hero-learn-dbt/learn/lecture/53307751?learning_path_id=11058579#overview",
-          "deliverable": "Leçons 58 à 107 validées : pre-hook/post-hook, on-run-end, grants, exposures et sélecteurs maîtrisés"
+          "type": "exam_blanc",
+          "title": "Merico CLF-C02 : Examens pratiques 1 à 3 (3 x 25 questions) avec correction",
+          "resource": "Udemy - Amadou Merico (CLF-C02)",
+          "lectures": "Examens pratiques 1 à 3",
+          "video_min": 0,
+          "est_min": 105,
+          "deliverable": "Scores des 3 examens pratiques notés, erreurs ajoutées aux flashcards",
+          "recommended_day": "Lundi (soir)"
         },
         {
           "id": "W05-C2",
           "priority": "core",
-          "type": "dbt_learn",
-          "title": "dbt Learn Officiel : Jinja, Macros, and Packages + Refactoring SQL for Modularity + Incremental Models + Snapshots",
-          "resource": "learn.getdbt.com (Parcours Officiel dbt Developer)",
-          "lectures": "4 modules officiels gratuits",
-          "video_min": 100,
-          "est_min": 135,
-          "url": "https://learn.getdbt.com/courses/refactoring-sql-for-modularity",
-          "deliverable": "Exercices officiels de refactoring SQL, modèles incrémentaux et snapshots validés sur learn.getdbt.com"
+          "type": "exam_blanc",
+          "title": "Merico CLF-C02 : Examens pratiques 4 et 5, leçons 199 à 203 (CAF, planifier l'examen) + Official Practice Question Set",
+          "resource": "Udemy - Amadou Merico (CLF-C02) + AWS Skill Builder",
+          "lectures": "leçons 199 à 203 + examens pratiques 4 et 5",
+          "video_min": 26,
+          "est_min": 134,
+          "deliverable": "Cours Merico terminé (203/203) et score blanc >= 82 %",
+          "course": "merico",
+          "first": 199,
+          "last": 203,
+          "skillbuilder": {
+            "exam_page": "AWS Certified Cloud Practitioner (CLF-C02)",
+            "language": "Français",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Official Practice Question Set: AWS Certified Cloud Practitioner (CLF-C02 - Français)",
+                "minutes": 30,
+                "kind": "Préparation à l'examen de certification"
+              }
+            ]
+          },
+          "recommended_day": "Mardi (soir)"
         },
         {
           "id": "W05-C3",
           "priority": "core",
-          "type": "podcast",
-          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DBT-AUDIO-05 à DBT-AUDIO-08 (Modèles Incrémentaux Snowflake, Snapshots SCD2, Tests Génériques/Singuliers, Configs de Tests & Unit Tests)",
-          "resource": "Studio Audio Mobile intégré (public/audios/dbt/)",
-          "lectures": "DBT-AUDIO-05 à DBT-AUDIO-08 (Écoute 1 + Écoute 2 J+3)",
+          "type": "certification",
+          "title": "PASSAGE DE L'EXAMEN OFFICIEL : AWS Certified Cloud Practitioner (CLF-C02 - Vendredi 11 décembre 2026)",
+          "resource": "Pearson VUE (En ligne ou Centre d'examen)",
+          "lectures": "Examen officiel CLF-C02 (90 min)",
           "video_min": 0,
-          "est_min": 65,
-          "deliverable": "Épisodes DBT-AUDIO-05 à 08 écoutés et maîtrisés"
+          "est_min": 120,
+          "deliverable": "Certification AWS CLF-C02 obtenue (score >= 700/1000)",
+          "recommended_day": "Vendredi 11 décembre"
         },
         {
           "id": "W05-C4",
-          "priority": "core",
-          "type": "quickstart",
-          "title": "Quickstart #2 (dbt + Snowflake) : Accelerating Data Teams with Snowflake and dbt Cloud Hands-On Lab",
-          "resource": "Snowflake Quickstarts",
-          "lectures": "Hands-On Lab dbt Cloud + Snowflake",
-          "video_min": 0,
-          "est_min": 60,
-          "url": "https://quickstarts.snowflake.com/guide/accelerating_data_teams_with_snowflake_and_dbt_cloud_hands_on_lab/index.html?index=..%2F..index#0",
-          "recommended_day": "Samedi (après-midi)",
-          "deliverable": "Environnements dev et prod Snowflake configurés et pipeline dbt déployé"
-        }
-      ]
-    },
-    {
-      "week": 6,
-      "start": "2026-12-14",
-      "end": "2026-12-20",
-      "phase": "URGENCE N°1 : dbt Analytics Engineering - Semaine Intensive 3 avant Noël (Toth 108-161 + Weigel 1-89 + Audios DBT 09 à 12)",
-      "theme": "Zoltan Toth (108 à 161) + Daniel Weigel (départ leçons 1 à 89) + dbt Learn Advanced Testing + Quickstart #3 (Snowpark Python et dbt) + Audios DBT 09 à 12",
-      "light_week": false,
-      "exam": null,
-      "cert_budget_min": 500,
-      "interview_budget_min": 120,
-      "total_planned_min": 620,
-      "checkpoint": "Toth (161/164) quasi terminé + Weigel leçons 1 à 89 validées + Audios DBT 09 à 12 maîtrisés + Quickstart #3 (Snowpark Python et dbt) réalisé",
-      "tasks": [
-        {
-          "id": "W06-C1",
-          "course": "toth",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Zoltan Toth (Leçons 108 à 161 : Tests avancés, Débogage, CI/CD) + Daniel Weigel (Départ Leçons 1 à 89 : Focus Examen Modèles, Jinja, Tests, Snapshots, Exposures)",
-          "resource": "Udemy - Zoltan C. Toth & Daniel Weigel",
-          "lectures": "Toth leçons 108 à 161 + Weigel leçons 1 à 89",
-          "first": 108,
-          "last": 161,
-          "video_min": 120,
-          "est_min": 155,
-          "deliverable": "Départ leçon 1 sur Weigel (1 à 89) et avancée Toth jusqu'à la leçon 161 avant la semaine de Noël"
-        },
-        {
-          "id": "W06-C2",
-          "priority": "core",
-          "type": "dbt_learn",
-          "title": "dbt Learn Officiel : Advanced Testing + Exposures + Analyses and Seeds + Podcasts NotebookLM DBT-AUDIO-09 à DBT-AUDIO-12 (Contrats, Jinja execute, Hooks, Sélecteurs +@)",
-          "resource": "learn.getdbt.com + Studio Audio Mobile (public/audios/dbt/)",
-          "lectures": "3 modules dbt Learn + DBT-AUDIO-09 à 12",
-          "video_min": 75,
-          "est_min": 95,
-          "url": "https://learn.getdbt.com/courses/advanced-testing",
-          "deliverable": "Cours Advanced Testing & Exposures validés + Épisodes DBT-AUDIO-09 à 12 écoutés"
-        },
-        {
-          "id": "W06-C3",
-          "priority": "core",
-          "type": "quickstart",
-          "title": "Quickstart #3 (dbt + Snowflake) : Data Engineering with Snowpark Python and dbt",
-          "resource": "Snowflake Quickstarts",
-          "lectures": "Lab modèles Python Snowpark dans dbt",
-          "video_min": 0,
-          "est_min": 60,
-          "url": "https://quickstarts.snowflake.com/guide/data_engineering_with_snowpark_python_and_dbt/index.html?index=..%2F..index#0",
-          "deliverable": "Modèle Python Snowpark (.py) exécuté dans dbt"
-        },
-        {
-          "id": "W06-B1",
-          "course": "weigel",
-          "priority": "bonus",
-          "type": "udemy",
-          "title": "Approfondissement Pratique Weigel (Exercices orientés certification leçons 1 à 89)",
-          "resource": "Udemy Daniel Weigel",
-          "lectures": "leçons 1 à 89",
-          "first": 1,
-          "last": 89,
-          "video_min": 100,
-          "est_min": 100,
-          "deliverable": "Exercices Weigel 1-89 validés"
-        },
-        {
-          "id": "W06-B2",
-          "priority": "bonus",
-          "type": "quickstart",
-          "title": "Quickstart #4 (dbt + Snowflake) : Build Data Products and a Data Mesh with dbt Cloud & Snowflake",
-          "resource": "Snowflake Quickstarts",
-          "lectures": "Hands-On Lab dbt Mesh",
-          "video_min": 0,
-          "est_min": 90,
-          "url": "https://quickstarts.snowflake.com/guide/data-products-data-mesh-dbt-cloud/index.html?index=..%2F..index#0",
-          "deliverable": "Mise en œuvre pratique de cross-project ref() (au programme de l'examen dbt)"
-        }
-      ]
-    },
-    {
-      "week": 7,
-      "start": "2026-12-21",
-      "end": "2026-12-27",
-      "phase": "URGENCE N°1 : dbt Analytics Engineering - Semaine des Fêtes de Noël ALLÉGÉE (Zéro hausse de charge : max 6h)",
-      "theme": "Déploiement dbt, Slim CI (state:modified+, --defer), dbt retry, dbt clone + Podcasts DBT 13 & 14 (Budget léger Noël : 335 min Core, Quickstart ML court inclus)",
-      "light_week": true,
-      "exam": null,
-      "cert_budget_min": 255,
-      "interview_budget_min": 80,
-      "total_planned_min": 335,
-      "checkpoint": "Maîtrise absolue de Slim CI (state:modified+ --defer), dbt build, dbt retry et dbt clone tout en profitant pleinement de Noël",
-      "tasks": [
-        {
-          "id": "W07-C1",
-          "course": "weigel",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Daniel Weigel (dbt Certification) : Déploiement, Jobs, CI/CD, State, Retry, Clone et Grants (Leçons 90 à 119)",
-          "resource": "Udemy - Daniel Weigel (dbt Certification)",
-          "lectures": "leçons 90 à 119",
-          "first": 90,
-          "last": 119,
-          "video_min": 90,
-          "est_min": 115,
-          "deliverable": "Maîtrise des commandes dbt build --select state:modified+ --defer --state, dbt retry et dbt clone"
-        },
-        {
-          "id": "W07-C2",
-          "priority": "core",
-          "type": "podcast",
-          "title": "dbt Learn : Advanced Deployment + Podcasts NotebookLM DBT-AUDIO-13 & DBT-AUDIO-14 (dbt build, retry, clone, manifest.json & Slim CI)",
-          "resource": "learn.getdbt.com + Studio Audio Mobile (public/audios/dbt/)",
-          "lectures": "Cours Advanced Deployment + DBT-AUDIO-13 & 14",
-          "video_min": 45,
-          "est_min": 95,
-          "url": "https://learn.getdbt.com/courses/advanced-deployment",
-          "deliverable": "Épisodes DBT-AUDIO-13 et 14 écoutés tranquillement et fiche synthèse des 4 artefacts JSON"
-        },
-        {
-          "id": "W07-C3",
-          "priority": "core",
-          "type": "quickstart",
-          "title": "Quickstart Snowflake ML #2 (Beginner) : Getting Started with ML Development in Snowflake (Snowpark ML)",
-          "resource": "Snowflake ML Quickstarts",
-          "lectures": "Model development example #2",
-          "video_min": 0,
-          "est_min": 45,
-          "url": "https://quickstarts.snowflake.com/guide/intro_to_machine_learning_with_snowpark_ml_for_python/",
-          "deliverable": "Prétraitement et entraînement avec snowflake.ml.modeling (version courte, semaine des fêtes)",
-          "recommended_day": "Samedi (matin)"
-        }
-      ]
-    },
-    {
-      "week": 8,
-      "start": "2026-12-28",
-      "end": "2027-01-03",
-      "phase": "URGENCE N°1 : dbt Analytics Engineering - Semaine du Nouvel An ALLÉGÉE (Zéro hausse de charge : max 6h)",
-      "theme": "Clôture Toth (162-164 : dbt Mesh) + Weigel (120-130 : Contrats, Gouvernance) + Study Guide & Podcasts DBT 15 & 16 (Budget léger : 350 min Core, Quickstart ML inclus)",
-      "light_week": true,
-      "exam": null,
-      "cert_budget_min": 270,
-      "interview_budget_min": 80,
-      "total_planned_min": 350,
-      "checkpoint": "100 % du programme théorique, pratique et des 16 Podcasts dbt bouclés avant la semaine d'examen sans surcharger le Nouvel An",
-      "tasks": [
-        {
-          "id": "W08-C1",
-          "course": "toth",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Zoltan Toth (Leçons 162 à 164 : dbt Mesh - Fin 100 % Toth) + Daniel Weigel (Leçons 120 à 130 : Gouvernance, Contrats, Versions, Semantic Layer)",
-          "resource": "Udemy - Zoltan Toth & Daniel Weigel",
-          "lectures": "Toth 162-164 + Weigel 120-130",
-          "first": 162,
-          "last": 164,
-          "video_min": 80,
-          "est_min": 115,
-          "deliverable": "Cours Zoltan Toth 100 % terminé (164/164) et maîtrise de contract: {enforced: true}, access et versions"
-        },
-        {
-          "id": "W08-C2",
-          "priority": "core",
-          "type": "podcast",
-          "title": "dbt Learn : Cours dbt Mesh + Official Exam Study Guide + Podcasts NotebookLM DBT-AUDIO-15 & DBT-AUDIO-16 (Documentation, Exposures, Mesh & Les 30 Pièges Finaux)",
-          "resource": "learn.getdbt.com + Studio Audio Mobile (public/audios/dbt/)",
-          "lectures": "Study Guide Officiel + DBT-AUDIO-15 & 16",
-          "video_min": 45,
-          "est_min": 95,
-          "url": "https://learn.getdbt.com/courses/analytics-engineering-exam-study-guide",
-          "deliverable": "Épisodes DBT-AUDIO-15 et 16 écoutés et checklist du Study Guide officiel cochée"
-        },
-        {
-          "id": "W08-C3",
           "priority": "core",
           "type": "quickstart",
           "title": "Quickstart Snowflake ML #3 (Beginner) : Build an End-to-End ML Model in Snowflake (XGBoost & MLOps)",
@@ -696,6 +588,259 @@
           "est_min": 60,
           "url": "https://quickstarts.snowflake.com/guide/end-to-end-ml-workflow/index.html?index=..%2F..index#1",
           "deliverable": "Modèle XGBoost déployé de bout en bout sur Snowflake",
+          "recommended_day": "Samedi 12 décembre (après l'examen)"
+        },
+        {
+          "id": "W05-C5",
+          "course": "toth",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Zoltan Toth (dbt Bootcamp) : Introduction, Snowflake, installation, premier modèle, matérialisations, seeds, sources, freshness (leçons 1 à 20)",
+          "resource": "Udemy - Zoltan C. Toth (dbt)",
+          "lectures": "leçons 1 à 20",
+          "first": 1,
+          "last": 20,
+          "video_min": 88,
+          "est_min": 99,
+          "deliverable": "Leçons 1 à 20 du cours Toth cochées",
+          "url": "https://devoteamlearning.udemy.com/course/complete-dbt-data-build-tool-bootcamp-zero-to-hero-learn-dbt/learn/lecture/53307751?learning_path_id=11058579#overview",
+          "recommended_day": "Samedi (après-midi) (après l'examen)"
+        },
+        {
+          "id": "W05-B1",
+          "priority": "bonus",
+          "type": "revision",
+          "title": "Relecture des 4 Fiches Express CLF-C02 et réécoute accélérée (1.5x) de CLF-AUDIO-05, 07 et 10 avant l'examen",
+          "resource": "Fiches Express CLF-C02 + Studio Audio",
+          "lectures": "Domaines 1 à 4",
+          "video_min": 0,
+          "est_min": 40,
+          "deliverable": "Verrouillage des points de sécurité, d'achats EC2 et de réseau VPC avant l'épreuve"
+        }
+      ]
+    },
+    {
+      "week": 6,
+      "start": "2026-12-14",
+      "end": "2026-12-20",
+      "phase": "dbt Analytics Engineering (semaine 1/6)",
+      "theme": "Toth leçons 21 à 45 + Podcasts DBT-AUDIO-01, 02, 03, 04, 05, 06, 07, 08 + Quickstart Snowflake",
+      "light_week": false,
+      "exam": null,
+      "cert_budget_min": 557,
+      "interview_budget_min": 100,
+      "total_planned_min": 657,
+      "checkpoint": "Toth leçons 21 à 45 cochées",
+      "tasks": [
+        {
+          "id": "W06-C1",
+          "priority": "core",
+          "type": "quickstart",
+          "title": "Quickstart #1 : Quickstart for dbt Cloud and Snowflake + Feedback Interne Devoteam (Google Doc retours d'examen dbt) + dbt Learn Fundamentals",
+          "resource": "docs.getdbt.com + Google Doc Devoteam + learn.getdbt.com",
+          "lectures": "Quickstart officiel + Doc Feedback + Quiz Fundamentals",
+          "video_min": 45,
+          "est_min": 115,
+          "url": "https://docs.getdbt.com/guides/snowflake?step=1",
+          "deliverable": "Projet Quickstart dbt Cloud + Snowflake déployé et synthèse des pièges d'examen Devoteam",
+          "recommended_day": "Lundi (soir)"
+        },
+        {
+          "id": "W06-C2",
+          "course": "toth",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Zoltan Toth (dbt Bootcamp) : Introduction, Snowflake, installation, premier modèle, matérialisations, seeds, sources, freshness (leçons 21 à 25)",
+          "resource": "Udemy - Zoltan C. Toth (dbt)",
+          "lectures": "leçons 21 à 25",
+          "first": 21,
+          "last": 25,
+          "video_min": 26,
+          "est_min": 74,
+          "deliverable": "Leçons 21 à 25 du cours Toth cochées",
+          "recommended_day": "Mardi (soir)"
+        },
+        {
+          "id": "W06-C3",
+          "course": "toth",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Zoltan Toth (dbt Bootcamp) : Introduction, Snowflake, installation, premier modèle, matérialisations, seeds, sources, freshness ; Snapshots (leçons 26 à 36)",
+          "resource": "Udemy - Zoltan C. Toth (dbt)",
+          "lectures": "leçons 26 à 36",
+          "first": 26,
+          "last": 36,
+          "video_min": 44,
+          "est_min": 109,
+          "deliverable": "Leçons 26 à 36 du cours Toth cochées",
+          "recommended_day": "Mercredi (soir)"
+        },
+        {
+          "id": "W06-C4",
+          "course": "toth",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Zoltan Toth (dbt Bootcamp) : Tests (génériques, singuliers, unitaires), contrats, contraintes (leçons 37 à 45)",
+          "resource": "Udemy - Zoltan C. Toth (dbt)",
+          "lectures": "leçons 37 à 45",
+          "first": 37,
+          "last": 45,
+          "video_min": 26,
+          "est_min": 104,
+          "deliverable": "Leçons 37 à 45 du cours Toth cochées",
+          "recommended_day": "Jeudi (soir)"
+        },
+        {
+          "id": "W06-C5",
+          "priority": "core",
+          "type": "podcast",
+          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DBT-AUDIO-01 à DBT-AUDIO-04 (Introduction, Hiérarchie Configs, Sources/Freshness/Seeds, 5 Matérialisations)",
+          "resource": "Studio Audio Mobile intégré (public/audios/dbt/)",
+          "lectures": "DBT-AUDIO-01 à DBT-AUDIO-04 (Écoute 1 + Écoute 2 J+3)",
+          "video_min": 0,
+          "est_min": 90,
+          "deliverable": "Épisodes DBT-AUDIO-01 à 04 écoutés et maîtrisés",
+          "recommended_day": "Chaque jour (trajets)"
+        },
+        {
+          "id": "W06-C6",
+          "priority": "core",
+          "type": "podcast",
+          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DBT-AUDIO-05 à DBT-AUDIO-08 (Modèles Incrémentaux Snowflake, Snapshots SCD2, Tests Génériques/Singuliers, Configs de Tests & Unit Tests)",
+          "resource": "Studio Audio Mobile intégré (public/audios/dbt/)",
+          "lectures": "DBT-AUDIO-05 à DBT-AUDIO-08 (Écoute 1 + Écoute 2 J+3)",
+          "video_min": 0,
+          "est_min": 65,
+          "deliverable": "Épisodes DBT-AUDIO-05 à 08 écoutés et maîtrisés",
+          "recommended_day": "Chaque jour (trajets)"
+        }
+      ]
+    },
+    {
+      "week": 7,
+      "start": "2026-12-21",
+      "end": "2026-12-27",
+      "phase": "dbt Analytics Engineering (semaine 2/6) : semaine des fêtes, 6 h maximum",
+      "theme": "Toth leçons 46 à 67 + Quickstart Snowflake",
+      "light_week": true,
+      "exam": null,
+      "cert_budget_min": 271,
+      "interview_budget_min": 80,
+      "total_planned_min": 351,
+      "checkpoint": "Toth leçons 46 à 67 cochées",
+      "tasks": [
+        {
+          "id": "W07-C1",
+          "course": "toth",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Zoltan Toth (dbt Bootcamp) : Tests (génériques, singuliers, unitaires), contrats, contraintes ; Jinja et macros, packages (leçons 46 à 57)",
+          "resource": "Udemy - Zoltan C. Toth (dbt)",
+          "lectures": "leçons 46 à 57",
+          "first": 46,
+          "last": 57,
+          "video_min": 41,
+          "est_min": 121,
+          "deliverable": "Leçons 46 à 57 du cours Toth cochées",
+          "recommended_day": "Lundi (soir)"
+        },
+        {
+          "id": "W07-C2",
+          "course": "toth",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Zoltan Toth (dbt Bootcamp) : Documentation et lineage ; Analyses, hooks, grants, exposures (BI Preset optionnel) (leçons 58 à 67)",
+          "resource": "Udemy - Zoltan C. Toth (dbt)",
+          "lectures": "leçons 58 à 67",
+          "first": 58,
+          "last": 67,
+          "video_min": 40,
+          "est_min": 90,
+          "deliverable": "Leçons 58 à 67 du cours Toth cochées",
+          "recommended_day": "Mardi (soir)"
+        },
+        {
+          "id": "W07-C3",
+          "priority": "core",
+          "type": "quickstart",
+          "title": "Quickstart #2 (dbt + Snowflake) : Accelerating Data Teams with Snowflake and dbt Cloud Hands-On Lab",
+          "resource": "Snowflake Quickstarts",
+          "lectures": "Hands-On Lab dbt Cloud + Snowflake",
+          "video_min": 0,
+          "est_min": 60,
+          "url": "https://quickstarts.snowflake.com/guide/accelerating_data_teams_with_snowflake_and_dbt_cloud_hands_on_lab/index.html?index=..%2F..index#0",
+          "recommended_day": "Samedi (matin)",
+          "deliverable": "Environnements dev et prod Snowflake configurés et pipeline dbt déployé"
+        }
+      ]
+    },
+    {
+      "week": 8,
+      "start": "2026-12-28",
+      "end": "2027-01-03",
+      "phase": "dbt Analytics Engineering (semaine 3/6) : semaine des fêtes, 6 h maximum",
+      "theme": "Toth leçons 68 à 72 + Toth leçons 83 à 90 + dbt Learn + Quickstart Snowflake",
+      "light_week": true,
+      "exam": null,
+      "cert_budget_min": 277,
+      "interview_budget_min": 80,
+      "total_planned_min": 357,
+      "checkpoint": "Toth leçons 68 à 72, Toth leçons 83 à 90 cochées",
+      "tasks": [
+        {
+          "id": "W08-C1",
+          "priority": "core",
+          "type": "dbt_learn",
+          "title": "dbt Learn Officiel : Jinja, Macros, and Packages + Refactoring SQL for Modularity + Incremental Models + Snapshots",
+          "resource": "learn.getdbt.com (Parcours Officiel dbt Developer)",
+          "lectures": "4 modules officiels gratuits",
+          "video_min": 100,
+          "est_min": 135,
+          "url": "https://learn.getdbt.com/courses/refactoring-sql-for-modularity",
+          "deliverable": "Exercices officiels de refactoring SQL, modèles incrémentaux et snapshots validés sur learn.getdbt.com",
+          "recommended_day": "Lundi (soir)"
+        },
+        {
+          "id": "W08-C2",
+          "course": "toth",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Zoltan Toth (dbt Bootcamp) : Analyses, hooks, grants, exposures (BI Preset optionnel) (leçons 68 à 72)",
+          "resource": "Udemy - Zoltan C. Toth (dbt)",
+          "lectures": "leçons 68 à 72",
+          "first": 68,
+          "last": 72,
+          "video_min": 22,
+          "est_min": 40,
+          "deliverable": "Leçons 68 à 72 du cours Toth cochées",
+          "recommended_day": "Mardi (soir)"
+        },
+        {
+          "id": "W08-C3",
+          "course": "toth",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Zoltan Toth (dbt Bootcamp) : Logs, commandes avancées, --empty/--sample, flags, tags, sélecteurs (leçons 83 à 90)",
+          "resource": "Udemy - Zoltan C. Toth (dbt)",
+          "lectures": "leçons 83 à 90",
+          "first": 83,
+          "last": 90,
+          "video_min": 24,
+          "est_min": 42,
+          "deliverable": "Leçons 83 à 90 du cours Toth cochées",
+          "recommended_day": "Mercredi (soir)"
+        },
+        {
+          "id": "W08-C4",
+          "priority": "core",
+          "type": "quickstart",
+          "title": "Quickstart #3 (dbt + Snowflake) : Data Engineering with Snowpark Python and dbt",
+          "resource": "Snowflake Quickstarts",
+          "lectures": "Lab modèles Python Snowpark dans dbt",
+          "video_min": 0,
+          "est_min": 60,
+          "url": "https://quickstarts.snowflake.com/guide/data_engineering_with_snowpark_python_and_dbt/index.html?index=..%2F..index#0",
+          "deliverable": "Modèle Python Snowpark (.py) exécuté dans dbt",
           "recommended_day": "Samedi (matin)"
         }
       ]
@@ -704,55 +849,88 @@
       "week": 9,
       "start": "2027-01-04",
       "end": "2027-01-10",
-      "phase": "EXAMEN PRIORITAIRE N°2 : dbt Analytics Engineering Certification (Vendredi 08/01/2027)",
-      "theme": "Examens blancs Weigel (131-132), Questions Qanalabs, Réécoute Audios Pièges dbt et Passage officiel le 8 janvier 2027",
+      "phase": "dbt Analytics Engineering (semaine 4/6)",
+      "theme": "Toth leçons 91 à 123 + Toth leçons 162 à 167 + dbt Learn + Podcasts DBT-AUDIO-09, 10, 11, 12, 13, 14 + Quickstart Snowflake",
       "light_week": false,
-      "exam": "dbt Analytics Engineering Certification - Vendredi 08/01/2027",
-      "cert_budget_min": 435,
+      "exam": null,
+      "cert_budget_min": 565,
       "interview_budget_min": 80,
-      "total_planned_min": 515,
-      "checkpoint": "CERTIFICATION PRIORITAIRE VALIDÉE : dbt Analytics Engineering (dbt Certified Developer) dès le 8 janvier 2027 !",
+      "total_planned_min": 645,
+      "checkpoint": "Toth leçons 91 à 123, Toth leçons 162 à 167 cochées",
       "tasks": [
         {
           "id": "W09-C1",
-          "course": "weigel",
           "priority": "core",
-          "type": "exam_blanc",
-          "title": "Daniel Weigel : Examen blanc complet #1 (Leçon 131) + Examen blanc complet #2 (Leçon 132) commentés",
-          "resource": "Udemy - Daniel Weigel (dbt Certification)",
-          "lectures": "leçons 131 à 132",
-          "first": 131,
-          "last": 132,
-          "video_min": 0,
-          "est_min": 120,
-          "deliverable": "Cours Weigel 100 % terminé (132/132) et scores >= 80 % aux 2 examens blancs"
+          "type": "dbt_learn",
+          "title": "dbt Learn Officiel : Advanced Testing + Exposures + Analyses and Seeds + Podcasts NotebookLM DBT-AUDIO-09 à DBT-AUDIO-12 (Contrats, Jinja execute, Hooks, Sélecteurs +@)",
+          "resource": "learn.getdbt.com + Studio Audio Mobile (public/audios/dbt/)",
+          "lectures": "3 modules dbt Learn + DBT-AUDIO-09 à 12",
+          "video_min": 75,
+          "est_min": 95,
+          "url": "https://learn.getdbt.com/courses/advanced-testing",
+          "deliverable": "Cours Advanced Testing & Exposures validés + Épisodes DBT-AUDIO-09 à 12 écoutés",
+          "recommended_day": "Lundi (soir)"
         },
         {
           "id": "W09-C2",
+          "course": "toth",
           "priority": "core",
-          "type": "exam_blanc",
-          "title": "Entraînement QCM : Questions Qanalabs (qanalabs.com) + Simulateur interne dbt (65 questions) + Réécoute rapide (1.5x) de DBT-AUDIO-05, 06, 10, 12, 14 et 16",
-          "resource": "Qanalabs + Simulateur interne + Studio Audio Mobile",
-          "lectures": "65 questions + Qanalabs + 6 Audios clés",
-          "video_min": 0,
-          "est_min": 135,
-          "url": "https://www.qanalabs.com/courses/dbt-developer",
-          "deliverable": "Score >= 80 % validé (seuil officiel dbt : 65 %) et réflexes audio verrouillés"
+          "type": "udemy",
+          "title": "Zoltan Toth (dbt Bootcamp) : Logs, commandes avancées, --empty/--sample, flags, tags, sélecteurs ; Modèles Python ; Variables, plages de dates, microbatch, full refresh (leçons 91 à 103)",
+          "resource": "Udemy - Zoltan C. Toth (dbt)",
+          "lectures": "leçons 91 à 103",
+          "first": 91,
+          "last": 103,
+          "video_min": 52,
+          "est_min": 103,
+          "deliverable": "Leçons 91 à 103 du cours Toth cochées",
+          "recommended_day": "Mardi (soir)"
         },
         {
           "id": "W09-C3",
+          "course": "toth",
           "priority": "core",
-          "type": "certification",
-          "title": "PASSAGE DE L'EXAMEN OFFICIEL : dbt Analytics Engineering Certification (Vendredi 8 janvier 2027)",
-          "resource": "dbt Labs Certification Exam (En ligne - 65 questions, 120 min)",
-          "lectures": "Examen officiel dbt Analytics Engineering",
-          "video_min": 0,
-          "est_min": 120,
-          "url": "https://www.getdbt.com/certifications/analytics-engineer-certification-exam",
-          "deliverable": "Certification dbt Analytics Engineering obtenue en urgence le 8 janvier 2027 sans aucun décalage !"
+          "type": "udemy",
+          "title": "Zoltan Toth (dbt Bootcamp) : Cycle de vie des modèles : versions, dépréciation, désactivation ; Slim CI, cibles, variables d'environnement, defer, retry, GitHub Actions (leçons 104 à 123)",
+          "resource": "Udemy - Zoltan C. Toth (dbt)",
+          "lectures": "leçons 104 à 123",
+          "first": 104,
+          "last": 123,
+          "video_min": 92,
+          "est_min": 103,
+          "deliverable": "Leçons 104 à 123 du cours Toth cochées",
+          "recommended_day": "Mercredi (soir)"
         },
         {
           "id": "W09-C4",
+          "priority": "core",
+          "type": "podcast",
+          "title": "dbt Learn : Advanced Deployment + Podcasts NotebookLM DBT-AUDIO-13 & DBT-AUDIO-14 (dbt build, retry, clone, manifest.json & Slim CI)",
+          "resource": "learn.getdbt.com + Studio Audio Mobile (public/audios/dbt/)",
+          "lectures": "Cours Advanced Deployment + DBT-AUDIO-13 & 14",
+          "video_min": 45,
+          "est_min": 95,
+          "url": "https://learn.getdbt.com/courses/advanced-deployment",
+          "deliverable": "Épisodes DBT-AUDIO-13 et 14 écoutés tranquillement et fiche synthèse des 4 artefacts JSON",
+          "recommended_day": "Jeudi (soir)"
+        },
+        {
+          "id": "W09-C5",
+          "course": "toth",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Zoltan Toth (dbt Bootcamp) : Guide de préparation à la certification et examen exemple ; Théorie data : maturité, ETL/ELT, DWH, lakehouse, SCD (leçons 162 à 167)",
+          "resource": "Udemy - Zoltan C. Toth (dbt)",
+          "lectures": "leçons 162 à 167",
+          "first": 162,
+          "last": 167,
+          "video_min": 57,
+          "est_min": 109,
+          "deliverable": "Leçons 162 à 167 du cours Toth cochées",
+          "recommended_day": "Vendredi (soir)"
+        },
+        {
+          "id": "W09-C6",
           "priority": "core",
           "type": "quickstart",
           "title": "Quickstart #5 (dbt + Snowflake) : Quickstart for the dbt Cloud Semantic Layer and Snowflake",
@@ -762,7 +940,7 @@
           "est_min": 60,
           "url": "https://docs.getdbt.com/guides/sl-snowflake-qs",
           "deliverable": "Définition de semantic_models et metrics sur Snowflake",
-          "recommended_day": "Samedi 9 janvier (après l'examen)"
+          "recommended_day": "Dimanche (matin)"
         }
       ]
     },
@@ -770,45 +948,17 @@
       "week": 10,
       "start": "2027-01-11",
       "end": "2027-01-17",
-      "phase": "DEA-C01 & Snowflake ML - Semaine 1/10 (Départ Leçon 1 Maarek & Nikolai + Audios DEA 01 & 02)",
-      "theme": "Fondations AWS Data, S3 & Ingestion Streaming (Kinesis, MSK, DMS) + Quickstarts Snowflake ML #2/#3 + Audios DEA 01 & 02",
+      "phase": "dbt Analytics Engineering (semaine 5/6)",
+      "theme": "Toth leçons 168 à 180 + Weigel leçons 66 à 129 + Quickstart Snowflake",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 540,
+      "cert_budget_min": 532,
       "interview_budget_min": 120,
-      "total_planned_min": 660,
-      "checkpoint": "Maarek leçons 1 à 64 validées + Audios DEA-AUDIO-01 & 02 écoutés + Quickstart Snowflake ML #4 (XGBoost GPU) terminé",
+      "total_planned_min": 652,
+      "checkpoint": "Toth leçons 168 à 180, Weigel leçons 66 à 129 cochées",
       "tasks": [
         {
           "id": "W10-C1",
-          "course": "maarek",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Maarek DEA-C01 : Introduction, Fondations Data, S3 Architecture et Sécurité S3 (Départ Leçons 1 à 35)",
-          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
-          "lectures": "leçons 1 à 35",
-          "first": 1,
-          "last": 35,
-          "video_min": 102,
-          "est_min": 145,
-          "deliverable": "Départ à la leçon 1 du cours Maarek : leçons 1 à 35 cochées"
-        },
-        {
-          "id": "W10-C2",
-          "course": "maarek",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Maarek DEA-C01 : Ingestion Temps Réel (Kinesis Data Streams, Firehose, Managed Flink, MSK) et AWS DMS (Leçons 36 à 64)",
-          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
-          "lectures": "leçons 36 à 64",
-          "first": 36,
-          "last": 64,
-          "video_min": 120,
-          "est_min": 170,
-          "deliverable": "Comparatif complet KDS vs Firehose vs MSK et dimensionnement des shards"
-        },
-        {
-          "id": "W10-C3",
           "priority": "core",
           "type": "quickstart",
           "title": "Quickstart Snowflake ML #4 (Beginner) : Train an XGBoost Model with GPUs using Snowflake Notebooks",
@@ -817,21 +967,210 @@
           "video_min": 0,
           "est_min": 45,
           "url": "https://www.snowflake.com/en/developers/solutions-center/harness-gpus-in-snowflake-notebooks-to-train-an-xgboost-model/",
-          "deliverable": "Modèle XGBoost entraîné sur GPU dans Snowflake Notebooks"
+          "deliverable": "Modèle XGBoost entraîné sur GPU dans Snowflake Notebooks",
+          "recommended_day": "Lundi (soir)"
+        },
+        {
+          "id": "W10-C2",
+          "course": "toth",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Zoltan Toth (dbt Bootcamp) : Théorie data : maturité, ETL/ELT, DWH, lakehouse, SCD (leçons 168 à 180)",
+          "resource": "Udemy - Zoltan C. Toth (dbt)",
+          "lectures": "leçons 168 à 180",
+          "first": 168,
+          "last": 180,
+          "video_min": 35,
+          "est_min": 99,
+          "deliverable": "Leçons 168 à 180 du cours Toth cochées",
+          "recommended_day": "Mardi (soir)"
+        },
+        {
+          "id": "W10-C3",
+          "course": "weigel",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Daniel Weigel (dbt Certification) : Environnements, contrats, versions, accès aux modèles ; Débogage et dépannage ; État (state), sélecteurs de résultat, retry (leçons 66 à 86)",
+          "resource": "Udemy - Daniel Weigel (dbt Certification)",
+          "lectures": "leçons 66 à 86",
+          "first": 66,
+          "last": 86,
+          "video_min": 122,
+          "est_min": 117,
+          "deliverable": "Leçons 66 à 86 du cours Weigel cochées",
+          "recommended_day": "Mercredi (soir)"
         },
         {
           "id": "W10-C4",
+          "course": "weigel",
           "priority": "core",
-          "type": "podcast",
-          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DEA-AUDIO-01 & DEA-AUDIO-02 (Architecture Ingestion Batch/Streaming & Kinesis Data Streams en détail)",
-          "resource": "Studio Audio Mobile intégré (public/audios/dea-c01/)",
-          "lectures": "DEA-AUDIO-01 & DEA-AUDIO-02 (Écoute 1 + Écoute 2 J+3)",
-          "video_min": 0,
-          "est_min": 55,
-          "deliverable": "Épisodes DEA-AUDIO-01 et 02 écoutés et maîtrisés"
+          "type": "udemy",
+          "title": "Daniel Weigel (dbt Certification) : État (state), sélecteurs de résultat, retry ; Pipelines CI/CD, defer, clone, Slim CI ; Tests (singuliers, génériques, unitaires, sévérité, sélection) (leçons 87 à 108)",
+          "resource": "Udemy - Daniel Weigel (dbt Certification)",
+          "lectures": "leçons 87 à 108",
+          "first": 87,
+          "last": 108,
+          "video_min": 121,
+          "est_min": 116,
+          "deliverable": "Leçons 87 à 108 du cours Weigel cochées",
+          "recommended_day": "Jeudi (soir)"
         },
         {
           "id": "W10-C5",
+          "course": "weigel",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Daniel Weigel (dbt Certification) : Tests (singuliers, génériques, unitaires, sévérité, sélection) ; Docs, exposures, fraîcheur des sources, avancé ; Nouveautés examen mai 2026, dbt show, snapshots, microbatch, --sample, conclusion (leçons 109 à 129)",
+          "resource": "Udemy - Daniel Weigel (dbt Certification)",
+          "lectures": "leçons 109 à 129",
+          "first": 109,
+          "last": 129,
+          "video_min": 122,
+          "est_min": 117,
+          "deliverable": "Leçons 109 à 129 du cours Weigel cochées",
+          "recommended_day": "Vendredi (soir)"
+        },
+        {
+          "id": "W10-B1",
+          "course": "toth",
+          "priority": "bonus",
+          "type": "udemy",
+          "title": "Zoltan Toth (dbt Bootcamp) (facultatif) : dbt-expectations et débogage de tests (leçons 73 à 81)",
+          "resource": "Udemy - Zoltan C. Toth (dbt)",
+          "lectures": "leçons 73 à 81",
+          "first": 73,
+          "last": 81,
+          "video_min": 34,
+          "est_min": 38,
+          "deliverable": "Leçons 73 à 81 du cours Toth cochées (bloc facultatif, à sauter en cas de retard)"
+        }
+      ]
+    },
+    {
+      "week": 11,
+      "start": "2027-01-18",
+      "end": "2027-01-24",
+      "phase": "EXAMEN N°2 : dbt Analytics Engineering (vendredi 22/01) puis démarrage DEA-C01 le week-end",
+      "theme": "Maarek leçons 1 à 5 + examens blancs + examen officiel + Podcasts DBT-AUDIO-15, 16 + Quickstart Snowflake",
+      "light_week": false,
+      "exam": "dbt Analytics Engineering Certification - Vendredi 22/01/2027",
+      "cert_budget_min": 538,
+      "interview_budget_min": 120,
+      "total_planned_min": 658,
+      "checkpoint": "Maarek leçons 1 à 5 cochées ; examens blancs faits et erreurs ajoutées aux flashcards ; dbt Analytics Engineering Certification obtenue",
+      "tasks": [
+        {
+          "id": "W11-C1",
+          "priority": "core",
+          "type": "podcast",
+          "title": "dbt Learn : Cours dbt Mesh + Official Exam Study Guide + Podcasts NotebookLM DBT-AUDIO-15 & DBT-AUDIO-16 (Documentation, Exposures, Mesh & Les 30 Pièges Finaux)",
+          "resource": "learn.getdbt.com + Studio Audio Mobile (public/audios/dbt/)",
+          "lectures": "Study Guide Officiel + DBT-AUDIO-15 & 16",
+          "video_min": 45,
+          "est_min": 95,
+          "url": "https://learn.getdbt.com/courses/analytics-engineering-exam-study-guide",
+          "deliverable": "Épisodes DBT-AUDIO-15 et 16 écoutés et checklist du Study Guide officiel cochée",
+          "recommended_day": "Lundi (soir)"
+        },
+        {
+          "id": "W11-C2",
+          "priority": "core",
+          "type": "exam_blanc",
+          "title": "Daniel Weigel : leçon 130 (Exam Cheat Sheet) + Final Test commenté (examen blanc complet)",
+          "resource": "Udemy - Daniel Weigel (dbt Certification)",
+          "lectures": "leçon 130 + Final Test",
+          "video_min": 1,
+          "est_min": 121,
+          "deliverable": "Cours Weigel terminé et score >= 80 % au Final Test",
+          "course": "weigel",
+          "first": 130,
+          "last": 130,
+          "recommended_day": "Mardi (soir)"
+        },
+        {
+          "id": "W11-C3",
+          "priority": "core",
+          "type": "exam_blanc",
+          "title": "Entraînement QCM : Questions Qanalabs (qanalabs.com) + Simulateur interne dbt (65 questions) + Réécoute rapide (1.5x) de DBT-AUDIO-05, 06, 10, 12, 14 et 16",
+          "resource": "Qanalabs + Simulateur interne + Studio Audio Mobile",
+          "lectures": "65 questions + Qanalabs + 6 Audios clés",
+          "video_min": 0,
+          "est_min": 135,
+          "url": "https://www.qanalabs.com/courses/dbt-developer",
+          "deliverable": "Score >= 80 % validé (seuil officiel dbt : 65 %) et réflexes audio verrouillés",
+          "recommended_day": "Mercredi (soir)"
+        },
+        {
+          "id": "W11-C4",
+          "priority": "core",
+          "type": "certification",
+          "title": "PASSAGE DE L'EXAMEN OFFICIEL : dbt Analytics Engineering Certification (Vendredi 22 janvier 2027)",
+          "resource": "dbt Labs Certification Exam (En ligne - 65 questions, 120 min)",
+          "lectures": "Examen officiel dbt Analytics Engineering",
+          "video_min": 0,
+          "est_min": 120,
+          "deliverable": "Certification dbt Analytics Engineering obtenue le 22 janvier 2027",
+          "url": "https://www.getdbt.com/certifications/analytics-engineer-certification-exam",
+          "recommended_day": "Vendredi 22 janvier"
+        },
+        {
+          "id": "W11-C5",
+          "priority": "core",
+          "type": "quickstart",
+          "title": "Quickstart Snowflake ML #5 (Beginner) : Introduction to Snowflake Feature Store with Snowflake Notebooks",
+          "resource": "Snowflake ML Quickstarts (MLOps examples)",
+          "lectures": "Lab Feature Store #1",
+          "video_min": 0,
+          "est_min": 45,
+          "url": "https://quickstarts.snowflake.com/guide/intro-to-feature-store/",
+          "deliverable": "Création d'Entities, Feature Views (Dynamic Tables) et Training Datasets dans Snowflake",
+          "recommended_day": "Samedi 23 janvier (après l'examen)"
+        },
+        {
+          "id": "W11-C6",
+          "course": "maarek",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 : Fondamentaux Data Engineering, SQL, Git (leçons 1 à 5)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 1 à 5",
+          "first": 1,
+          "last": 5,
+          "video_min": 16,
+          "est_min": 22,
+          "deliverable": "Leçons 1 à 5 du cours Maarek cochées",
+          "recommended_day": "Samedi (après-midi) (après l'examen)"
+        }
+      ]
+    },
+    {
+      "week": 12,
+      "start": "2027-01-25",
+      "end": "2027-01-31",
+      "phase": "DEA-C01 & Snowflake ML (semaine 1/8)",
+      "theme": "Maarek leçons 6 à 61 + Skill Builder Exam Prep Overview, Exam Prep Plan Overview + Quickstart Snowflake",
+      "light_week": false,
+      "exam": null,
+      "cert_budget_min": 532,
+      "interview_budget_min": 120,
+      "total_planned_min": 652,
+      "checkpoint": "Maarek leçons 6 à 61 cochées ; revues Skill Builder terminées",
+      "tasks": [
+        {
+          "id": "W12-C1",
+          "priority": "core",
+          "type": "quickstart",
+          "title": "Quickstart Snowflake ML #6 (Beginner) : Getting Started with Snowflake Feature Store API",
+          "resource": "Snowflake ML Quickstarts (MLOps examples)",
+          "lectures": "Lab Feature Store API",
+          "video_min": 0,
+          "est_min": 45,
+          "url": "https://quickstarts.snowflake.com/guide/overview-of-feature-store-api/",
+          "deliverable": "Maîtrise de l'API Python du Snowflake Feature Store",
+          "recommended_day": "Lundi (soir)"
+        },
+        {
+          "id": "W12-C2",
           "priority": "core",
           "type": "skill_builder",
           "title": "AWS Skill Builder (DEA-C01, anglais) : Exam Prep Overview et Exam Prep Plan Overview",
@@ -840,7 +1179,6 @@
           "video_min": 30,
           "est_min": 30,
           "url": "https://skillbuilder.aws/",
-          "recommended_day": "Samedi (après-midi)",
           "deliverable": "Les 4 domaines DEA-C01 et leur poids connus avant d'attaquer le cours Maarek",
           "skillbuilder": {
             "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
@@ -858,170 +1196,56 @@
                 "kind": "Préparation à l'examen de certification"
               }
             ]
-          }
-        },
-        {
-          "id": "W10-B1",
-          "course": "nikolai",
-          "priority": "bonus",
-          "type": "udemy",
-          "title": "Nikolai DEA-C01 : Fondamentaux Data Engineering et Stockage S3 (Départ Leçons 1 à 40)",
-          "resource": "Udemy - Nikolai Schuler (DEA-C01)",
-          "lectures": "leçons 1 à 40",
-          "first": 1,
-          "last": 40,
-          "video_min": 75,
-          "est_min": 95,
-          "deliverable": "Départ à la leçon 1 du cours Nikolai (complément optionnel)"
-        }
-      ]
-    },
-    {
-      "week": 11,
-      "start": "2027-01-18",
-      "end": "2027-01-24",
-      "phase": "DEA-C01 & Snowflake ML - Semaine 2/10 (AWS Glue, ETL PySpark, Feature Store & Audios DEA 03 à 05)",
-      "theme": "Maarek leçons 65 à 138 (Data Catalog, Glue ETL, PySpark) + Quickstart Snowflake ML #5 (Feature Store) + Audios DEA 03 à 05",
-      "light_week": false,
-      "exam": null,
-      "cert_budget_min": 520,
-      "interview_budget_min": 120,
-      "total_planned_min": 640,
-      "checkpoint": "Maarek leçons 65 à 138 validées + Audios DEA 03 à 05 assimilés + Snowflake Feature Store maîtrisé",
-      "tasks": [
-        {
-          "id": "W11-C1",
-          "course": "maarek",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Maarek DEA-C01 : Stockage avancé, Glue Data Catalog, Crawlers et Lake Formation (Leçons 65 à 101)",
-          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
-          "lectures": "leçons 65 à 101",
-          "first": 65,
-          "last": 101,
-          "video_min": 96,
-          "est_min": 135,
-          "deliverable": "Architecture Data Lake S3 + Glue Data Catalog + permissions Lake Formation"
-        },
-        {
-          "id": "W11-C2",
-          "course": "maarek",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Maarek DEA-C01 : Transformations AWS Glue Studio, DynamicFrames, Job Bookmarks et Glue Data Quality (Leçons 102 à 138)",
-          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
-          "lectures": "leçons 102 à 138",
-          "first": 102,
-          "last": 138,
-          "video_min": 110,
-          "est_min": 155,
-          "deliverable": "Maîtrise des Glue Job Bookmarks, DPU sizing et Glue Data Quality (DQDL)"
-        },
-        {
-          "id": "W11-C3",
-          "priority": "core",
-          "type": "quickstart",
-          "title": "Quickstart Snowflake ML #5 (Beginner) : Introduction to Snowflake Feature Store with Snowflake Notebooks",
-          "resource": "Snowflake ML Quickstarts (MLOps examples)",
-          "lectures": "Lab Feature Store #1",
-          "video_min": 0,
-          "est_min": 45,
-          "url": "https://quickstarts.snowflake.com/guide/intro-to-feature-store/",
-          "deliverable": "Création d'Entities, Feature Views (Dynamic Tables) et Training Datasets dans Snowflake"
-        },
-        {
-          "id": "W11-C4",
-          "priority": "core",
-          "type": "podcast",
-          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DEA-AUDIO-03, DEA-AUDIO-04 et DEA-AUDIO-05 (Firehose/MSK/Flink, DMS/AppFlow/DataSync, AWS Glue Bookmarks & DynamicFrames)",
-          "resource": "Studio Audio Mobile intégré (public/audios/dea-c01/)",
-          "lectures": "DEA-AUDIO-03 à DEA-AUDIO-05 (Écoute 1 + Écoute 2 J+3)",
-          "video_min": 0,
-          "est_min": 70,
-          "deliverable": "Épisodes DEA-AUDIO-03, 04 et 05 écoutés et maîtrisés"
-        },
-        {
-          "id": "W11-B1",
-          "course": "nikolai",
-          "priority": "bonus",
-          "type": "udemy",
-          "title": "Nikolai DEA-C01 : Ingestion Kinesis, DMS et Transformations AWS Glue (Leçons 41 à 110)",
-          "resource": "Udemy - Nikolai Schuler (DEA-C01)",
-          "lectures": "leçons 41 à 110",
-          "first": 41,
-          "last": 110,
-          "video_min": 90,
-          "est_min": 115,
-          "deliverable": "Labs complémentaires Nikolai sur l'ingestion et Glue"
-        }
-      ]
-    },
-    {
-      "week": 12,
-      "start": "2027-01-25",
-      "end": "2027-01-31",
-      "phase": "DEA-C01 & Snowflake ML - Semaine 3/10 (Amazon EMR, Tables Iceberg/Hudi/Delta, Feature Store API & Audios DEA 06 & 08)",
-      "theme": "Maarek (139-166) + Nikolai (149-160) + Quickstarts Snowflake ML #6 & #7 + Audios DEA 06 (EMR/Spark) & 08 (Iceberg/Hudi/Delta)",
-      "light_week": false,
-      "exam": null,
-      "cert_budget_min": 490,
-      "interview_budget_min": 120,
-      "total_planned_min": 610,
-      "checkpoint": "EMR, Spark & Formats Iceberg/Hudi/Delta maîtrisés + APIs Offline/Online Feature Store Snowflake pratiquées",
-      "tasks": [
-        {
-          "id": "W12-C1",
-          "course": "maarek",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Maarek DEA-C01 : Amazon EMR (Spark, Hudi/Iceberg/Delta), Step Functions et Amazon MWAA Airflow (Leçons 139 à 166)",
-          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
-          "lectures": "leçons 139 à 166",
-          "first": 139,
-          "last": 166,
-          "video_min": 100,
-          "est_min": 140,
-          "deliverable": "Comparatif d'orchestration Glue Workflows vs Step Functions vs MWAA"
-        },
-        {
-          "id": "W12-C2",
-          "course": "nikolai",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Nikolai DEA-C01 : Pratique Orchestration Step Functions et Airflow MWAA (Leçons 149 à 160)",
-          "resource": "Udemy - Nikolai Schuler (DEA-C01)",
-          "lectures": "leçons 149 à 160",
-          "first": 149,
-          "last": 160,
-          "video_min": 60,
-          "est_min": 80,
-          "deliverable": "Workflow Step Functions + DAG Airflow compris de bout en bout"
+          },
+          "recommended_day": "Mardi (soir)"
         },
         {
           "id": "W12-C3",
+          "course": "maarek",
           "priority": "core",
-          "type": "quickstart",
-          "title": "Quickstart Snowflake ML #6 (Beginner) : Getting Started with Snowflake Feature Store API",
-          "resource": "Snowflake ML Quickstarts (MLOps examples)",
-          "lectures": "Lab Feature Store API",
-          "video_min": 0,
-          "est_min": 45,
-          "url": "https://quickstarts.snowflake.com/guide/overview-of-feature-store-api/",
-          "deliverable": "Maîtrise de l'API Python du Snowflake Feature Store"
+          "type": "udemy",
+          "title": "Maarek DEA-C01 : Fondamentaux Data Engineering, SQL, Git (leçons 6 à 20)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 6 à 20",
+          "first": 6,
+          "last": 20,
+          "video_min": 76,
+          "est_min": 166,
+          "deliverable": "Leçons 6 à 20 du cours Maarek cochées",
+          "recommended_day": "Mercredi (soir)"
         },
         {
           "id": "W12-C4",
+          "course": "maarek",
           "priority": "core",
-          "type": "podcast",
-          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DEA-AUDIO-06 & DEA-AUDIO-08 (Amazon EMR/Spark Data Skew & Data Lake S3 Parquet/Iceberg/Hudi/Delta)",
-          "resource": "Studio Audio Mobile intégré (public/audios/dea-c01/)",
-          "lectures": "DEA-AUDIO-06 & DEA-AUDIO-08 (Écoute 1 + Écoute 2 J+3)",
-          "video_min": 0,
-          "est_min": 60,
-          "deliverable": "Épisodes DEA-AUDIO-06 et 08 écoutés et maîtrisés"
+          "type": "udemy",
+          "title": "Maarek DEA-C01 : Fondamentaux Data Engineering, SQL, Git ; Stockage : S3 (sécurité, cycle de vie, événements, Tables/Iceberg), EBS, EFS, Backup (leçons 21 à 44)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 21 à 44",
+          "first": 21,
+          "last": 44,
+          "video_min": 88,
+          "est_min": 138,
+          "deliverable": "Leçons 21 à 44 du cours Maarek cochées",
+          "recommended_day": "Jeudi (soir)"
         },
         {
           "id": "W12-C5",
+          "course": "maarek",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 : Stockage : S3 (sécurité, cycle de vie, événements, Tables/Iceberg), EBS, EFS, Backup (leçons 45 à 61)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 45 à 61",
+          "first": 45,
+          "last": 61,
+          "video_min": 77,
+          "est_min": 108,
+          "deliverable": "Leçons 45 à 61 du cours Maarek cochées",
+          "recommended_day": "Vendredi (soir)"
+        },
+        {
+          "id": "W12-C6",
           "priority": "core",
           "type": "quickstart",
           "title": "Quickstart Snowflake ML #7 (Beginner) : Introduction to Online Feature Store in Snowflake",
@@ -1032,30 +1256,6 @@
           "url": "https://www.snowflake.com/en/developers/guides/intro-to-online-feature-store-in-snowflake/",
           "deliverable": "Serving temps réel basse latence sur Snowflake Online Feature Store",
           "recommended_day": "Dimanche (matin)"
-        },
-        {
-          "id": "W12-B1",
-          "priority": "bonus",
-          "type": "skill_builder",
-          "title": "AWS Skill Builder (DEA-C01, anglais) : Data Engineering on AWS Learning Plans, labs (séance 1 sur 6, 120 min)",
-          "resource": "AWS Skill Builder (gratuit)",
-          "lectures": "Reprendre le plan là où tu t'es arrêté, dans l'ordre des 5 formations",
-          "video_min": 0,
-          "est_min": 120,
-          "url": "https://skillbuilder.aws/",
-          "deliverable": "120 min de pratique sur les labs du plan (bonus sacrifiable en premier en cas d'imprévu)",
-          "skillbuilder": {
-            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
-            "language": "English",
-            "access": "Gratuit",
-            "items": [
-              {
-                "name": "Data Engineering on AWS Learning Plans (includes labs)",
-                "minutes": 1220,
-                "kind": "Plan d'apprentissage (5 formations, labs inclus)"
-              }
-            ]
-          }
         }
       ]
     },
@@ -1063,45 +1263,17 @@
       "week": 13,
       "start": "2027-02-01",
       "end": "2027-02-07",
-      "phase": "DEA-C01 & Snowflake ML - Semaine 4/10 (Amazon Athena, Redshift, Model Registry & Audios DEA 07, 09, 10)",
-      "theme": "Athena, Redshift (Distribution Styles, Sort Keys, Spectrum, Data Sharing) + Quickstart ML #8 + Audios DEA 07, 09 et 10",
+      "phase": "DEA-C01 & Snowflake ML (semaine 2/8)",
+      "theme": "Maarek leçons 62 à 115 + Podcasts DEA-AUDIO-08, 09, 10, 11 + Quickstart Snowflake",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 535,
+      "cert_budget_min": 539,
       "interview_budget_min": 120,
-      "total_planned_min": 655,
-      "checkpoint": "Redshift & Athena maîtrisés + Audios DEA 07, 09, 10 assimilés + Cycle Feature Store + Model Registry sur Snowflake",
+      "total_planned_min": 659,
+      "checkpoint": "Maarek leçons 62 à 115 cochées",
       "tasks": [
         {
           "id": "W13-C1",
-          "course": "maarek",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Maarek DEA-C01 : Amazon Athena, Optimisation Parquet/ORC et Amazon Redshift approfondi (Leçons 167 à 195)",
-          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
-          "lectures": "leçons 167 à 195",
-          "first": 167,
-          "last": 195,
-          "video_min": 110,
-          "est_min": 155,
-          "deliverable": "Maîtrise des Distribution Styles (KEY, EVEN, ALL, AUTO), Sort Keys, Spectrum et Serverless"
-        },
-        {
-          "id": "W13-C2",
-          "course": "nikolai",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Nikolai DEA-C01 : Pratique Data Warehousing Redshift & Chargement COPY (Leçons 111 à 148)",
-          "resource": "Udemy - Nikolai Schuler (DEA-C01)",
-          "lectures": "leçons 111 à 148",
-          "first": 111,
-          "last": 148,
-          "video_min": 85,
-          "est_min": 110,
-          "deliverable": "Optimisation des chargements COPY, WLM, Concurrency Scaling et Redshift Data Sharing"
-        },
-        {
-          "id": "W13-C3",
           "priority": "core",
           "type": "quickstart",
           "title": "Quickstart Snowflake ML #8 (Intermediate) : Develop and Manage ML Models with Feature Store and Model Registry",
@@ -1110,67 +1282,77 @@
           "video_min": 0,
           "est_min": 60,
           "url": "https://www.snowflake.com/en/developers/solutions-center/develop-and-manage-ml-models-with-feature-store-and-model-registry/",
-          "deliverable": "Cycle complet d'expérimentation ML avec versioning dans le Snowflake Model Registry"
+          "deliverable": "Cycle complet d'expérimentation ML avec versioning dans le Snowflake Model Registry",
+          "recommended_day": "Lundi (soir)"
+        },
+        {
+          "id": "W13-C2",
+          "course": "maarek",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 : Bases de données : DynamoDB, RDS, Aurora, autres, Redshift (leçons 62 à 88)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 62 à 88",
+          "first": 62,
+          "last": 88,
+          "video_min": 117,
+          "est_min": 179,
+          "deliverable": "Leçons 62 à 88 du cours Maarek cochées",
+          "recommended_day": "Mardi (soir)"
+        },
+        {
+          "id": "W13-C3",
+          "course": "maarek",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 : Bases de données : DynamoDB, RDS, Aurora, autres, Redshift (leçons 89 à 107)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 89 à 107",
+          "first": 89,
+          "last": 107,
+          "video_min": 106,
+          "est_min": 163,
+          "deliverable": "Leçons 89 à 107 du cours Maarek cochées",
+          "recommended_day": "Mercredi (soir)"
         },
         {
           "id": "W13-C4",
+          "course": "maarek",
           "priority": "core",
-          "type": "podcast",
-          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DEA-AUDIO-07, DEA-AUDIO-09 et DEA-AUDIO-10 (Athena Partition Projection/Workgroups, Redshift DISTSTYLE/SORTKEY, Spectrum & Data Sharing)",
-          "resource": "Studio Audio Mobile intégré (public/audios/dea-c01/)",
-          "lectures": "DEA-AUDIO-07, 09 & 10 (Écoute 1 + Écoute 2 J+3)",
-          "video_min": 0,
-          "est_min": 70,
-          "deliverable": "Épisodes DEA-AUDIO-07, 09 et 10 écoutés et maîtrisés"
+          "type": "udemy",
+          "title": "Maarek DEA-C01 : Migration et transfert : DMS, DataSync, Snow, Data Exchange, Transfer Family (leçons 108 à 115)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 108 à 115",
+          "first": 108,
+          "last": 115,
+          "video_min": 23,
+          "est_min": 32,
+          "deliverable": "Leçons 108 à 115 du cours Maarek cochées",
+          "recommended_day": "Jeudi (soir)"
         },
         {
           "id": "W13-C5",
           "priority": "core",
-          "type": "skill_builder",
-          "title": "AWS Skill Builder (DEA-C01, anglais) : Domain 1 Review (Ingestion et transformation des données)",
-          "resource": "AWS Skill Builder (gratuit)",
-          "lectures": "Revue officielle du domaine 1 (34 % de l'examen)",
-          "video_min": 80,
-          "est_min": 80,
-          "url": "https://skillbuilder.aws/",
-          "recommended_day": "Samedi (après-midi)",
-          "deliverable": "Domaine 1 (Ingestion et transformation des données, 34 %) relu avec la revue officielle",
-          "skillbuilder": {
-            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
-            "language": "English",
-            "access": "Gratuit",
-            "items": [
-              {
-                "name": "Domain 1 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
-                "minutes": 80,
-                "kind": "Préparation à l'examen de certification"
-              }
-            ]
-          }
+          "type": "podcast",
+          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DEA-AUDIO-08 (Data Lake S3 Parquet/Iceberg/Hudi/Delta)",
+          "resource": "Studio Audio Mobile intégré (public/audios/dea-c01/)",
+          "lectures": "DEA-AUDIO-08 (Écoute 1 + Écoute 2 J+3)",
+          "video_min": 0,
+          "est_min": 35,
+          "deliverable": "Épisodes DEA-AUDIO-08 écoutés et maîtrisés",
+          "recommended_day": "Chaque jour (trajets)"
         },
         {
-          "id": "W13-B1",
-          "priority": "bonus",
-          "type": "skill_builder",
-          "title": "AWS Skill Builder (DEA-C01, anglais) : Data Engineering on AWS Learning Plans, labs (séance 2 sur 6, 60 min)",
-          "resource": "AWS Skill Builder (gratuit)",
-          "lectures": "Reprendre le plan là où tu t'es arrêté, dans l'ordre des 5 formations",
+          "id": "W13-C6",
+          "priority": "core",
+          "type": "podcast",
+          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DEA-AUDIO-09, DEA-AUDIO-10 et DEA-AUDIO-11 (Redshift DISTSTYLE/SORTKEY, Spectrum & Data Sharing, DynamoDB Streams)",
+          "resource": "Studio Audio Mobile intégré (public/audios/dea-c01/)",
+          "lectures": "DEA-AUDIO-09, DEA-AUDIO-10 et DEA-AUDIO-11 (Écoute 1 + Écoute 2 J+3)",
           "video_min": 0,
-          "est_min": 60,
-          "url": "https://skillbuilder.aws/",
-          "deliverable": "60 min de pratique sur les labs du plan (bonus sacrifiable en premier en cas d'imprévu)",
-          "skillbuilder": {
-            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
-            "language": "English",
-            "access": "Gratuit",
-            "items": [
-              {
-                "name": "Data Engineering on AWS Learning Plans (includes labs)",
-                "minutes": 1220,
-                "kind": "Plan d'apprentissage (5 formations, labs inclus)"
-              }
-            ]
-          }
+          "est_min": 70,
+          "deliverable": "Épisodes DEA-AUDIO-09, DEA-AUDIO-10 et DEA-AUDIO-11 écoutés et maîtrisés",
+          "recommended_day": "Chaque jour (trajets)"
         }
       ]
     },
@@ -1178,31 +1360,17 @@
       "week": 14,
       "start": "2027-02-08",
       "end": "2027-02-14",
-      "phase": "DEA-C01 & Snowflake ML - Semaine 5/10 (DynamoDB, RDS, Orchestration ML Task Graphs & Audios DEA 11 & 12)",
-      "theme": "Maarek (196-226) + Quickstart ML #9 (Task Graphs) + Activation Free Trial Cortex Code 30j + Audios DEA 11 & 12",
+      "phase": "DEA-C01 & Snowflake ML (semaine 3/8)",
+      "theme": "Maarek leçons 116 à 127 + Maarek leçons 136 à 157 + Skill Builder Domain 2 Review + Podcasts DEA-AUDIO-04, 05, 13, 14, 15 + Quickstart Snowflake",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 560,
-      "interview_budget_min": 120,
-      "total_planned_min": 680,
-      "checkpoint": "DynamoDB & Orchestration maîtrisés + Pipeline ML Task Graphs sur Snowflake + Compte Cortex 30j activé",
+      "cert_budget_min": 541,
+      "interview_budget_min": 100,
+      "total_planned_min": 641,
+      "checkpoint": "Maarek leçons 116 à 127, Maarek leçons 136 à 157 cochées ; revues Skill Builder terminées",
       "tasks": [
         {
           "id": "W14-C1",
-          "course": "maarek",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Maarek DEA-C01 : DynamoDB (Streams, Global Tables, DAX), RDS, Aurora, DocumentDB, Neptune et QuickSight (Leçons 196 à 226)",
-          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
-          "lectures": "leçons 196 à 226",
-          "first": 196,
-          "last": 226,
-          "video_min": 105,
-          "est_min": 145,
-          "deliverable": "Partitionnement DynamoDB, Global Secondary Indexes vs Local Secondary Indexes et Export S3 PITR"
-        },
-        {
-          "id": "W14-C2",
           "priority": "core",
           "type": "quickstart",
           "title": "Quickstart Snowflake ML #9 (Intermediate) : Orchestrate ML Pipelines with ML Jobs and Task Graphs",
@@ -1211,10 +1379,11 @@
           "video_min": 0,
           "est_min": 60,
           "url": "https://www.snowflake.com/en/developers/guides/e2e-task-graph/?index=..%2F..index#1",
-          "deliverable": "Pipeline ML distribué complet orchestré par Task Graphs"
+          "deliverable": "Pipeline ML distribué complet orchestré par Task Graphs",
+          "recommended_day": "Lundi (soir)"
         },
         {
-          "id": "W14-C3",
+          "id": "W14-C2",
           "priority": "core",
           "type": "devoteam",
           "title": "Activation du 2e Free Trial de Fred : Snowflake Cortex Code 30 jours (40$ CoCo + 360$ compute) + Parcours AI Level 2 Data Engineer Devoteam",
@@ -1223,21 +1392,11 @@
           "video_min": 30,
           "est_min": 60,
           "url": "https://signup.snowflake.com/cortex-code",
-          "deliverable": "Compte Cortex Code 30j actif pour le dernier mois GenAI/ML"
+          "deliverable": "Compte Cortex Code 30j actif pour le dernier mois GenAI/ML",
+          "recommended_day": "Mardi (soir)"
         },
         {
-          "id": "W14-C4",
-          "priority": "core",
-          "type": "podcast",
-          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DEA-AUDIO-11 & DEA-AUDIO-12 (DynamoDB Streams/Export S3 & Arbitrage Orchestration Step Functions vs MWAA vs Glue Workflows)",
-          "resource": "Studio Audio Mobile intégré (public/audios/dea-c01/)",
-          "lectures": "DEA-AUDIO-11 & DEA-AUDIO-12 (Écoute 1 + Écoute 2 J+3)",
-          "video_min": 0,
-          "est_min": 60,
-          "deliverable": "Épisodes DEA-AUDIO-11 et 12 écoutés et maîtrisés"
-        },
-        {
-          "id": "W14-C5",
+          "id": "W14-C3",
           "priority": "core",
           "type": "skill_builder",
           "title": "AWS Skill Builder (DEA-C01, anglais) : Domain 2 Review (Gestion des magasins de données)",
@@ -1246,7 +1405,6 @@
           "video_min": 80,
           "est_min": 80,
           "url": "https://skillbuilder.aws/",
-          "recommended_day": "Samedi (après-midi)",
           "deliverable": "Domaine 2 (Gestion des magasins de données, 26 %) relu avec la revue officielle",
           "skillbuilder": {
             "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
@@ -1259,45 +1417,77 @@
                 "kind": "Préparation à l'examen de certification"
               }
             ]
-          }
+          },
+          "recommended_day": "Mercredi (soir)"
         },
         {
-          "id": "W14-B1",
-          "course": "nikolai",
-          "priority": "bonus",
+          "id": "W14-C4",
+          "course": "maarek",
+          "priority": "core",
           "type": "udemy",
-          "title": "Nikolai DEA-C01 : Bases de données NoSQL, OpenSearch et Visualisation QuickSight (Leçons 161 à 198)",
-          "resource": "Udemy - Nikolai Schuler (DEA-C01)",
-          "lectures": "leçons 161 à 198",
-          "first": 161,
-          "last": 198,
-          "video_min": 85,
-          "est_min": 110,
-          "deliverable": "Révision complémentaire Nikolai sur DynamoDB et QuickSight"
+          "title": "Maarek DEA-C01 : Migration et transfert : DMS, DataSync, Snow, Data Exchange, Transfer Family ; Calcul : Lambda, SAM, Batch, EC2 pour le big data (leçons 116 à 127)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 116 à 127",
+          "first": 116,
+          "last": 127,
+          "video_min": 47,
+          "est_min": 96,
+          "deliverable": "Leçons 116 à 127 du cours Maarek cochées",
+          "recommended_day": "Jeudi (soir)"
         },
         {
-          "id": "W14-B2",
-          "priority": "bonus",
-          "type": "skill_builder",
-          "title": "AWS Skill Builder (DEA-C01, anglais) : Data Engineering on AWS Learning Plans, labs (séance 3 sur 6, 45 min)",
-          "resource": "AWS Skill Builder (gratuit)",
-          "lectures": "Reprendre le plan là où tu t'es arrêté, dans l'ordre des 5 formations",
+          "id": "W14-C5",
+          "course": "maarek",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 : Analytique : Glue, DataBrew, Workflows, Lake Formation (leçons 136 à 150)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 136 à 150",
+          "first": 136,
+          "last": 150,
+          "video_min": 66,
+          "est_min": 92,
+          "deliverable": "Leçons 136 à 150 du cours Maarek cochées",
+          "recommended_day": "Vendredi (soir)"
+        },
+        {
+          "id": "W14-C6",
+          "course": "maarek",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 : Analytique : Athena, Spark, EMR (leçons 151 à 157)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 151 à 157",
+          "first": 151,
+          "last": 157,
+          "video_min": 34,
+          "est_min": 48,
+          "deliverable": "Leçons 151 à 157 du cours Maarek cochées",
+          "recommended_day": "Samedi (matin)"
+        },
+        {
+          "id": "W14-C7",
+          "priority": "core",
+          "type": "podcast",
+          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DEA-AUDIO-04 (DMS, AppFlow et DataSync)",
+          "resource": "Studio Audio Mobile intégré (public/audios/dea-c01/)",
+          "lectures": "DEA-AUDIO-04 (Écoute 1 + Écoute 2 J+3)",
           "video_min": 0,
-          "est_min": 45,
-          "url": "https://skillbuilder.aws/",
-          "deliverable": "45 min de pratique sur les labs du plan (bonus sacrifiable en premier en cas d'imprévu)",
-          "skillbuilder": {
-            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
-            "language": "English",
-            "access": "Gratuit",
-            "items": [
-              {
-                "name": "Data Engineering on AWS Learning Plans (includes labs)",
-                "minutes": 1220,
-                "kind": "Plan d'apprentissage (5 formations, labs inclus)"
-              }
-            ]
-          }
+          "est_min": 35,
+          "deliverable": "Épisodes DEA-AUDIO-04 écoutés et maîtrisés",
+          "recommended_day": "Chaque jour (trajets)"
+        },
+        {
+          "id": "W14-C8",
+          "priority": "core",
+          "type": "podcast",
+          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DEA-AUDIO-05, DEA-AUDIO-13 et DEA-AUDIO-15 (AWS Glue Bookmarks & DynamicFrames, Glue Data Quality, Lake Formation)",
+          "resource": "Studio Audio Mobile intégré (public/audios/dea-c01/)",
+          "lectures": "DEA-AUDIO-05, DEA-AUDIO-13 et DEA-AUDIO-15 (Écoute 1 + Écoute 2 J+3)",
+          "video_min": 0,
+          "est_min": 70,
+          "deliverable": "Épisodes DEA-AUDIO-05, DEA-AUDIO-13 et DEA-AUDIO-15 écoutés et maîtrisés",
+          "recommended_day": "Chaque jour (trajets)"
         }
       ]
     },
@@ -1305,45 +1495,17 @@
       "week": 15,
       "start": "2027-02-15",
       "end": "2027-02-21",
-      "phase": "DEA-C01 & Snowflake ML - Semaine 6/10 (Sécurité, Gouvernance Lake Formation, ML Observability & Audios DEA 13 & 15)",
-      "theme": "Maarek (227-262) + Nikolai (199-230) + Quickstart ML #10 (ML Observability) + Audios DEA 13 (Glue DQ/Schema Registry) & 15 (Lake Formation)",
+      "phase": "DEA-C01 & Snowflake ML (semaine 4/8)",
+      "theme": "Maarek leçons 158 à 183 + Maarek leçons 193 à 204 + Skill Builder Domain 1 Review + Podcasts DEA-AUDIO-01, 02, 03, 06, 07 + Quickstart Snowflake",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 535,
+      "cert_budget_min": 537,
       "interview_budget_min": 120,
-      "total_planned_min": 655,
-      "checkpoint": "Domaine 4 DEA-C01 (Sécurité & Lake Formation) bouclé + ML Observability sur Snowflake + Audios DEA 13 & 15 assimilés",
+      "total_planned_min": 657,
+      "checkpoint": "Maarek leçons 158 à 183, Maarek leçons 193 à 204 cochées ; revues Skill Builder terminées",
       "tasks": [
         {
           "id": "W15-C1",
-          "course": "maarek",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Maarek DEA-C01 : Surveillance CloudWatch/CloudTrail, KMS, IAM, Lake Formation (LF-TBAC), Macie et VPC Endpoints (Leçons 227 à 262)",
-          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
-          "lectures": "leçons 227 à 262",
-          "first": 227,
-          "last": 262,
-          "video_min": 115,
-          "est_min": 165,
-          "deliverable": "Maîtrise des permissions Lake Formation (LF-Tags, Row/Cell-level security) et chiffrement KMS"
-        },
-        {
-          "id": "W15-C2",
-          "course": "nikolai",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Nikolai DEA-C01 : Sécurité, Gouvernance, Chiffrement et Conformité (Leçons 199 à 230)",
-          "resource": "Udemy - Nikolai Schuler (DEA-C01)",
-          "lectures": "leçons 199 à 230",
-          "first": 199,
-          "last": 230,
-          "video_min": 85,
-          "est_min": 110,
-          "deliverable": "Scénarios d'examen sur les accès cross-account S3/Glue/Lake Formation"
-        },
-        {
-          "id": "W15-C3",
           "priority": "core",
           "type": "quickstart",
           "title": "Quickstart Snowflake ML #10 (Beginner) : Getting Started with ML Observability in Snowflake",
@@ -1352,67 +1514,102 @@
           "video_min": 0,
           "est_min": 45,
           "url": "https://www.snowflake.com/en/developers/solutions-center/monitoring-customer-churn-with-ml-observability-in-snowflake/",
-          "deliverable": "Détection de data drift et prediction drift configurée dans Snowflake ML Observability"
+          "deliverable": "Détection de data drift et prediction drift configurée dans Snowflake ML Observability",
+          "recommended_day": "Lundi (soir)"
+        },
+        {
+          "id": "W15-C2",
+          "course": "maarek",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 : Analytique : Athena, Spark, EMR (leçons 158 à 166)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 158 à 166",
+          "first": 158,
+          "last": 166,
+          "video_min": 64,
+          "est_min": 90,
+          "deliverable": "Leçons 158 à 166 du cours Maarek cochées",
+          "recommended_day": "Mardi (soir)"
+        },
+        {
+          "id": "W15-C3",
+          "course": "maarek",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 : Analytique : Kinesis Data Streams, Firehose, Flink, MSK (leçons 167 à 183)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 167 à 183",
+          "first": 167,
+          "last": 183,
+          "video_min": 91,
+          "est_min": 127,
+          "deliverable": "Leçons 167 à 183 du cours Maarek cochées",
+          "recommended_day": "Mercredi (soir)"
         },
         {
           "id": "W15-C4",
           "priority": "core",
-          "type": "podcast",
-          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DEA-AUDIO-13 & DEA-AUDIO-15 (Glue Data Quality DQDL/Schema Registry & AWS Lake Formation LF-Tags/Cell-Level Security)",
-          "resource": "Studio Audio Mobile intégré (public/audios/dea-c01/)",
-          "lectures": "DEA-AUDIO-13 & DEA-AUDIO-15 (Écoute 1 + Écoute 2 J+3)",
-          "video_min": 0,
-          "est_min": 60,
-          "deliverable": "Épisodes DEA-AUDIO-13 et 15 écoutés et maîtrisés"
-        },
-        {
-          "id": "W15-C5",
-          "priority": "core",
           "type": "skill_builder",
-          "title": "AWS Skill Builder (DEA-C01, anglais) : Domain 3 Review (Opérations et support des données)",
+          "title": "AWS Skill Builder (DEA-C01, anglais) : Domain 1 Review (Ingestion et transformation des données)",
           "resource": "AWS Skill Builder (gratuit)",
-          "lectures": "Revue officielle du domaine 3 (22 % de l'examen)",
+          "lectures": "Revue officielle du domaine 1 (34 % de l'examen)",
           "video_min": 80,
           "est_min": 80,
           "url": "https://skillbuilder.aws/",
-          "recommended_day": "Samedi (après-midi)",
-          "deliverable": "Domaine 3 (Opérations et support des données, 22 %) relu avec la revue officielle",
+          "deliverable": "Domaine 1 (Ingestion et transformation des données, 34 %) relu avec la revue officielle",
           "skillbuilder": {
             "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
             "language": "English",
             "access": "Gratuit",
             "items": [
               {
-                "name": "Domain 3 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
+                "name": "Domain 1 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
                 "minutes": 80,
                 "kind": "Préparation à l'examen de certification"
               }
             ]
-          }
+          },
+          "recommended_day": "Jeudi (soir)"
         },
         {
-          "id": "W15-B1",
-          "priority": "bonus",
-          "type": "skill_builder",
-          "title": "AWS Skill Builder (DEA-C01, anglais) : Data Engineering on AWS Learning Plans, labs (séance 4 sur 6, 75 min)",
-          "resource": "AWS Skill Builder (gratuit)",
-          "lectures": "Reprendre le plan là où tu t'es arrêté, dans l'ordre des 5 formations",
+          "id": "W15-C5",
+          "course": "maarek",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 : Intégration d'applications et orchestration : SQS, SNS, Step Functions, EventBridge, AppFlow, MWAA (leçons 193 à 204)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 193 à 204",
+          "first": 193,
+          "last": 204,
+          "video_min": 50,
+          "est_min": 70,
+          "deliverable": "Leçons 193 à 204 du cours Maarek cochées",
+          "recommended_day": "Vendredi (soir)"
+        },
+        {
+          "id": "W15-C6",
+          "priority": "core",
+          "type": "podcast",
+          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DEA-AUDIO-06 et DEA-AUDIO-07 (EMR/Spark Data Skew et Athena Partition Projection/Workgroups)",
+          "resource": "Studio Audio Mobile intégré (public/audios/dea-c01/)",
+          "lectures": "DEA-AUDIO-06 et DEA-AUDIO-07 (Écoute 1 + Écoute 2 J+3)",
           "video_min": 0,
-          "est_min": 75,
-          "url": "https://skillbuilder.aws/",
-          "deliverable": "75 min de pratique sur les labs du plan (bonus sacrifiable en premier en cas d'imprévu)",
-          "skillbuilder": {
-            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
-            "language": "English",
-            "access": "Gratuit",
-            "items": [
-              {
-                "name": "Data Engineering on AWS Learning Plans (includes labs)",
-                "minutes": 1220,
-                "kind": "Plan d'apprentissage (5 formations, labs inclus)"
-              }
-            ]
-          }
+          "est_min": 55,
+          "deliverable": "Épisodes DEA-AUDIO-06 et DEA-AUDIO-07 écoutés et maîtrisés",
+          "recommended_day": "Chaque jour (trajets)"
+        },
+        {
+          "id": "W15-C7",
+          "priority": "core",
+          "type": "podcast",
+          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DEA-AUDIO-01, DEA-AUDIO-02 et DEA-AUDIO-03 (Ingestion Batch/Streaming, Kinesis Data Streams, Firehose/MSK/Flink)",
+          "resource": "Studio Audio Mobile intégré (public/audios/dea-c01/)",
+          "lectures": "DEA-AUDIO-01, DEA-AUDIO-02 et DEA-AUDIO-03 (Écoute 1 + Écoute 2 J+3)",
+          "video_min": 0,
+          "est_min": 70,
+          "deliverable": "Épisodes DEA-AUDIO-01, DEA-AUDIO-02 et DEA-AUDIO-03 écoutés et maîtrisés",
+          "recommended_day": "Chaque jour (trajets)"
         }
       ]
     },
@@ -1420,45 +1617,17 @@
       "week": 16,
       "start": "2027-02-22",
       "end": "2027-02-28",
-      "phase": "DEA-C01 & Snowflake ML - Semaine 7/10 (Clôture des Cours Maarek & Nikolai + Scale Embeddings GPU + Audios DEA 14 & 16)",
-      "theme": "Fin de Maarek (263-298) et Nikolai (231-261) + Quickstarts ML #11 & #12 + Audios DEA 14 (Observabilité) & 16 (KMS/VPC & 30 Pièges)",
+      "phase": "DEA-C01 & Snowflake ML (semaine 5/8)",
+      "theme": "Maarek leçons 205 à 231 + Maarek leçons 246 à 260 + Skill Builder Domain 4 Review + Podcasts DEA-AUDIO-12, 16 + Quickstart Snowflake",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 535,
+      "cert_budget_min": 530,
       "interview_budget_min": 120,
-      "total_planned_min": 655,
-      "checkpoint": "100 % des leçons théoriques Maarek/Nikolai et des 16 Audios DEA terminés + Inférence batch GPU d'embeddings pratiquée",
+      "total_planned_min": 650,
+      "checkpoint": "Maarek leçons 205 à 231, Maarek leçons 246 à 260 cochées ; revues Skill Builder terminées",
       "tasks": [
         {
           "id": "W16-C1",
-          "course": "maarek",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Maarek DEA-C01 : Architectures Data Lakehouse (Iceberg, Hudi, Delta), Optimisation des coûts et Clôture (Leçons 263 à 298)",
-          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
-          "lectures": "leçons 263 à 298",
-          "first": 263,
-          "last": 298,
-          "video_min": 105,
-          "est_min": 150,
-          "deliverable": "Comparatif Apache Iceberg vs Hudi vs Delta Lake sur AWS Glue/Athena/EMR"
-        },
-        {
-          "id": "W16-C2",
-          "course": "nikolai",
-          "priority": "core",
-          "type": "udemy",
-          "title": "Nikolai DEA-C01 : Synthèse Architecturale et Préparation aux Examens Blancs (Leçons 231 à 261)",
-          "resource": "Udemy - Nikolai Schuler (DEA-C01)",
-          "lectures": "leçons 231 à 261",
-          "first": 231,
-          "last": 261,
-          "video_min": 72,
-          "est_min": 95,
-          "deliverable": "Fiches d'arbitrage architectural DEA-C01 complètes"
-        },
-        {
-          "id": "W16-C3",
           "priority": "core",
           "type": "quickstart",
           "title": "Quickstart Snowflake ML #11 (Intermediate) : Scale Embeddings with Snowflake Notebooks on Container Runtime",
@@ -1467,21 +1636,41 @@
           "video_min": 0,
           "est_min": 45,
           "url": "https://www.snowflake.com/en/developers/solutions-center/scale-embeddings-gpus-snowflake-notebooks-container-runtime/",
-          "deliverable": "Calcul distribué d'embeddings open-source sur GPU avec Snowflake Container Runtime"
+          "deliverable": "Calcul distribué d'embeddings open-source sur GPU avec Snowflake Container Runtime",
+          "recommended_day": "Lundi (soir)"
+        },
+        {
+          "id": "W16-C2",
+          "course": "maarek",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 : Intégration d'applications et orchestration : SQS, SNS, Step Functions, EventBridge, AppFlow, MWAA (leçons 205 à 206)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 205 à 206",
+          "first": 205,
+          "last": 206,
+          "video_min": 11,
+          "est_min": 30,
+          "deliverable": "Leçons 205 à 206 du cours Maarek cochées",
+          "recommended_day": "Mardi (soir)"
+        },
+        {
+          "id": "W16-C3",
+          "course": "maarek",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 : Sécurité et gouvernance : IAM, KMS, Macie, Secrets Manager, masquage, WAF (leçons 207 à 231)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 207 à 231",
+          "first": 207,
+          "last": 231,
+          "video_min": 97,
+          "est_min": 151,
+          "deliverable": "Leçons 207 à 231 du cours Maarek cochées",
+          "recommended_day": "Mercredi (soir)"
         },
         {
           "id": "W16-C4",
-          "priority": "core",
-          "type": "podcast",
-          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DEA-AUDIO-14 & DEA-AUDIO-16 (Observabilité IteratorAge/STL_LOAD_ERRORS, KMS Bucket Keys, VPC Glue & 30 Pièges DEA-C01)",
-          "resource": "Studio Audio Mobile intégré (public/audios/dea-c01/)",
-          "lectures": "DEA-AUDIO-14 & DEA-AUDIO-16 (Écoute 1 + Écoute 2 J+3)",
-          "video_min": 0,
-          "est_min": 60,
-          "deliverable": "Les 16 épisodes DEA-AUDIO-01 à 16 ont tous été écoutés au moins 2 fois"
-        },
-        {
-          "id": "W16-C5",
           "priority": "core",
           "type": "skill_builder",
           "title": "AWS Skill Builder (DEA-C01, anglais) : Domain 4 Review (Sécurité et gouvernance des données)",
@@ -1490,7 +1679,6 @@
           "video_min": 80,
           "est_min": 80,
           "url": "https://skillbuilder.aws/",
-          "recommended_day": "Samedi (après-midi)",
           "deliverable": "Domaine 4 (Sécurité et gouvernance des données, 18 %) relu avec la revue officielle",
           "skillbuilder": {
             "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
@@ -1503,7 +1691,23 @@
                 "kind": "Préparation à l'examen de certification"
               }
             ]
-          }
+          },
+          "recommended_day": "Jeudi (soir)"
+        },
+        {
+          "id": "W16-C5",
+          "course": "maarek",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 : Gestion et gouvernance : CloudWatch, CloudTrail, Config, CloudFormation, SSM (leçons 246 à 260)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 246 à 260",
+          "first": 246,
+          "last": 260,
+          "video_min": 67,
+          "est_min": 94,
+          "deliverable": "Leçons 246 à 260 du cours Maarek cochées",
+          "recommended_day": "Vendredi (soir)"
         },
         {
           "id": "W16-C6",
@@ -1519,28 +1723,28 @@
           "recommended_day": "Dimanche (matin)"
         },
         {
-          "id": "W16-B1",
-          "priority": "bonus",
-          "type": "skill_builder",
-          "title": "AWS Skill Builder (DEA-C01, anglais) : Data Engineering on AWS Learning Plans, labs (séance 5 sur 6, 45 min)",
-          "resource": "AWS Skill Builder (gratuit)",
-          "lectures": "Reprendre le plan là où tu t'es arrêté, dans l'ordre des 5 formations",
+          "id": "W16-C7",
+          "priority": "core",
+          "type": "podcast",
+          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DEA-AUDIO-12 (Arbitrage Orchestration Step Functions vs MWAA vs Glue Workflows)",
+          "resource": "Studio Audio Mobile intégré (public/audios/dea-c01/)",
+          "lectures": "DEA-AUDIO-12 (Écoute 1 + Écoute 2 J+3)",
           "video_min": 0,
-          "est_min": 45,
-          "url": "https://skillbuilder.aws/",
-          "deliverable": "45 min de pratique sur les labs du plan (bonus sacrifiable en premier en cas d'imprévu)",
-          "skillbuilder": {
-            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
-            "language": "English",
-            "access": "Gratuit",
-            "items": [
-              {
-                "name": "Data Engineering on AWS Learning Plans (includes labs)",
-                "minutes": 1220,
-                "kind": "Plan d'apprentissage (5 formations, labs inclus)"
-              }
-            ]
-          }
+          "est_min": 35,
+          "deliverable": "Épisodes DEA-AUDIO-12 écoutés et maîtrisés",
+          "recommended_day": "Chaque jour (trajets)"
+        },
+        {
+          "id": "W16-C8",
+          "priority": "core",
+          "type": "podcast",
+          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DEA-AUDIO-16 (KMS Bucket Keys, VPC Glue & 30 Pièges DEA-C01)",
+          "resource": "Studio Audio Mobile intégré (public/audios/dea-c01/)",
+          "lectures": "DEA-AUDIO-16 (Écoute 1 + Écoute 2 J+3)",
+          "video_min": 0,
+          "est_min": 35,
+          "deliverable": "Épisodes DEA-AUDIO-16 écoutés et maîtrisés",
+          "recommended_day": "Chaque jour (trajets)"
         }
       ]
     },
@@ -1548,31 +1752,152 @@
       "week": 17,
       "start": "2027-03-01",
       "end": "2027-03-07",
-      "phase": "DEA-C01 & Snowflake ML - Semaine 8/10 (Examens Blancs DEA #1 & #2 + Distributed PyTorch GPU + Réécoute Audios 01-08)",
-      "theme": "Nikolai Practice Tests #1 & #2 (262-263) + AWS Official Question Set + Quickstart ML #13 (PyTorch GPU) + Réécoute 1.5x Audios DEA 01 à 08",
+      "phase": "DEA-C01 & Snowflake ML (semaine 6/8)",
+      "theme": "Maarek leçons 261 à 265 + Maarek leçons 309 à 317 + Skill Builder Domain 3 Review + examens blancs + Podcasts DEA-AUDIO-14 + Quickstart Snowflake",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 530,
+      "cert_budget_min": 539,
       "interview_budget_min": 120,
-      "total_planned_min": 650,
-      "checkpoint": "2 premiers examens blancs DEA-C01 analysés + Modèle PyTorch distribué sur GPU exécuté dans Snowflake",
+      "total_planned_min": 659,
+      "checkpoint": "Maarek leçons 261 à 265, Maarek leçons 309 à 317 cochées ; examens blancs faits et erreurs ajoutées aux flashcards ; revues Skill Builder terminées",
       "tasks": [
         {
           "id": "W17-C1",
-          "course": "nikolai",
           "priority": "core",
-          "type": "exam_blanc",
-          "title": "Nikolai DEA-C01 : Practice Exam #1 (Leçon 262) + Practice Exam #2 (Leçon 263) avec débriefing complet",
-          "resource": "Udemy - Nikolai Schuler (DEA-C01)",
-          "lectures": "leçons 262 à 263",
-          "first": 262,
-          "last": 263,
+          "type": "quickstart",
+          "title": "Quickstart Snowflake ML #13 (Intermediate) : Getting Started with Distributed PyTorch with Snowflake Notebooks",
+          "resource": "Snowflake ML Quickstarts (End-to-end ML workflow)",
+          "lectures": "Lab Distributed PyTorch Recommendation Model",
           "video_min": 0,
-          "est_min": 240,
-          "deliverable": "Scores blancs #1 et #2 enregistrés et analyse détaillée des distracteurs"
+          "est_min": 60,
+          "url": "https://www.snowflake.com/en/developers/solutions-center/running-distributed-pytorch-models-on-snowflake-an-end-to-end-ml-solution/",
+          "deliverable": "Modèle de recommandation PyTorch entraîné en distribué sur GPU dans Snowflake",
+          "recommended_day": "Lundi (soir)"
         },
         {
           "id": "W17-C2",
+          "course": "maarek",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 : Gestion et gouvernance : CloudWatch, CloudTrail, Config, CloudFormation, SSM (leçons 261 à 265)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 261 à 265",
+          "first": 261,
+          "last": 265,
+          "video_min": 29,
+          "est_min": 56,
+          "deliverable": "Leçons 261 à 265 du cours Maarek cochées",
+          "recommended_day": "Mardi (soir)"
+        },
+        {
+          "id": "W17-C3",
+          "priority": "core",
+          "type": "skill_builder",
+          "title": "AWS Skill Builder (DEA-C01, anglais) : Domain 3 Review (Opérations et support des données)",
+          "resource": "AWS Skill Builder (gratuit)",
+          "lectures": "Revue officielle du domaine 3 (22 % de l'examen)",
+          "video_min": 80,
+          "est_min": 80,
+          "url": "https://skillbuilder.aws/",
+          "deliverable": "Domaine 3 (Opérations et support des données, 22 %) relu avec la revue officielle",
+          "skillbuilder": {
+            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
+            "language": "English",
+            "access": "Gratuit",
+            "items": [
+              {
+                "name": "Domain 3 Review: AWS Certified Data Engineer - Associate (DEA-C01 - English)",
+                "minutes": 80,
+                "kind": "Préparation à l'examen de certification"
+              }
+            ]
+          },
+          "recommended_day": "Mercredi (soir)"
+        },
+        {
+          "id": "W17-C4",
+          "course": "maarek",
+          "priority": "core",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 : Conclusion, conseils d'examen (leçons 309 à 317)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 309 à 317",
+          "first": 309,
+          "last": 317,
+          "video_min": 32,
+          "est_min": 45,
+          "deliverable": "Leçons 309 à 317 du cours Maarek cochées",
+          "recommended_day": "Jeudi (soir)"
+        },
+        {
+          "id": "W17-C5",
+          "priority": "core",
+          "type": "exam_blanc",
+          "title": "Maarek DEA-C01 : Practice Exam v1.0 (examen blanc complet, 65 questions) avec débriefing",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "Practice Exam v1.0",
+          "video_min": 0,
+          "est_min": 150,
+          "deliverable": "Score >= 75 % et erreurs ajoutées aux flashcards",
+          "recommended_day": "Samedi (matin)"
+        },
+        {
+          "id": "W17-C6",
+          "priority": "core",
+          "type": "podcast",
+          "title": "Podcasts NotebookLM (Écoute récursive Mobile/Transports) : DEA-AUDIO-14 (Observabilité IteratorAge/STL_LOAD_ERRORS)",
+          "resource": "Studio Audio Mobile intégré (public/audios/dea-c01/)",
+          "lectures": "DEA-AUDIO-14 (Écoute 1 + Écoute 2 J+3)",
+          "video_min": 0,
+          "est_min": 35,
+          "deliverable": "Épisodes DEA-AUDIO-14 écoutés et maîtrisés",
+          "recommended_day": "Chaque jour (trajets)"
+        },
+        {
+          "id": "W17-B1",
+          "course": "maarek",
+          "priority": "bonus",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 (facultatif) : Conteneurs : Docker, ECS, ECR, EKS (leçons 128 à 135)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 128 à 135",
+          "first": 128,
+          "last": 135,
+          "video_min": 43,
+          "est_min": 75,
+          "deliverable": "Leçons 128 à 135 du cours Maarek cochées (bloc facultatif, à sauter en cas de retard)"
+        },
+        {
+          "id": "W17-B2",
+          "course": "maarek",
+          "priority": "bonus",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 (facultatif) : Réseau : VPC, PrivateLink, Route 53, CloudFront (leçons 232 à 238)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 232 à 238",
+          "first": 232,
+          "last": 238,
+          "video_min": 27,
+          "est_min": 38,
+          "deliverable": "Leçons 232 à 238 du cours Maarek cochées (bloc facultatif, à sauter en cas de retard)"
+        }
+      ]
+    },
+    {
+      "week": 18,
+      "start": "2027-03-08",
+      "end": "2027-03-14",
+      "phase": "DEA-C01 & Snowflake ML (semaine 7/8)",
+      "theme": "Skill Builder Official Practice Question Set + examens blancs + Quickstart Snowflake",
+      "light_week": false,
+      "exam": null,
+      "cert_budget_min": 551,
+      "interview_budget_min": 100,
+      "total_planned_min": 651,
+      "checkpoint": "examens blancs faits et erreurs ajoutées aux flashcards ; revues Skill Builder terminées",
+      "tasks": [
+        {
+          "id": "W18-C1",
           "priority": "core",
           "type": "skill_builder",
           "title": "AWS Skill Builder : Exam Prep Official Question Set (DEA-C01) + Réécoute rapide (1.5x) de DEA-AUDIO-01 à DEA-AUDIO-08 dans les transports",
@@ -1593,89 +1918,79 @@
                 "kind": "Préparation à l'examen de certification"
               }
             ]
-          }
+          },
+          "recommended_day": "Lundi (soir)"
         },
         {
-          "id": "W17-C3",
+          "id": "W18-C2",
           "priority": "core",
           "type": "quickstart",
-          "title": "Quickstart Snowflake ML #13 (Intermediate) : Getting Started with Distributed PyTorch with Snowflake Notebooks",
+          "title": "Quickstart Snowflake ML #14 (Intermediate) : Defect Detection Using Distributed PyTorch with Snowflake Notebooks",
           "resource": "Snowflake ML Quickstarts (End-to-end ML workflow)",
-          "lectures": "Lab Distributed PyTorch Recommendation Model",
+          "lectures": "Lab Computer Vision PyTorch sur GPU",
           "video_min": 0,
           "est_min": 60,
-          "url": "https://www.snowflake.com/en/developers/solutions-center/running-distributed-pytorch-models-on-snowflake-an-end-to-end-ml-solution/",
-          "deliverable": "Modèle de recommandation PyTorch entraîné en distribué sur GPU dans Snowflake"
+          "url": "https://www.snowflake.com/en/developers/solutions-center/computer-vision-defect-detection-distributed-pytorch-snowflake-notebooks/",
+          "deliverable": "Modèle Computer Vision PyTorch entraîné sur GPU dans Snowflake",
+          "recommended_day": "Samedi (après-midi)"
         },
         {
-          "id": "W17-B1",
-          "priority": "bonus",
-          "type": "skill_builder",
-          "title": "AWS Skill Builder (DEA-C01, anglais) : Data Engineering on AWS Learning Plans, labs (séance 6 sur 6, 120 min)",
-          "resource": "AWS Skill Builder (gratuit)",
-          "lectures": "Reprendre le plan là où tu t'es arrêté, dans l'ordre des 5 formations",
+          "id": "W18-C3",
+          "priority": "core",
+          "type": "exam_blanc",
+          "title": "Practice Tests DEA-C01 (cours Udemy séparé) : tests 1 et 2 (2 x 65 questions) avec débriefing complet",
+          "resource": "Udemy - Practice Tests AWS Certified Data Engineer Associate (DEA-C01)",
+          "lectures": "Tests 1 et 2",
           "video_min": 0,
-          "est_min": 120,
-          "url": "https://skillbuilder.aws/",
-          "deliverable": "120 min de pratique sur les labs du plan (bonus sacrifiable en premier en cas d'imprévu)",
-          "skillbuilder": {
-            "exam_page": "AWS Certified Data Engineer - Associate (DEA-C01)",
-            "language": "English",
-            "access": "Gratuit",
-            "items": [
-              {
-                "name": "Data Engineering on AWS Learning Plans (includes labs)",
-                "minutes": 1220,
-                "kind": "Plan d'apprentissage (5 formations, labs inclus)"
-              }
-            ]
-          }
+          "est_min": 240,
+          "deliverable": "Scores des tests 1 et 2 enregistrés et analyse des distracteurs",
+          "recommended_day": "Samedi (journée, 2 sessions)"
+        },
+        {
+          "id": "W18-B1",
+          "course": "maarek",
+          "priority": "bonus",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 (facultatif) : Analytique : OpenSearch et QuickSight (leçons 184 à 192)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 184 à 192",
+          "first": 184,
+          "last": 192,
+          "video_min": 63,
+          "est_min": 103,
+          "deliverable": "Leçons 184 à 192 du cours Maarek cochées (bloc facultatif, à sauter en cas de retard)"
+        },
+        {
+          "id": "W18-B2",
+          "course": "maarek",
+          "priority": "bonus",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 (facultatif) : Réseau : VPC, PrivateLink, Route 53, CloudFront (leçons 239 à 244)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 239 à 244",
+          "first": 239,
+          "last": 244,
+          "video_min": 27,
+          "est_min": 38,
+          "deliverable": "Leçons 239 à 244 du cours Maarek cochées (bloc facultatif, à sauter en cas de retard)"
         }
       ]
     },
     {
-      "week": 18,
-      "start": "2027-03-08",
-      "end": "2027-03-14",
-      "phase": "DEA-C01 & Snowflake ML - Semaine 9/10 (Examens Blancs DEA #3, #4 & Final Maarek + PyTorch Vision + Réécoute Audios 09-16)",
-      "theme": "Nikolai Practice Tests #3 & #4 (264-265) + Maarek Practice Exam (299) + Quickstart ML #14 + Réécoute 1.5x Audios DEA 09 à 16",
+      "week": 19,
+      "start": "2027-03-15",
+      "end": "2027-03-21",
+      "phase": "DEA-C01 & Snowflake ML (semaine 8/8)",
+      "theme": "Skill Builder Exam Prep Summary + examens blancs + Quickstart Snowflake",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 480,
-      "interview_budget_min": 120,
-      "total_planned_min": 600,
-      "checkpoint": "Cours Maarek (299/299) achevé, 3e écoute des 16 Audios DEA terminée et moyenne des examens blancs >= 80 %",
+      "cert_budget_min": 575,
+      "interview_budget_min": 80,
+      "total_planned_min": 655,
+      "checkpoint": "examens blancs faits et erreurs ajoutées aux flashcards ; revues Skill Builder terminées",
       "tasks": [
         {
-          "id": "W18-C1",
-          "course": "nikolai",
-          "priority": "core",
-          "type": "exam_blanc",
-          "title": "Nikolai DEA-C01 : Practice Exam #3 (Leçon 264) + Practice Exam #4 (Leçon 265) chronométrés",
-          "resource": "Udemy - Nikolai Schuler (DEA-C01)",
-          "lectures": "leçons 264 à 265",
-          "first": 264,
-          "last": 265,
-          "video_min": 0,
-          "est_min": 240,
-          "deliverable": "Scores blancs #3 et #4 >= 80 %"
-        },
-        {
-          "id": "W18-C2",
-          "course": "maarek",
-          "priority": "core",
-          "type": "exam_blanc",
-          "title": "Maarek DEA-C01 : Examen Blanc Final (Leçon 299 - Clôture 100 % Maarek) + Réécoute rapide (1.5x) de DEA-AUDIO-09 à DEA-AUDIO-16",
-          "resource": "Udemy Maarek + Studio Audio Mobile",
-          "lectures": "leçon 299 + Écoute 3 DEA-AUDIO-09 à 16",
-          "first": 299,
-          "last": 299,
-          "video_min": 0,
-          "est_min": 175,
-          "deliverable": "Cours Maarek 100 % complété (299/299), score >= 80 % et 3e écoute validée sur les audios Redshift/Orchestration/Lake Formation"
-        },
-        {
-          "id": "W18-C3",
+          "id": "W19-C1",
           "priority": "core",
           "type": "skill_builder",
           "title": "AWS Skill Builder (DEA-C01, anglais) : Exam Prep Summary",
@@ -1696,38 +2011,105 @@
                 "kind": "Préparation à l'examen de certification"
               }
             ]
-          }
+          },
+          "recommended_day": "Lundi (soir)"
         },
         {
-          "id": "W18-C4",
+          "id": "W19-C2",
           "priority": "core",
           "type": "quickstart",
-          "title": "Quickstart Snowflake ML #14 (Intermediate) : Defect Detection Using Distributed PyTorch with Snowflake Notebooks",
-          "resource": "Snowflake ML Quickstarts (End-to-end ML workflow)",
-          "lectures": "Lab Computer Vision PyTorch sur GPU",
+          "title": "Quickstart Snowflake ML #15 (Intermediate) : Distributed Multi-Node and Multi-GPU Audio Transcription with Snowflake ML (Whisper large-v3)",
+          "resource": "Snowflake ML Quickstarts (Model development)",
+          "lectures": "Lab Multi-Node Multi-GPU Whisper",
           "video_min": 0,
           "est_min": 60,
-          "url": "https://www.snowflake.com/en/developers/solutions-center/computer-vision-defect-detection-distributed-pytorch-snowflake-notebooks/",
-          "deliverable": "Modèle Computer Vision PyTorch entraîné sur GPU dans Snowflake",
-          "recommended_day": "Samedi (après-midi)"
+          "url": "https://quickstarts.snowflake.com/guide/getting_started_with_distributed_multi_node_multi_gpu_audio_transcription_with_snowflake_ml_container_runtime/index.html?index=..%2F..index#5",
+          "deliverable": "15e et dernier Quickstart officiel Snowflake ML terminé : transcription audio multi-GPU avec Whisper large-v3",
+          "recommended_day": "Mardi (soir)"
+        },
+        {
+          "id": "W19-C3",
+          "priority": "core",
+          "type": "exam_blanc",
+          "title": "Practice Tests DEA-C01 (cours Udemy séparé) : tests 3 et 4 (2 x 65 questions) avec débriefing complet",
+          "resource": "Udemy - Practice Tests AWS Certified Data Engineer Associate (DEA-C01)",
+          "lectures": "Tests 3 et 4",
+          "video_min": 0,
+          "est_min": 240,
+          "deliverable": "Scores des tests 3 et 4 enregistrés et analyse des distracteurs",
+          "recommended_day": "Samedi (journée, 2 sessions)"
+        },
+        {
+          "id": "W19-C4",
+          "priority": "core",
+          "type": "exam_blanc",
+          "title": "Maarek DEA-C01 : Practice Exam v1.1 (examen blanc final) + Réécoute rapide (1.5x) de DEA-AUDIO-09 à DEA-AUDIO-16",
+          "resource": "Udemy Maarek + Studio Audio Mobile",
+          "lectures": "Practice Exam v1.1 + Écoute 3 DEA-AUDIO-09 à 16",
+          "video_min": 0,
+          "est_min": 175,
+          "deliverable": "Score >= 80 % au Practice Exam v1.1 et 3e écoute validée sur les audios DEA-AUDIO-09 à 16",
+          "recommended_day": "Dimanche (matin)"
+        },
+        {
+          "id": "W19-B1",
+          "course": "maarek",
+          "priority": "bonus",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 (facultatif) : Réseau : VPC, PrivateLink, Route 53, CloudFront (leçon 245)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçon 245",
+          "first": 245,
+          "last": 245,
+          "video_min": 3,
+          "est_min": 19,
+          "deliverable": "Leçon 245 du cours Maarek cochées (bloc facultatif, à sauter en cas de retard)"
+        },
+        {
+          "id": "W19-B2",
+          "course": "maarek",
+          "priority": "bonus",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 (facultatif) : Machine Learning : SageMaker (leçons 266 à 273)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 266 à 273",
+          "first": 266,
+          "last": 273,
+          "video_min": 27,
+          "est_min": 53,
+          "deliverable": "Leçons 266 à 273 du cours Maarek cochées (bloc facultatif, à sauter en cas de retard)"
+        },
+        {
+          "id": "W19-B3",
+          "course": "nikolai",
+          "priority": "bonus",
+          "type": "udemy",
+          "title": "Nikolai DEA-C01 (facultatif) : Examen blanc complet et conseils finaux (leçons 228 à 230)",
+          "resource": "Udemy - Nikolai Schuler (DEA-C01)",
+          "lectures": "leçons 228 à 230",
+          "first": 228,
+          "last": 230,
+          "video_min": 18,
+          "est_min": 23,
+          "deliverable": "Leçons 228 à 230 du cours Nikolai cochées (bloc facultatif, à sauter en cas de retard)"
         }
       ]
     },
     {
-      "week": 19,
-      "start": "2027-03-15",
-      "end": "2027-03-21",
-      "phase": "EXAMEN N°3 : AWS Certified Data Engineer - Associate (DEA-C01 - Vendredi 19/03/2027)",
-      "theme": "Simulateur interne DEA-C01, Révision des Fiches Express, Podcast DEA-AUDIO-16 et Passage officiel DEA-C01",
+      "week": 20,
+      "start": "2027-03-22",
+      "end": "2027-03-28",
+      "phase": "EXAMEN N°3 : AWS Certified Data Engineer - Associate (vendredi 26/03)",
+      "theme": "examens blancs + examen officiel + Quickstart Snowflake",
       "light_week": false,
-      "exam": "AWS Certified Data Engineer - Associate (DEA-C01) - Vendredi 19/03/2027",
-      "cert_budget_min": 580,
-      "interview_budget_min": 80,
-      "total_planned_min": 660,
-      "checkpoint": "LES 3 CERTIFICATIONS SONT VALIDÉES : CLF-C02 + dbt Analytics Engineering + AWS DEA-C01 !",
+      "exam": "AWS Certified Data Engineer - Associate (DEA-C01) - Vendredi 26/03/2027",
+      "cert_budget_min": 507,
+      "interview_budget_min": 150,
+      "total_planned_min": 657,
+      "checkpoint": "examens blancs faits et erreurs ajoutées aux flashcards ; AWS Certified Data Engineer - Associate (DEA-C01) obtenue",
       "tasks": [
         {
-          "id": "W19-C1",
+          "id": "W20-C1",
           "priority": "core",
           "type": "revision",
           "title": "Révision finale des Fiches Express DEA-C01 (Domaines 1 à 4), flashcards SM-2 et réécoute de DEA-AUDIO-02, 05, 09, 15 et 16",
@@ -1735,10 +2117,11 @@
           "lectures": "Synthèse finale DEA-C01",
           "video_min": 0,
           "est_min": 90,
-          "deliverable": "Zéro point faible résiduel sur Redshift, Glue, Kinesis et Lake Formation"
+          "deliverable": "Zéro point faible résiduel sur Redshift, Glue, Kinesis et Lake Formation",
+          "recommended_day": "Lundi (soir)"
         },
         {
-          "id": "W19-C2",
+          "id": "W20-C2",
           "priority": "core",
           "type": "exam_blanc",
           "title": "Simulateur interne : Examen blanc officiel DEA-C01 en conditions réelles (65 questions)",
@@ -1746,35 +2129,23 @@
           "lectures": "65 questions chronométrées",
           "video_min": 0,
           "est_min": 130,
-          "deliverable": "Score >= 82 % validant le passage officiel"
+          "deliverable": "Score >= 82 % validant le passage officiel",
+          "recommended_day": "Mardi (soir)"
         },
         {
-          "id": "W19-C3",
+          "id": "W20-C3",
           "priority": "core",
           "type": "certification",
-          "title": "PASSAGE DE L'EXAMEN OFFICIEL : AWS Certified Data Engineer - Associate (DEA-C01 - Vendredi 19 mars 2027)",
+          "title": "PASSAGE DE L'EXAMEN OFFICIEL : AWS Certified Data Engineer - Associate (DEA-C01 - Vendredi 26 mars 2027)",
           "resource": "Pearson VUE (En ligne ou Centre d'examen)",
           "lectures": "Examen officiel DEA-C01 (130 min)",
           "video_min": 0,
           "est_min": 180,
-          "deliverable": "Certification AWS DEA-C01 obtenue (score >= 720/1000) !"
+          "deliverable": "Certification AWS DEA-C01 obtenue (score >= 720/1000) !",
+          "recommended_day": "Vendredi 26 mars"
         },
         {
-          "id": "W19-B1",
-          "course": "nikolai",
-          "priority": "bonus",
-          "type": "exam_blanc",
-          "title": "Nikolai DEA-C01 : Practice Exam #5 de réserve (Leçon 266 - Clôture 100 % du cours Nikolai)",
-          "resource": "Udemy - Nikolai Schuler (DEA-C01)",
-          "lectures": "leçon 266",
-          "first": 266,
-          "last": 266,
-          "video_min": 0,
-          "est_min": 120,
-          "deliverable": "Examen blanc de réserve en cas de besoin de remédiation"
-        },
-        {
-          "id": "W19-C5",
+          "id": "W20-C4",
           "priority": "core",
           "type": "quickstart",
           "title": "Quickstart Snowflake Devoteam : Getting Started : Data Engineering with Snowflake & Snowpark Python",
@@ -1784,49 +2155,10 @@
           "est_min": 60,
           "url": "https://quickstarts.snowflake.com/guide/data_engineering_with_snowpark_python_intro/index.html?index=..%2F..index#0",
           "deliverable": "Pipeline Streams, Tasks et Snowpark Python validé",
-          "recommended_day": "Samedi 20 mars (après l'examen)"
-        }
-      ]
-    },
-    {
-      "week": 20,
-      "start": "2027-03-22",
-      "end": "2027-03-28",
-      "phase": "Semaine de Réserve #1 & Quickstart Snowflake ML #15 (Multi-GPU Whisper & Pipeline ML dbt+Snowpark)",
-      "theme": "Clôture des 15 Quickstarts Snowflake ML (Whisper Audio GPU) + 2e essai Snowflake 30 jours + Tampon de sécurité",
-      "light_week": false,
-      "exam": null,
-      "cert_budget_min": 135,
-      "interview_budget_min": 120,
-      "total_planned_min": 255,
-      "checkpoint": "15/15 Quickstarts Snowflake ML officiels complétés !",
-      "tasks": [
-        {
-          "id": "W20-C1",
-          "priority": "core",
-          "type": "quickstart",
-          "title": "Quickstart Snowflake ML #15 (Intermediate) : Distributed Multi-Node and Multi-GPU Audio Transcription with Snowflake ML (Whisper large-v3)",
-          "resource": "Snowflake ML Quickstarts (Model development)",
-          "lectures": "Lab Multi-Node Multi-GPU Whisper",
-          "video_min": 0,
-          "est_min": 60,
-          "url": "https://quickstarts.snowflake.com/guide/getting_started_with_distributed_multi_node_multi_gpu_audio_transcription_with_snowflake_ml_container_runtime/index.html?index=..%2F..index#5",
-          "deliverable": "15e et dernier Quickstart officiel Snowflake ML terminé : transcription audio multi-GPU avec Whisper large-v3"
+          "recommended_day": "Samedi 27 mars (après l'examen)"
         },
         {
-          "id": "W20-C2",
-          "priority": "core",
-          "type": "quickstart",
-          "title": "Quickstart #6 (dbt + Snowflake + ML) : Leverage dbt Cloud to Generate ML-ready Pipelines using Snowpark Python",
-          "resource": "Snowflake Quickstarts (Sélection Devoteam)",
-          "lectures": "Lab dbt Cloud + Snowpark ML",
-          "video_min": 0,
-          "est_min": 60,
-          "url": "https://quickstarts.snowflake.com/guide/leverage_dbt_cloud_to_generate_ml_ready_pipelines_using_snowpark_python/index.html?index=..%2F..index#0",
-          "deliverable": "Pipeline unifié dbt Cloud + Snowpark ML exécuté de bout en bout"
-        },
-        {
-          "id": "W20-C3",
+          "id": "W20-C5",
           "priority": "core",
           "type": "quickstart",
           "title": "Créer ton 2e essai Snowflake standard 30 jours (relais de l'essai 120 jours de Fred qui expire vers le 28 mars)",
@@ -1837,6 +2169,20 @@
           "url": "https://signup.snowflake.com/",
           "recommended_day": "Samedi 27 mars",
           "deliverable": "Nouveau compte d'essai actif (avec une autre adresse e-mail si Snowflake refuse la première), prêt pour le Quickstart Agents IA de la semaine 21"
+        },
+        {
+          "id": "W20-B1",
+          "course": "maarek",
+          "priority": "bonus",
+          "type": "udemy",
+          "title": "Maarek DEA-C01 (facultatif) : Bedrock, RAG, bases vectorielles (leçons 274 à 277)",
+          "resource": "Udemy - Stéphane Maarek & Frank Kane (DEA-C01)",
+          "lectures": "leçons 274 à 277",
+          "first": 274,
+          "last": 277,
+          "video_min": 23,
+          "est_min": 32,
+          "deliverable": "Leçons 274 à 277 du cours Maarek cochées (bloc facultatif, à sauter en cas de retard)"
         }
       ]
     },
@@ -1848,13 +2194,26 @@
       "theme": "Quickstart Agents IA sur Snowflake Cortex (2e essai Snowflake standard 30 jours, créé en S20) & Bilan final CDI (2 avril 2027)",
       "light_week": false,
       "exam": "Échéance Finale Contrat : Vendredi 02/04/2027",
-      "cert_budget_min": 105,
-      "interview_budget_min": 120,
-      "total_planned_min": 225,
+      "cert_budget_min": 165,
+      "interview_budget_min": 180,
+      "total_planned_min": 345,
       "checkpoint": "OBJECTIF CDI ATTEINT : 3 Certifications (CLF-C02, dbt, DEA-C01) + 15 Quickstarts Snowflake ML + 44 Podcasts + Préparation Entretiens",
       "tasks": [
         {
           "id": "W21-C1",
+          "priority": "core",
+          "type": "quickstart",
+          "title": "Quickstart #6 (dbt + Snowflake + ML) : Leverage dbt Cloud to Generate ML-ready Pipelines using Snowpark Python",
+          "resource": "Snowflake Quickstarts (Sélection Devoteam)",
+          "lectures": "Lab dbt Cloud + Snowpark ML",
+          "video_min": 0,
+          "est_min": 60,
+          "url": "https://quickstarts.snowflake.com/guide/leverage_dbt_cloud_to_generate_ml_ready_pipelines_using_snowpark_python/index.html?index=..%2F..index#0",
+          "deliverable": "Pipeline unifié dbt Cloud + Snowpark ML exécuté de bout en bout",
+          "recommended_day": "Lundi (soir)"
+        },
+        {
+          "id": "W21-C2",
           "priority": "core",
           "type": "quickstart",
           "title": "Quickstart Snowflake GenAI (Devoteam) : From Zero to Agents : Building End-to-End Data Pipelines for an AI Agent",
@@ -1863,10 +2222,11 @@
           "video_min": 0,
           "est_min": 60,
           "url": "https://www.snowflake.com/en/developers/guides/from-zero-to-agents/",
-          "deliverable": "Agent IA déployé sur Snowflake Cortex (Cortex Search + Cortex Analyst)"
+          "deliverable": "Agent IA déployé sur Snowflake Cortex (Cortex Search + Cortex Analyst)",
+          "recommended_day": "Mardi (soir)"
         },
         {
-          "id": "W21-C2",
+          "id": "W21-C3",
           "priority": "core",
           "type": "revision",
           "title": "Bilan général : Vérification des badges officiels (CLF-C02, dbt Analytics Engineering, AWS DEA-C01) et des 15 Quickstarts Snowflake ML",
@@ -1874,7 +2234,8 @@
           "lectures": "Synthèse finale",
           "video_min": 0,
           "est_min": 45,
-          "deliverable": "Dossier technique et certifications prêts pour la concrétisation CDI chez Devoteam"
+          "deliverable": "Dossier technique et certifications prêts pour la concrétisation CDI chez Devoteam",
+          "recommended_day": "Mercredi (soir)"
         }
       ]
     },
@@ -1887,8 +2248,8 @@
       "light_week": false,
       "exam": null,
       "cert_budget_min": 60,
-      "interview_budget_min": 120,
-      "total_planned_min": 180,
+      "interview_budget_min": 180,
+      "total_planned_min": 240,
       "checkpoint": "Marge de sécurité finale préservée",
       "tasks": [
         {
@@ -1900,7 +2261,8 @@
           "lectures": "Consolidation continue",
           "video_min": 0,
           "est_min": 60,
-          "deliverable": "Socle technique pérenne pour les missions Senior Data & AI chez Devoteam"
+          "deliverable": "Socle technique pérenne pour les missions Senior Data & AI chez Devoteam",
+          "recommended_day": "Lundi (soir)"
         }
       ]
     }

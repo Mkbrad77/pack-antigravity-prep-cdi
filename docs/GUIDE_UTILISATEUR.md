@@ -26,10 +26,10 @@ L'application démarre sur `http://127.0.0.1:5173`. Toutes vos données personne
 ## 2. Routine quotidienne recommandée (8h à 10h par semaine)
 
 ### A. Début de séance : écran « Aujourd'hui »
-1. Vérifiez la **Semaine active** (par défaut Semaine 1 du 2 novembre 2026 au démarrage, ou calculée selon la date) ainsi que les **comptes à rebours** jusqu'à vos trois examens :
-   - **AWS CLF-C02** : vendredi 20 novembre 2026
-   - **AWS DEA-C01 (Priorité N°1)** : jeudi 4 février 2027
-   - **dbt Analytics Engineering** : vendredi 19 mars 2027
+1. Vérifiez la **Semaine active** (Semaine 1 à partir du lundi 9 novembre 2026, calculée selon la date) ainsi que les **comptes à rebours** jusqu'à vos trois examens (D-25) :
+   - **AWS CLF-C02** : vendredi 11 décembre 2026
+   - **dbt Analytics Engineering** : vendredi 22 janvier 2027
+   - **AWS DEA-C01** : vendredi 26 mars 2027
 2. Consultez vos tâches de la semaine, séparées en deux colonnes (**Certifications** et **Entretiens Techniques**) et hiérarchisées par priorité :
    - **CORE (obligatoire)** : à traiter en priorité absolue.
    - **BONUS (sacrifiable)** : à faire uniquement si le bloc `core` est terminé et que la jauge hebdomadaire reste sous le plafond de 10h (600 min, ou 360 min en semaine de fêtes).
