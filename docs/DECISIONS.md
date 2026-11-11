@@ -248,3 +248,22 @@
   - **Labs « Data Engineering on AWS Learning Plans » :** en bonus, 6 séances de S12 à S17 (120, 60, 45, 75, 45 et 120 min), soit environ 7 h 45 sur les 20 h 20 du plan. La S11 n'avait pas de marge (640 min).
 - **Écarté :** les « Exam Prep Plan » complets (32 h 20 pour CLF-C02, 17 h 15 pour DEA-C01), qui reprennent ces modules et recoupent les cours Udemy.
 - **Contrôle :** toutes les semaines restent sous 660 min (test `tests/unit/skillBuilderPlan.test.ts`). Charges après ajout : S1 645, S2 590, S3 565, S10 660, S12 610, S13 655, S14 660, S15 655, S16 655, S17 650, S18 580 min.
+
+## 23. Décision D-23 : Quickstarts Snowflake et dbt en continu dès la semaine 1
+
+- **Demande :** pratiquer Snowflake et dbt chaque semaine dès le 9 novembre, sans décaler les dates d'examen (27/11/2026, 08/01/2027, 19/03/2027).
+- **Comptes :** essai Snowflake standard 30 jours (gratuit) créé en S1 (W01-C6) pour les S1 à S3, puis essai 120 jours de Fred le 28/11 (W03-C3), puis essai Cortex Code 30 jours en S14 (W14-C3). Le guide de chaque Quickstart nomme le compte à utiliser selon la semaine (`getSnowflakeAccountForWeek`).
+- **S1 à S3 :** W01-C6 (guide Notebooks, 25 min) et W01-C7 (UDF SQL, 20 min) ; W02-C5 Data Engineering avec Notebooks (65 min, ancien W05-B1) ; W03-C5 Container Runtime (45 min, ancien W06-C3), conseillé le samedi 28/11 après l'examen. L'onboarding Devoteam (30 min) passe de S1 à S4 (W04-B1).
+- **S4 à S21 :** au moins un Quickstart obligatoire chaque semaine. Passés en obligatoire : QS#2 en S5 (W05-C4), QS#3 en S6 (W06-C3), ML#2 en S7 (W07-C3, 45 min), ML#3 en S8 (W08-C3, 60 min), QS#5 en S9 (W09-C4, après l'examen), ML#7 en S12 (W12-C5), ML#12 en S16 (W16-C6), ML#14 en S18 (W18-C4), Data Engineering Snowpark en S19 (W19-C5, ancien W20-B1, après l'examen).
+- **Restent en bonus :** QS#4 dbt Mesh, déplacé de S8 en S6 (W06-B2) pour garder S8 sous 360 min, et les exercices Weigel 1 à 89 (W06-B1).
+- **Charges (cert + entretiens) :** S1 660, S2 655, S3 610, S4 470, S5 525, S6 600, S7 335, S8 350, S9 515, S19 660 min. Les semaines allégées S7 et S8 n'ont plus de bonus.
+- **Page Cours > Snowflake :** les champs lus correspondent enfin aux données (`recommended_week`, `activation_advice`, `usage`, numéro calculé), ce qui supprime les « Sundefined » et « undefined ». Les semaines affichées des Quickstarts sont alignées sur le planning.
+- **Moteur :** la session de remédiation dbt (score blanc < 80 %) cherche un bonus dbt restant entre la semaine du score et la S10, au lieu d'un identifiant figé.
+- **Contrôle :** `tests/unit/quickstartPlan.test.ts` (Quickstart obligatoire de S1 à S21, plafonds 660 et 360 min, identifiants uniques, compte cité par le guide, semaines de la page alignées).
+
+## 24. Décision D-24 : Comptes Snowflake jusqu'à la fin du parcours et semaines dbt alignées
+
+- **Date :** 6 novembre 2026, validé par Auren.
+- **2e essai standard 30 jours :** l'essai Cortex (S14) expire vers le 10 mars et l'essai 120 jours de Fred vers le 28 mars. Nouvelle tâche W20-C3 (15 min, samedi 27 mars) pour créer un 2e essai standard qui sert au Quickstart Agents IA de la S21. Charge S20 : 285 min.
+- **Page Snowflake :** semaines de 4 ressources du parcours dbt alignées sur le planning (DBT-LRN-07 en S6, 09 en S7, 11 en S8, 13 en S9).
+- **Remédiation dbt :** comportement de D-23 conservé (plus de séance de remédiation créée, report de l'examen d'une semaine inchangé).

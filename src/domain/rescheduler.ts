@@ -623,7 +623,10 @@ export function reschedulePlanning(
       const dbtExamTask = tasks.find(
         (t) => t.id === 'W09-C3' || t.id === 'W10-C3' || (t.cert_code === 'DBT' && t.type === 'certification')
       );
-      const dbtReserveBonus = tasks.find((t) => t.id === 'W09-B1' || t.id === 'W10-B1');
+      // Session de remédiation : premier bonus dbt restant entre la semaine du score et la semaine 10 (D-23).
+      const dbtReserveBonus = tasks.find(
+        (t) => t.cert_code === 'DBT' && t.priority === 'bonus' && t.target_week >= week && t.target_week <= 10
+      );
       const deaStartTask = tasks.find((t) => t.id === 'W10-C1' || t.id === 'W11-C1');
 
       if (dbtReserveBonus) {

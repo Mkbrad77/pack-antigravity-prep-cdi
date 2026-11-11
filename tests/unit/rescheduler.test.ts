@@ -42,13 +42,13 @@ const defaultSettings: AppSettings = {
 };
 
 describe('Moteur de replanification dynamique (Départ Lundi 9 nov. 2026 + Podcasts NotebookLM + Fêtes allégées)', () => {
-  it('Scénario 1A (Planning réel) : Séance Déduplication SQL (Chapitre 2.8, 35 min en Semaine 4) ratée -> absorbée en Semaine 5 (565/660 min) sans décalage en cascade', () => {
+  it('Scénario 1A (Planning réel) : Séance Déduplication SQL (Chapitre 2.8, 35 min en Semaine 4) ratée -> absorbée en Semaine 5 (560/660 min) sans décalage en cascade', () => {
     const tasks = buildUnifiedTasks(planningHebdo, planningEntretiens);
     const w4Before = computeWeekLoadSummary(4, tasks, planningHebdo, defaultSettings);
     const w5Before = computeWeekLoadSummary(5, tasks, planningHebdo, defaultSettings);
 
-    expect(w4Before.totalActiveMinutes).toBe(520); // 420 cert dbt + 100 interview
-    expect(w5Before.totalActiveMinutes).toBe(530); // 430 cert dbt/Snowflake + 100 interview
+    expect(w4Before.totalActiveMinutes).toBe(470); // 370 cert dbt + 100 interview
+    expect(w5Before.totalActiveMinutes).toBe(525); // 425 cert dbt/Snowflake + 100 interview
 
     const result = reschedulePlanning(tasks, planningHebdo, defaultSettings, {
       type: 'postpone_task',
@@ -59,13 +59,13 @@ describe('Moteur de replanification dynamique (Départ Lundi 9 nov. 2026 + Podca
     const movedTask = result.updatedTasks.find((t) => t.id === 'W04-I3')!;
     expect(movedTask.target_week).toBe(5);
     expect(movedTask.status).toBe('postponed');
-    expect(result.weekSummaries[5].totalActiveMinutes).toBe(565);
+    expect(result.weekSummaries[5].totalActiveMinutes).toBe(560);
     expect(result.weekSummaries[5].totalActiveMinutes).toBeLessThanOrEqual(660);
     expect(result.changes).toHaveLength(1);
     expect(result.explanationFr.join(' ')).toContain('Semaine 5');
   });
 
-  it('Scénario 1B (Variante Semaine 5 -> Semaine 6) : 50 min de SQL (W05-I3 + W05-I4) ratées en Semaine 5 -> absorbées en Semaine 6 (595/660 min dans la marge disponible)', () => {
+  it('Scénario 1B (Variante Semaine 5 -> Semaine 6) : 50 min de SQL (W05-I3 + W05-I4) ratées en Semaine 5 -> absorbées en Semaine 6 (650/660 min dans la marge disponible)', () => {
     const tasks = buildUnifiedTasks(planningHebdo, planningEntretiens);
 
     const step1 = reschedulePlanning(tasks, planningHebdo, defaultSettings, {
@@ -79,11 +79,11 @@ describe('Moteur de replanification dynamique (Départ Lundi 9 nov. 2026 + Podca
       fromWeek: 5,
     });
 
-    expect(step2.weekSummaries[6].totalActiveMinutes).toBe(595); // 545 initiales + 50 reportees = 595 <= 660
+    expect(step2.weekSummaries[6].totalActiveMinutes).toBe(650); // 600 initiales + 50 reportees = 650 <= 660
     expect(step2.weekSummaries[6].totalActiveMinutes).toBeLessThanOrEqual(660);
   });
 
-  it('Scénario 2 : Semaine 5 entière ratée pour maladie -> purge des bonus (S6/S7/S8), sauvetage prioritaire des cours Core DBT (Principe 2), compression à 50 % des entretiens SQL et respect strict des plafonds de fêtes (S7 Noël <= 360m, S8 Nouvel An <= 360m)', () => {
+  it('Scénario 2 : Semaine 5 entière ratée pour maladie -> purge des bonus (S6, les semaines de fêtes S7 et S8 n’en ont plus), sauvetage prioritaire des cours Core DBT (Principe 2), compression à 50 % des entretiens SQL et respect strict des plafonds de fêtes (S7 Noël <= 360m, S8 Nouvel An <= 360m)', () => {
     const tasks = buildUnifiedTasks(planningHebdo, planningEntretiens);
 
     const result = reschedulePlanning(tasks, planningHebdo, defaultSettings, {
@@ -92,13 +92,10 @@ describe('Moteur de replanification dynamique (Départ Lundi 9 nov. 2026 + Podca
       reason: 'Semaine 5 non réalisée pour cause de maladie',
     });
 
-    // 1. Les bonus de S6, S7 et S8 ont ete sacrifies
-    const w06b1 = result.updatedTasks.find((t) => t.id === 'W06-B1')!;
-    const w07b1 = result.updatedTasks.find((t) => t.id === 'W07-B1')!;
-    const w08b1 = result.updatedTasks.find((t) => t.id === 'W08-B1')!;
-    expect(w06b1.status).toBe('skipped');
-    expect(w07b1.status).toBe('skipped');
-    expect(w08b1.status).toBe('skipped');
+    // 1. Les bonus de S6 ont ete sacrifies (S7 et S8 n'ont plus de bonus depuis D-23)
+    expect(result.updatedTasks.find((t) => t.id === 'W06-B1')!.status).toBe('skipped');
+    expect(result.updatedTasks.find((t) => t.id === 'W06-B2')!.status).toBe('skipped');
+    expect(result.updatedTasks.some((t) => [7, 8].includes(t.original_week) && t.priority === 'bonus')).toBe(false);
 
     // 2. Les chapitres d'entretien de S5 sont compresses
     const w05i1 = result.updatedTasks.find((t) => t.id === 'W05-I1')!;
@@ -114,7 +111,7 @@ describe('Moteur de replanification dynamique (Départ Lundi 9 nov. 2026 + Podca
     expect(result.updatedExamDates['DBT']).toBe('2027-01-08');
   });
 
-  it('Scénario 3 : Semaine d’examen DBT (Semaine 9) avec fatigue -> suppression du bonus et réduction de l’entretien à 20 min de relecture', () => {
+  it('Scénario 3 : Semaine d’examen DBT (Semaine 9) avec fatigue -> aucun bonus à supprimer (Quickstart #5 obligatoire, conseillé après l’examen) et réduction de l’entretien à 20 min de relecture', () => {
     const tasks = buildUnifiedTasks(planningHebdo, planningEntretiens);
 
     const result = reschedulePlanning(tasks, planningHebdo, defaultSettings, {
@@ -122,12 +119,11 @@ describe('Moteur de replanification dynamique (Départ Lundi 9 nov. 2026 + Podca
       week: 9,
     });
 
-    const w09b1 = result.updatedTasks.find((t) => t.id === 'W09-B1')!;
     const w09i1 = result.updatedTasks.find((t) => t.id === 'W09-I1')!;
-    expect(w09b1.status).toBe('skipped');
+    expect(result.updatedTasks.find((t) => t.id === 'W09-C4')!.status).not.toBe('skipped');
     expect(w09i1.status).toBe('compressed');
     expect(w09i1.effective_est_min).toBe(20);
-    expect(result.weekSummaries[9].totalActiveMinutes).toBeLessThanOrEqual(450);
+    expect(result.weekSummaries[9].totalActiveMinutes).toBeLessThanOrEqual(475);
   });
 
   it('Scénario 4 : Retard et score blanc DBT < 80 % en Semaine 8 (72 %) -> report de +7 jours de DBT en Semaine 10 et absorption via la Semaine 20 de réserve', () => {
@@ -142,11 +138,12 @@ describe('Moteur de replanification dynamique (Départ Lundi 9 nov. 2026 + Podca
 
     expect(result.updatedExamDates['DBT']).toBe('2027-01-15');
     const examTask = result.updatedTasks.find((t) => t.id === 'W09-C3')!;
-    const reserveBonusTask = result.updatedTasks.find((t) => t.id === 'W09-B1')!;
+    const deaBonusTask = result.updatedTasks.find((t) => t.id === 'W10-B1')!;
     const deaStartTask = result.updatedTasks.find((t) => t.id === 'W10-C1')!;
 
     expect(examTask.target_week).toBe(10);
-    expect(reserveBonusTask.priority).toBe('core');
+    // Plus aucun bonus dbt en S8 à S10 : aucune tâche DEA n'est promue à tort en remédiation dbt.
+    expect(deaBonusTask.priority).toBe('bonus');
     expect(deaStartTask.target_week).toBe(20);
   });
 
@@ -170,10 +167,10 @@ describe('Moteur de replanification dynamique (Départ Lundi 9 nov. 2026 + Podca
     expect(deaExamTask.target_week).toBe(20);
   });
 
-  it('Scénario 6 : Semaine de fêtes de Noël (Semaine 7, budget allégé à 360 min / 6 h) -> suppression automatique du bonus (100 min) pour ramener la charge à 290 min Core (marge de 70 min)', () => {
+  it('Scénario 6 : Semaine de fêtes de Noël (Semaine 7, budget allégé à 360 min / 6 h) -> charge déjà sous le plafond (335 min Core avec le Quickstart ML court), rien à supprimer (marge de 25 min)', () => {
     const tasks = buildUnifiedTasks(planningHebdo, planningEntretiens);
     const before = computeWeekLoadSummary(7, tasks, planningHebdo, defaultSettings);
-    expect(before.totalActiveMinutes).toBe(390);
+    expect(before.totalActiveMinutes).toBe(335);
     expect(before.maxMinutes).toBe(360);
 
     const result = reschedulePlanning(tasks, planningHebdo, defaultSettings, {
@@ -181,9 +178,8 @@ describe('Moteur de replanification dynamique (Départ Lundi 9 nov. 2026 + Podca
       week: 7,
     });
 
-    const w07b1 = result.updatedTasks.find((t) => t.id === 'W07-B1')!;
-    expect(w07b1.status).toBe('skipped');
-    expect(result.weekSummaries[7].totalActiveMinutes).toBe(290);
-    expect(result.weekSummaries[7].remainingMarginMinutes).toBe(70);
+    expect(result.changes).toHaveLength(0);
+    expect(result.weekSummaries[7].totalActiveMinutes).toBe(335);
+    expect(result.weekSummaries[7].remainingMarginMinutes).toBe(25);
   });
 });

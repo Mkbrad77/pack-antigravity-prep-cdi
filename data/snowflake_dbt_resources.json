@@ -7,14 +7,25 @@
   },
   "free_trials": [
     {
+      "id": "SF-TRIAL-STD-30D",
+      "title": "Snowflake Free Trial standard (30 jours, gratuit)",
+      "provider": "Snowflake (inscription publique)",
+      "duration_days": 30,
+      "credits_usd": "Crédits d'essai standard Snowflake (sans carte bancaire)",
+      "url": "https://signup.snowflake.com/",
+      "recommended_week": 1,
+      "activation_advice": "À créer dès la semaine 1 (tâche W01-C6) pour démarrer les Quickstarts tout de suite. Il sert pendant les semaines 1 à 3, puis l'essai 120 jours de Fred prend le relais le 28 novembre.",
+      "priority": "core"
+    },
+    {
       "id": "SF-TRIAL-120D",
       "title": "Snowflake Free Trial Étudiant / DevDay Bootcamp (120 jours + 400$ de compute)",
       "provider": "Snowflake (Partagé par Fred - Devoteam)",
       "duration_days": 120,
       "credits_usd": "$400 de compute (Cloud : AWS, Région : us-west-2)",
       "url": "https://signup.snowflake.com/?trial=student&cloud=aws&region=us-west-2&utm_source=coursera&utm_campaign=devdaybootcamp2025",
-      "recommended_week": 4,
-      "activation_advice": "À activer au démarrage de la Semaine 4 (23 novembre 2026) pour le lancement de ta préparation urgente dbt. Avec 120 jours de validité et 400$ de crédits, ce seul compte couvrira 100 % de tes labs dbt Cloud + Snowflake ET les 15 Quickstarts Snowflake ML jusqu'à fin mars 2027 sans expirer.",
+      "recommended_week": 3,
+      "activation_advice": "À activer le week-end des 28 et 29 novembre 2026 (fin de la semaine 3, juste après l'examen CLF-C02), comme prévu dans la tâche W03-C3. Avec 120 jours de validité et 400$ de crédits, ce compte prend le relais de l'essai standard 30 jours et couvre tes labs dbt Cloud + Snowflake et les Quickstarts Snowflake ML jusqu'à fin mars 2027.",
       "priority": "core"
     },
     {
@@ -24,8 +35,19 @@
       "duration_days": 30,
       "credits_usd": "40$ Cortex Code (CoCo) + 360$ de compute",
       "url": "https://signup.snowflake.com/cortex-code",
-      "recommended_week": 15,
-      "activation_advice": "Attention : ce compte ne dure que 30 jours ! Ne l'active surtout pas en novembre. Garde-le précieusement pour la Semaine 15 (février 2027) lorsque tu feras les Quickstarts GenAI / Cortex Search / Cortex Analyst / RAG.",
+      "recommended_week": 14,
+      "activation_advice": "Attention : ce compte ne dure que 30 jours ! Ne l'active surtout pas en novembre. Garde-le précieusement pour la Semaine 14 (février 2027, tâche W14-C3) lorsque tu feras les Quickstarts GenAI / Cortex Search / Cortex Analyst / RAG.",
+      "priority": "core"
+    },
+    {
+      "id": "SF-TRIAL-STD-30D-2",
+      "title": "2e essai Snowflake standard (30 jours, gratuit)",
+      "provider": "Snowflake (inscription publique)",
+      "duration_days": 30,
+      "credits_usd": "Crédits d'essai standard Snowflake (sans carte bancaire)",
+      "url": "https://signup.snowflake.com/",
+      "recommended_week": 20,
+      "activation_advice": "À créer le samedi 27 mars 2027 (tâche W20-C3), juste avant l'expiration de l'essai 120 jours de Fred. Il sert au Quickstart Agents IA de la semaine 21. Si Snowflake refuse ta première adresse, utilise une autre adresse e-mail. Choisis AWS US West (Oregon) pour avoir accès à Cortex.",
       "priority": "core"
     }
   ],
@@ -179,7 +201,7 @@
       "title": "Advanced Testing (Tests génériques custom, Unit Tests, store_failures)",
       "url": "https://learn.getdbt.com/courses/advanced-testing",
       "est_min": 90,
-      "recommended_week": 7,
+      "recommended_week": 6,
       "priority": "core",
       "description": "Sujet à très fort coefficient à l'examen : tests singuliers vs génériques, severity (warn/error), where, store_failures, tests unitaires YAML."
     },
@@ -199,7 +221,7 @@
       "title": "Advanced Deployment + Capsules State, Retry, Clone, Grants & Python Models",
       "url": "https://learn.getdbt.com/courses/advanced-deployment",
       "est_min": 90,
-      "recommended_week": 8,
+      "recommended_week": 7,
       "priority": "core",
       "description": "Slim CI (state:modified+, --defer), dbt retry, dbt clone, configuration des grants SQL et modèles Python Snowpark (.py)."
     },
@@ -219,7 +241,7 @@
       "title": "dbt Developer Exam Study Guide + Pro Tips for dbt Certifications",
       "url": "https://learn.getdbt.com/courses/analytics-engineering-exam-study-guide",
       "est_min": 60,
-      "recommended_week": 9,
+      "recommended_week": 8,
       "priority": "core",
       "description": "Guide officiel d'étude de l'examen dbt Analytics Engineering + méthodologie de réponse aux questions (QCM, DOMC, fill-in-the-blank)."
     },
@@ -239,7 +261,7 @@
       "title": "Qanalabs : dbt Developer Certification Practice Questions",
       "url": "https://www.qanalabs.com/courses/dbt-developer",
       "est_min": 90,
-      "recommended_week": 10,
+      "recommended_week": 9,
       "priority": "core",
       "description": "Questions d'entraînement complémentaires recommandées par la communauté dbt Devoteam avant le passage de l'examen."
     },
@@ -284,7 +306,7 @@
       "title": "Data Engineering with Snowpark Python and dbt",
       "url": "https://quickstarts.snowflake.com/guide/data_engineering_with_snowpark_python_and_dbt/index.html#0",
       "est_min": 60,
-      "recommended_week": 7,
+      "recommended_week": 6,
       "priority": "core",
       "description": "Combinaison de modèles SQL et de modèles Python Snowpark (.py) dans un même DAG dbt exécuté nativement dans Snowflake."
     },
@@ -295,7 +317,7 @@
       "title": "Build Data Products and a Data Mesh with dbt Cloud & Snowflake",
       "url": "https://quickstarts.snowflake.com/guide/data-products-data-mesh-dbt-cloud/index.html?index=..%2F..index#0",
       "est_min": 60,
-      "recommended_week": 9,
+      "recommended_week": 6,
       "priority": "bonus",
       "description": "Pratique directe de dbt Mesh pour l'examen : contrats de modèles, groupes, niveaux d'accès (public/protected/private) et gouvernance sur Snowflake."
     },
@@ -306,8 +328,8 @@
       "title": "Quickstart for the dbt Cloud Semantic Layer and Snowflake",
       "url": "https://docs.getdbt.com/guides/sl-snowflake-qs",
       "est_min": 60,
-      "recommended_week": 10,
-      "priority": "bonus",
+      "recommended_week": 9,
+      "priority": "core",
       "description": "Configuration de MetricFlow et du Semantic Layer dbt sur Snowflake (semantic_models, entities, dimensions, measures, metrics)."
     },
     {
@@ -317,8 +339,8 @@
       "title": "Leverage dbt Cloud to Generate ML-ready Pipelines using Snowpark Python",
       "url": "https://quickstarts.snowflake.com/guide/leverage_dbt_cloud_to_generate_ml_ready_pipelines_using_snowpark_python/index.html?index=..%2F..index#0",
       "est_min": 60,
-      "recommended_week": 11,
-      "priority": "bonus",
+      "recommended_week": 20,
+      "priority": "core",
       "description": "Transition idéale après l'examen dbt : préparation de features ML avec dbt et entraînement Snowpark Python."
     }
   ],
@@ -330,7 +352,7 @@
       "title": "Getting Started with Snowflake Notebooks on Container Runtime",
       "url": "https://www.snowflake.com/en/developers/solutions-center/getting-started-with-snowflake-notebook-container-runtime/",
       "est_min": 35,
-      "recommended_week": 6,
+      "recommended_week": 3,
       "priority": "core",
       "description": "Introduction pratique aux Snowflake Notebooks sur Container Runtime (CPU/GPU) pour exécuter du code Python/ML directement dans Snowflake."
     },
@@ -353,7 +375,7 @@
       "url": "https://quickstarts.snowflake.com/guide/end-to-end-ml-workflow/index.html?index=..%2F..index#1",
       "est_min": 60,
       "recommended_week": 8,
-      "priority": "bonus",
+      "priority": "core",
       "description": "Construction, déploiement et gestion d'un modèle XGBoost en production, avec introduction complète aux capacités MLOps de Snowflake."
     },
     {
@@ -363,7 +385,7 @@
       "title": "Train an XGBoost Model with GPUs using Snowflake Notebooks",
       "url": "https://www.snowflake.com/en/developers/solutions-center/harness-gpus-in-snowflake-notebooks-to-train-an-xgboost-model/",
       "est_min": 40,
-      "recommended_week": 11,
+      "recommended_week": 10,
       "priority": "core",
       "description": "Entraînement accéléré sur GPU d'un modèle XGBoost dans Snowflake Notebooks (compute pools GPU)."
     },
@@ -374,7 +396,7 @@
       "title": "Introduction to Snowflake Feature Store with Snowflake Notebooks",
       "url": "https://quickstarts.snowflake.com/guide/intro-to-feature-store/",
       "est_min": 45,
-      "recommended_week": 12,
+      "recommended_week": 11,
       "priority": "core",
       "description": "Fondamentaux du Snowflake Feature Store : création d'Entities, Feature Views (Dynamic Tables), enregistrement et génération de datasets d'entraînement."
     },
@@ -385,7 +407,7 @@
       "title": "Getting Started with Snowflake Feature Store API",
       "url": "https://quickstarts.snowflake.com/guide/overview-of-feature-store-api/",
       "est_min": 45,
-      "recommended_week": 13,
+      "recommended_week": 12,
       "priority": "core",
       "description": "Utilisation programmatique des APIs Python du Snowflake Feature Store pour gérer le cycle de vie des features et la fraîcheur des données."
     },
@@ -396,8 +418,8 @@
       "title": "Introduction to Online Feature Store in Snowflake",
       "url": "https://www.snowflake.com/en/developers/guides/intro-to-online-feature-store-in-snowflake/",
       "est_min": 45,
-      "recommended_week": 13,
-      "priority": "bonus",
+      "recommended_week": 12,
+      "priority": "core",
       "description": "Serving de features en temps réel (basse latence) avec le Online Feature Store de Snowflake pour l'inférence en ligne."
     },
     {
@@ -407,7 +429,7 @@
       "title": "Develop and Manage ML Models with Feature Store and Model Registry",
       "url": "https://www.snowflake.com/en/developers/solutions-center/develop-and-manage-ml-models-with-feature-store-and-model-registry/",
       "est_min": 60,
-      "recommended_week": 14,
+      "recommended_week": 13,
       "priority": "core",
       "description": "Cycle complet d'expérimentation ML : création de features, génération de training set point-in-time correct, versioning dans le Model Registry et inférence."
     },
@@ -418,7 +440,7 @@
       "title": "Orchestrate ML Pipelines with ML Jobs and Task Graphs",
       "url": "https://www.snowflake.com/en/developers/guides/e2e-task-graph/?index=..%2F..index#1",
       "est_min": 60,
-      "recommended_week": 15,
+      "recommended_week": 14,
       "priority": "core",
       "description": "Création d'un pipeline ML complet avec préparation des données, entraînement distribué, évaluation, promotion conditionnelle et nettoyage orchestrés via Task Graphs (DAGs Snowflake)."
     },
@@ -429,7 +451,7 @@
       "title": "Getting Started with ML Observability in Snowflake",
       "url": "https://www.snowflake.com/en/developers/solutions-center/monitoring-customer-churn-with-ml-observability-in-snowflake/",
       "est_min": 45,
-      "recommended_week": 16,
+      "recommended_week": 15,
       "priority": "core",
       "description": "Monitoring en production d'un modèle de prédiction de churn : détection du data drift, prediction drift et dégradation des métriques de performance."
     },
@@ -440,7 +462,7 @@
       "title": "Scale Embeddings with Snowflake Notebooks on Container Runtime",
       "url": "https://www.snowflake.com/en/developers/solutions-center/scale-embeddings-gpus-snowflake-notebooks-container-runtime/",
       "est_min": 45,
-      "recommended_week": 17,
+      "recommended_week": 16,
       "priority": "core",
       "description": "Génération d'embeddings vectoriels à grande échelle (batch inference sur GPU) avec un modèle open-source sur Container Runtime (essentiel pour les architectures RAG)."
     },
@@ -451,8 +473,8 @@
       "title": "Building ML Models to Crack the Code of Customer Conversions",
       "url": "https://quickstarts.snowflake.com/guide/build-ml-models-for-customer-conversions/",
       "est_min": 60,
-      "recommended_week": 17,
-      "priority": "bonus",
+      "recommended_week": 16,
+      "priority": "core",
       "description": "Pipeline hybride GenAI + ML classique : classification de texte, analyse de sentiment avec Snowflake Cortex GenAI et prédiction d'achat avec XGBoost."
     },
     {
@@ -462,7 +484,7 @@
       "title": "Getting Started with Distributed PyTorch with Snowflake Notebooks",
       "url": "https://www.snowflake.com/en/developers/solutions-center/running-distributed-pytorch-models-on-snowflake-an-end-to-end-ml-solution/",
       "est_min": 60,
-      "recommended_week": 18,
+      "recommended_week": 17,
       "priority": "core",
       "description": "Construction, entraînement distribué multi-GPU et déploiement d'un modèle de recommandation Deep Learning avec PyTorch sur Snowflake."
     },
@@ -473,8 +495,8 @@
       "title": "Defect Detection Using Distributed PyTorch with Snowflake Notebooks",
       "url": "https://www.snowflake.com/en/developers/solutions-center/computer-vision-defect-detection-distributed-pytorch-snowflake-notebooks/",
       "est_min": 60,
-      "recommended_week": 19,
-      "priority": "bonus",
+      "recommended_week": 18,
+      "priority": "core",
       "description": "Entraînement distribué d'un modèle Computer Vision PyTorch sur GPUs dans Snowflake Notebooks pour la détection d'anomalies industrielles."
     },
     {
@@ -484,7 +506,7 @@
       "title": "Distributed Multi-Node and Multi-GPU Audio Transcription with Snowflake ML",
       "url": "https://quickstarts.snowflake.com/guide/getting_started_with_distributed_multi_node_multi_gpu_audio_transcription_with_snowflake_ml_container_runtime/index.html?index=..%2F..index#5",
       "est_min": 60,
-      "recommended_week": 21,
+      "recommended_week": 20,
       "priority": "core",
       "description": "Transcription audio distribuée multi-nœuds et multi-GPU sur Container Runtime avec le modèle Whisper large-v3 d'OpenAI depuis Hugging Face."
     },
@@ -495,8 +517,8 @@
       "title": "Getting Started : Data Engineering with Snowflake & Snowpark Python",
       "url": "https://quickstarts.snowflake.com/guide/data_engineering_with_snowpark_python_intro/index.html?index=..%2F..index#0",
       "est_min": 60,
-      "recommended_week": 21,
-      "priority": "bonus",
+      "recommended_week": 19,
+      "priority": "core",
       "description": "Pipeline Data Engineering de bout en bout sur Snowflake avec Snowpark Python, Streams, Tasks et Dynamic Tables."
     },
     {
@@ -506,7 +528,7 @@
       "title": "From Zero to Agents : Building End-to-End Data Pipelines for an AI Agent (Cortex)",
       "url": "https://www.snowflake.com/en/developers/guides/from-zero-to-agents/",
       "est_min": 60,
-      "recommended_week": 22,
+      "recommended_week": 21,
       "priority": "core",
       "description": "Construction d'un agent IA complet sur Snowflake Cortex (Cortex Search + Cortex Analyst + orchestration de données) avec ton compte Free Trial Cortex Code 30j."
     }

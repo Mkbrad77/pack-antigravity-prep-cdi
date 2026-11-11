@@ -29,13 +29,13 @@
       "start": "2026-11-09",
       "end": "2026-11-15",
       "phase": "CLF-C02 : Fondamentaux AWS & Audios NotebookLM 01 à 06 (Départ Lundi 09/11 - Leçon 1)",
-      "theme": "Introduction au Cloud AWS, IAM, EC2, S3, RDS, VPC (Merico leçons 1 à 120) + Écoute récursive Audios CLF 01 à 06",
+      "theme": "Introduction au Cloud AWS, IAM, EC2, S3, RDS, VPC (Merico leçons 1 à 120) + Écoute récursive Audios CLF 01 à 06 + 2 premiers Quickstarts Snowflake",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 585,
+      "cert_budget_min": 600,
       "interview_budget_min": 60,
-      "total_planned_min": 645,
-      "checkpoint": "Leçons 1 à 120 du cours Merico validées + Audios CLF-AUDIO-01 à 06 écoutés (cycle récursif) + Accès Devoteam",
+      "total_planned_min": 660,
+      "checkpoint": "Leçons 1 à 120 du cours Merico validées + Audios CLF-AUDIO-01 à 06 écoutés (cycle récursif) + Essai Snowflake 30 jours créé et 2 premiers Quickstarts faits",
       "tasks": [
         {
           "id": "W01-C1",
@@ -126,16 +126,30 @@
           }
         },
         {
-          "id": "W01-B1",
-          "priority": "bonus",
-          "type": "devoteam",
-          "title": "Onboarding Devoteam : Rejoindre dbt Partner Portal (partners.getdbt.com), Slack dbt et Google Chat Snowflake Devoteam",
-          "resource": "Documentation Interne Devoteam (Fred)",
-          "lectures": "Accès communautés dbt & Snowflake",
+          "id": "W01-C6",
+          "priority": "core",
+          "type": "quickstart",
+          "title": "Snowflake (1/2) : créer ton essai Snowflake standard 30 jours + Quickstart « A Getting Started Guide With Snowflake Notebooks »",
+          "resource": "Snowflake Quickstarts (essai Snowflake standard 30 jours)",
+          "lectures": "Essai gratuit 30 jours (sans carte bancaire) + guide Notebooks (cellules SQL et Python, Jinja, Streamlit)",
           "video_min": 0,
-          "est_min": 30,
-          "url": "https://docs.google.com/document/d/1sdCOIhuhYlyuGC0NndiUXp06qh2wLIWyuFqW5-1pZNo/edit?tab=t.0",
-          "deliverable": "Comptes créés sur partners.getdbt.com, spn.snowflake.com et Google Chat Snowflake Devoteam rejoint"
+          "est_min": 25,
+          "url": "https://quickstarts.snowflake.com/guide/getting_started_with_snowflake_notebooks/index.html",
+          "recommended_day": "Mercredi (soir)",
+          "deliverable": "Compte d'essai créé sur signup.snowflake.com (AWS, région de ton choix) et premier notebook exécuté"
+        },
+        {
+          "id": "W01-C7",
+          "priority": "core",
+          "type": "quickstart",
+          "title": "Snowflake (2/2) : Quickstart « Getting Started With User-Defined SQL Functions » (UDF et UDTF)",
+          "resource": "Snowflake Quickstarts (essai Snowflake standard 30 jours)",
+          "lectures": "Guide officiel UDF SQL scalaires et tabulaires",
+          "video_min": 0,
+          "est_min": 20,
+          "url": "https://quickstarts.snowflake.com/guide/getting_started_with_user_defined_sql_functions/index.html",
+          "recommended_day": "Dimanche (matin)",
+          "deliverable": "Une UDF scalaire et une UDTF créées puis appelées, base udf_db supprimée en fin de lab"
         }
       ]
     },
@@ -144,12 +158,12 @@
       "start": "2026-11-16",
       "end": "2026-11-22",
       "phase": "CLF-C02 : Fin du cours Merico (Leçons 121 à 199) & Audios NotebookLM 07 à 11",
-      "theme": "Sécurité, Gouvernance, Facturation, CAF, Well-Architected + Écoute récursive Audios CLF 07 à 11",
+      "theme": "Sécurité, Gouvernance, Facturation, CAF, Well-Architected + Écoute récursive Audios CLF 07 à 11 + Quickstart Data Engineering Notebooks",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 530,
+      "cert_budget_min": 595,
       "interview_budget_min": 60,
-      "total_planned_min": 590,
+      "total_planned_min": 655,
       "checkpoint": "Cours Merico quasi achevé (199/203), Audios CLF 07 à 11 assimilés et premier examen blanc >= 75 %",
       "tasks": [
         {
@@ -231,6 +245,19 @@
           "video_min": 0,
           "est_min": 60,
           "deliverable": "Score enregistré dans le suivi des examens blancs et erreurs ajoutées aux flashcards SM-2"
+        },
+        {
+          "id": "W02-C5",
+          "priority": "core",
+          "type": "quickstart",
+          "title": "Quickstart Snowflake Data Engineering : Getting Started with Data Engineering using Snowflake Notebooks",
+          "resource": "Snowflake Quickstarts (essai Snowflake standard 30 jours)",
+          "lectures": "Lab Data Engineering",
+          "video_min": 0,
+          "est_min": 65,
+          "url": "https://quickstarts.snowflake.com/guide/data_engineering_with_notebooks/index.html?index=..%2F..index#0",
+          "deliverable": "Pipeline d'ingestion et transformation exécuté dans Snowflake Notebooks",
+          "recommended_day": "Samedi (après-midi)"
         }
       ]
     },
@@ -239,12 +266,12 @@
       "start": "2026-11-23",
       "end": "2026-11-29",
       "phase": "EXAMEN N°1 : AWS Cloud Practitioner (Vendredi 27/11) + Lancement Anticipé Urgence N°1 dbt (Samedi-Dimanche)",
-      "theme": "Passage officiel CLF-C02 (27/11/2026) + Compensation du décalage initial : Activation Snowflake 120j & Début Zoltan Toth (leçons 1 à 25)",
+      "theme": "Passage officiel CLF-C02 (27/11/2026) + Compensation du décalage initial : Activation Snowflake 120j, Quickstart Container Runtime & Début Zoltan Toth (leçons 1 à 25)",
       "light_week": false,
       "exam": "AWS Certified Cloud Practitioner (CLF-C02) - Vendredi 27/11/2026",
-      "cert_budget_min": 505,
+      "cert_budget_min": 550,
       "interview_budget_min": 60,
-      "total_planned_min": 565,
+      "total_planned_min": 610,
       "checkpoint": "CERTIFICATION N°1 (CLF-C02) VALIDÉE + Compte Snowflake 120j actif + Toth leçons 1 à 25 & DBT-AUDIO-01 terminés dès fin novembre !",
       "tasks": [
         {
@@ -339,6 +366,19 @@
           "video_min": 0,
           "est_min": 40,
           "deliverable": "Verrouillage des points de sécurité, d'achats EC2 et de réseau VPC avant l'épreuve"
+        },
+        {
+          "id": "W03-C5",
+          "priority": "core",
+          "type": "quickstart",
+          "title": "Quickstart Snowflake ML #1 (Beginner) : Getting Started with Snowflake Notebooks on Container Runtime",
+          "resource": "Snowflake ML Quickstarts (essai Snowflake standard 30 jours ou essai 120 jours de Fred)",
+          "lectures": "Model development example #1",
+          "video_min": 0,
+          "est_min": 45,
+          "url": "https://www.snowflake.com/en/developers/solutions-center/getting-started-with-snowflake-notebook-container-runtime/",
+          "deliverable": "Exécution de ton 1er Notebook ML sur Container Runtime dans Snowflake",
+          "recommended_day": "Samedi 28 novembre (après l'examen)"
         }
       ]
     },
@@ -347,12 +387,12 @@
       "start": "2026-11-30",
       "end": "2026-12-06",
       "phase": "URGENCE N°1 : dbt Analytics Engineering - Semaine Intensive 1 (Modèles, Sources, Snapshots, Tests & Audios DBT 02 à 04)",
-      "theme": "Zoltan Toth leçons 26 à 57 + Quickstart #1 dbt Cloud & Snowflake + Feedback Devoteam + Audios DBT 02 à 04",
+      "theme": "Zoltan Toth leçons 26 à 57 + Quickstart #1 dbt Cloud & Snowflake + Onboarding et feedback Devoteam + Audios DBT 02 à 04",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 420,
+      "cert_budget_min": 370,
       "interview_budget_min": 120,
-      "total_planned_min": 540,
+      "total_planned_min": 490,
       "checkpoint": "Toth leçons 26 à 57 validées + 1er Quickstart dbt Cloud & Snowflake terminé + Audios DBT 01 à 04 maîtrisés",
       "tasks": [
         {
@@ -396,14 +436,14 @@
         {
           "id": "W04-B1",
           "priority": "bonus",
-          "type": "quickstart",
-          "title": "Quickstart Snowflake : A Getting Started Guide With Snowflake Notebooks & SQL UDFs + Quickstart #2 Accelerating Data Teams with Snowflake and dbt Cloud",
-          "resource": "Snowflake Quickstarts (Sélection Devoteam)",
-          "lectures": "2 Labs pratiques Snowflake & dbt",
+          "type": "devoteam",
+          "title": "Onboarding Devoteam : Rejoindre dbt Partner Portal (partners.getdbt.com), Slack dbt et Google Chat Snowflake Devoteam",
+          "resource": "Documentation Interne Devoteam (Fred)",
+          "lectures": "Accès communautés dbt & Snowflake",
           "video_min": 0,
-          "est_min": 80,
-          "url": "https://quickstarts.snowflake.com/guide/accelerating_data_teams_with_snowflake_and_dbt_cloud_hands_on_lab/index.html?index=..%2F..index#0",
-          "deliverable": "Environnements dev/prod Snowflake + Notebooks et pipelines dbt déployés"
+          "est_min": 30,
+          "url": "https://docs.google.com/document/d/1sdCOIhuhYlyuGC0NndiUXp06qh2wLIWyuFqW5-1pZNo/edit?tab=t.0",
+          "deliverable": "Comptes créés sur partners.getdbt.com, spn.snowflake.com et Google Chat Snowflake Devoteam rejoint"
         }
       ]
     },
@@ -412,12 +452,12 @@
       "start": "2026-12-07",
       "end": "2026-12-13",
       "phase": "URGENCE N°1 : dbt Analytics Engineering - Semaine Intensive 2 (Incrémental, Snapshots, Hooks, Packages & Audios DBT 05 à 08)",
-      "theme": "Zoltan Toth leçons 58 à 107 + dbt Learn (Jinja, Refactoring SQL, Incremental, Snapshots) + Audios DBT 05 à 08",
+      "theme": "Zoltan Toth leçons 58 à 107 + dbt Learn (Jinja, Refactoring SQL, Incremental, Snapshots) + Quickstart #2 + Audios DBT 05 à 08",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 430,
+      "cert_budget_min": 425,
       "interview_budget_min": 120,
-      "total_planned_min": 550,
+      "total_planned_min": 545,
       "checkpoint": "Maîtrise complète de is_incremental(), Snapshots SCD2, Hooks, Grants, Sélecteurs et Audios DBT 05 à 08",
       "tasks": [
         {
@@ -459,16 +499,17 @@
           "deliverable": "Épisodes DBT-AUDIO-05 à 08 écoutés et maîtrisés"
         },
         {
-          "id": "W05-B1",
-          "priority": "bonus",
+          "id": "W05-C4",
+          "priority": "core",
           "type": "quickstart",
-          "title": "Quickstart Snowflake Data Engineering : Getting Started with Data Engineering using Snowflake Notebooks",
-          "resource": "Snowflake Quickstarts (Sélection Devoteam)",
-          "lectures": "Lab Data Engineering",
+          "title": "Quickstart #2 (dbt + Snowflake) : Accelerating Data Teams with Snowflake and dbt Cloud Hands-On Lab",
+          "resource": "Snowflake Quickstarts",
+          "lectures": "Hands-On Lab dbt Cloud + Snowflake",
           "video_min": 0,
-          "est_min": 65,
-          "url": "https://quickstarts.snowflake.com/guide/data_engineering_with_notebooks/index.html?index=..%2F..index#0",
-          "deliverable": "Pipeline d'ingestion et transformation exécuté dans Snowflake Notebooks"
+          "est_min": 60,
+          "url": "https://quickstarts.snowflake.com/guide/accelerating_data_teams_with_snowflake_and_dbt_cloud_hands_on_lab/index.html?index=..%2F..index#0",
+          "recommended_day": "Samedi (après-midi)",
+          "deliverable": "Environnements dev et prod Snowflake configurés et pipeline dbt déployé"
         }
       ]
     },
@@ -477,13 +518,13 @@
       "start": "2026-12-14",
       "end": "2026-12-20",
       "phase": "URGENCE N°1 : dbt Analytics Engineering - Semaine Intensive 3 avant Noël (Toth 108-161 + Weigel 1-89 + Audios DBT 09 à 12)",
-      "theme": "Zoltan Toth (108 à 161) + Daniel Weigel (départ leçons 1 à 89) + dbt Learn Advanced Testing + Quickstart Snowflake ML #1 + Audios DBT 09 à 12",
+      "theme": "Zoltan Toth (108 à 161) + Daniel Weigel (départ leçons 1 à 89) + dbt Learn Advanced Testing + Quickstart #3 (Snowpark Python et dbt) + Audios DBT 09 à 12",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 445,
+      "cert_budget_min": 500,
       "interview_budget_min": 120,
-      "total_planned_min": 565,
-      "checkpoint": "Toth (161/164) quasi terminé + Weigel leçons 1 à 89 validées + Audios DBT 09 à 12 maîtrisés + 1er Quickstart Snowflake ML réalisé",
+      "total_planned_min": 620,
+      "checkpoint": "Toth (161/164) quasi terminé + Weigel leçons 1 à 89 validées + Audios DBT 09 à 12 maîtrisés + Quickstart #3 (Snowpark Python et dbt) réalisé",
       "tasks": [
         {
           "id": "W06-C1",
@@ -515,28 +556,39 @@
           "id": "W06-C3",
           "priority": "core",
           "type": "quickstart",
-          "title": "Quickstart Snowflake ML #1 (Beginner) : Getting Started with Snowflake Notebooks on Container Runtime",
-          "resource": "Snowflake ML Quickstarts (docs.snowflake.com/en/developer-guide/snowflake-ml/quickstart)",
-          "lectures": "Model development example #1",
+          "title": "Quickstart #3 (dbt + Snowflake) : Data Engineering with Snowpark Python and dbt",
+          "resource": "Snowflake Quickstarts",
+          "lectures": "Lab modèles Python Snowpark dans dbt",
           "video_min": 0,
-          "est_min": 45,
-          "url": "https://www.snowflake.com/en/developers/solutions-center/getting-started-with-snowflake-notebook-container-runtime/",
-          "deliverable": "Exécution de ton 1er Notebook ML sur Container Runtime dans Snowflake"
+          "est_min": 60,
+          "url": "https://quickstarts.snowflake.com/guide/data_engineering_with_snowpark_python_and_dbt/index.html?index=..%2F..index#0",
+          "deliverable": "Modèle Python Snowpark (.py) exécuté dans dbt"
         },
         {
           "id": "W06-B1",
           "course": "weigel",
           "priority": "bonus",
           "type": "udemy",
-          "title": "Approfondissement Pratique Weigel (Exercices orientés certification leçons 1 à 89) + Quickstart #3 : Data Engineering with Snowpark Python and dbt",
-          "resource": "Udemy Daniel Weigel + Snowflake Quickstarts",
+          "title": "Approfondissement Pratique Weigel (Exercices orientés certification leçons 1 à 89)",
+          "resource": "Udemy Daniel Weigel",
           "lectures": "leçons 1 à 89",
           "first": 1,
           "last": 89,
           "video_min": 100,
-          "est_min": 150,
-          "url": "https://quickstarts.snowflake.com/guide/data_engineering_with_snowpark_python_and_dbt/index.html?index=..%2F..index#0",
-          "deliverable": "Exercices Weigel 1-89 validés et modèle Python Snowpark (.py) exécuté dans dbt"
+          "est_min": 100,
+          "deliverable": "Exercices Weigel 1-89 validés"
+        },
+        {
+          "id": "W06-B2",
+          "priority": "bonus",
+          "type": "quickstart",
+          "title": "Quickstart #4 (dbt + Snowflake) : Build Data Products and a Data Mesh with dbt Cloud & Snowflake",
+          "resource": "Snowflake Quickstarts",
+          "lectures": "Hands-On Lab dbt Mesh",
+          "video_min": 0,
+          "est_min": 90,
+          "url": "https://quickstarts.snowflake.com/guide/data-products-data-mesh-dbt-cloud/index.html?index=..%2F..index#0",
+          "deliverable": "Mise en œuvre pratique de cross-project ref() (au programme de l'examen dbt)"
         }
       ]
     },
@@ -545,12 +597,12 @@
       "start": "2026-12-21",
       "end": "2026-12-27",
       "phase": "URGENCE N°1 : dbt Analytics Engineering - Semaine des Fêtes de Noël ALLÉGÉE (Zéro hausse de charge : max 6h)",
-      "theme": "Déploiement dbt, Slim CI (state:modified+, --defer), dbt retry, dbt clone + Podcasts DBT 13 & 14 (Budget léger Noël : 290 min Core)",
+      "theme": "Déploiement dbt, Slim CI (state:modified+, --defer), dbt retry, dbt clone + Podcasts DBT 13 & 14 (Budget léger Noël : 335 min Core, Quickstart ML court inclus)",
       "light_week": true,
       "exam": null,
-      "cert_budget_min": 210,
+      "cert_budget_min": 255,
       "interview_budget_min": 80,
-      "total_planned_min": 290,
+      "total_planned_min": 335,
       "checkpoint": "Maîtrise absolue de Slim CI (state:modified+ --defer), dbt build, dbt retry et dbt clone tout en profitant pleinement de Noël",
       "tasks": [
         {
@@ -580,16 +632,17 @@
           "deliverable": "Épisodes DBT-AUDIO-13 et 14 écoutés tranquillement et fiche synthèse des 4 artefacts JSON"
         },
         {
-          "id": "W07-B1",
-          "priority": "bonus",
+          "id": "W07-C3",
+          "priority": "core",
           "type": "quickstart",
           "title": "Quickstart Snowflake ML #2 (Beginner) : Getting Started with ML Development in Snowflake (Snowpark ML)",
           "resource": "Snowflake ML Quickstarts",
           "lectures": "Model development example #2",
           "video_min": 0,
-          "est_min": 100,
+          "est_min": 45,
           "url": "https://quickstarts.snowflake.com/guide/intro_to_machine_learning_with_snowpark_ml_for_python/",
-          "deliverable": "Prétraitement et entraînement avec snowflake.ml.modeling (Bonus sacrifiable pendant Noël)"
+          "deliverable": "Prétraitement et entraînement avec snowflake.ml.modeling (version courte, semaine des fêtes)",
+          "recommended_day": "Samedi (matin)"
         }
       ]
     },
@@ -598,12 +651,12 @@
       "start": "2026-12-28",
       "end": "2027-01-03",
       "phase": "URGENCE N°1 : dbt Analytics Engineering - Semaine du Nouvel An ALLÉGÉE (Zéro hausse de charge : max 6h)",
-      "theme": "Clôture Toth (162-164 : dbt Mesh) + Weigel (120-130 : Contrats, Gouvernance) + Study Guide & Podcasts DBT 15 & 16 (Budget léger : 290 min Core)",
+      "theme": "Clôture Toth (162-164 : dbt Mesh) + Weigel (120-130 : Contrats, Gouvernance) + Study Guide & Podcasts DBT 15 & 16 (Budget léger : 350 min Core, Quickstart ML inclus)",
       "light_week": true,
       "exam": null,
-      "cert_budget_min": 210,
+      "cert_budget_min": 270,
       "interview_budget_min": 80,
-      "total_planned_min": 290,
+      "total_planned_min": 350,
       "checkpoint": "100 % du programme théorique, pratique et des 16 Podcasts dbt bouclés avant la semaine d'examen sans surcharger le Nouvel An",
       "tasks": [
         {
@@ -633,28 +686,17 @@
           "deliverable": "Épisodes DBT-AUDIO-15 et 16 écoutés et checklist du Study Guide officiel cochée"
         },
         {
-          "id": "W08-B1",
-          "priority": "bonus",
+          "id": "W08-C3",
+          "priority": "core",
           "type": "quickstart",
           "title": "Quickstart Snowflake ML #3 (Beginner) : Build an End-to-End ML Model in Snowflake (XGBoost & MLOps)",
           "resource": "Snowflake ML Quickstarts",
           "lectures": "End-to-end ML workflow #1",
           "video_min": 0,
-          "est_min": 95,
+          "est_min": 60,
           "url": "https://quickstarts.snowflake.com/guide/end-to-end-ml-workflow/index.html?index=..%2F..index#1",
-          "deliverable": "Modèle XGBoost déployé de bout en bout sur Snowflake (sacrifiable pendant les fêtes)"
-        },
-        {
-          "id": "W08-B2",
-          "priority": "bonus",
-          "type": "quickstart",
-          "title": "Quickstart #4 (dbt + Snowflake) : Build Data Products and a Data Mesh with dbt Cloud & Snowflake",
-          "resource": "Snowflake Quickstarts",
-          "lectures": "Hands-On Lab dbt Mesh",
-          "video_min": 0,
-          "est_min": 90,
-          "url": "https://quickstarts.snowflake.com/guide/data-products-data-mesh-dbt-cloud/index.html?index=..%2F..index#0",
-          "deliverable": "Mise en œuvre pratique de cross-project ref() (sacrifiable pendant les fêtes)"
+          "deliverable": "Modèle XGBoost déployé de bout en bout sur Snowflake",
+          "recommended_day": "Samedi (matin)"
         }
       ]
     },
@@ -666,9 +708,9 @@
       "theme": "Examens blancs Weigel (131-132), Questions Qanalabs, Réécoute Audios Pièges dbt et Passage officiel le 8 janvier 2027",
       "light_week": false,
       "exam": "dbt Analytics Engineering Certification - Vendredi 08/01/2027",
-      "cert_budget_min": 375,
+      "cert_budget_min": 435,
       "interview_budget_min": 80,
-      "total_planned_min": 455,
+      "total_planned_min": 515,
       "checkpoint": "CERTIFICATION PRIORITAIRE VALIDÉE : dbt Analytics Engineering (dbt Certified Developer) dès le 8 janvier 2027 !",
       "tasks": [
         {
@@ -710,8 +752,8 @@
           "deliverable": "Certification dbt Analytics Engineering obtenue en urgence le 8 janvier 2027 sans aucun décalage !"
         },
         {
-          "id": "W09-B1",
-          "priority": "bonus",
+          "id": "W09-C4",
+          "priority": "core",
           "type": "quickstart",
           "title": "Quickstart #5 (dbt + Snowflake) : Quickstart for the dbt Cloud Semantic Layer and Snowflake",
           "resource": "Guide Officiel dbt (docs.getdbt.com)",
@@ -719,7 +761,8 @@
           "video_min": 0,
           "est_min": 60,
           "url": "https://docs.getdbt.com/guides/sl-snowflake-qs",
-          "deliverable": "Définition de semantic_models et metrics sur Snowflake"
+          "deliverable": "Définition de semantic_models et metrics sur Snowflake",
+          "recommended_day": "Samedi 9 janvier (après l'examen)"
         }
       ]
     },
@@ -841,9 +884,9 @@
       "theme": "Maarek leçons 65 à 138 (Data Catalog, Glue ETL, PySpark) + Quickstart Snowflake ML #5 (Feature Store) + Audios DEA 03 à 05",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 405,
+      "cert_budget_min": 520,
       "interview_budget_min": 120,
-      "total_planned_min": 525,
+      "total_planned_min": 640,
       "checkpoint": "Maarek leçons 65 à 138 validées + Audios DEA 03 à 05 assimilés + Snowflake Feature Store maîtrisé",
       "tasks": [
         {
@@ -978,8 +1021,8 @@
           "deliverable": "Épisodes DEA-AUDIO-06 et 08 écoutés et maîtrisés"
         },
         {
-          "id": "W12-B1",
-          "priority": "bonus",
+          "id": "W12-C5",
+          "priority": "core",
           "type": "quickstart",
           "title": "Quickstart Snowflake ML #7 (Beginner) : Introduction to Online Feature Store in Snowflake",
           "resource": "Snowflake ML Quickstarts (MLOps examples)",
@@ -987,10 +1030,11 @@
           "video_min": 0,
           "est_min": 45,
           "url": "https://www.snowflake.com/en/developers/guides/intro-to-online-feature-store-in-snowflake/",
-          "deliverable": "Serving temps réel basse latence sur Snowflake Online Feature Store"
+          "deliverable": "Serving temps réel basse latence sur Snowflake Online Feature Store",
+          "recommended_day": "Dimanche (matin)"
         },
         {
-          "id": "W12-B2",
+          "id": "W12-B1",
           "priority": "bonus",
           "type": "skill_builder",
           "title": "AWS Skill Builder (DEA-C01, anglais) : Data Engineering on AWS Learning Plans, labs (séance 1 sur 6, 120 min)",
@@ -1462,8 +1506,8 @@
           }
         },
         {
-          "id": "W16-B1",
-          "priority": "bonus",
+          "id": "W16-C6",
+          "priority": "core",
           "type": "quickstart",
           "title": "Quickstart Snowflake ML #12 (Intermediate) : Building ML Models to Crack the Code of Customer Conversions (GenAI + XGBoost)",
           "resource": "Snowflake ML Quickstarts (End-to-end ML workflow)",
@@ -1471,10 +1515,11 @@
           "video_min": 0,
           "est_min": 60,
           "url": "https://quickstarts.snowflake.com/guide/build-ml-models-for-customer-conversions/",
-          "deliverable": "Pipeline combinant analyse de sentiment GenAI et classification XGBoost sur Snowflake"
+          "deliverable": "Pipeline combinant analyse de sentiment GenAI et classification XGBoost sur Snowflake",
+          "recommended_day": "Dimanche (matin)"
         },
         {
-          "id": "W16-B2",
+          "id": "W16-B1",
           "priority": "bonus",
           "type": "skill_builder",
           "title": "AWS Skill Builder (DEA-C01, anglais) : Data Engineering on AWS Learning Plans, labs (séance 5 sur 6, 45 min)",
@@ -1654,8 +1699,8 @@
           }
         },
         {
-          "id": "W18-B1",
-          "priority": "bonus",
+          "id": "W18-C4",
+          "priority": "core",
           "type": "quickstart",
           "title": "Quickstart Snowflake ML #14 (Intermediate) : Defect Detection Using Distributed PyTorch with Snowflake Notebooks",
           "resource": "Snowflake ML Quickstarts (End-to-end ML workflow)",
@@ -1663,7 +1708,8 @@
           "video_min": 0,
           "est_min": 60,
           "url": "https://www.snowflake.com/en/developers/solutions-center/computer-vision-defect-detection-distributed-pytorch-snowflake-notebooks/",
-          "deliverable": "Modèle Computer Vision PyTorch entraîné sur GPU dans Snowflake"
+          "deliverable": "Modèle Computer Vision PyTorch entraîné sur GPU dans Snowflake",
+          "recommended_day": "Samedi (après-midi)"
         }
       ]
     },
@@ -1675,9 +1721,9 @@
       "theme": "Simulateur interne DEA-C01, Révision des Fiches Express, Podcast DEA-AUDIO-16 et Passage officiel DEA-C01",
       "light_week": false,
       "exam": "AWS Certified Data Engineer - Associate (DEA-C01) - Vendredi 19/03/2027",
-      "cert_budget_min": 400,
+      "cert_budget_min": 580,
       "interview_budget_min": 80,
-      "total_planned_min": 480,
+      "total_planned_min": 660,
       "checkpoint": "LES 3 CERTIFICATIONS SONT VALIDÉES : CLF-C02 + dbt Analytics Engineering + AWS DEA-C01 !",
       "tasks": [
         {
@@ -1726,6 +1772,19 @@
           "video_min": 0,
           "est_min": 120,
           "deliverable": "Examen blanc de réserve en cas de besoin de remédiation"
+        },
+        {
+          "id": "W19-C5",
+          "priority": "core",
+          "type": "quickstart",
+          "title": "Quickstart Snowflake Devoteam : Getting Started : Data Engineering with Snowflake & Snowpark Python",
+          "resource": "Snowflake Quickstarts",
+          "lectures": "Lab Snowpark Data Engineering",
+          "video_min": 0,
+          "est_min": 60,
+          "url": "https://quickstarts.snowflake.com/guide/data_engineering_with_snowpark_python_intro/index.html?index=..%2F..index#0",
+          "deliverable": "Pipeline Streams, Tasks et Snowpark Python validé",
+          "recommended_day": "Samedi 20 mars (après l'examen)"
         }
       ]
     },
@@ -1734,12 +1793,12 @@
       "start": "2027-03-22",
       "end": "2027-03-28",
       "phase": "Semaine de Réserve #1 & Quickstart Snowflake ML #15 (Multi-GPU Whisper & Pipeline ML dbt+Snowpark)",
-      "theme": "Clôture des 15 Quickstarts Snowflake ML (Whisper Audio GPU) + Tampon de sécurité",
+      "theme": "Clôture des 15 Quickstarts Snowflake ML (Whisper Audio GPU) + 2e essai Snowflake 30 jours + Tampon de sécurité",
       "light_week": false,
       "exam": null,
-      "cert_budget_min": 120,
+      "cert_budget_min": 135,
       "interview_budget_min": 120,
-      "total_planned_min": 240,
+      "total_planned_min": 255,
       "checkpoint": "15/15 Quickstarts Snowflake ML officiels complétés !",
       "tasks": [
         {
@@ -1767,16 +1826,17 @@
           "deliverable": "Pipeline unifié dbt Cloud + Snowpark ML exécuté de bout en bout"
         },
         {
-          "id": "W20-B1",
-          "priority": "bonus",
+          "id": "W20-C3",
+          "priority": "core",
           "type": "quickstart",
-          "title": "Quickstart Snowflake Devoteam : Getting Started : Data Engineering with Snowflake & Snowpark Python",
-          "resource": "Snowflake Quickstarts",
-          "lectures": "Lab Snowpark Data Engineering",
+          "title": "Créer ton 2e essai Snowflake standard 30 jours (relais de l'essai 120 jours de Fred qui expire vers le 28 mars)",
+          "resource": "Snowflake (essai standard 30 jours)",
+          "lectures": "Inscription gratuite sur signup.snowflake.com (AWS, région US West Oregon pour avoir Cortex)",
           "video_min": 0,
-          "est_min": 60,
-          "url": "https://quickstarts.snowflake.com/guide/data_engineering_with_snowpark_python_intro/index.html?index=..%2F..index#0",
-          "deliverable": "Pipeline Streams, Tasks et Snowpark Python validé"
+          "est_min": 15,
+          "url": "https://signup.snowflake.com/",
+          "recommended_day": "Samedi 27 mars",
+          "deliverable": "Nouveau compte d'essai actif (avec une autre adresse e-mail si Snowflake refuse la première), prêt pour le Quickstart Agents IA de la semaine 21"
         }
       ]
     },
@@ -1785,7 +1845,7 @@
       "start": "2027-03-29",
       "end": "2027-04-04",
       "phase": "Sprint Final CDI Data & AI Engineer (Agents IA Snowflake Cortex & Échéance Contrat 2 avril 2027)",
-      "theme": "Quickstart Agents IA sur Snowflake Cortex (compte Free Trial Cortex 30j) & Bilan final CDI (2 avril 2027)",
+      "theme": "Quickstart Agents IA sur Snowflake Cortex (2e essai Snowflake standard 30 jours, créé en S20) & Bilan final CDI (2 avril 2027)",
       "light_week": false,
       "exam": "Échéance Finale Contrat : Vendredi 02/04/2027",
       "cert_budget_min": 105,
@@ -1798,7 +1858,7 @@
           "priority": "core",
           "type": "quickstart",
           "title": "Quickstart Snowflake GenAI (Devoteam) : From Zero to Agents : Building End-to-End Data Pipelines for an AI Agent",
-          "resource": "Snowflake Developers Guide (Cortex)",
+          "resource": "Snowflake Developers Guide (Cortex, 2e essai Snowflake standard 30 jours)",
           "lectures": "Lab AI Agents sur Snowflake Cortex",
           "video_min": 0,
           "est_min": 60,

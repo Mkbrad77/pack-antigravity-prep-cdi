@@ -498,24 +498,27 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
           <section className="card card-accent" style={{ ['--cert-color' as string]: 'var(--cert-snow)' } as React.CSSProperties}>
             <div className="card-header">
               <h2 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-                <Gift size={18} aria-hidden /> Tes 2 comptes Free Trial Snowflake
+                <Gift size={18} aria-hidden /> Tes comptes Free Trial Snowflake
               </h2>
-              <span className="badge badge-success">800 $ de crédits au total</span>
+              <span className="badge badge-success">{hubData.free_trials.length} essais gratuits</span>
             </div>
             <p className="text-secondary small" style={{ marginTop: 0 }}>
-              Ne les active pas en même temps : le premier (120 jours, 400 $) en semaine 4 pour la certification dbt et
-              les premiers Quickstarts ML, le second (Cortex Code, 30 jours) en semaine 15.
+              Active-les l'un après l'autre : l'essai standard 30 jours dès la semaine 1 pour les premiers Quickstarts,
+              l'essai 120 jours de Fred le 28 novembre (fin de semaine 3), l'essai Cortex Code 30 jours en semaine 14, puis un 2e essai standard 30 jours le 27 mars pour la semaine 21.
             </p>
             <div className="grid-2" style={{ gap: '0.75rem' }}>
               {hubData.free_trials.map((trial) => (
                 <div key={trial.id} className="card card-sm stack-sm">
                   <div className="row-between">
                     <strong>{trial.title}</strong>
-                    <span className="badge badge-info">{trial.badge}</span>
+                    <span className="badge badge-info">{trial.duration_days} jours</span>
                   </div>
-                  <div className="text-secondary small">{trial.description}</div>
+                  <div className="muted small">
+                    {trial.provider}, {trial.credits_usd}
+                  </div>
+                  <div className="text-secondary small">{trial.activation_advice}</div>
                   <div className="row-between">
-                    <span className="badge badge-warning">Activation : {trial.when_to_activate}</span>
+                    <span className="badge badge-warning">À activer en S{trial.recommended_week}</span>
                     <button type="button" className="btn btn-primary btn-sm" onClick={() => openExternal(trial.url)}>
                       Ouvrir l'essai <ExternalLink size={16} aria-hidden />
                     </button>
@@ -538,12 +541,12 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
             <ul className="resource-list">
               {hubData.dbt_certification_resources.map((item) => (
                 <li key={item.id} className="resource-row">
-                  <span className="mono badge badge-info">S{item.week}</span>
+                  <span className="mono badge badge-info">S{item.recommended_week}</span>
                   <div style={{ minWidth: 0, flex: 1 }}>
                     <div style={{ fontWeight: 600 }}>{item.title}</div>
                     <div className="muted small">{item.description}</div>
                     <div className="cluster small" style={{ marginTop: '0.3rem', gap: '0.35rem' }}>
-                      <span className="badge badge-neutral">{item.category}</span>
+                      <span className="badge badge-neutral">{item.type}</span>
                       <span className={`badge ${item.priority === 'core' ? 'badge-core' : 'badge-bonus'}`}>
                         {item.priority === 'core' ? 'Obligatoire' : 'Bonus'}
                       </span>
@@ -567,7 +570,7 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
               {hubData.dbt_snowflake_quickstarts.map((qs) => (
                 <div key={qs.id} className="card card-sm stack-sm">
                   <div className="cluster" style={{ gap: '0.35rem' }}>
-                    <span className="mono badge badge-info">S{qs.week}</span>
+                    <span className="mono badge badge-info">S{qs.recommended_week}</span>
                     <span className={`badge ${qs.priority === 'core' ? 'badge-core' : 'badge-bonus'}`}>
                       {qs.priority === 'core' ? 'Obligatoire' : 'Bonus'}, {qs.est_min} min
                     </span>
@@ -587,7 +590,7 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
               <div>
                 <h2 className="card-title">Les 15 Quickstarts officiels Snowflake ML</h2>
                 <p className="muted small" style={{ margin: '0.2rem 0 0' }}>
-                  Plus 2 labs Cortex AI et Iceberg, à raison de 1 à 2 par semaine entre S5 et S22. Source :{' '}
+                  Plus 2 labs Data Engineering et Agents IA, répartis de la semaine 3 à la semaine 21. Source :{' '}
                   <a href="https://docs.snowflake.com/en/developer-guide/snowflake-ml/quickstart" target="_blank" rel="noopener noreferrer">
                     docs.snowflake.com
                   </a>
@@ -618,12 +621,14 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
               </div>
             </div>
             <div className="grid-3" style={{ gap: '0.75rem' }}>
-              {filteredMlQuickstarts.map((qs) => (
-                <div key={qs.id} data-testid={`ml-quickstart-card-${qs.number}`} className="card card-sm stack-sm" style={{ justifyContent: 'space-between' }}>
+              {filteredMlQuickstarts.map((qs) => {
+                const number = hubData.snowflake_ml_quickstarts.indexOf(qs) + 1;
+                return (
+                <div key={qs.id} data-testid={`ml-quickstart-card-${number}`} className="card card-sm stack-sm" style={{ justifyContent: 'space-between' }}>
                   <div className="stack-sm">
                     <div className="cluster" style={{ gap: '0.35rem' }}>
                       <span className="mono badge badge-neutral">
-                        n°{qs.number}, S{qs.week}
+                        n°{number}, S{qs.recommended_week}
                       </span>
                       <span className={`badge ${qs.level === 'Beginner' ? 'badge-success' : 'badge-info'}`}>
                         {qs.level === 'Beginner' ? 'Débutant' : 'Intermédiaire'}
@@ -633,15 +638,18 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                     <div className="eyebrow">{qs.category}</div>
                     <strong>{qs.title}</strong>
                     <div className="muted small">{qs.description}</div>
-                    <div className="muted small">
-                      <strong>Livrable :</strong> {qs.deliverable}
-                    </div>
+                    {qs.deliverable && (
+                      <div className="muted small">
+                        <strong>Livrable :</strong> {qs.deliverable}
+                      </div>
+                    )}
                   </div>
                   <button type="button" className="btn btn-primary btn-sm btn-block" onClick={() => openExternal(qs.url)}>
-                    Ouvrir le Quickstart n°{qs.number} <ExternalLink size={16} aria-hidden />
+                    Ouvrir le Quickstart n°{number} <ExternalLink size={16} aria-hidden />
                   </button>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </section>
 
@@ -657,11 +665,15 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                   <li key={comm.id} className="resource-row">
                     <div style={{ minWidth: 0, flex: 1 }}>
                       <div className="cluster" style={{ gap: '0.35rem' }}>
-                        <span className="badge badge-neutral">{comm.domain}</span>
+                        <span className="badge badge-neutral">{comm.category}</span>
                         <strong>{comm.title}</strong>
                       </div>
                       <div className="muted small" style={{ marginTop: '0.2rem' }}>
-                        {comm.description}
+                        {comm.usage}
+                      </div>
+                      <div className="mono muted small" style={{ marginTop: '0.2rem' }}>
+                        S{comm.recommended_week}
+                        {comm.est_min > 0 ? `, ${comm.est_min} min` : ''}
                       </div>
                     </div>
                     <button type="button" className="btn btn-secondary btn-sm" onClick={() => openExternal(comm.url)} aria-label={`Ouvrir ${comm.title}`}>

@@ -459,63 +459,67 @@ export interface CompetencyStatus {
 export interface SnowflakeFreeTrial {
   id: string;
   title: string;
-  badge: string;
+  provider: string;
+  duration_days: number;
+  credits_usd: string;
   url: string;
-  description: string;
-  when_to_activate: string;
-  category: string;
+  recommended_week: number;
+  activation_advice: string;
+  priority: TaskPriority;
 }
 
 export interface DevoteamCommunityLink {
-  id: string;
-  domain: string;
-  type: string;
-  title: string;
-  url: string;
-  description: string;
-}
-
-export interface DbtCertificationResourceItem {
   id: string;
   category: string;
   title: string;
   url: string;
   est_min: number;
-  week: number;
+  recommended_week: number;
+  usage: string;
+}
+
+export interface DbtCertificationResourceItem {
+  id: string;
+  type: string;
+  title: string;
+  url: string;
+  est_min: number;
+  recommended_week: number;
   priority: TaskPriority;
   description: string;
 }
 
 export interface DbtSnowflakeQuickstartItem {
   id: string;
+  category: string;
   title: string;
   level: string;
   url: string;
   est_min: number;
-  week: number;
+  recommended_week: number;
   priority: TaskPriority;
   description: string;
 }
 
 export interface SnowflakeMlQuickstartItem {
   id: string;
-  number: number;
   category: string;
   title: string;
   level: string;
   url: string;
   est_min: number;
-  week: number;
+  recommended_week: number;
   priority: TaskPriority;
   description: string;
-  deliverable: string;
+  deliverable?: string;
 }
 
 export interface SnowflakeDbtResourcesData {
   metadata: {
-    title: string;
     updated_at: string;
-    description: string;
+    owner?: string;
+    purpose?: string;
+    excluded_filter_note?: string;
   };
   free_trials: SnowflakeFreeTrial[];
   devoteam_communities: DevoteamCommunityLink[];

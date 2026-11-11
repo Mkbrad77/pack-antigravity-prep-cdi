@@ -876,7 +876,7 @@ export function getTaskActionGuide(task: UnifiedTask): TaskActionGuide {
       recommendedDay,
       steps: [
         `Étape 1 (ouverture du lab) : ouvre le Quickstart officiel avec le bouton ci-dessous (${task.url || task.resource}).`,
-        `Étape 2 (pratique, environ ${task.effective_est_min} min) : exécute le notebook ou le SQL dans ton compte Snowflake Free Trial (120 j / 400 $ AWS us-west-2 ou Cortex 30 j) ou dans dbt Cloud.`,
+        `Étape 2 (pratique, environ ${task.effective_est_min} min) : exécute le notebook ou le SQL dans ${getSnowflakeAccountForWeek(task.original_week)}.`,
         `Étape 3 (livrable) : vérifie le livrable attendu ("${task.deliverable}"), puis marque la tâche comme terminée.`,
       ],
       primaryButton: task.url
@@ -1023,4 +1023,23 @@ export function getTaskActionGuide(task: UnifiedTask): TaskActionGuide {
       label: 'Réviser mes cartes',
     },
   };
+}
+
+/**
+ * Compte Snowflake à utiliser selon la semaine du planning (D-23) :
+ * essai standard 30 jours en S1 à S3, essai 120 jours de Fred à partir du 28/11,
+ * essai Cortex Code 30 jours à partir de la S14 pour les labs GenAI,
+ * 2e essai standard 30 jours en S21 (D-24).
+ */
+export function getSnowflakeAccountForWeek(week: number): string {
+  if (week <= 3) {
+    return "ton essai Snowflake standard 30 jours (créé en semaine 1). À partir du 28 novembre, tu peux aussi utiliser l'essai 120 jours de Fred";
+  }
+  if (week >= 14 && week <= 17) {
+    return "ton essai Cortex Code 30 jours (activé en semaine 14) pour les labs Cortex et GenAI, sinon ton essai 120 jours de Fred, ou dans dbt Cloud";
+  }
+  if (week >= 21) {
+    return "ton 2e essai Snowflake standard 30 jours (créé le 27 mars, tâche W20-C3), car l'essai 120 jours de Fred a expiré";
+  }
+  return "ton essai Snowflake 120 jours de Fred (400 $, AWS us-west-2), ou dans dbt Cloud pour les labs dbt";
 }
